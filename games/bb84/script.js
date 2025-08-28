@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Базис Алисы
     let aliceBasisSymbol = '';
     if (bit.aliceBasis === 'rectilinear') {
-      aliceBasisSymbol = bit.aliceValue === '0' ? '—' : '|';
+      aliceBasisSymbol = bit.aliceValue === '0' ? '|' : '—';
       historyHTML += `<div class="history-item">Алиса отправила: <span class="rectilinear-basis">${aliceBasisSymbol} (${bit.aliceValue})</span></div>`;
     } else {
       aliceBasisSymbol = bit.aliceValue === '0' ? '/' : '\\';
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Базис Боба
     let bobBasisSymbol = '';
     if (bit.bobBasis === 'rectilinear') {
-      bobBasisSymbol = bit.bobValue === '0' ? '—' : '|';
+      bobBasisSymbol = bit.bobValue === '0' ? '|' : '—';
       historyHTML += `<div class="history-item">Боб измерил: <span class="rectilinear-basis">${bobBasisSymbol} (${bit.bobValue})</span></div>`;
     } else {
       bobBasisSymbol = bit.bobValue === '0' ? '/' : '\\';
@@ -290,11 +290,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Создаем контейнер для базиса с соответствующим символом
         if (currentBasis === 'rectilinear') {
-          // Для прямого базиса: "—" для 0, "|" для 1
+          // Для прямого базиса: "|" для 0, "—" для 1
           if (currentValue === '0') {
-            aliceBasis.textContent = '—';
-          } else {
             aliceBasis.textContent = '|';
+          } else {
+            aliceBasis.textContent = '—';
           }
           aliceBasis.style.background = 'rgba(0, 255, 128, 0.2)';
           aliceBasis.style.borderColor = '#00ff80';
@@ -501,13 +501,21 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Создаем контейнер для базиса с соответствующим символом
         if (bobBasis === 'rectilinear') {
-          // Для прямого базиса: "—" для 0, "|" для 1
-          bobBasisElement.textContent = '+';
+          // Для прямого базиса: "|" для 0, "—" для 1
+          if (aliceValue === '0') {
+            bobBasisElement.textContent = '+';
+          } else {
+            bobBasisElement.textContent = '×';
+          }
           bobBasisElement.style.background = 'rgba(0, 255, 128, 0.2)';
           bobBasisElement.style.borderColor = '#00ff80';
         } else {
           // Для диагонального базиса: "/" для 0, "\" для 1
-          bobBasisElement.textContent = '×';
+          if (aliceValue === '0') {
+            bobBasisElement.textContent = '×';
+          } else {
+            bobBasisElement.textContent = '+';
+          }
           bobBasisElement.style.background = 'rgba(230, 208, 0, 0.2)';
           bobBasisElement.style.borderColor = '#e6d000';
         }
@@ -807,7 +815,7 @@ document.addEventListener('DOMContentLoaded', function() {
         explanation.innerHTML = `
           <p><strong>Поздравляем! Вы создали секретный 8-битный квантовый ключ:</strong> ${finalKey.join('')}</p>
           <p>Этот ключ можно использовать для безопасного шифрования сообщений с Бобом.</p>
-          <p>Любая попытка перехвата (было ${eveIntercepts}) нарушила бы квантовые состояния и была бы обнаружена.</p>
+          <p>Любая попытка перехвата (было ${eveIntercepts}) нарушила бы квантовые состояния и была бы обнаружена при сравнении части ключа.</p>
         `;
       }
       
@@ -917,6 +925,11 @@ document.addEventListener('DOMContentLoaded', function() {
         interceptCount.textContent = '0';
       }
       
+      // Скрываем историю кубитов
+      if (bitHistory) {
+        bitHistory.style.display = 'none';
+      }
+      
       // Сбрасываем сетки
       const rawKeyCells = rawKeyGrid ? rawKeyGrid.querySelectorAll('.key-bit') : [];
       rawKeyCells.forEach(cell => {
@@ -960,11 +973,6 @@ document.addEventListener('DOMContentLoaded', function() {
           <p>Выберите один из четырех вариантов поляризации кубита и отправьте его Бобу. Боб будет случайным образом выбирать базис для измерения.</p>
           <p>Когда вы отправите достаточно кубитов, нажмите "Просеять ключ", чтобы создать секретный ключ из совпадающих измерений.</p>
         `;
-      }
-      
-      // Скрываем историю кубита
-      if (bitHistory) {
-        bitHistory.style.display = 'none';
       }
       
       // Активируем кнопку отправки
@@ -1028,11 +1036,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       
       console.log("Игра BB84: Сброс завершен");
-      
-      // Убедимся, что первый вариант базиса выбран
-      if (polarizationOptions.length > 0) {
-        polarizationOptions[0].click();
-      }
     } catch (resetError) {
       console.error('Игра BB84: Ошибка при сбросе игры:', resetError);
     }

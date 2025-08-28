@@ -15,7 +15,7 @@ body {
   position: relative;
 }
 
-/* Эффект "мокрого стекла" */
+/* Эффект "мокрого стекла" в стиле BioShock */
 body::before {
   content: "";
   position: absolute;
@@ -70,7 +70,7 @@ h1 {
   position: relative;
 }
 
-/* Эффект "ржавчины" */
+/* Эффект "ржавчины" в стиле BioShock */
 .game-area::before {
   content: "";
   position: absolute;
@@ -87,10 +87,10 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
   position: relative;
   width: 100%;
-  min-height: 180px;
+  min-height: 160px;
   overflow: visible;
 }
 
@@ -98,7 +98,7 @@ h1 {
   text-align: center;
   width: 180px;
   position: relative;
-  z-index: 30;
+  z-index: 35;
 }
 
 .character-icon {
@@ -118,7 +118,7 @@ h1 {
   letter-spacing: 1px;
   animation: flicker 8s infinite;
   position: relative;
-  z-index: 30;
+  z-index: 35;
 }
 
 .alice .character-icon {
@@ -141,28 +141,30 @@ h1 {
   font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
   animation: flicker 8s infinite;
   position: relative;
-  z-index: 30;
+  z-index: 35;
 }
 
 .character-status {
   font-size: 0.9rem;
   color: #c5d5e0;
-  height: 24px;
-  line-height: 1.2;
+  height: 40px; /* Фиксированная высота для двух строк */
+  line-height: 1.4;
   overflow: hidden;
   text-align: center;
   margin: 0 auto;
-  padding: 6px 12px;
+  padding: 5px 10px;
   box-sizing: border-box;
+  width: 280px; /* Увеличенная ширина */
   white-space: nowrap;
   text-overflow: ellipsis;
   position: absolute;
-  bottom: -40px;
+  bottom: -45px; /* Поднято выше, чтобы не перекрывать персонажей */
   left: -100%;
   right: -100%;
-  z-index: 50;
+  z-index: 40;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
   background: rgba(5, 20, 30, 0.95);
+  border-radius: 4px;
   font-weight: 500;
   pointer-events: none;
   font-style: italic;
@@ -182,7 +184,7 @@ h1 {
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(0, 162, 255, 0.2);
-  z-index: 25;
+  z-index: 30;
   box-shadow: 0 0 5px rgba(0, 162, 255, 0.2) inset;
 }
 
@@ -224,13 +226,11 @@ h1 {
   top: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 15px rgba(255, 68, 68, 0.8);
-  max-width: calc(100% - 10px);
-  max-height: calc(100% - 10px);
 }
 
 .basis-indicator {
   position: absolute;
-  width: 30px;
+  width: 50px;
   height: 20px;
   background: rgba(0, 162, 255, 0.2);
   border: 1px solid #00a2ff;
@@ -238,7 +238,7 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   opacity: 0;
   transition: opacity 0.3s;
   font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
@@ -249,22 +249,22 @@ h1 {
   text-overflow: ellipsis;
   font-weight: bold;
   padding: 0 2px;
-  z-index: 27;
+  z-index: 32;
 }
 
 .controls {
   background: rgba(5, 20, 30, 0.8);
   border: 1px solid rgba(0, 162, 255, 0.4);
   border-radius: 8px;
-  padding: 15px;
+  padding: 20px;
   margin-bottom: 25px;
   margin-top: 10px;
 }
 
 .section-title {
   color: #00a2ff;
-  font-size: 1.2rem;
-  margin-bottom: 12px;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -275,13 +275,13 @@ h1 {
 
 .polarization-controls {
   display: flex;
-  gap: 12px;
-  margin-bottom: 15px;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .polarization-option {
   flex: 1;
-  padding: 12px;
+  padding: 15px;
   background: rgba(0, 10, 20, 0.7);
   border: 1px solid rgba(0, 162, 255, 0.4);
   border-radius: 8px;
@@ -308,8 +308,10 @@ h1 {
 }
 
 .basis-symbol {
-  font-size: 1.7rem;
+  font-size: 1.8rem;
   font-weight: bold;
+  line-height: 1;
+  font-family: monospace;
 }
 
 .basis-label {
@@ -350,24 +352,24 @@ h1 {
 .action-buttons {
   display: flex;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
 .action-button {
   background: linear-gradient(to bottom, #001a2d, #000c1a);
   color: #00a2ff;
   border: 1px solid rgba(0, 162, 255, 0.4);
-  padding: 12px 15px;
+  padding: 14px 20px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
   width: 100%;
-  font-size: 1rem;
+  font-size: 1.1rem;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   text-shadow: 0 0 3px rgba(0, 162, 255, 0.3);
   font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
   text-transform: uppercase;
@@ -394,7 +396,7 @@ h1 {
 }
 
 .key-section {
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
 .key-scroll-container {
@@ -483,10 +485,10 @@ h1 {
   background: rgba(0, 10, 20, 0.7);
   border: 1px solid rgba(0, 162, 255, 0.4);
   border-radius: 8px;
-  padding: 15px;
-  margin-top: 15px;
+  padding: 18px;
+  margin-top: 20px;
   border-left: 4px solid #00a2ff;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 .explanation p {
@@ -501,13 +503,13 @@ h1 {
 .alert-container {
   position: relative;
   height: 60px;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
 .eve-alert, .sift-notification {
   background: rgba(200, 50, 50, 0.2);
   color: #ff4444;
-  padding: 10px;
+  padding: 12px;
   border-radius: 6px;
   text-align: center;
   display: none;
@@ -528,10 +530,10 @@ h1 {
 .notification {
   background: rgba(0, 100, 0, 0.2);
   color: #4ade80;
-  padding: 10px;
+  padding: 12px;
   border-radius: 6px;
   text-align: center;
-  margin: 12px 0;
+  margin: 15px 0;
   animation: fadeIn 0.5s ease;
   border: 1px solid rgba(74, 222, 128, 0.3);
 }
@@ -567,33 +569,31 @@ h1 {
 
 .game-stats {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 12px;
+  gap: 15px;
+  margin-top: 15px;
 }
 
 .stat-box {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  flex: 1;
   background: rgba(0, 10, 20, 0.7);
-  padding: 10px;
+  padding: 12px;
   border-radius: 6px;
+  text-align: center;
   border: 1px solid rgba(0, 50, 80, 0.4);
 }
 
-.stat-label {
-  color: #8ab0c5;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-
 .stat-value {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: bold;
   color: #00a2ff;
   margin: 5px 0;
   text-shadow: 0 0 3px rgba(0, 162, 255, 0.3);
+}
+
+.stat-label {
+  color: #8ab0c5;
+  font-size: 0.85rem;
+  font-weight: bold;
 }
 
 .bit-history {
@@ -654,22 +654,22 @@ h1 {
 
 footer {
   text-align: center;
-  margin-top: 25px;
-  padding: 12px;
+  margin-top: 30px;
+  padding: 15px;
   color: #556677;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   border-top: 1px solid rgba(0, 162, 255, 0.2);
 }
 
 .instructions-container {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .instructions-header {
   background: rgba(0, 10, 20, 0.7);
   border: 1px solid rgba(0, 162, 255, 0.4);
   border-radius: 8px;
-  padding: 10px;
+  padding: 12px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -693,12 +693,16 @@ footer {
   background: rgba(0, 10, 20, 0.7);
   border: 1px solid rgba(0, 162, 255, 0.4);
   border-radius: 8px;
-  padding: 12px;
+  padding: 15px;
   margin-top: 5px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
-/* Эффект мерцания */
+.instructions p {
+  margin-bottom: 8px;
+}
+
+/* Эффект мерцания в стиле BioShock */
 @keyframes flicker {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
   20%, 22%, 24%, 55% { opacity: 0.8; }
@@ -713,4 +717,10 @@ footer {
 
 .key-bit.new {
   animation: popIn 0.5s ease forwards;
+}
+
+/* Анимация для квантового ключа */
+@keyframes bioshockGlowKey {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { box-shadow: 0 0 5px rgba(0, 162, 255, 0.3); }
+  20%, 22%, 24%, 55% { box-shadow: 0 0 10px rgba(0, 162, 255, 0.5); }
 }

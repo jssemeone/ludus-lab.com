@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Квантовый ключ: BB84 - Ludus Lab</title>
+  
+  <!-- Подключаем основные стили сайта -->
+  <link rel="stylesheet" href="../../style.css">
+  
+  <!-- Подключаем стили игры -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Шрифты -->
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Segoe+UI:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Дополнительные стили для интеграции с сайтом */
+    .game-header {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(0, 162, 255, 0.3);
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #00a2ff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    
+    .back-link:hover {
+      color: #00e0ff;
+      text-shadow: 0 0 5px rgba(0, 162, 255, 0.5);
+    }
+    
+    .back-link::before {
+      content: "← ";
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="game-header">
+      <h1>Квантовый ключ: BB84</h1>
+      <p class="tagline">Создайте секретный квантовый ключ, защищенный законами квантовой механики</p>
+    </header>
+
+    <div class="game-area">
+      <!-- Квантовая схема -->
+      <div class="quantum-setup">
+        <div class="character alice">
+          <div class="character-icon">A</div>
+          <div class="character-name">Алиса</div>
+          <div class="character-status" id="aliceStatus">Готова отправить кубит</div>
+        </div>
+        
+        <div class="quantum-channel" id="quantumChannel">
+          <div class="photon" style="display: none;"></div>
+          <div class="basis-indicator" id="aliceBasis" style="display: none;">+</div>
+          <div class="basis-indicator" id="bobBasis" style="display: none;">+</div>
+          <div class="eve-icon" id="eveIcon">E</div>
+        </div>
+        
+        <div class="character bob">
+          <div class="character-icon">B</div>
+          <div class="character-name">Боб</div>
+          <div class="character-status" id="bobStatus">Ожидает кубит</div>
+        </div>
+      </div>
+
+      <!-- Панель управления -->
+      <div class="controls">
+        <h3 class="section-title">1. Выберите поляризацию кубита</h3>
+        <div class="polarization-controls">
+          <div class="polarization-option" data-basis="rectilinear" data-value="0">
+            <div class="basis-symbol">—</div>
+            <div class="basis-label">0°</div>
+          </div>
+          <div class="polarization-option" data-basis="rectilinear" data-value="1">
+            <div class="basis-symbol">|</div>
+            <div class="basis-label">90°</div>
+          </div>
+          <div class="polarization-option" data-basis="diagonal" data-value="0">
+            <div class="basis-symbol">/</div>
+            <div class="basis-label">45°</div>
+          </div>
+          <div class="polarization-option" data-basis="diagonal" data-value="1">
+            <div class="basis-symbol">\</div>
+            <div class="basis-label">135°</div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button id="sendPhoton" class="action-button">Отправить кубит</button>
+          <button id="autoSendBtn" class="action-button">Автоматическая отправка</button>
+        </div>
+        
+        <div class="alert-container">
+          <div id="eveAlert" class="eve-alert">⚠️ Ева перехватила кубит!</div>
+          <div id="siftNotification" class="sift-notification">Достаточно данных для просеивания ключа!</div>
+        </div>
+      </div>
+
+      <!-- Сырой ключ -->
+      <div class="key-section">
+        <h3 class="section-title">2. Сырой ключ</h3>
+        <div class="key-scroll-container">
+          <div class="key-grid" id="rawKeyGrid"></div>
+        </div>
+        
+        <div class="game-stats">
+          <div class="stat-box">
+            <div class="stat-label">Кубитов отправлено:</div>
+            <div class="stat-value" id="rawKeyCount">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Совпадающих базисов:</div>
+            <div class="stat-value" id="matchCount">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Перехватов Евой:</div>
+            <div class="stat-value" id="interceptCount">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Кнопка просеивания -->
+      <div class="controls">
+        <button id="siftKey" class="action-button" style="display: none;">Просеять ключ</button>
+        
+        <div id="siftKeyNotification" class="notification" style="display: none;">
+          Достаточно данных для просеивания ключа!
+        </div>
+      </div>
+
+      <!-- Финальный ключ -->
+      <div class="key-section" id="finalKeySection" style="display: none;">
+        <h3 class="section-title">3. Финальный ключ</h3>
+        <div class="key-scroll-container">
+          <div class="final-key-grid key-grid" id="finalKeyGrid"></div>
+        </div>
+        <div class="explanation" id="explanation">
+          <p>Выберите один из четырех вариантов поляризации кубита и отправьте его Бобу. Боб будет случайным образом выбирать базис для измерения.</p>
+          <p>Когда вы отправите достаточно кубитов, нажмите "Просеять ключ", чтобы создать секретный ключ из совпадающих измерений.</p>
+        </div>
+        <button id="newKeyBtn" class="action-button" style="display: none;">Сгенерировать новый ключ</button>
+      </div>
+      
+      <div class="bit-history" id="bitHistory" style="display: none;"></div>
+      
+      <!-- Ссылка назад -->
+      <a href="../.." class="back-link">Вернуться в лабораторию</a>
+    </div>
+  </div>
+
+  <!-- Подключаем скрипты -->
+  <script src="script.js"></script>
+</body>
+</html>

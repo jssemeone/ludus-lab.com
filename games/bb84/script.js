@@ -1,6 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
   console.log("Игра BB84: Загрузка скрипта");
   
+  // Инициализация dataLayer, если он еще не существует
+  window.dataLayer = window.dataLayer || [];
+  
+  // Переменные для отслеживания времени
+  let gameStartTime = Date.now();
+  let gameEndTime = null;
+  let gameDuration = 0;
+  let gameCompleted = false;
+  
   // Элементы DOM
   const polarizationOptions = document.querySelectorAll('.polarization-option');
   const sendPhotonBtn = document.getElementById('sendPhoton');
@@ -43,6 +52,9 @@ document.addEventListener('DOMContentLoaded', function() {
   
   console.log("Игра BB84: Все DOM-элементы найдены");
   
+  // Отслеживание начала игры
+  trackGameStart();
+  
   // Состояние игры
   let selectedBasis = 'rectilinear';
   let selectedValue = '0';
@@ -63,6 +75,82 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Инициализация
   initGame();
+  
+  // Функции отслеживания для Google Analytics
+  function trackGameStart() {
+    console.log("Игра BB84: Отслеживание начала игры");
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+      'event': 'game_start',
+      'game_name': 'BB84',
+      'game_version': '1.0'
+    });
+  }
+  
+  function trackKeyExchangeSuccess(bitsCount, errorRate) {
+    console.log(`Игра BB84: Отслеживание успешного обмена ключа (${bitsCount} бит, ошибка: ${errorRate})`);
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+      'event': 'key_exchange_success',
+      'game_name': 'BB84',
+      'bits_count': bitsCount,
+      'error_rate': errorRate
+    });
+  }
+  
+  function trackGameEnd(isSuccess, timeElapsed, bitsSuccess, bitsTotal) {
+    console.log(`Игра BB84: Отслеживание завершения игры (успех: ${isSuccess}, время: ${timeElapsed}с)`);
+    window.dataLayer = window.dataLayer || [];
+    gameEndTime = Date.now();
+    gameDuration = (gameEndTime - gameStartTime) / 1000;
+    gameCompleted = true;
+    
+    dataLayer.push({
+      'event': 'game_end',
+      'game_name': 'BB84',
+      'result': isSuccess ? 'success' : 'failure',
+      'time_seconds': timeElapsed,
+      'bits_success': bitsSuccess,
+      'bits_total': bitsTotal,
+      'final_duration': gameDuration
+    });
+  }
+  
+  function trackInstructionViewed() {
+    console.log("Игра BB84: Отслеживание просмотра инструкций");
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+      'event': 'instructions_viewed',
+      'game_name': 'BB84'
+    });
+  }
+  
+  function trackBitHistoryViewed(bitIndex) {
+    console.log(`Игра BB84: Отслеживание просмотра истории бита #${bitIndex}`);
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+      'event': 'bit_history_viewed',
+      'game_name': 'BB84',
+      'bit_index': bitIndex
+    });
+  }
+  
+  // Отслеживание времени на странице
+  window.addEventListener('beforeunload', function() {
+    if (!gameCompleted) {
+      gameEndTime = Date.now();
+      gameDuration = (gameEndTime - gameStartTime) / 1000;
+      
+      window.dataLayer = window.dataLayer || [];
+      dataLayer.push({
+        'event': 'game_abandoned',
+        'game_name': 'BB84',
+        'time_spent': gameDuration,
+        'bits_sent': rawKey.length,
+        'bits_matched': rawKey.filter(item => item.matches).length
+      });
+    }
+  });
   
   function initGame() {
     console.log("Игра BB84: Инициализация");
@@ -97,13 +185,43 @@ document.addEventListener('DOMContentLoaded', function() {
     autoSendBtn.addEventListener('click', toggleAutoSend);
     
     // Обработчик просеивания ключа
-    siftKeyBtn.addEventListener('click', siftKey);
+    siftKeyBtn.addEventListener('click', function() {
+      // Отслеживаем попытку просеивания
+      window.dataLayer = window.dataLayer || [];
+      dataLayer.push({
+        'event': 'sift_attempt',
+        'game_name': 'BB84',
+        'raw_key_length': rawKey.length,
+        'matching_bits': rawKey.filter(item => item.matches && !item.wasIntercepted).length
+      });
+      
+      siftKey();
+    });
     
     // Обработчик новой игры
-    newKeyBtn.addEventListener('click', resetGame);
+    newKeyBtn.addEventListener('click', function() {
+      // Отслеживаем начало новой игры
+      window.dataLayer = window.dataLayer || [];
+      dataLayer.push({
+        'event': 'new_game_started',
+        'game_name': 'BB84',
+        'previous_key_length': rawKey.length,
+        'previous_matching_bits': rawKey.filter(item => item.matches).length
+      });
+      
+      resetGame();
+    });
     
     // Обработчик сворачивания/разворачивания инструкций
-    instructionsHeader.addEventListener('click', toggleInstructions);
+    instructionsHeader.addEventListener('click', function() {
+      const isExpanded = instructionsContent.style.display === 'block';
+      
+      if (!isExpanded) {
+        trackInstructionViewed();
+      }
+      
+      toggleInstructions();
+    });
     
     // Инициализируем игру
     resetGame();
@@ -133,7 +251,9 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Добавляем обработчик клика для информации
       keyBit.addEventListener('click', function() {
-        showBitHistory(i);
+        const index = parseInt(this.dataset.index);
+        trackBitHistoryViewed(index);
+        showBitHistory(index);
       });
       
       gridElement.appendChild(keyBit);
@@ -151,6 +271,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Добавляем обработчик клика для информации
     keyBit.addEventListener('click', function() {
+      const index = parseInt(this.dataset.index);
+      trackBitHistoryViewed(index);
       showBitHistory(rawKey.length);
     });
     
@@ -466,6 +588,14 @@ document.addEventListener('DOMContentLoaded', function() {
       isAutoSending = false;
       autoSendBtn.textContent = 'Автоматическая отправка';
       autoSendBtn.style.background = 'linear-gradient(to bottom, #001a2d, #000c1a)';
+      
+      // Отслеживаем остановку автоматической отправки
+      window.dataLayer = window.dataLayer || [];
+      dataLayer.push({
+        'event': 'auto_send_stopped',
+        'game_name': 'BB84',
+        'bits_sent': rawKey.length
+      });
     } else {
       // Запускаем автоматическую отправку
       autoSendBtn.textContent = 'Остановить автоматическую отправку';
@@ -476,6 +606,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Проверяем, не превышен ли лимит
         if (rawKey.length < 100) { // Ограничение для предотвращения бесконечной отправки
           sendPhoton();
+          
+          // Отслеживаем автоматическую отправку
+          window.dataLayer = window.dataLayer || [];
+          dataLayer.push({
+            'event': 'auto_send_bit',
+            'game_name': 'BB84',
+            'bit_count': rawKey.length
+          });
         } else {
           clearInterval(autoSendInterval);
           autoSendInterval = null;
@@ -484,6 +622,14 @@ document.addEventListener('DOMContentLoaded', function() {
           autoSendBtn.style.background = 'linear-gradient(to bottom, #001a2d, #000c1a)';
         }
       }, 1500);
+      
+      // Отслеживаем запуск автоматической отправки
+      window.dataLayer = window.dataLayer || [];
+      dataLayer.push({
+        'event': 'auto_send_started',
+        'game_name': 'BB84',
+        'initial_bits': rawKey.length
+      });
     }
   }
   
@@ -768,6 +914,10 @@ document.addEventListener('DOMContentLoaded', function() {
       
       console.log(`Игра BB84: Финальный ключ: ${finalKey.join('')}`);
       
+      // Отслеживаем успешное создание ключа
+      const errorRate = eveIntercepts / rawKey.length;
+      trackKeyExchangeSuccess(FINAL_KEY_LENGTH, errorRate);
+      
       // Показываем область финального ключа
       if (finalKeySection) {
         finalKeySection.style.display = 'block';
@@ -856,6 +1006,10 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         });
       }
+      
+      // Отслеживаем завершение игры
+      const timeElapsed = (Date.now() - gameStartTime) / 1000;
+      trackGameEnd(true, timeElapsed, finalKey.length, rawKey.length);
     } catch (siftError) {
       console.error('Игра BB84: Ошибка при просеивании ключа:', siftError);
     }
@@ -897,6 +1051,10 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("Игра BB84: Сброс игры");
     
     try {
+      // Отслеживаем начало новой игры
+      const bitsSent = rawKey.length;
+      const matchingBits = rawKey.filter(item => item.matches).length;
+      
       // Сбрасываем состояние
       rawKey = [];
       matchingIndices = [];
@@ -1034,6 +1192,12 @@ document.addEventListener('DOMContentLoaded', function() {
           console.log("Игра BB84: Ошибка при удалении линии перехвата", e);
         }
       });
+      
+      // Перезапускаем таймер игры
+      gameStartTime = Date.now();
+      gameEndTime = null;
+      gameDuration = 0;
+      gameCompleted = false;
       
       console.log("Игра BB84: Сброс завершен");
     } catch (resetError) {

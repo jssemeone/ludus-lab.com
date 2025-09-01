@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
   console.log("Игра BB84: Загрузка скрипта");
   
-  // Инициализация dataLayer, если он еще не существует
-  window.dataLayer = window.dataLayer || [];
+  // Инициализация счетчика Яндекс.Метрики
+  const YM_COUNTER_ID = 103964404;
   
   // Переменные для отслеживания времени
   let gameStartTime = Date.now();
@@ -76,63 +76,182 @@ document.addEventListener('DOMContentLoaded', function() {
   // Инициализация
   initGame();
   
-  // Функции отслеживания для Google Analytics
+  // Функции отслеживания для Яндекс.Метрики
   function trackGameStart() {
     console.log("Игра BB84: Отслеживание начала игры");
-    window.dataLayer = window.dataLayer || [];
-    dataLayer.push({
-      'event': 'game_start',
-      'game_name': 'BB84',
-      'game_version': '1.0'
-    });
+    
+    // Проверяем, загружена ли Яндекс.Метрика
+    if (typeof ym === 'function') {
+      ym(YM_COUNTER_ID, 'reachGoal', 'game_start', {
+        'game_name': 'BB84',
+        'game_version': '1.0'
+      });
+      console.log("Игра BB84: Событие game_start отправлено в Яндекс.Метрику");
+    } else {
+      console.warn("Игра BB84: Яндекс.Метрика еще не загружена. Событие game_start не отправлено.");
+    }
   }
   
   function trackKeyExchangeSuccess(bitsCount, errorRate) {
     console.log(`Игра BB84: Отслеживание успешного обмена ключа (${bitsCount} бит, ошибка: ${errorRate})`);
-    window.dataLayer = window.dataLayer || [];
-    dataLayer.push({
-      'event': 'key_exchange_success',
-      'game_name': 'BB84',
-      'bits_count': bitsCount,
-      'error_rate': errorRate
-    });
+    
+    // Проверяем, загружена ли Яндекс.Метрика
+    if (typeof ym === 'function') {
+      ym(YM_COUNTER_ID, 'reachGoal', 'key_exchange_success', {
+        'game_name': 'BB84',
+        'bits_count': bitsCount,
+        'error_rate': errorRate
+      });
+      console.log("Игра BB84: Событие key_exchange_success отправлено в Яндекс.Метрику");
+    } else {
+      console.warn("Игра BB84: Яндекс.Метрика еще не загружена. Событие key_exchange_success не отправлено.");
+    }
   }
   
   function trackGameEnd(isSuccess, timeElapsed, bitsSuccess, bitsTotal) {
     console.log(`Игра BB84: Отслеживание завершения игры (успех: ${isSuccess}, время: ${timeElapsed}с)`);
-    window.dataLayer = window.dataLayer || [];
+    
     gameEndTime = Date.now();
     gameDuration = (gameEndTime - gameStartTime) / 1000;
     gameCompleted = true;
     
-    dataLayer.push({
-      'event': 'game_end',
-      'game_name': 'BB84',
-      'result': isSuccess ? 'success' : 'failure',
-      'time_seconds': timeElapsed,
-      'bits_success': bitsSuccess,
-      'bits_total': bitsTotal,
-      'final_duration': gameDuration
-    });
+    // Проверяем, загружена ли Яндекс.Метрика
+    if (typeof ym === 'function') {
+      ym(YM_COUNTER_ID, 'reachGoal', 'game_end', {
+        'game_name': 'BB84',
+        'result': isSuccess ? 'success' : 'failure',
+        'time_seconds': timeElapsed,
+        'bits_success': bitsSuccess,
+        'bits_total': bitsTotal,
+        'final_duration': gameDuration
+      });
+      console.log("Игра BB84: Событие game_end отправлено в Яндекс.Метрику");
+    } else {
+      console.warn("Игра BB84: Яндекс.Метрика еще не загружена. Событие game_end не отправлено.");
+    }
   }
   
   function trackInstructionViewed() {
     console.log("Игра BB84: Отслеживание просмотра инструкций");
-    window.dataLayer = window.dataLayer || [];
-    dataLayer.push({
-      'event': 'instructions_viewed',
-      'game_name': 'BB84'
-    });
+    
+    // Проверяем, загружена ли Яндекс.Метрика
+    if (typeof ym === 'function') {
+      ym(YM_COUNTER_ID, 'reachGoal', 'instructions_viewed', {
+        'game_name': 'BB84'
+      });
+      console.log("Игра BB84: Событие instructions_viewed отправлено в Яндекс.Метрику");
+    } else {
+      console.warn("Игра BB84: Яндекс.Метрика еще не загружена. Событие instructions_viewed не отправлено.");
+    }
   }
   
   function trackBitHistoryViewed(bitIndex) {
     console.log(`Игра BB84: Отслеживание просмотра истории бита #${bitIndex}`);
-    window.dataLayer = window.dataLayer || [];
-    dataLayer.push({
-      'event': 'bit_history_viewed',
-      'game_name': 'BB84',
-      'bit_index': bitIndex
-    });
+    
+    // Проверяем, загружена ли Яндекс.Метрика
+    if (typeof ym === 'function') {
+      ym(YM_COUNTER_ID, 'reachGoal', 'bit_history_viewed', {
+        'game_name': 'BB84',
+        'bit_index': bitIndex
+      });
+      console.log("Игра BB84: Событие bit_history_viewed отправлено в Яндекс.Метрику");
+    } else {
+      console.warn("Игра BB84: Яндекс.Метрика еще не загружена. Событие bit_history_viewed не отправлено.");
+    }
+  }
+  
+  function trackSiftAttempt(rawKeyLength, matchingBits) {
+    console.log(`Игра BB84: Отслеживание попытки просеивания (сырой ключ: ${rawKeyLength}, совпадающих: ${matchingBits})`);
+    
+    // Проверяем, загружена ли Яндекс.Метрика
+    if (typeof ym === 'function') {
+      ym(YM_COUNTER_ID, 'reachGoal', 'sift_attempt', {
+        'game_name': 'BB84',
+        'raw_key_length': rawKeyLength,
+        'matching_bits': matchingBits
+      });
+      console.log("Игра BB84: Событие sift_attempt отправлено в Яндекс.Метрику");
+    } else {
+      console.warn("Игра BB84: Яндекс.Метрика еще не загружена. Событие sift_attempt не отправлено.");
+    }
+  }
+  
+  function trackNewGameStarted(previousKeyLength, previousMatchingBits) {
+    console.log(`Игра BB84: Отслеживание начала новой игры (предыдущий ключ: ${previousKeyLength}, совпадающих: ${previousMatchingBits})`);
+    
+    // Проверяем, загружена ли Яндекс.Метрика
+    if (typeof ym === 'function') {
+      ym(YM_COUNTER_ID, 'reachGoal', 'new_game_started', {
+        'game_name': 'BB84',
+        'previous_key_length': previousKeyLength,
+        'previous_matching_bits': previousMatchingBits
+      });
+      console.log("Игра BB84: Событие new_game_started отправлено в Яндекс.Метрику");
+    } else {
+      console.warn("Игра BB84: Яндекс.Метрика еще не загружена. Событие new_game_started не отправлено.");
+    }
+  }
+  
+  function trackAutoSendStarted(initialBits) {
+    console.log(`Игра BB84: Отслеживание запуска автоматической отправки (начальные биты: ${initialBits})`);
+    
+    // Проверяем, загружена ли Яндекс.Метрика
+    if (typeof ym === 'function') {
+      ym(YM_COUNTER_ID, 'reachGoal', 'auto_send_started', {
+        'game_name': 'BB84',
+        'initial_bits': initialBits
+      });
+      console.log("Игра BB84: Событие auto_send_started отправлено в Яндекс.Метрику");
+    } else {
+      console.warn("Игра BB84: Яндекс.Метрика еще не загружена. Событие auto_send_started не отправлено.");
+    }
+  }
+  
+  function trackAutoSendStopped(bitsSent) {
+    console.log(`Игра BB84: Отслеживание остановки автоматической отправки (отправлено битов: ${bitsSent})`);
+    
+    // Проверяем, загружена ли Яндекс.Метрика
+    if (typeof ym === 'function') {
+      ym(YM_COUNTER_ID, 'reachGoal', 'auto_send_stopped', {
+        'game_name': 'BB84',
+        'bits_sent': bitsSent
+      });
+      console.log("Игра BB84: Событие auto_send_stopped отправлено в Яндекс.Метрику");
+    } else {
+      console.warn("Игра BB84: Яндекс.Метрика еще не загружена. Событие auto_send_stopped не отправлено.");
+    }
+  }
+  
+  function trackAutoSendBit(bitCount) {
+    console.log(`Игра BB84: Отслеживание автоматической отправки бита (всего битов: ${bitCount})`);
+    
+    // Проверяем, загружена ли Яндекс.Метрика
+    if (typeof ym === 'function') {
+      ym(YM_COUNTER_ID, 'reachGoal', 'auto_send_bit', {
+        'game_name': 'BB84',
+        'bit_count': bitCount
+      });
+      console.log("Игра BB84: Событие auto_send_bit отправлено в Яндекс.Метрику");
+    } else {
+      console.warn("Игра BB84: Яндекс.Метрика еще не загружена. Событие auto_send_bit не отправлено.");
+    }
+  }
+  
+  function trackGameAbandoned(timeSpent, bitsSent, bitsMatched) {
+    console.log(`Игра BB84: Отслеживание прерванной игры (время: ${timeSpent}с, биты: ${bitsSent}, совпадения: ${bitsMatched})`);
+    
+    // Проверяем, загружена ли Яндекс.Метрика
+    if (typeof ym === 'function') {
+      ym(YM_COUNTER_ID, 'reachGoal', 'game_abandoned', {
+        'game_name': 'BB84',
+        'time_spent': timeSpent,
+        'bits_sent': bitsSent,
+        'bits_matched': bitsMatched
+      });
+      console.log("Игра BB84: Событие game_abandoned отправлено в Яндекс.Метрику");
+    } else {
+      console.warn("Игра BB84: Яндекс.Метрика еще не загружена. Событие game_abandoned не отправлено.");
+    }
   }
   
   // Отслеживание времени на странице
@@ -141,14 +260,11 @@ document.addEventListener('DOMContentLoaded', function() {
       gameEndTime = Date.now();
       gameDuration = (gameEndTime - gameStartTime) / 1000;
       
-      window.dataLayer = window.dataLayer || [];
-      dataLayer.push({
-        'event': 'game_abandoned',
-        'game_name': 'BB84',
-        'time_spent': gameDuration,
-        'bits_sent': rawKey.length,
-        'bits_matched': rawKey.filter(item => item.matches).length
-      });
+      trackGameAbandoned(
+        gameDuration,
+        rawKey.length,
+        rawKey.filter(item => item.matches).length
+      );
     }
   });
   
@@ -182,18 +298,22 @@ document.addEventListener('DOMContentLoaded', function() {
     sendPhotonBtn.addEventListener('click', sendPhoton);
     
     // Обработчик автоматической отправки
-    autoSendBtn.addEventListener('click', toggleAutoSend);
+    autoSendBtn.addEventListener('click', function() {
+      if (isAutoSending) {
+        trackAutoSendStopped(rawKey.length);
+      } else {
+        trackAutoSendStarted(rawKey.length);
+      }
+      toggleAutoSend();
+    });
     
     // Обработчик просеивания ключа
     siftKeyBtn.addEventListener('click', function() {
       // Отслеживаем попытку просеивания
-      window.dataLayer = window.dataLayer || [];
-      dataLayer.push({
-        'event': 'sift_attempt',
-        'game_name': 'BB84',
-        'raw_key_length': rawKey.length,
-        'matching_bits': rawKey.filter(item => item.matches && !item.wasIntercepted).length
-      });
+      trackSiftAttempt(
+        rawKey.length,
+        rawKey.filter(item => item.matches && !item.wasIntercepted).length
+      );
       
       siftKey();
     });
@@ -201,13 +321,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Обработчик новой игры
     newKeyBtn.addEventListener('click', function() {
       // Отслеживаем начало новой игры
-      window.dataLayer = window.dataLayer || [];
-      dataLayer.push({
-        'event': 'new_game_started',
-        'game_name': 'BB84',
-        'previous_key_length': rawKey.length,
-        'previous_matching_bits': rawKey.filter(item => item.matches).length
-      });
+      trackNewGameStarted(
+        rawKey.length,
+        rawKey.filter(item => item.matches).length
+      );
       
       resetGame();
     });
@@ -590,12 +707,7 @@ document.addEventListener('DOMContentLoaded', function() {
       autoSendBtn.style.background = 'linear-gradient(to bottom, #001a2d, #000c1a)';
       
       // Отслеживаем остановку автоматической отправки
-      window.dataLayer = window.dataLayer || [];
-      dataLayer.push({
-        'event': 'auto_send_stopped',
-        'game_name': 'BB84',
-        'bits_sent': rawKey.length
-      });
+      trackAutoSendStopped(rawKey.length);
     } else {
       // Запускаем автоматическую отправку
       autoSendBtn.textContent = 'Остановить автоматическую отправку';
@@ -608,12 +720,7 @@ document.addEventListener('DOMContentLoaded', function() {
           sendPhoton();
           
           // Отслеживаем автоматическую отправку
-          window.dataLayer = window.dataLayer || [];
-          dataLayer.push({
-            'event': 'auto_send_bit',
-            'game_name': 'BB84',
-            'bit_count': rawKey.length
-          });
+          trackAutoSendBit(rawKey.length);
         } else {
           clearInterval(autoSendInterval);
           autoSendInterval = null;
@@ -622,14 +729,6 @@ document.addEventListener('DOMContentLoaded', function() {
           autoSendBtn.style.background = 'linear-gradient(to bottom, #001a2d, #000c1a)';
         }
       }, 1500);
-      
-      // Отслеживаем запуск автоматической отправки
-      window.dataLayer = window.dataLayer || [];
-      dataLayer.push({
-        'event': 'auto_send_started',
-        'game_name': 'BB84',
-        'initial_bits': rawKey.length
-      });
     }
   }
   
@@ -1054,6 +1153,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Отслеживаем начало новой игры
       const bitsSent = rawKey.length;
       const matchingBits = rawKey.filter(item => item.matches).length;
+      trackNewGameStarted(bitsSent, matchingBits);
       
       // Сбрасываем состояние
       rawKey = [];

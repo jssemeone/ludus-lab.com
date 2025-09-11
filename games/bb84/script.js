@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const instructionsHeader = document.getElementById('instructionsHeader');
   const instructionsContent = document.getElementById('instructionsContent');
   const bitHistory = document.getElementById('bitHistory');
-  const bitHistoryInfo = document.getElementById('bitHistoryInfo');
   
   // Проверка наличия всех элементов
   const elementsExist = [
@@ -43,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     rawKeyCount, matchCount, interceptCount, explanation, aliceStatus,
     bobStatus, eveAlert, eveIcon, aliceBasis, bobBasisElement, quantumChannel,
     siftKeyNotification, finalKeySection, instructionsHeader, instructionsContent,
-    bitHistory, siftNotification, bitHistoryInfo
+    bitHistory, siftNotification
   ].every(element => element !== null);
   
   if (!elementsExist) {
@@ -66,9 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
   let matchingIndices = []; // Индексы совпадающих кубитов
   let autoSendInterval = null;
   let isAutoSending = false;
-  
-  // Новые переменные для управления уведомлениями
-  let lastSiftNotificationCount = -1; // Инициализируем как -1, чтобы первое уведомление показалось сразу
   
   // Переменные для управления анимацией
   let interceptTimeout = null;
@@ -463,14 +459,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Отображаем историю
     bitHistory.innerHTML = historyHTML;
     bitHistory.style.display = 'block';
-    
-    // Скрываем уведомление о необходимости просмотра истории
-    if (bitHistoryInfo && bitHistoryInfo.style.display !== 'none') {
-      bitHistoryInfo.style.opacity = '0';
-      setTimeout(() => {
-        bitHistoryInfo.style.display = 'none';
-      }, 300);
-    }
   }
   
   function sendPhoton() {
@@ -942,50 +930,44 @@ document.addEventListener('DOMContentLoaded', function() {
   function checkSiftingAvailability(matches) {
     // Проверяем, достаточно ли совпадений для просеивания (без перехваченных)
     if (matches >= MIN_MATCHES_FOR_SIFTING) {
-      // Показываем уведомление только если это первое уведомление или прошло 4 кубита с последнего уведомления
-      if (lastSiftNotificationCount === -1 || matches - lastSiftNotificationCount >= 4) {
-        // Показываем уведомление
-        if (siftKeyNotification) {
-          siftKeyNotification.style.display = 'block';
-          
-          // Анимируем уведомление
-          setTimeout(() => {
-            siftKeyNotification.style.opacity = '1';
-            siftKeyNotification.style.transform = 'translateY(0)';
-          }, 50);
-        }
+      // Показываем уведомление
+      if (siftKeyNotification) {
+        siftKeyNotification.style.display = 'block';
         
-        // Показываем дублирующее уведомление в том же месте, где и уведомления о перехвате
-        if (siftNotification) {
-          siftNotification.style.display = 'block';
-          
-          // Анимируем уведомление
-          setTimeout(() => {
-            siftNotification.style.opacity = '1';
-            siftNotification.style.transform = 'translateY(0)';
-          }, 50);
-          
-          // Скрываем через 2 секунды
-          setTimeout(() => {
-            siftNotification.style.display = 'none';
-          }, 2000);
-        }
+        // Анимируем уведомление
+        setTimeout(() => {
+          siftKeyNotification.style.opacity = '1';
+          siftKeyNotification.style.transform = 'translateY(0)';
+        }, 50);
+      }
+      
+      // Показываем дублирующее уведомление в том же месте, где и уведомления о перехвате
+      if (siftNotification) {
+        siftNotification.style.display = 'block';
         
-        // Обновляем счетчик последнего уведомления
-        lastSiftNotificationCount = matches;
+        // Анимируем уведомление
+        setTimeout(() => {
+          siftNotification.style.opacity = '1';
+          siftNotification.style.transform = 'translateY(0)';
+        }, 50);
         
-        // Показываем кнопку просеивания
-        if (siftKeyBtn) {
-          siftKeyBtn.style.display = 'flex';
-        }
-        
-        // Обновляем объяснение
-        if (explanation) {
-          explanation.innerHTML = `
-            <p>Вы отправили достаточно кубитов! Нажмите "Просеять ключ", чтобы создать секретный ключ.</p>
-            <p>Только совпадающие базисы без перехвата (${matches}) будут использованы для формирования финального ключа.</p>
-          `;
-        }
+        // Скрываем через 2 секунды
+        setTimeout(() => {
+          siftNotification.style.display = 'none';
+        }, 2000);
+      }
+      
+      // Показываем кнопку просеивания
+      if (siftKeyBtn) {
+        siftKeyBtn.style.display = 'flex';
+      }
+      
+      // Обновляем объяснение
+      if (explanation) {
+        explanation.innerHTML = `
+          <p>Вы отправили достаточно кубитов! Нажмите "Просеять ключ", чтобы создать секретный ключ.</p>
+          <p>Только совпадающие базисы без перехвата (${matches}) будут использованы для формирования финального ключа.</p>
+        `;
       }
     }
   }
@@ -1124,14 +1106,6 @@ document.addEventListener('DOMContentLoaded', function() {
       // Отслеживаем завершение игры
       const timeElapsed = (Date.now() - gameStartTime) / 1000;
       trackGameEnd(true, timeElapsed, finalKey.length, rawKey.length);
-      
-      // Показываем уведомление о просмотре истории кубитов
-      if (bitHistoryInfo) {
-        bitHistoryInfo.style.display = 'block';
-        setTimeout(() => {
-          bitHistoryInfo.style.opacity = '1';
-        }, 50);
-      }
     } catch (siftError) {
       console.error('Игра BB84: Ошибка при просеивании ключа:', siftError);
     }
@@ -1183,9 +1157,6 @@ document.addEventListener('DOMContentLoaded', function() {
       matchingIndices = [];
       eveIntercepts = 0;
       
-      // Сбрасываем счетчик уведомлений
-      lastSiftNotificationCount = -1;
-      
       // Останавливаем автоматическую отправку
       if (isAutoSending) {
         clearInterval(autoSendInterval);
@@ -1209,12 +1180,6 @@ document.addEventListener('DOMContentLoaded', function() {
       // Скрываем историю кубитов
       if (bitHistory) {
         bitHistory.style.display = 'none';
-      }
-      
-      // Скрываем уведомление о просмотре истории
-      if (bitHistoryInfo) {
-        bitHistoryInfo.style.display = 'none';
-        bitHistoryInfo.style.opacity = '0';
       }
       
       // Сбрасываем сетки

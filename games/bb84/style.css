@@ -538,6 +538,21 @@ h1 {
   border: 1px solid rgba(74, 222, 128, 0.3);
 }
 
+.bit-history-info {
+  background: rgba(0, 100, 200, 0.15);
+  color: #00b3ff;
+  padding: 10px 15px;
+  border-radius: 6px;
+  text-align: center;
+  margin-top: 8px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border: 1px solid rgba(0, 162, 255, 0.3);
+  box-shadow: 0 0 8px rgba(0, 162, 255, 0.1);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -652,6 +667,11 @@ h1 {
   font-weight: bold;
 }
 
+.bit-history .status-excess {
+  color: #ffcc00;
+  font-weight: bold;
+}
+
 footer {
   text-align: center;
   margin-top: 30px;
@@ -723,4 +743,108 @@ footer {
 @keyframes bioshockGlowKey {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { box-shadow: 0 0 5px rgba(0, 162, 255, 0.3); }
   20%, 22%, 24%, 55% { box-shadow: 0 0 10px rgba(0, 162, 255, 0.5); }
+}
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 768px) {
+  .game-area {
+    padding: 15px;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  .subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .quantum-setup {
+    flex-direction: column;
+    min-height: auto;
+    gap: 10px;
+  }
+  
+  .character {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+  }
+  
+  .character-icon {
+    margin: 0;
+    flex-shrink: 0;
+  }
+  
+  .quantum-channel {
+    width: 100%;
+    height: 40px;
+    margin: 0 0 5px;
+    order: 1;
+  }
+  
+  .polarization-controls {
+    flex-direction: column;
+  }
+  
+  .polarization-option {
+    padding: 10px;
+  }
+  
+  .basis-symbol {
+    font-size: 1.4rem;
+  }
+  
+  .key-grid {
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+  }
+  
+  .final-key-grid {
+    grid-template-columns: repeat(8, 1fr);
+  }
+  
+  .key-bit {
+    min-width: 24px;
+    font-size: 0.9rem;
+  }
+  
+  .character-status {
+    position: static;
+    width: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin-top: 5px;
+    font-size: 0.8rem;
+    text-align: left;
+  }
+  
+  .action-button {
+    padding: 10px 15px;
+    font-size: 1rem;
+  }
+  
+  .bit-history {
+    font-size: 0.75rem;
+  }
+  
+  .bit-history .history-title {
+    font-size: 0.9rem;
+  }
+  
+  .bit-history .history-item {
+    font-size: 0.75rem;
+  }
+  
+  .section-title {
+    font-size: 1.1rem;
+  }
+  
+  .explanation {
+    font-size: 0.85rem;
+    padding: 12px;
+  }
 }

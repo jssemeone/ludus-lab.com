@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const instructionsHeader = document.getElementById('instructionsHeader');
   const instructionsContent = document.getElementById('instructionsContent');
   const bitHistory = document.getElementById('bitHistory');
+  const bitHistoryInfo = document.getElementById('bitHistoryInfo');
   
   // Проверка наличия всех элементов
   const elementsExist = [
@@ -42,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     rawKeyCount, matchCount, interceptCount, explanation, aliceStatus,
     bobStatus, eveAlert, eveIcon, aliceBasis, bobBasisElement, quantumChannel,
     siftKeyNotification, finalKeySection, instructionsHeader, instructionsContent,
-    bitHistory, siftNotification
+    bitHistory, siftNotification, bitHistoryInfo
   ].every(element => element !== null);
   
   if (!elementsExist) {
@@ -448,7 +449,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (bit.wasIntercepted) {
       historyHTML += `<div class="history-item history-status">Статус: <span class="status-intercepted">Отброшен (скомпрометирован)</span></div>`;
     } else if (bit.matches) {
-      historyHTML += `<div class="history-item history-status">Статус: <span class="status-used">Используется в ключе</span></div>`;
+      // Проверяем, является ли кубит избыточным
+      const indexInMatching = matchingIndices.indexOf(index);
+      if (indexInMatching >= FINAL_KEY_LENGTH) {
+        historyHTML += `<div class="history-item history-status">Статус: <span class="status-excess">Подходит для формирования ключа, но является избыточным</span></div>`;
+      } else {
+        historyHTML += `<div class="history-item history-status">Статус: <span class="status-used">Используется в ключе</span></div>`;
+      }
     } else {
       historyHTML += `<div class="history-item history-status">Статус: <span class="status-not-matched">Базисы не совпали</span></div>`;
     }
@@ -456,6 +463,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Отображаем историю
     bitHistory.innerHTML = historyHTML;
     bitHistory.style.display = 'block';
+    
+    // Скрываем уведомление о необходимости просмотра истории
+    if (bitHistoryInfo && bitHistoryInfo.style.display !== 'none') {
+      bitHistoryInfo.style.opacity = '0';
+      setTimeout(() => {
+        bitHistoryInfo.style.display = 'none';
+      }, 300);
+    }
   }
   
   function sendPhoton() {
@@ -1109,6 +1124,14 @@ document.addEventListener('DOMContentLoaded', function() {
       // Отслеживаем завершение игры
       const timeElapsed = (Date.now() - gameStartTime) / 1000;
       trackGameEnd(true, timeElapsed, finalKey.length, rawKey.length);
+      
+      // Показываем уведомление о просмотре истории кубитов
+      if (bitHistoryInfo) {
+        bitHistoryInfo.style.display = 'block';
+        setTimeout(() => {
+          bitHistoryInfo.style.opacity = '1';
+        }, 50);
+      }
     } catch (siftError) {
       console.error('Игра BB84: Ошибка при просеивании ключа:', siftError);
     }
@@ -1186,6 +1209,12 @@ document.addEventListener('DOMContentLoaded', function() {
       // Скрываем историю кубитов
       if (bitHistory) {
         bitHistory.style.display = 'none';
+      }
+      
+      // Скрываем уведомление о просмотре истории
+      if (bitHistoryInfo) {
+        bitHistoryInfo.style.display = 'none';
+        bitHistoryInfo.style.opacity = '0';
       }
       
       // Сбрасываем сетки

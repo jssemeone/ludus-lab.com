@@ -1,3 +1,750 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: linear-gradient(to bottom, #0a1a2a, #050d15);
+  color: #c5d5e0;
+  line-height: 1.6;
+  min-height: 100vh;
+  padding: 20px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Эффект "мокрого стекла" в стиле BioShock */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(135deg, rgba(30, 144, 255, 0.03) 0%, rgba(0, 206, 209, 0.03) 100%),
+    url('image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M20,20 Q40,5 60,20 T100,20" fill="none" stroke="%235a2a1a" stroke-width="0.5" opacity="0.2"/></svg>');
+  pointer-events: none;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+h1 {
+  font-size: 2.2rem;
+  color: #00a2ff;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px rgba(0, 162, 255, 0.3);
+  letter-spacing: 1px;
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+  animation: flicker 5s infinite;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #8ab0c5;
+  max-width: 700px;
+  margin: 0 auto;
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+}
+
+.game-area {
+  background: rgba(5, 20, 30, 0.85);
+  border: 1px solid rgba(0, 162, 255, 0.4);
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 
+    0 0 20px rgba(0, 162, 255, 0.3),
+    inset 0 0 15px rgba(0, 100, 150, 0.2);
+  margin-bottom: 25px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Эффект "ржавчины" в стиле BioShock */
+.game-area::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M5,5 L95,5 L95,95 L5,95 Z M10,10 L90,10 L90,90 L10,90 Z" fill="none" stroke="%238b4513" stroke-width="0.5" opacity="0.1"/></svg>');
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.quantum-setup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  position: relative;
+  width: 100%;
+  min-height: 160px;
+  overflow: visible;
+}
+
+.character {
+  text-align: center;
+  width: 180px;
+  position: relative;
+  z-index: 35;
+}
+
+.character-icon {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  font-size: 2.2rem;
+  border: 2px solid;
+  background: rgba(5, 20, 30, 0.8);
+  font-weight: bold;
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: flicker 8s infinite;
+  position: relative;
+  z-index: 35;
+}
+
+.alice .character-icon {
+  border-color: #00a2ff;
+  color: #00a2ff;
+  text-shadow: 0 0 10px rgba(0, 162, 255, 0.7);
+}
+
+.bob .character-icon {
+  border-color: #00a2ff;
+  color: #00a2ff;
+  text-shadow: 0 0 10px rgba(0, 162, 255, 0.7);
+}
+
+.character-name {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #c5d5e0;
+  font-size: 1.1rem;
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+  animation: flicker 8s infinite;
+  position: relative;
+  z-index: 35;
+}
+
+.character-status {
+  font-size: 0.9rem;
+  color: #c5d5e0;
+  height: 40px; /* Фиксированная высота для двух строк */
+  line-height: 1.4;
+  overflow: hidden;
+  text-align: center;
+  margin: 0 auto;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  width: 280px; /* Увеличенная ширина */
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: absolute;
+  bottom: -45px; /* Поднято выше, чтобы не перекрывать персонажей */
+  left: -100%;
+  right: -100%;
+  z-index: 40;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
+  background: rgba(5, 20, 30, 0.95);
+  border-radius: 4px;
+  font-weight: 500;
+  pointer-events: none;
+  font-style: italic;
+}
+
+.quantum-channel {
+  flex: 1;
+  min-width: 300px;
+  max-width: 100%;
+  height: 60px;
+  background: rgba(5, 15, 25, 0.7);
+  border-radius: 8px;
+  position: relative;
+  margin: 0 15px;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 162, 255, 0.2);
+  z-index: 30;
+  box-shadow: 0 0 5px rgba(0, 162, 255, 0.2) inset;
+}
+
+.photon {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  animation: travel 2s linear;
+  z-index: 32;
+  font-weight: bold;
+}
+
+.eve-icon {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background: rgba(5, 20, 30, 0.95);
+  border: 2px solid #ff4444;
+  color: #ff4444;
+  z-index: 45;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-weight: bold;
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+  text-transform: uppercase;
+  animation: pulseRed 2s infinite;
+  pointer-events: none;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 15px rgba(255, 68, 68, 0.8);
+}
+
+.basis-indicator {
+  position: absolute;
+  width: 50px;
+  height: 20px;
+  background: rgba(0, 162, 255, 0.2);
+  border: 1px solid #00a2ff;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+  text-transform: uppercase;
+  animation: flicker 8s infinite;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: bold;
+  padding: 0 2px;
+  z-index: 32;
+}
+
+.controls {
+  background: rgba(5, 20, 30, 0.8);
+  border: 1px solid rgba(0, 162, 255, 0.4);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+  margin-top: 10px;
+}
+
+.section-title {
+  color: #00a2ff;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-shadow: 0 0 5px rgba(0, 162, 255, 0.3);
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.polarization-controls {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.polarization-option {
+  flex: 1;
+  padding: 15px;
+  background: rgba(0, 10, 20, 0.7);
+  border: 1px solid rgba(0, 162, 255, 0.4);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  box-shadow: 0 0 5px rgba(0, 162, 255, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.polarization-option:hover {
+  background: rgba(0, 20, 35, 0.7);
+  box-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
+}
+
+.polarization-option.selected {
+  border-color: #00a2ff;
+  box-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
+}
+
+.basis-symbol {
+  font-size: 1.8rem;
+  font-weight: bold;
+  line-height: 1;
+  font-family: monospace;
+}
+
+.basis-label {
+  font-weight: bold;
+  color: #c5d5e0;
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.85rem;
+}
+
+.polarization-option[data-basis="rectilinear"] .basis-symbol {
+  color: #00ff80;
+}
+
+.polarization-option[data-basis="rectilinear"] .basis-label {
+  color: #00ff80;
+}
+
+.polarization-option[data-basis="diagonal"] .basis-symbol {
+  color: #e6d000;
+}
+
+.polarization-option[data-basis="diagonal"] .basis-label {
+  color: #e6d000;
+}
+
+.polarization-option[data-basis="rectilinear"]:hover,
+.polarization-option[data-basis="rectilinear"].selected {
+  border-color: #00ff80;
+  box-shadow: 0 0 8px rgba(0, 255, 128, 0.5);
+}
+
+.polarization-option[data-basis="diagonal"]:hover,
+.polarization-option[data-basis="diagonal"].selected {
+  border-color: #e6d000;
+  box-shadow: 0 0 8px rgba(230, 208, 0, 0.5);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.action-button {
+  background: linear-gradient(to bottom, #001a2d, #000c1a);
+  color: #00a2ff;
+  border: 1px solid rgba(0, 162, 255, 0.4);
+  padding: 14px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  width: 100%;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-shadow: 0 0 3px rgba(0, 162, 255, 0.3);
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: flicker 5s infinite;
+}
+
+.action-button:hover {
+  background: linear-gradient(to bottom, #002540, #001225);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 162, 255, 0.4);
+}
+
+.action-button:active {
+  transform: translateY(0);
+}
+
+.action-button:disabled {
+  background: rgba(0, 10, 20, 0.7);
+  border-color: rgba(0, 50, 80, 0.4);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.key-section {
+  margin-top: 25px;
+}
+
+.key-scroll-container {
+  overflow-x: auto;
+  padding-bottom: 10px;
+  position: relative;
+}
+
+.key-grid {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+  min-width: 100%;
+}
+
+.final-key-grid {
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+}
+
+.key-bit {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  background: rgba(0, 10, 20, 0.7);
+  border: 1px solid rgba(0, 50, 80, 0.4);
+  transition: all 0.3s ease;
+  position: relative;
+  min-width: 36px;
+  cursor: pointer;
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+  text-transform: uppercase;
+  animation: bioshockGlowKey 4s infinite;
+}
+
+.key-bit.active {
+  background: #006ba6;
+  border-color: #0088cc;
+}
+
+.key-bit.source {
+  background: rgba(0, 136, 204, 0.5);
+  border-color: #00a2ff;
+  box-shadow: 0 0 5px rgba(0, 162, 255, 0.5);
+}
+
+.key-bit.highlight {
+  background: rgba(0, 162, 255, 0.3);
+  border-color: #00a2ff;
+  box-shadow: 0 0 10px rgba(0, 162, 255, 0.8);
+}
+
+.key-bit.intercept {
+  position: relative;
+}
+
+.key-bit.intercept::after {
+  content: "E";
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 0.7rem;
+  color: #ff4444;
+  font-weight: bold;
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+}
+
+.key-bit.intercept::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid #ff4444;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.explanation {
+  background: rgba(0, 10, 20, 0.7);
+  border: 1px solid rgba(0, 162, 255, 0.4);
+  border-radius: 8px;
+  padding: 18px;
+  margin-top: 20px;
+  border-left: 4px solid #00a2ff;
+  font-size: 0.95rem;
+}
+
+.explanation p {
+  margin-bottom: 8px;
+}
+
+.highlight {
+  color: #00a2ff;
+  font-weight: 600;
+}
+
+.alert-container {
+  position: relative;
+  height: 60px;
+  margin-bottom: 15px;
+}
+
+.eve-alert, .sift-notification {
+  background: rgba(200, 50, 50, 0.2);
+  color: #ff4444;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+  display: none;
+  animation: fadeInOut 2s forwards;
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+}
+
+.sift-notification {
+  background: rgba(0, 100, 0, 0.2);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.notification {
+  background: rgba(0, 100, 0, 0.2);
+  color: #4ade80;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+  margin: 15px 0;
+  animation: fadeIn 0.5s ease;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.bit-history-info {
+  background: rgba(0, 100, 200, 0.15);
+  color: #00b3ff;
+  padding: 10px 15px;
+  border-radius: 6px;
+  text-align: center;
+  margin-top: 8px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border: 1px solid rgba(0, 162, 255, 0.3);
+  box-shadow: 0 0 8px rgba(0, 162, 255, 0.1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes travel {
+  from { transform: translateX(-100px); }
+  40% { transform: translateX(45%); }
+  60% { transform: translateX(55%); }
+  to { transform: translateX(100px); }
+}
+
+@keyframes pulseRed {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(255, 68, 68, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
+}
+
+.eve-active {
+  animation: pulseRed 2s infinite;
+}
+
+.game-stats {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.stat-box {
+  flex: 1;
+  background: rgba(0, 10, 20, 0.7);
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+  border: 1px solid rgba(0, 50, 80, 0.4);
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #00a2ff;
+  margin: 5px 0;
+  text-shadow: 0 0 3px rgba(0, 162, 255, 0.3);
+}
+
+.stat-label {
+  color: #8ab0c5;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.bit-history {
+  background: rgba(0, 10, 20, 0.7);
+  border: 1px solid #00a2ff;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 5px;
+  color: #c5d5e0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.bit-history .history-title {
+  font-weight: bold;
+  color: #00a2ff;
+  margin-bottom: 5px;
+}
+
+.bit-history .history-item {
+  margin-bottom: 3px;
+}
+
+.bit-history .rectilinear-basis {
+  color: #00ff80;
+  font-weight: bold;
+}
+
+.bit-history .diagonal-basis {
+  color: #e6d000;
+  font-weight: bold;
+}
+
+.bit-history .intercepted {
+  color: #ff4444;
+  font-weight: bold;
+}
+
+.bit-history .matched {
+  color: #4ade80;
+  font-weight: bold;
+}
+
+.bit-history .status-intercepted {
+  color: #ff4444;
+  font-weight: bold;
+}
+
+.bit-history .status-used {
+  color: #4ade80;
+  font-weight: bold;
+}
+
+.bit-history .status-not-matched {
+  color: #ffcc00;
+  font-weight: bold;
+}
+
+.bit-history .status-excess {
+  color: #ffcc00;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  margin-top: 30px;
+  padding: 15px;
+  color: #556677;
+  font-size: 0.85rem;
+  border-top: 1px solid rgba(0, 162, 255, 0.2);
+}
+
+.instructions-container {
+  margin-bottom: 20px;
+}
+
+.instructions-header {
+  background: rgba(0, 10, 20, 0.7);
+  border: 1px solid rgba(0, 162, 255, 0.4);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.instructions-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #c5d5e0;
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+}
+
+.toggle-icon {
+  font-weight: bold;
+  color: #00a2ff;
+  transition: transform 0.3s ease;
+}
+
+.instructions {
+  background: rgba(0, 10, 20, 0.7);
+  border: 1px solid rgba(0, 162, 255, 0.4);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 5px;
+  font-size: 0.95rem;
+}
+
+.instructions p {
+  margin-bottom: 8px;
+}
+
+/* Эффект мерцания в стиле BioShock */
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 22%, 24%, 55% { opacity: 0.8; }
+}
+
+/* Анимация для новых кубитов */
+@keyframes popIn {
+  0% { transform: scale(0.7); opacity: 0; }
+  70% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.key-bit.new {
+  animation: popIn 0.5s ease forwards;
+}
+
+/* Анимация для квантового ключа */
+@keyframes bioshockGlowKey {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { box-shadow: 0 0 5px rgba(0, 162, 255, 0.3); }
+  20%, 22%, 24%, 55% { box-shadow: 0 0 10px rgba(0, 162, 255, 0.5); }
+}
+
 /* Адаптивные стили для мобильных устройств */
 @media (max-width: 768px) {
   .game-area {
@@ -12,211 +759,92 @@
     font-size: 0.9rem;
   }
   
-  /* Сохраняем горизонтальную ориентацию для квантового канала */
   .quantum-setup {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    min-height: 100px;
-    gap: 5px;
-    overflow-x: auto;
-    padding-bottom: 5px;
+    flex-direction: column;
+    min-height: auto;
+    gap: 10px;
   }
   
-  /* Уменьшаем размеры персонажей */
   .character {
-    width: 25%;
-    min-width: 100px;
+    width: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 5px;
-    text-align: center;
+    gap: 10px;
+    text-align: left;
   }
   
   .character-icon {
-    width: 50px;
-    height: 50px;
-    font-size: 1.4rem;
-    margin: 0 auto 5px;
+    margin: 0;
+    flex-shrink: 0;
   }
   
-  .character-name {
+  .quantum-channel {
+    width: 100%;
+    height: 40px;
+    margin: 0 0 5px;
+    order: 1;
+  }
+  
+  .polarization-controls {
+    flex-direction: column;
+  }
+  
+  .polarization-option {
+    padding: 10px;
+  }
+  
+  .basis-symbol {
+    font-size: 1.4rem;
+  }
+  
+  .key-grid {
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+  }
+  
+  .final-key-grid {
+    grid-template-columns: repeat(8, 1fr);
+  }
+  
+  .key-bit {
+    min-width: 24px;
     font-size: 0.9rem;
   }
   
   .character-status {
     position: static;
-    width: 100%;
-    font-size: 0.7rem;
-    margin-top: 3px;
-    padding: 3px 5px;
-    height: auto;
-    line-height: 1.2;
-    white-space: normal;
-    text-overflow: ellipsis;
-    max-height: 36px;
-    overflow: hidden;
-  }
-  
-  /* Уменьшаем размер квантового канала */
-  .quantum-channel {
-    flex: 1;
-    min-width: 100px;
-    height: 35px;
-    margin: 0 5px;
-    padding: 3px;
-  }
-  
-  .photon {
-    width: 20px;
-    height: 20px;
+    width: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin-top: 5px;
     font-size: 0.8rem;
+    text-align: left;
   }
   
-  .basis-indicator {
-    width: 35px;
-    height: 16px;
-    font-size: 0.6rem;
-  }
-  
-  .eve-icon {
-    width: 25px;
-    height: 25px;
-    font-size: 0.9rem;
-  }
-  
-  /* Улучшаем отображение выбора поляризации */
-  .polarization-controls {
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .polarization-option {
-    padding: 8px;
-    gap: 2px;
-  }
-  
-  .basis-symbol {
-    font-size: 1.2rem;
-  }
-  
-  .basis-label {
-    font-size: 0.7rem;
-  }
-  
-  .polarization-value {
-    font-size: 0.65rem;
-  }
-  
-  /* Исправляем кнопку "Автоматическая отправка" */
   .action-button {
-    padding: 8px 12px;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  /* Уменьшаем размеры сетки ключей */
-  .key-grid {
-    grid-template-columns: repeat(8, 1fr);
-    gap: 3px;
-  }
-  
-  .final-key-grid {
-    grid-template-columns: repeat(8, 1fr);
-    gap: 3px;
-  }
-  
-  .key-bit {
-    min-width: 22px;
-    font-size: 0.8rem;
+    padding: 10px 15px;
+    font-size: 1rem;
   }
   
   .bit-history {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
   
   .bit-history .history-title {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
   
   .bit-history .history-item {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
   
   .section-title {
-    font-size: 1.0rem;
+    font-size: 1.1rem;
   }
   
   .explanation {
-    font-size: 0.8rem;
-    padding: 10px;
-  }
-  
-  .bit-history-info {
-    font-size: 0.95rem;
-    padding: 8px 12px;
-  }
-  
-  /* Дополнительные стили для очень маленьких экранов */
-  @media (max-width: 480px) {
-    .quantum-setup {
-      min-height: 80px;
-      gap: 3px;
-    }
-    
-    .character {
-      width: 22%;
-      min-width: 80px;
-    }
-    
-    .character-icon {
-      width: 40px;
-      height: 40px;
-      font-size: 1.1rem;
-    }
-    
-    .character-name {
-      font-size: 0.8rem;
-    }
-    
-    .quantum-channel {
-      height: 30px;
-      min-width: 80px;
-    }
-    
-    .basis-indicator {
-      display: none; /* Скрываем базисные индикаторы на очень маленьких экранах */
-    }
-    
-    .polarization-option {
-      padding: 6px;
-      gap: 1px;
-    }
-    
-    .basis-symbol {
-      font-size: 1rem;
-    }
-    
-    .basis-label {
-      font-size: 0.6rem;
-    }
-    
-    .polarization-value {
-      display: none; /* Скрываем углы поляризации на очень маленьких экранах */
-    }
-    
-    .key-grid {
-      grid-template-columns: repeat(6, 1fr);
-    }
-    
-    .action-button {
-      font-size: 0.8rem;
-      padding: 7px 10px;
-      white-space: normal;
-      text-overflow: clip;
-    }
+    font-size: 0.85rem;
+    padding: 12px;
   }
 }

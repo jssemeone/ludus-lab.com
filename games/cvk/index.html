@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Центр выработки ключей</title>
+  <title>Центр выработки ключей - Ludus Lab</title>
   <style>
     * {
       margin: 0;
@@ -61,6 +61,33 @@
       max-width: 700px;
       margin: 0 auto;
       font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+    }
+
+    /* 🔸 ЖЁЛТАЯ ПОЛОСКА КАК В BB84 */
+    .line {
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #d4af37, transparent);
+      margin: 15px auto 20px;
+      position: relative;
+    }
+
+    .line::before, .line::after {
+      content: "";
+      position: absolute;
+      top: -3px;
+      width: 10px;
+      height: 8px;
+      background: #d4af37;
+      border-radius: 50%;
+    }
+
+    .line::before {
+      left: 20px;
+    }
+
+    .line::after {
+      right: 20px;
     }
 
     .explanation {
@@ -193,6 +220,7 @@
   <div class="container">
     <header>
       <h1>Центр выработки ключей</h1>
+      <div class="line"></div>
       <div class="subtitle">Ludus Lab · Сложные вещи — простыми играми</div>
     </header>
 
@@ -232,7 +260,6 @@
   <a href="../../index.html" class="back-to-lab">← Вернуться в лабораторию</a>
 
   <script>
-    // ... (весь JS-код без изменений, как в предыдущей версии)
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const keyDisplay = document.getElementById('keyDisplay');

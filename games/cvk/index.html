@@ -112,25 +112,6 @@
       box-shadow: 0 4px 12px rgba(0, 162, 255, 0.4);
     }
 
-    .back-to-lab {
-      background: rgba(0, 10, 20, 0.7);
-      color: #8ab0c5;
-      border: 1px solid rgba(0, 162, 255, 0.3);
-      padding: 8px 16px;
-      border-radius: 6px;
-      text-decoration: none;
-      display: inline-block;
-      margin: 10px auto;
-      font-size: 0.95rem;
-      transition: all 0.2s;
-    }
-
-    .back-to-lab:hover {
-      color: #00a2ff;
-      border-color: #00a2ff;
-      background: rgba(0, 20, 35, 0.7);
-    }
-
     .game-area {
       background: rgba(5, 20, 30, 0.85);
       border: 1px solid rgba(0, 162, 255, 0.4);
@@ -180,6 +161,28 @@
       border-top: 1px solid rgba(0, 162, 255, 0.2);
     }
 
+    /* Стиль кнопки "Вернуться в лабораторию" — как в BB84 */
+    .back-to-lab {
+      display: block;
+      width: fit-content;
+      margin: 40px auto 20px;
+      padding: 8px 16px;
+      background: rgba(0, 10, 20, 0.7);
+      color: #8ab0c5;
+      text-decoration: none;
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .back-to-lab:hover {
+      color: #00a2ff;
+      border-color: #00a2ff;
+      background: rgba(0, 20, 35, 0.7);
+    }
+
     @keyframes flicker {
       0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
       20%, 22%, 24%, 55% { opacity: 0.8; }
@@ -191,7 +194,6 @@
     <header>
       <h1>Центр выработки ключей</h1>
       <div class="subtitle">Ludus Lab · Сложные вещи — простыми играми</div>
-      <a href="../../index.html" class="back-to-lab">← Вернуться в лабораторию</a>
     </header>
 
     <div class="explanation">
@@ -226,7 +228,11 @@
     </div>
   </div>
 
+  <!-- 🔹 КНОПКА "ВЕРНУТЬСЯ В ЛАБОРАТОРИЮ" — ТОЧНО КАК В BB84 -->
+  <a href="../../index.html" class="back-to-lab">← Вернуться в лабораторию</a>
+
   <script>
+    // ... (весь JS-код без изменений, как в предыдущей версии)
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const keyDisplay = document.getElementById('keyDisplay');

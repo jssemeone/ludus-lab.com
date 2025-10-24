@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Центр выработки ключей</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to bottom, #0a1a2a, #050d15);
+      color: #c5d5e0;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(135deg, rgba(30, 144, 255, 0.03) 0%, rgba(0, 206, 209, 0.03) 100%),
+        url('image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M20,20 Q40,5 60,20 T100,20" fill="none" stroke="%235a2a1a" stroke-width="0.5" opacity="0.2"/></svg>');
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      color: #00a2ff;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(0, 162, 255, 0.3);
+      letter-spacing: 1px;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      animation: flicker 5s infinite;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #8ab0c5;
+      max-width: 700px;
+      margin: 0 auto;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+    }
+
+    .explanation {
+      background: rgba(0, 10, 20, 0.7);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 20px;
+      border-left: 4px solid #00a2ff;
+      font-size: 0.95rem;
+    }
+
+    .explanation p {
+      margin-bottom: 8px;
+    }
+
+    .highlight {
+      color: #00a2ff;
+      font-weight: 600;
+    }
+
+    .action-button {
+      background: linear-gradient(to bottom, #001a2d, #000c1a);
+      color: #00a2ff;
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.05rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-shadow: 0 0 3px rgba(0, 162, 255, 0.3);
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: flicker 5s infinite;
+      margin: 20px auto;
+      width: 300px;
+      max-width: 90%;
+    }
+
+    .action-button:hover {
+      background: linear-gradient(to bottom, #002540, #001225);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 162, 255, 0.4);
+    }
+
+    .game-area {
+      background: rgba(5, 20, 30, 0.85);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 
+        0 0 20px rgba(0, 162, 255, 0.3),
+        inset 0 0 15px rgba(0, 100, 150, 0.2);
+      margin-bottom: 25px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #gameCanvas {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0, 162, 255, 0.2);
+    }
+
+    .visualizer {
+      background: rgba(0, 10, 20, 0.7);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 20px 0;
+      font-family: monospace;
+    }
+
+    .visualizer div {
+      margin: 4px 0;
+    }
+
+    #statusLine {
+      color: #00a2ff;
+      font-weight: bold;
+      min-height: 1.3em;
+      text-align: center;
+    }
+
+    .key-display {
+      display: none;
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0, 162, 255, 0.2);
+    }
+
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 22%, 24%, 55% { opacity: 0.8; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Центр выработки ключей</h1>
+      <div class="subtitle">Ludus Lab · Сложные вещи — простыми играми</div>
+    </header>
+
+    <div class="explanation">
+      <p>Этот симулятор генерирует криптографический ключ на основе <span class="highlight">энтропии движения курсора</span>.</p>
+      <p>Каждые 2 секунды фиксируется позиция курсора. Из неё вычисляется бит по формуле: <br>
+        <span class="highlight">БИТ = (X + Y + ВРЕМЯ) % 2</span>
+      </p>
+      <p>После сбора 16 бит формируется <span class="highlight">мастер-ключ</span>, который можно использовать для шифрования.</p>
+    </div>
+
+    <button class="action-button" id="startButton">Сгенерировать ключ</button>
+
+    <div class="game-area">
+      <canvas id="gameCanvas" width="600" height="320"></canvas>
+
+      <div class="visualizer">
+        <div>X = <span id="xVal">—</span></div>
+        <div>Y = <span id="yVal">—</span></div>
+        <div>ВРЕМЯ = <span id="timeVal">—</span></div>
+        <div>СУММА = X + Y + ВРЕМЯ = <span id="sumVal">—</span></div>
+        <div>БИТ = СУММА % 2 = <span id="bitVal">?</span></div>
+        <div id="statusLine">Нажмите «Сгенерировать ключ»</div>
+      </div>
+    </div>
+
+    <div class="key-display" id="keyDisplay">
+      <div class="explanation">
+        <p>Мастер-ключ успешно сгенерирован. Вы можете скопировать его для дальнейшего использования.</p>
+      </div>
+      <button class="action-button" style="width: 320px;" onclick="copyKey()">Скопировать ключ</button>
+      <button class="action-button" style="width: 320px;" id="newKeyBtn">Новый ключ</button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const keyDisplay = document.getElementById('keyDisplay');
+    const startButton = document.getElementById('startButton');
+    const newKeyBtn = document.getElementById('newKeyBtn');
+
+    const xValEl = document.getElementById('xVal');
+    const yValEl = document.getElementById('yVal');
+    const timeValEl = document.getElementById('timeVal');
+    const sumValEl = document.getElementById('sumVal');
+    const bitValEl = document.getElementById('bitVal');
+    const statusLineEl = document.getElementById('statusLine');
+
+    const KEY_LENGTH = 16;
+    const CAPTURE_INTERVAL = 2000;
+    const SPARKS_PER_EVENT = 16;
+    const GRAVITY = 0.12;
+    const ATTRACTION_THRESHOLD = (3 / 4) * canvas.height;
+    const BASE_ATTRACTION_SPEED = 5.0;
+    const BOOSTED_ATTRACTION_SPEED = 8.0; // 🔥 ускорение в нижней четверти
+    const CELL_SIZE = 28;
+
+    let mouseX = canvas.width / 2;
+    let mouseY = canvas.height / 2;
+    let bits = [];
+    let sparks = [];
+    let nextCaptureTime = 0;
+    let gameActive = false;
+    let frozenValues = null;
+    let freezeUntil = 0;
+    let generationComplete = false;
+
+    const bitTargets = [];
+    for (let i = 0; i < KEY_LENGTH; i++) {
+      bitTargets.push({
+        x: 55 + i * 30,
+        y: canvas.height - 32
+      });
+    }
+
+    function handlePointerMove(e) {
+      if (generationComplete || !gameActive) return;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      let clientX = e.clientX;
+      let clientY = e.clientY;
+      if (e.touches && e.touches[0]) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      }
+      mouseX = Math.max(0, Math.min(canvas.width, (clientX - rect.left) * scaleX));
+      mouseY = Math.max(0, Math.min(ATTRACTION_THRESHOLD - 15, (clientY - rect.top) * scaleY));
+    }
+
+    function startGame() {
+      if (gameActive || generationComplete) return;
+      gameActive = true;
+      startButton.style.display = 'none';
+      nextCaptureTime = Date.now() + CAPTURE_INTERVAL;
+      statusLineEl.textContent = 'Двигайте курсором для генерации энтропии';
+    }
+
+    function finishKeyGeneration() {
+      gameActive = false;
+      generationComplete = true;
+      keyDisplay.style.display = 'block';
+    }
+
+    function restart() {
+      bits = [];
+      sparks = [];
+      frozenValues = null;
+      freezeUntil = 0;
+      gameActive = false;
+      generationComplete = false;
+      keyDisplay.style.display = 'none';
+      startButton.style.display = 'flex';
+      mouseX = canvas.width / 2;
+      mouseY = canvas.height / 2;
+      statusLineEl.textContent = 'Нажмите «Сгенерировать ключ»';
+    }
+
+    startButton.addEventListener('click', startGame);
+    newKeyBtn?.addEventListener('click', restart);
+
+    function updateVisualizer() {
+      if (generationComplete) {
+        xValEl.textContent = '—';
+        yValEl.textContent = '—';
+        timeValEl.textContent = '—';
+        sumValEl.textContent = '—';
+        bitValEl.textContent = '?';
+        statusLineEl.textContent = 'Ключ сгенерирован';
+        return;
+      }
+      if (!gameActive) {
+        xValEl.textContent = '—';
+        yValEl.textContent = '—';
+        timeValEl.textContent = '—';
+        sumValEl.textContent = '—';
+        bitValEl.textContent = '?';
+        statusLineEl.textContent = 'Нажмите «Сгенерировать ключ»';
+        return;
+      }
+
+      const now = Date.now();
+      const sum = mouseX + mouseY + now;
+      const bit = Math.floor(sum) % 2;
+
+      if (now < freezeUntil && frozenValues) {
+        xValEl.textContent = frozenValues.x;
+        yValEl.textContent = frozenValues.y;
+        timeValEl.textContent = frozenValues.time;
+        sumValEl.textContent = frozenValues.sum;
+        bitValEl.textContent = frozenValues.bit;
+        statusLineEl.textContent = 'Захват энтропии...';
+        return;
+      }
+
+      frozenValues = null;
+      statusLineEl.textContent = 'Двигайте курсором';
+      xValEl.textContent = Math.floor(mouseX);
+      yValEl.textContent = Math.floor(mouseY);
+      timeValEl.textContent = now;
+      sumValEl.textContent = Math.floor(sum);
+      bitValEl.textContent = bit;
+    }
+
+    class Spark {
+      constructor(x, y, targetX, targetY, color) {
+        this.x = x;
+        this.y = y;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 3 + Math.random() * 4;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.targetX = targetX;
+        this.targetY = targetY;
+        this.color = color;
+        this.age = 0;
+        const dx = targetX - x;
+        const dy = targetY - y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        this.lifetime = 60 + Math.min(40, dist * 0.2);
+        this.reached = false;
+        this.inAttractionZone = false;
+      }
+      update() {
+        if (this.reached) return;
+        this.age++;
+        if (this.y > ATTRACTION_THRESHOLD && !this.inAttractionZone) {
+          this.inAttractionZone = true;
+        }
+        if (this.inAttractionZone) {
+          const dx = this.targetX - this.x;
+          const dy = this.targetY - this.y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 6) {
+            this.reached = true;
+            return;
+          }
+          const nx = dx / dist;
+          const ny = dy / dist;
+          // 🔥 Ускорение в нижней четверти
+          const speed = BOOSTED_ATTRACTION_SPEED;
+          this.x += nx * speed;
+          this.y += ny * speed;
+        } else {
+          this.vy += GRAVITY;
+          this.vx *= 0.97;
+          this.vy *= 0.97;
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 0 || this.x > canvas.width) this.vx *= -0.5;
+          if (this.y < 0) this.vy *= -0.5;
+        }
+      }
+      draw() {
+        if (this.reached || this.age > this.lifetime) return;
+        const alpha = Math.min(1, (this.lifetime - this.age) / 15);
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        const size = 1.5 + Math.random() * 1.5;
+        ctx.arc(this.x, this.y, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      isAlive() {
+        if (this.inAttractionZone && !this.reached) return true;
+        return !this.reached && this.age <= this.lifetime;
+      }
+    }
+
+    function captureEntropy() {
+      if (!gameActive || bits.length >= KEY_LENGTH || generationComplete) return;
+
+      const now = Date.now();
+      const sum = mouseX + mouseY + now;
+      const bit = Math.floor(sum) % 2;
+      const slotIndex = bits.length;
+      const { x: targetX, y: targetY } = bitTargets[slotIndex];
+
+      frozenValues = { x: Math.floor(mouseX), y: Math.floor(mouseY), time: now, sum: Math.floor(sum), bit };
+      freezeUntil = now + 800;
+
+      // Цвета из BB84
+      const color0 = 'rgba(0, 255, 128, 0.9)';    // зелёный (0)
+      const color1 = 'rgba(230, 208, 0, 0.9)';    // жёлтый (1)
+      const colorNeutral = 'rgba(255, 68, 68, 0.85)'; // 🔴 красный (нейтральные)
+
+      // 12 искр — цвет бита, 4 — красные
+      const mainColor = bit ? color1 : color0;
+      for (let i = 0; i < 12; i++) {
+        sparks.push(new Spark(mouseX, mouseY, targetX, targetY, mainColor));
+      }
+      for (let i = 0; i < 4; i++) {
+        sparks.push(new Spark(mouseX, mouseY, targetX, targetY, colorNeutral));
+      }
+
+      setTimeout(() => {
+        if (generationComplete || bits.length !== slotIndex) return;
+        bits.push(bit);
+        if (bits.length === KEY_LENGTH) {
+          setTimeout(finishKeyGeneration, 200);
+        }
+      }, 800);
+
+      nextCaptureTime = Date.now() + CAPTURE_INTERVAL;
+    }
+
+    function getFlickerAlpha() {
+      const t = Date.now() % 5000;
+      const phase = t / 50;
+      const mod = phase % 100;
+      if ((mod >= 19 && mod <= 25) || (mod >= 54 && mod <= 56)) {
+        return 0.8;
+      }
+      return 1.0;
+    }
+
+    function drawScene() {
+      ctx.fillStyle = 'rgba(5, 20, 30, 0.85)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = 'rgba(0, 15, 25, 0.4)';
+      ctx.fillRect(0, ATTRACTION_THRESHOLD, canvas.width, canvas.height - ATTRACTION_THRESHOLD);
+      ctx.strokeStyle = 'rgba(0, 162, 255, 0.3)';
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(0, ATTRACTION_THRESHOLD);
+      ctx.lineTo(canvas.width, ATTRACTION_THRESHOLD);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const flickerAlpha = getFlickerAlpha();
+      for (let i = 0; i < KEY_LENGTH; i++) {
+        const { x, y } = bitTargets[i];
+        const filled = i < bits.length;
+        const bit = filled ? bits[i] : null;
+
+        if (filled) {
+          ctx.strokeStyle = `rgba(0, 162, 255, ${0.5 * flickerAlpha})`;
+          ctx.shadowColor = 'rgba(0, 162, 255, 0.5)';
+          ctx.shadowBlur = 8 * flickerAlpha;
+        } else {
+          ctx.strokeStyle = 'rgba(0, 50, 80, 0.4)';
+          ctx.shadowBlur = 0;
+        }
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(x - CELL_SIZE/2, y - CELL_SIZE/2, CELL_SIZE, CELL_SIZE, 6);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        if (filled) {
+          const color = bit ? '#e6d000' : '#00ff80';
+          ctx.fillStyle = color;
+          ctx.font = "bold 18px 'Bebas Neue', monospace";
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.shadowColor = color;
+          ctx.shadowBlur = 12;
+          ctx.fillText(bit.toString(), x, y);
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      if (gameActive && !generationComplete) {
+        ctx.strokeStyle = 'rgba(0, 162, 255, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.shadowColor = 'rgba(0, 162, 255, 0.5)';
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, 10, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = '#4080ff';
+        ctx.shadowColor = 'rgba(64, 128, 255, 0.7)';
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      ctx.fillStyle = '#8ab0c5';
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`Собрано бит: ${bits.length} / ${KEY_LENGTH}`, 15, 22);
+    }
+
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+        if (w < 2 * r) r = w / 2;
+        if (h < 2 * r) r = h / 2;
+        this.beginPath();
+        this.moveTo(x + r, y);
+        this.arcTo(x + w, y, x + w, y + h, r);
+        this.arcTo(x + w, y + h, x, y + h, r);
+        this.arcTo(x, y + h, x, y, r);
+        this.arcTo(x, y, x + w, y, r);
+        this.closePath();
+        return this;
+      };
+    }
+
+    function loop() {
+      drawScene();
+      updateVisualizer();
+
+      if (gameActive && !generationComplete) {
+        if (Date.now() >= nextCaptureTime && bits.length < KEY_LENGTH) {
+          captureEntropy();
+        }
+
+        sparks.forEach(s => { s.update(); s.draw(); });
+        sparks = sparks.filter(s => s.isAlive());
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    canvas.addEventListener('mousemove', handlePointerMove);
+    canvas.addEventListener('touchmove', handlePointerMove, { passive: false });
+
+    loop();
+  </script>
+</body>
+</html>

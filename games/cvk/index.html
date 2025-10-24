@@ -112,6 +112,25 @@
       box-shadow: 0 4px 12px rgba(0, 162, 255, 0.4);
     }
 
+    .back-to-lab {
+      background: rgba(0, 10, 20, 0.7);
+      color: #8ab0c5;
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      margin: 10px auto;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    .back-to-lab:hover {
+      color: #00a2ff;
+      border-color: #00a2ff;
+      background: rgba(0, 20, 35, 0.7);
+    }
+
     .game-area {
       background: rgba(5, 20, 30, 0.85);
       border: 1px solid rgba(0, 162, 255, 0.4);
@@ -172,6 +191,7 @@
     <header>
       <h1>Центр выработки ключей</h1>
       <div class="subtitle">Ludus Lab · Сложные вещи — простыми играми</div>
+      <a href="../../index.html" class="back-to-lab">← Вернуться в лабораторию</a>
     </header>
 
     <div class="explanation">
@@ -226,7 +246,7 @@
     const GRAVITY = 0.12;
     const ATTRACTION_THRESHOLD = (3 / 4) * canvas.height;
     const BASE_ATTRACTION_SPEED = 5.0;
-    const BOOSTED_ATTRACTION_SPEED = 8.0; // 🔥 ускорение в нижней четверти
+    const BOOSTED_ATTRACTION_SPEED = 8.0;
     const CELL_SIZE = 28;
 
     let mouseX = canvas.width / 2;
@@ -371,7 +391,6 @@
           }
           const nx = dx / dist;
           const ny = dy / dist;
-          // 🔥 Ускорение в нижней четверти
           const speed = BOOSTED_ATTRACTION_SPEED;
           this.x += nx * speed;
           this.y += ny * speed;
@@ -412,12 +431,10 @@
       frozenValues = { x: Math.floor(mouseX), y: Math.floor(mouseY), time: now, sum: Math.floor(sum), bit };
       freezeUntil = now + 800;
 
-      // Цвета из BB84
-      const color0 = 'rgba(0, 255, 128, 0.9)';    // зелёный (0)
-      const color1 = 'rgba(230, 208, 0, 0.9)';    // жёлтый (1)
-      const colorNeutral = 'rgba(255, 68, 68, 0.85)'; // 🔴 красный (нейтральные)
+      const color0 = 'rgba(0, 255, 128, 0.9)';
+      const color1 = 'rgba(230, 208, 0, 0.9)';
+      const colorNeutral = 'rgba(255, 68, 68, 0.85)';
 
-      // 12 искр — цвет бита, 4 — красные
       const mainColor = bit ? color1 : color0;
       for (let i = 0; i < 12; i++) {
         sparks.push(new Spark(mouseX, mouseY, targetX, targetY, mainColor));
@@ -548,6 +565,29 @@
       }
 
       requestAnimationFrame(loop);
+    }
+
+    function copyKey() {
+      const binStr = bits.join('');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(binStr).then(() => {
+          alert('Ключ скопирован!');
+        }).catch(() => fallbackCopy(binStr));
+      } else {
+        fallbackCopy(binStr);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const el = document.createElement('textarea');
+      el.value = text;
+      el.style.position = 'fixed';
+      el.style.opacity = '0';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      alert('Ключ скопирован!');
     }
 
     canvas.addEventListener('mousemove', handlePointerMove);

@@ -222,6 +222,32 @@
       <p>Чем хаотичнее вы двигаете мышью, тем менее предсказуем ключ — как в настоящих системах защиты.</p>
     </div>
 
+    <button class="action-button" id="startButton">Сгенерировать ключ</button>
+
+    <div class="game-area">
+      <canvas id="gameCanvas" width="600" height="320"></canvas>
+
+
+      <div class="visualizer">
+          <div>X = <span id="xVal">—</span> → нечётное? <span id="xParity">?</span></div>
+          <div>Y = <span id="yVal">—</span> → нечётное? <span id="yParity">?</span></div>
+          <div>ВРЕМЯ = <span id="timeVal">—</span> → нечётное? <span id="tParity">?</span></div>
+          <div>XOR: нечётных значений = <span id="oddCount">0</span></div>
+          <div>БИТ = <span id="bitVal">?</span></div>
+          <div id="statusLine">Нажмите «Сгенерировать ключ»</div>
+        </div>
+      </div>
+
+      <div class="key-display" id="keyDisplay">
+        <div class="explanation">
+          <p>Мастер-ключ успешно сгенерирован. Вы можете скопировать его для дальнейшего использования.</p>
+        </div>
+        <button class="action-button" style="width: 320px;" onclick="copyKey()">Скопировать ключ</button>
+        <button class="action-button" style="width: 320px;" id="newKeyBtn">Новый ключ</button>
+      </div>
+    </div>
+
+
     <div class="key-display" id="keyDisplay">
       <div class="explanation">
         <p>Мастер-ключ успешно сгенерирован. Вы можете скопировать его для дальнейшего использования.</p>

@@ -15,20 +15,6 @@ body {
   position: relative;
 }
 
-/* Эффект "мокрого стекла" в стиле BioShock */
-body::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: 
-    linear-gradient(135deg, rgba(30, 144, 255, 0.03) 0%, rgba(0, 206, 209, 0.03) 100%),
-    url('image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M20,20 Q40,5 60,20 T100,20" fill="none" stroke="%235a2a1a" stroke-width="0.5" opacity="0.2"/></svg>');
-  pointer-events: none;
-}
-
 .container {
   max-width: 1000px;
   margin: 0 auto;
@@ -37,6 +23,14 @@ body::before {
 header {
   text-align: center;
   margin-bottom: 25px;
+  position: relative;
+}
+
+.header-decoration {
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #ffd700 50%, transparent 100%);
+  margin: 8px auto 15px;
+  max-width: 600px;
 }
 
 h1 {
@@ -68,19 +62,6 @@ h1 {
   margin-bottom: 25px;
   overflow: hidden;
   position: relative;
-}
-
-/* Эффект "ржавчины" в стиле BioShock */
-.game-area::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M5,5 L95,5 L95,95 L5,95 Z M10,10 L90,10 L90,90 L10,90 Z" fill="none" stroke="%238b4513" stroke-width="0.5" opacity="0.1"/></svg>');
-  pointer-events: none;
-  opacity: 0.3;
 }
 
 .quantum-setup {
@@ -147,18 +128,18 @@ h1 {
 .character-status {
   font-size: 0.9rem;
   color: #c5d5e0;
-  height: 40px; /* Фиксированная высота для двух строк */
+  height: 40px;
   line-height: 1.4;
   overflow: hidden;
   text-align: center;
   margin: 0 auto;
   padding: 5px 10px;
   box-sizing: border-box;
-  width: 280px; /* Увеличенная ширина */
+  width: 280px;
   white-space: nowrap;
   text-overflow: ellipsis;
   position: absolute;
-  bottom: -45px; /* Поднято выше, чтобы не перекрывать персонажей */
+  bottom: -45px;
   left: -100%;
   right: -100%;
   z-index: 40;
@@ -170,22 +151,90 @@ h1 {
   font-style: italic;
 }
 
-.quantum-channel {
+.channels-container {
   flex: 1;
   min-width: 300px;
   max-width: 100%;
+  margin: 0 15px;
+  position: relative;
+  height: 120px;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  z-index: 50;
+}
+
+.quantum-channel {
   height: 60px;
   background: rgba(5, 15, 25, 0.7);
   border-radius: 8px;
   position: relative;
-  margin: 0 15px;
   overflow: visible;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(0, 162, 255, 0.2);
-  z-index: 30;
+  z-index: 60;
   box-shadow: 0 0 5px rgba(0, 162, 255, 0.2) inset;
+  transition: all 0.5s ease;
+}
+
+.quantum-channel.active {
+  border-color: #00a2ff;
+  box-shadow: 
+    0 0 15px rgba(0, 162, 255, 0.5),
+    inset 0 0 10px rgba(0, 162, 255, 0.2);
+}
+
+.quantum-channel.inactive {
+  border-color: rgba(0, 162, 255, 0.1);
+  box-shadow: 
+    0 0 5px rgba(0, 162, 255, 0.1),
+    inset 0 0 5px rgba(0, 162, 255, 0.05);
+}
+
+.classical-channel {
+  height: 4px;
+  background: rgba(100, 100, 100, 0.3);
+  border-radius: 2px;
+  position: relative;
+  overflow: visible;
+  border: 1px solid rgba(100, 100, 100, 0.2);
+  transition: all 0.5s ease;
+  z-index: 55;
+}
+
+.classical-channel.active {
+  background: rgba(0, 100, 255, 0.3);
+  border-color: #0064ff;
+  box-shadow: 0 0 10px rgba(0, 100, 255, 0.5);
+}
+
+.classical-channel.inactive {
+  background: rgba(100, 100, 100, 0.2);
+  border-color: rgba(100, 100, 100, 0.1);
+}
+
+.data-packet {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #0064ff;
+  top: -4px;
+  opacity: 0;
+  box-shadow: 0 0 8px rgba(0, 100, 255, 0.8);
+  z-index: 61;
+}
+
+.data-packet.to-bob {
+  animation: travelToBob 2s linear infinite;
+}
+
+.data-packet.to-alice {
+  animation: travelToAlice 2s linear infinite;
 }
 
 .photon {
@@ -197,30 +246,31 @@ h1 {
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
-  animation: travel 2s linear;
-  z-index: 32;
+  z-index: 62;
   font-weight: bold;
+  left: 10%;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .eve-icon {
   position: absolute;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   background: rgba(5, 20, 30, 0.95);
   border: 2px solid #ff4444;
   color: #ff4444;
-  z-index: 45;
+  z-index: 85;
   opacity: 0;
   transition: opacity 0.3s;
   font-weight: bold;
   font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
   text-transform: uppercase;
-  animation: pulseRed 2s infinite;
   pointer-events: none;
   left: 50%;
   top: 50%;
@@ -249,7 +299,15 @@ h1 {
   text-overflow: ellipsis;
   font-weight: bold;
   padding: 0 2px;
-  z-index: 32;
+  z-index: 63;
+}
+
+#aliceBasis {
+  left: 10%;
+}
+
+#bobBasis {
+  right: 10%;
 }
 
 .controls {
@@ -351,8 +409,14 @@ h1 {
 
 .action-buttons {
   display: flex;
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 15px;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
 }
 
 .action-button {
@@ -375,24 +439,47 @@ h1 {
   text-transform: uppercase;
   letter-spacing: 1px;
   animation: flicker 5s infinite;
+  position: relative;
 }
 
-.action-button:hover {
+.action-button:hover:not(:disabled) {
   background: linear-gradient(to bottom, #002540, #001225);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 162, 255, 0.4);
 }
 
-.action-button:active {
-  transform: translateY(0);
-}
-
 .action-button:disabled {
   background: rgba(0, 10, 20, 0.7);
   border-color: rgba(0, 50, 80, 0.4);
+  color: rgba(0, 162, 255, 0.5);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  animation: none;
+}
+
+.action-button.active-mode {
+  background: linear-gradient(to bottom, #000c1a, #00060d);
+  transform: translateY(1px);
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.6);
+  border-color: #ff4444 !important;
+  box-shadow: 0 0 8px rgba(255, 68, 68, 0.8) !important;
+}
+
+/* Зеленая подсветка для активной кнопки Просеять ключ */
+.action-button.sift-active:not(:disabled) {
+  border-color: #00ff80 !important;
+  box-shadow: 0 0 8px rgba(0, 255, 128, 0.8) !important;
+}
+
+.action-button .mode-description {
+  font-size: 0.75rem;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: 0;
+  margin-top: 4px;
+  opacity: 0.8;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .key-section {
@@ -536,6 +623,7 @@ h1 {
   margin: 15px 0;
   animation: fadeIn 0.5s ease;
   border: 1px solid rgba(74, 222, 128, 0.3);
+  display: none;
 }
 
 .bit-history-info {
@@ -548,6 +636,190 @@ h1 {
   font-size: 0.85rem;
   opacity: 0;
   transition: opacity 0.3s;
+  display: none;
+}
+
+.protocol-container {
+  margin-bottom: 25px;
+}
+
+.protocol-header {
+  cursor: pointer;
+  padding: 15px;
+  background: rgba(5, 20, 30, 0.8);
+  border: 1px solid rgba(0, 162, 255, 0.4);
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.protocol-header:hover {
+  background: rgba(10, 30, 45, 0.8);
+}
+
+.protocol-header h2 {
+  color: #00a2ff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+  font-size: 1.4rem;
+}
+
+.toggle-icon {
+  font-size: 1.6rem;
+  width: 20px;
+  text-align: center;
+}
+
+.protocol-description {
+  background: rgba(5, 20, 30, 0.6);
+  border: 1px solid rgba(0, 162, 255, 0.3);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 20px;
+  font-size: 0.95rem;
+  display: none;
+}
+
+.protocol-step {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0, 162, 255, 0.2);
+}
+
+.protocol-step:last-child {
+  border-bottom: none;
+}
+
+.protocol-step-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #00a2ff;
+}
+
+.protocol-step-number {
+  background: #00a2ff;
+  color: #050d15;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.protocol-description ul {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.protocol-description li {
+  margin-bottom: 5px;
+}
+
+.game-stats {
+  display: flex;
+  gap: 15px;
+  margin: 15px 0;
+}
+
+.stat-box {
+  flex: 1;
+  background: rgba(0, 10, 20, 0.7);
+  border: 1px solid rgba(0, 162, 255, 0.3);
+  border-radius: 6px;
+  padding: 10px;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #8ab0c5;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00a2ff;
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+}
+
+.bit-history {
+  background: rgba(0, 10, 20, 0.7);
+  border: 1px solid rgba(0, 162, 255, 0.4);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 10px;
+  display: none;
+}
+
+.history-title {
+  font-weight: bold;
+  color: #00a2ff;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.history-item {
+  margin-bottom: 8px;
+  padding-left: 15px;
+  position: relative;
+}
+
+.history-item::before {
+  content: "•";
+  color: #00a2ff;
+  position: absolute;
+  left: 0;
+}
+
+.rectilinear-basis {
+  color: #00ff80;
+  font-weight: bold;
+}
+
+.diagonal-basis {
+  color: #e6d000;
+  font-weight: bold;
+}
+
+.intercepted {
+  color: #ff4444;
+  font-weight: bold;
+}
+
+.matched {
+  color: #4ade80;
+  font-weight: bold;
+}
+
+.status-intercepted {
+  color: #ff4444;
+}
+
+.status-used {
+  color: #4ade80;
+}
+
+.status-excess {
+  color: #e6d000;
+}
+
+.status-not-matched {
+  color: #8ab0c5;
+}
+
+.history-status {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 162, 255, 0.2);
 }
 
 @keyframes fadeIn {
@@ -562,161 +834,21 @@ h1 {
   100% { opacity: 0; }
 }
 
-@keyframes travel {
-  from { transform: translateX(-100px); }
-  40% { transform: translateX(45%); }
-  60% { transform: translateX(55%); }
-  to { transform: translateX(100px); }
+@keyframes photonTravel {
+  0% { left: 10%; opacity: 1; }
+  100% { left: 90%; opacity: 1; }
 }
 
-@keyframes pulseRed {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
-  70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(255, 68, 68, 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
+@keyframes travelToBob {
+  0% { left: 0%; opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: calc(100% - 12px); opacity: 0; }
 }
 
-.eve-active {
-  animation: pulseRed 2s infinite;
-}
-
-.game-stats {
-  display: flex;
-  gap: 15px;
-  margin-top: 15px;
-}
-
-.stat-box {
-  flex: 1;
-  background: rgba(0, 10, 20, 0.7);
-  padding: 12px;
-  border-radius: 6px;
-  text-align: center;
-  border: 1px solid rgba(0, 50, 80, 0.4);
-}
-
-.stat-value {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: #00a2ff;
-  margin: 5px 0;
-  text-shadow: 0 0 3px rgba(0, 162, 255, 0.3);
-}
-
-.stat-label {
-  color: #8ab0c5;
-  font-size: 0.85rem;
-  font-weight: bold;
-}
-
-.bit-history {
-  background: rgba(0, 10, 20, 0.7);
-  border: 1px solid #00a2ff;
-  border-radius: 6px;
-  padding: 10px;
-  margin-top: 5px;
-  color: #c5d5e0;
-  font-size: 0.85rem;
-  line-height: 1.4;
-}
-
-.bit-history .history-title {
-  font-weight: bold;
-  color: #00a2ff;
-  margin-bottom: 5px;
-}
-
-.bit-history .history-item {
-  margin-bottom: 3px;
-}
-
-.bit-history .rectilinear-basis {
-  color: #00ff80;
-  font-weight: bold;
-}
-
-.bit-history .diagonal-basis {
-  color: #e6d000;
-  font-weight: bold;
-}
-
-.bit-history .intercepted {
-  color: #ff4444;
-  font-weight: bold;
-}
-
-.bit-history .matched {
-  color: #4ade80;
-  font-weight: bold;
-}
-
-.bit-history .status-intercepted {
-  color: #ff4444;
-  font-weight: bold;
-}
-
-.bit-history .status-used {
-  color: #4ade80;
-  font-weight: bold;
-}
-
-.bit-history .status-not-matched {
-  color: #ffcc00;
-  font-weight: bold;
-}
-
-.bit-history .status-excess {
-  color: #ffcc00;
-  font-weight: bold;
-}
-
-footer {
-  text-align: center;
-  margin-top: 30px;
-  padding: 15px;
-  color: #556677;
-  font-size: 0.85rem;
-  border-top: 1px solid rgba(0, 162, 255, 0.2);
-}
-
-.instructions-container {
-  margin-bottom: 20px;
-}
-
-.instructions-header {
-  background: rgba(0, 10, 20, 0.7);
-  border: 1px solid rgba(0, 162, 255, 0.4);
-  border-radius: 8px;
-  padding: 12px;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.instructions-header h2 {
-  margin: 0;
-  font-size: 1.05rem;
-  color: #c5d5e0;
-  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
-}
-
-.toggle-icon {
-  font-weight: bold;
-  color: #00a2ff;
-  transition: transform 0.3s ease;
-}
-
-.instructions {
-  background: rgba(0, 10, 20, 0.7);
-  border: 1px solid rgba(0, 162, 255, 0.4);
-  border-radius: 8px;
-  padding: 15px;
-  margin-top: 5px;
-  font-size: 0.95rem;
-}
-
-.instructions p {
-  margin-bottom: 8px;
+@keyframes travelToAlice {
+  0% { left: calc(100% - 12px); opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: 0%; opacity: 0; }
 }
 
 /* Эффект мерцания в стиле BioShock */
@@ -742,106 +874,277 @@ footer {
   20%, 22%, 24%, 55% { box-shadow: 0 0 10px rgba(0, 162, 255, 0.5); }
 }
 
+/* Кнопка "Вернуться в лабораторию" */
+.lab-return-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.lab-return-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 30, 60, 0.7);
+  color: #00a2ff;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 162, 255, 0.4);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.lab-return-button:hover {
+  background: rgba(0, 40, 80, 0.8);
+  border-color: #00a2ff;
+  box-shadow: 0 0 10px rgba(0, 162, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.lab-return-button::before {
+  content: "←";
+  font-weight: bold;
+}
+
+.game-header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0, 162, 255, 0.3);
+}
+
+footer {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 162, 255, 0.2);
+  color: #8ab0c5;
+  font-size: 0.9rem;
+  display: none;
+}
+
 /* Адаптивные стили для мобильных устройств */
 @media (max-width: 768px) {
-  .game-area {
+  body {
     padding: 15px;
   }
   
+  .game-area {
+    padding: 20px 15px;
+  }
+  
   h1 {
-    font-size: 1.8rem;
+    font-size: 1.9rem;
+    margin-bottom: 8px;
   }
   
   .subtitle {
-    font-size: 0.9rem;
+    font-size: 1rem;
+  }
+  
+  .header-decoration {
+    margin: 6px auto 12px;
   }
   
   .quantum-setup {
     flex-direction: column;
-    min-height: auto;
+    min-height: 200px;
+    margin-bottom: 30px;
     gap: 10px;
   }
   
   .character {
     width: 100%;
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 10px;
-    text-align: left;
+    justify-content: space-between;
+    margin-bottom: 10px;
   }
   
   .character-icon {
-    margin: 0;
-    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    font-size: 1.6rem;
+    margin-bottom: 0;
+    margin-right: 15px;
   }
   
-  .quantum-channel {
-    width: 100%;
-    height: 40px;
-    margin: 0 0 5px;
-    order: 1;
-  }
-  
-  .polarization-controls {
-    flex-direction: column;
-  }
-  
-  .polarization-option {
-    padding: 10px;
-  }
-  
-  .basis-symbol {
-    font-size: 1.4rem;
-  }
-  
-  .key-grid {
-    grid-template-columns: repeat(8, 1fr);
-    gap: 5px;
-  }
-  
-  .final-key-grid {
-    grid-template-columns: repeat(8, 1fr);
-  }
-  
-  .key-bit {
-    min-width: 24px;
+  .character-name {
     font-size: 0.9rem;
+    margin-bottom: 0;
+    flex: 1;
+    text-align: left;
   }
   
   .character-status {
     position: static;
-    width: auto;
-    left: auto;
-    right: auto;
-    bottom: auto;
+    width: 100%;
+    font-size: 0.75rem;
+    height: auto;
     margin-top: 5px;
+    padding: 4px;
+    text-align: center;
+    order: 3;
+  }
+  
+  .channels-container {
+    min-width: 100%;
+    height: 100px;
+    margin: 10px 0;
+    gap: 15px;
+    order: 2;
+    z-index: 70;
+  }
+  
+  .quantum-channel {
+    height: 50px;
+    z-index: 75;
+  }
+  
+  .classical-channel {
+    z-index: 74;
+  }
+  
+  .eve-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
+    z-index: 85;
+  }
+  
+  .basis-indicator {
+    width: 40px;
+    height: 18px;
+    font-size: 0.7rem;
+    z-index: 76;
+  }
+  
+  .polarization-controls {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .polarization-option {
+    flex: 1 1 calc(50% - 10px);
+    min-width: 140px;
+    padding: 12px 8px;
+  }
+  
+  .basis-symbol {
+    font-size: 1.5rem;
+  }
+  
+  .basis-label {
     font-size: 0.8rem;
-    text-align: left;
+  }
+  
+  .action-buttons {
+    gap: 8px;
+  }
+  
+  .button-row {
+    flex-direction: row;
+    gap: 8px;
   }
   
   .action-button {
-    padding: 10px 15px;
+    padding: 12px 10px;
     font-size: 1rem;
   }
   
-  .bit-history {
-    font-size: 0.75rem;
+  .action-button .mode-description {
+    font-size: 0.7rem;
   }
   
-  .bit-history .history-title {
+  .key-grid {
+    grid-template-columns: repeat(8, 1fr);
+    gap: 8px;
+  }
+  
+  .final-key-grid {
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+  }
+  
+  .key-bit {
+    min-width: 32px;
+    font-size: 1rem;
+  }
+  
+  .game-stats {
+    gap: 10px;
+  }
+  
+  .stat-box {
+    padding: 8px;
+  }
+  
+  .stat-value {
+    font-size: 1.3rem;
+  }
+  
+  .protocol-header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .protocol-description {
+    padding: 15px;
     font-size: 0.9rem;
   }
   
-  .bit-history .history-item {
-    font-size: 0.75rem;
-  }
-  
-  .section-title {
-    font-size: 1.1rem;
-  }
-  
   .explanation {
+    font-size: 0.9rem;
+    padding: 15px;
+  }
+  
+  .lab-return-button {
+    padding: 8px 12px;
     font-size: 0.85rem;
-    padding: 12px;
+  }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.7rem;
+  }
+  
+  .quantum-setup {
+    min-height: 180px;
+  }
+  
+  .character {
+    width: 100%;
+  }
+  
+  .character-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.4rem;
+  }
+  
+  .character-name {
+    font-size: 0.85rem;
+  }
+  
+  .channels-container {
+    min-width: 100%;
+    margin: 5px 0;
+  }
+  
+  .polarization-option {
+    flex: 1 1 100%;
+  }
+  
+  .button-row {
+    flex-direction: column;
+  }
+  
+  .key-grid {
+    grid-template-columns: repeat(6, 1fr);
   }
 }

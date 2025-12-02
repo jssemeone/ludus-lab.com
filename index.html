@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ludus Lab - Всё сложное - просто</title>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -15,7 +15,7 @@
     body {
       background: linear-gradient(to bottom, #0a1a2a, #050d15);
       color: #c5d5e0;
-      font-family: 'Oswald', sans-serif;
+      font-family: 'Roboto', sans-serif;
       line-height: 1.8;
       text-align: center;
       padding: 40px 20px;
@@ -24,7 +24,7 @@
       overflow-x: hidden;
     }
 
-    /* Текстура для всего сайта - имитация металла с ржавчиной */
+    /* Текстура для всего сайта - минималистичная */
     body::before {
       content: "";
       position: fixed;
@@ -32,19 +32,9 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%230a1a2a" opacity="0.3"/><path d="M20,20 Q40,5 60,20 T100,20" fill="none" stroke="%235a2a1a" stroke-width="0.5" opacity="0.2"/><path d="M30,40 Q50,25 70,40 T110,40" fill="none" stroke="%235a2a1a" stroke-width="0.5" opacity="0.2"/></svg>');
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, rgba(0, 30, 60, 0.05), rgba(0, 15, 30, 0.1));
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(30, 144, 255, 0.03) 0%, transparent 55%),
+        radial-gradient(circle at 75% 75%, rgba(0, 206, 209, 0.03) 0%, transparent 55%);
       pointer-events: none;
       z-index: -1;
     }
@@ -56,22 +46,8 @@
       z-index: 1;
     }
 
-    /* Добавляем эффект "мокрого стекла" для контейнера */
-    .container::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(30, 144, 255, 0.03) 0%, rgba(0, 206, 209, 0.03) 100%);
-      pointer-events: none;
-      border-radius: 4px;
-      z-index: -1;
-    }
-
     header {
-      margin-bottom: 10px;
+      margin-bottom: 40px;
       padding: 15px 20px;
       position: relative;
     }
@@ -92,7 +68,6 @@
       animation: flicker 5s infinite;
     }
 
-    /* Добавляем эффект "мерцающего неона" для заголовка */
     h1::after {
       content: "";
       position: absolute;
@@ -105,25 +80,58 @@
       box-shadow: 0 0 8px #d4af37;
     }
 
-    p {
-      font-size: 1.1rem;
-      color: #a0c0d0;
-      margin: 8px 0;
-    }
-
     .tagline {
       font-style: normal;
       color: #8ab0c5;
-      margin: 5px 0 10px;
-      font-size: 1.4rem;
+      margin: 5px 0 30px;
+      font-size: 1.6rem;
       letter-spacing: 0.8px;
       text-shadow: 0 0 5px rgba(138, 176, 197, 0.3);
       font-weight: 500;
+      font-family: 'Oswald', sans-serif;
     }
 
-    .games {
-      margin: 15px 0;
-      padding: 18px;
+    /* Навигация */
+    .nav-menu {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .nav-button {
+      background: rgba(5, 20, 30, 0.7);
+      color: #00a2ff;
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      padding: 12px 25px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .nav-button:hover {
+      background: rgba(0, 162, 255, 0.2);
+      border-color: #00a2ff;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 162, 255, 0.3);
+    }
+
+    .nav-button.active {
+      background: rgba(0, 162, 255, 0.3);
+      border-color: #00a2ff;
+      box-shadow: 0 0 10px rgba(0, 162, 255, 0.5);
+    }
+
+    /* Секции */
+    .section {
+      margin: 30px 0;
+      padding: 25px;
       background: rgba(5, 20, 30, 0.6);
       border: 1px solid rgba(0, 162, 255, 0.3);
       border-radius: 8px;
@@ -131,107 +139,134 @@
         0 0 20px rgba(0, 162, 255, 0.2),
         inset 0 0 15px rgba(0, 100, 150, 0.1);
       position: relative;
-      overflow: hidden;
+      display: none;
+      animation: fadeIn 0.5s ease-out;
     }
 
-    /* Эффект "пузырьков" для секции игр */
-    .games::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-      background-size: 30px 30px;
-      pointer-events: none;
-      animation: bubbles 20s linear infinite;
+    .section.active {
+      display: block;
     }
 
     h2 {
       font-family: 'Oswald', sans-serif;
       font-size: 2.5rem;
       color: #00a2ff;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       text-transform: uppercase;
       letter-spacing: 2px;
       text-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
     }
 
+    .section-content {
+      text-align: left;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #a0c0d0;
+      margin: 15px 0;
+      line-height: 1.7;
+    }
+
+    /* ОБНОВЛЕННЫЙ выделенный текст - такой же как заголовок, но синий */
+    .highlight {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1em;
+      color: #00a2ff;
+      text-shadow: 
+        0 0 8px rgba(0, 162, 255, 0.7),
+        0 0 15px rgba(0, 162, 255, 0.4);
+      letter-spacing: 1px;
+      font-weight: 700;
+      position: relative;
+      text-transform: uppercase;
+    }
+
+    .highlight::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, #00a2ff, transparent);
+      box-shadow: 0 0 4px #00a2ff;
+    }
+
+    /* УЛУЧШЕННЫЙ выделенный текст внутри примечаний (ярче!) */
+    .disclaimer .highlight {
+      color: #ffd700; /* Яркий золотой вместо бледного */
+      text-shadow: 
+        0 0 8px rgba(255, 215, 0, 0.9),
+        0 0 15px rgba(255, 215, 0, 0.6);
+      font-weight: 700;
+    }
+
+    .disclaimer .highlight::after {
+      background: linear-gradient(90deg, #ffd700, transparent);
+      box-shadow: 0 0 6px #ffd700;
+    }
+
+    /* Класс для предотвращения переноса текста */
+    .nowrap {
+      white-space: nowrap;
+    }
+
+    /* Секция игр */
     #games-list {
-      margin-top: 20px;
+      margin-top: 30px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 15px;
       align-items: center;
     }
 
-    .empty {
-      color: #557585;
-      font-style: italic;
-      padding: 20px;
-      border: 1px dashed rgba(0, 162, 255, 0.3);
-      border-radius: 4px;
-      background: rgba(0, 20, 30, 0.3);
-    }
-
-    /* Карточки игр в стиле BioShock */
     .game-item {
       background: linear-gradient(to bottom, rgba(10, 30, 45, 0.8), rgba(5, 20, 30, 0.9));
       border: 1px solid rgba(0, 162, 255, 0.4);
       border-radius: 6px;
-      padding: 18px 22px;
-      width: 80%;
-      max-width: 500px;
+      padding: 20px 25px;
+      width: 90%;
+      max-width: 600px;
       transition: all 0.3s ease;
       box-shadow: 
         0 0 10px rgba(0, 162, 255, 0.2),
         inset 0 0 5px rgba(0, 100, 150, 0.2);
       position: relative;
-      overflow: hidden;
-    }
-
-    /* Эффект "ржавчины" по краям карточки */
-    .game-item::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M5,5 L95,5 L95,95 L5,95 Z M10,10 L90,10 L90,90 L10,90 Z" fill="none" stroke="%238b4513" stroke-width="0.5" opacity="0.1"/></svg>');
-      pointer-events: none;
-      opacity: 0.6;
+      text-align: left;
     }
 
     .game-item:hover {
       border-color: #00a2ff;
       transform: translateY(-3px);
       box-shadow: 
-        0 5px 15px rgba(0, 162, 255, 0.3),
+        0 5px 20px rgba(0, 162, 255, 0.3),
         inset 0 0 15px rgba(0, 162, 255, 0.2);
     }
 
     .game-item h3 {
       color: #00a2ff;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-size: 1.5rem;
       letter-spacing: 1px;
       text-shadow: 0 0 5px rgba(0, 162, 255, 0.4);
+      font-family: 'Oswald', sans-serif;
     }
 
     .game-item p {
       color: #8ab0c5;
-      margin-bottom: 12px;
+      margin-bottom: 15px;
       font-size: 1rem;
     }
 
-    /* Кнопка "Играть" в стиле BioShock */
+    /* Кнопка "Играть" */
     .play-btn {
       display: inline-block;
       background: linear-gradient(to bottom, #006ba6, #004d7a);
       color: #e6f0ff;
-      padding: 8px 22px;
+      padding: 10px 25px;
       text-decoration: none;
       border-radius: 4px;
       font-family: 'Oswald', sans-serif;
@@ -252,7 +287,192 @@
         0 0 15px rgba(0, 162, 255, 0.6),
         inset 0 0 10px rgba(255, 255, 255, 0.2);
       transform: scale(1.05);
-      cursor: pointer;
+    }
+
+    /* Раздел "О команде" */
+    .team-member {
+      background: rgba(10, 30, 45, 0.4);
+      border: 1px solid rgba(0, 162, 255, 0.2);
+      border-radius: 8px;
+      padding: 25px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .team-member h3 {
+      color: #d4af37;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      font-family: 'Oswald', sans-serif;
+    }
+
+    .tools-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .tool-tag {
+      background: rgba(0, 162, 255, 0.1);
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      padding: 8px 15px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      color: #8ab0c5;
+    }
+
+    /* Концепция */
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .concept-item {
+      background: rgba(10, 30, 45, 0.4);
+      border: 1px solid rgba(0, 162, 255, 0.2);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: left;
+    }
+
+    .concept-item h4 {
+      color: #00a2ff;
+      text-shadow: 0 0 5px rgba(0, 162, 255, 0.6);
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+    }
+
+    /* Переработанный блок "Путь проекта" с древовидной осью */
+    .project-timeline {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(0, 162, 255, 0.2);
+      position: relative;
+    }
+
+    .project-timeline h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.8rem;
+      color: #00a2ff;
+      text-shadow: 0 0 5px rgba(0, 162, 255, 0.5);
+      margin-bottom: 25px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .timeline-items {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      max-width: 700px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* Вертикальная ось-дерево */
+    .timeline-items::before {
+      content: '';
+      position: absolute;
+      left: 50px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, 
+        rgba(0, 162, 255, 0) 0%, 
+        rgba(0, 162, 255, 0.6) 20%, 
+        rgba(0, 162, 255, 0.6) 80%, 
+        rgba(0, 162, 255, 0) 100%);
+      z-index: 1;
+    }
+
+    .timeline-item {
+      background: rgba(10, 30, 45, 0.5);
+      border: 1px solid rgba(0, 162, 255, 0.2);
+      border-radius: 6px;
+      padding: 20px;
+      text-align: left;
+      position: relative;
+      transition: all 0.3s ease;
+      margin-left: 100px;
+      box-shadow: 0 0 10px rgba(0, 162, 255, 0.1);
+    }
+
+    /* Горизонтальные ветви от оси к элементам */
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -50px;
+      top: 50%;
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(to right, 
+        rgba(0, 162, 255, 0.6), 
+        rgba(0, 162, 255, 0.3));
+      transform: translateY(-50%);
+    }
+
+    /* Точки на оси */
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: -54px;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      background: #00a2ff;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      box-shadow: 0 0 10px rgba(0, 162, 255, 0.8);
+      z-index: 2;
+    }
+
+    .timeline-item:hover {
+      background: rgba(10, 30, 45, 0.7);
+      border-color: rgba(0, 162, 255, 0.4);
+      transform: translateX(5px);
+      box-shadow: 0 0 15px rgba(0, 162, 255, 0.2);
+    }
+
+    .timeline-year {
+      display: inline-block;
+      background: rgba(0, 162, 255, 0.2);
+      color: #00a2ff;
+      padding: 5px 15px;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-shadow: 0 0 3px rgba(0, 162, 255, 0.5);
+      border: 1px solid rgba(0, 162, 255, 0.3);
+    }
+
+    .timeline-item h4 {
+      color: #a0c0d0;
+      margin-bottom: 8px;
+      font-size: 1.3rem;
+    }
+
+    .timeline-item p {
+      color: #8ab0c5;
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .disclaimer {
+      background: rgba(255, 165, 0, 0.12); /* Сделаем немного ярче фон */
+      border-left: 3px solid #ffa500;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 0 4px 4px 0;
+      font-style: italic;
+      color: #ffcc80;
+      box-shadow: 0 0 10px rgba(255, 165, 0, 0.1); /* Добавим легкое свечение */
     }
 
     footer {
@@ -263,53 +483,102 @@
       border-top: 1px solid rgba(0, 162, 255, 0.2);
     }
 
-    footer::before {
-      content: "⚠";
-      margin-right: 5px;
-      color: #d4af37;
-    }
-
-    /* Эффект мерцания для всего сайта - имитация неоновых вывесок в BioShock */
+    /* Эффект мерцания */
     @keyframes flicker {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        opacity: 1;
-      }
-      20%, 22%, 24%, 55% {
-        opacity: 0.8;
-      }
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 22%, 24%, 55% { opacity: 0.8; }
     }
 
-    /* Анимация "пузырьков" для секции игр */
-    @keyframes bubbles {
-      0% {
-        background-position: 0 0;
-      }
-      100% {
-        background-position: -30px -30px;
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Добавляем эффект "старой бумаги" для всего контента */
-    @media (max-width: 600px) {
+    /* Адаптивность */
+    @media (max-width: 768px) {
       h1 {
-        font-size: 2.8rem;
+        font-size: 3rem;
       }
       
       h2 {
         font-size: 2rem;
       }
       
+      .tagline {
+        font-size: 1.3rem;
+      }
+      
+      .nav-menu {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .nav-button {
+        width: 200px;
+      }
+      
+      .timeline-items::before {
+        left: 20px;
+      }
+      
+      .timeline-item {
+        margin-left: 60px;
+      }
+      
+      .timeline-item::before {
+        left: -40px;
+        width: 30px;
+      }
+      
+      .timeline-item::after {
+        left: -44px;
+      }
+      
       .game-item {
-        width: 90%;
-        padding: 15px 18px;
+        width: 100%;
+      }
+      
+      /* На маленьких экранах отключаем nowrap для длинных фраз */
+      .nowrap {
+        white-space: normal;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+      
+      .section {
+        padding: 15px;
       }
       
       body {
-        background: linear-gradient(to bottom, #081520, #040a10);
+        padding: 20px 10px;
       }
       
-      .tagline {
-        font-size: 1.2rem;
+      .project-timeline {
+        margin-top: 30px;
+        padding-top: 20px;
+      }
+      
+      .timeline-items::before {
+        left: 15px;
+      }
+      
+      .timeline-item {
+        margin-left: 40px;
+      }
+      
+      .timeline-item::before {
+        left: -25px;
+        width: 20px;
+      }
+      
+      .timeline-item::after {
+        left: -29px;
+        width: 8px;
+        height: 8px;
       }
     }
   </style>
@@ -332,39 +601,233 @@
   <div class="container">
     <header>
       <h1>LUDUS LAB</h1>
-      <p>Лаборатория браузерных мини-игр</p>
       <p class="tagline">Сложные вещи простыми играми</p>
+      
+      <div class="nav-menu">
+        <button class="nav-button active" onclick="showSection('games')">🎮 Игры</button>
+        <button class="nav-button" onclick="showSection('about')">📖 О проекте</button>
+        <button class="nav-button" onclick="showSection('team')">👤 Команда</button>
+      </div>
     </header>
 
-    <section class="games">
-      <h2>🎮 ИГРЫ</h2>
+    <!-- Секция игр (по умолчанию активна) -->
+    <section id="games-section" class="section active">
+      <h2>🎮 Наши игры</h2>
+      <p>Интерактивные симуляции, которые превращают сложные концепции в понятный опыт</p>
+      
+      <div class="disclaimer">
+        ⚠️ Важное уточнение: наши игры не претендуют на абсолютную точность в реализации протоколов. 
+        Мы сознательно допускаем упрощения, чтобы сосредоточить внимание на понимании <span class="highlight nowrap">общего принципа работы</span>, 
+        а не на деталях реализации. Наша цель — сделать сложное доступным, а не воспроизвести протокол один в один.
+      </div>
+      
       <div id="games-list">
         <!-- Карточка игры "Квантовый ключ: BB84" -->
         <div class="game-item">
           <h3>Квантовый ключ: BB84</h3>
-          <p>Создайте секретный квантовый ключ, защищенный законами квантовой механики</p>
+          <p>Исследуйте мир квантовой криптографии через первый протокол квантового распределения ключей. Создайте секретный ключ, защищенный законами квантовой механики.</p>
           <a href="games/bb84/index.html" class="play-btn">Играть</a>
         </div>
 
-        <!-- 🔹 НОВАЯ ИГРА: Центр выработки ключей -->
+        <!-- Карточка игры "Центр выработки ключей" -->
         <div class="game-item">
           <h3>Центр выработки ключей</h3>
-          <p>Сгенерируйте криптографический ключ на основе энтропии движения курсора</p>
+          <p>Узнайте, как генерируются криптографические ключи на основе энтропии. Создайте свой собственный ключ, используя движение курсора как источник случайности.</p>
           <a href="games/cvk/index.html" class="play-btn">Играть</a>
         </div>
         
-        <!-- 🔹 НОВАЯ ИГРА: Квантовый ключ: E91 -->
+        <!-- Карточка игры "Квантовый ключ: E91" -->
         <div class="game-item">
           <h3>Квантовый ключ: E91</h3>
-          <p>Протокол квантового распределения ключей с использованием запутанных частиц</p>
+          <p>Погрузитесь в мир квантовой запутанности. Протокол E91 использует запутанные частицы для создания абсолютно безопасного ключа шифрования.</p>
           <a href="games/e91/index.html" class="play-btn">Играть</a>
+        </div>
+
+        <!-- Карточка игры "Симметричная криптография" -->
+        <div class="game-item">
+          <h3>Симметричная криптография</h3>
+          <p>Изучите принципы симметричного шифрования и установки защищенных каналов связи. Узнайте, как работает общий ключ для шифрования и расшифрования данных.</p>
+          <a href="games/symmetric/index.html" class="play-btn">Скоро</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Секция "О проекте" -->
+    <section id="about-section" class="section">
+      <h2>📖 О проекте</h2>
+      
+      <div class="section-content">
+        <p>Приветствую вас в <span class="highlight">Ludus Lab</span> — лаборатории, где абстрактные концепции становятся осязаемыми.</p>
+        
+        <div class="disclaimer">
+          ⚠️ Наши игры — это упрощённые модели, а не точные симуляции. Мы сознательно жертвуем точностью в пользу понятности, чтобы помочь сформировать <span class="highlight nowrap">интуитивное понимание принципов</span>, а не знание деталей протоколов.
+        </div>
+        
+        <p>Мы живём в мире, наполненном сложными технологиями: квантовая криптография, блокчейн, машинное обучение. Эти термины звучат впечатляюще, но зачастую остаются абстрактными понятиями, которые сложно представить.</p>
+        
+        <p><span class="highlight">Что если бы можно было "пощупать" квантовую запутанность?</span> Или увидеть, как на самом деле работает обмен криптографическими ключами?</p>
+        
+        <p>Именно для этого создан Ludus Lab. Мы верим, что лучший способ понять сложную тему — взаимодействовать с ней. Каждая наша игра — это интерактивная симуляция, которая:</p>
+        
+        <div class="concept-grid">
+          <div class="concept-item">
+            <h4>Визуализирует невидимое</h4>
+            <p>Превращает абстрактные математические модели в наглядные взаимодействия</p>
+          </div>
+          
+          <div class="concept-item">
+            <h4>Даёт опыт через действие</h4>
+            <p>Вы не читаете о квантовых состояниях — вы управляете ими</p>
+          </div>
+          
+          <div class="concept-item">
+            <h4>Снимает барьеры сложности</h4>
+            <p>Сложные концепции разбиваются на простые механики, понятные каждому</p>
+          </div>
+        </div>
+        
+        <p>Моя личная мотивация проста: я сталкиваюсь со сложными концепциями в своей работе и понимаю, что их проще показать, чем объяснить. Здесь я не претендую на роль всезнающего эксперта — я исследователь, который разбирается в сложных темах вместе с вами.</p>
+        
+        <p><span class="highlight">Ludus Lab — это не курс лекций и не учебник.</span> Это лаборатория экспериментов, где ошибки — часть процесса обучения, а понимание приходит через действие.</p>
+        
+        <p>Добро пожаловать в мир, где сложное становится простым.</p>
+      </div>
+    </section>
+
+    <!-- Секция "Команда" -->
+    <section id="team-section" class="section">
+      <h2>👤 Команда</h2>
+      
+      <div class="section-content">
+        <div class="team-member">
+          <h3>JSSemeone</h3>
+          <p>Привет! Давайте знакомиться без формальностей.</p>
+          
+          <p>Меня зовут <span class="highlight">JSSemeone</span>, и я создаю Ludus Lab. Моя профессиональная жизнь в основном проходит в телекоммуникационной индустрии — мире оптоволокна, протоколов и сетевой инфраструктуры.</p>
+          
+          <p>В 2021 году моя карьера сделала интересный поворот — я начал работать в сфере <span class="highlight">квантовых коммуникаций</span>. Это был переход от привычных технологий к чему-то, что больше похоже на научную фантастику: запутанные фотоны, квантовые состояния, законы физики как основа безопасности.</p>
+          
+          <div class="disclaimer">
+            ⚠️ Наши игры сознательно упрощают реальные протоколы. Мы сосредоточены на передаче <span class="highlight">сути процесса</span>, а не на точном воспроизведении каждой детали. <span class="nowrap">Если вы хотите понять общий принцип — добро пожаловать!</span>
+          </div>
+          
+          <p>И именно здесь я столкнулся с парадоксом: технологии, которые мы создаём, настолько сложны, что их почти невозможно объяснить словами. Я видел, как глаза коллег и партнёров стекленеют от попыток представить себе квантовое распределение ключей. И понял простую вещь: <span class="highlight nowrap">некоторые вещи нужно не рассказывать, а показывать.</span></p>
+          
+          <p>Так родилась идея Ludus Lab. Не из желания учить, а из потребности разобраться самому и помочь другим сделать то же самое. Здесь нет позёрства и попыток казаться умнее — есть искреннее желание разобраться в сложных вещах через простые игры.</p>
+          
+          <p>В этом мне помогают мои "коллеги" — инструменты для вайб-кодинга:</p>
+          
+          <div class="tools-list">
+            <div class="tool-tag">HTML/CSS/JavaScript</div>
+            <div class="tool-tag">Canvas API</div>
+            <div class="tool-tag">Терпение</div>
+            <div class="tool-tag">Любопытство</div>
+            <div class="tool-tag">Кофе ☕</div>
+          </div>
+          
+          <p>Если вы читаете это — значит, мы уже коллеги в этом исследовании. Добро пожаловать в лабораторию!</p>
+        </div>
+        
+        <!-- Переработанный блок "Путь проекта" с древовидной осью -->
+        <div class="project-timeline">
+          <h3>Путь проекта</h3>
+          
+          <div class="timeline-items">
+            <div class="timeline-item">
+              <span class="timeline-year">2021</span>
+              <h4>Знакомство с квантовыми технологиями</h4>
+              <p>Переход в область квантовых коммуникаций. Первые попытки объяснить необъяснимое и осознание, что некоторые вещи нужно визуализировать, а не рассказывать.</p>
+            </div>
+            
+            <div class="timeline-item">
+              <span class="timeline-year">2023</span>
+              <h4>Задачи по коммерциализации квантовых технологий</h4>
+              <p>Работа над практическим внедрением квантовых решений. Ещё больше убеждаюсь в необходимости визуализации сложных концепций.</p>
+            </div>
+            
+            <div class="timeline-item">
+              <span class="timeline-year">2024</span>
+              <h4>Создание первых прототипов игр по криптографии</h4>
+              <p>Понимание, что игровая механика может быть мощным образовательным инструментом. Первые эксперименты с интерактивными объяснениями.</p>
+            </div>
+            
+            <div class="timeline-item">
+              <span class="timeline-year">2025</span>
+              <h4>Рождение Ludus Lab</h4>
+              <p>Формирование концепции платформы. Первые три игры публикуются онлайн. Начало работы над четвёртой игрой о симметричной криптографии.</p>
+            </div>
+            
+            <div class="timeline-item">
+              <span class="timeline-year">Сейчас</span>
+              <h4>Развитие и расширение</h4>
+              <p>Постепенное добавление новых игр и тем. Исследование новых способов объяснения сложного через простое.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
     <footer>
-      <p>© 2025 Ludus Lab · Сделано с любовью JSSemeone</p>
+      <p>© 2025 Ludus Lab · Сделано с любопытством и желанием разобраться</p>
+      <p style="font-size: 0.8rem; margin-top: 10px;">Присоединяйтесь к исследованию сложного через простое</p>
     </footer>
   </div>
+
+  <script>
+    // Переключение между секциями
+    function showSection(sectionId) {
+      // Скрываем все секции
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // Убираем активный класс со всех кнопок
+      document.querySelectorAll('.nav-button').forEach(button => {
+        button.classList.remove('active');
+      });
+      
+      // Показываем выбранную секцию
+      document.getElementById(sectionId + '-section').classList.add('active');
+      
+      // Активируем соответствующую кнопку
+      event.target.classList.add('active');
+      
+      // Плавный скролл к началу секции
+      document.getElementById(sectionId + '-section').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+
+    // Обработка клавиатуры для навигации
+    document.addEventListener('keydown', function(e) {
+      const sections = ['games', 'about', 'team'];
+      const currentSection = document.querySelector('.section.active').id.replace('-section', '');
+      const currentIndex = sections.indexOf(currentSection);
+      
+      if (e.key === 'ArrowLeft') {
+        const prevIndex = (currentIndex - 1 + sections.length) % sections.length;
+        document.querySelector(`[onclick="showSection('${sections[prevIndex]}')"]`).click();
+      } else if (e.key === 'ArrowRight') {
+        const nextIndex = (currentIndex + 1) % sections.length;
+        document.querySelector(`[onclick="showSection('${sections[nextIndex]}')"]`).click();
+      }
+    });
+
+    // Добавляем немного интерактивности для игр
+    document.addEventListener('DOMContentLoaded', function() {
+      const gameItems = document.querySelectorAll('.game-item');
+      
+      gameItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-5px)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateY(0)';
+        });
+      });
+    });
+  </script>
 </body>
 </html>

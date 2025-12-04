@@ -23,7 +23,7 @@
     }
 
     body {
-      background: linear-gradient(to bottom, #0a1a2a, #050d15);
+      background: #0a1a2a; /* Однородный фон вместо градиента */
       color: #c5d5e0;
       font-family: 'Roboto', sans-serif;
       line-height: 1.8;
@@ -33,7 +33,7 @@
       flex-direction: column;
     }
 
-    /* Навигация - ОБНОВЛЕНА */
+    /* Навигация */
     .theory-nav {
       max-width: 900px;
       margin: 0 auto;
@@ -65,7 +65,7 @@
       text-transform: uppercase;
       font-size: 0.9rem;
       letter-spacing: 1px;
-      transition: color 0.3s;
+      transition: all 0.3s;
       padding: 8px 15px;
       border-radius: 4px;
       border: 1px solid transparent;
@@ -243,7 +243,7 @@
       font-size: 1.1rem;
     }
 
-    /* Список действий - ОБНОВЛЕН */
+    /* Список действий */
     .action-list {
       list-style: none;
       margin: 30px 0;
@@ -367,7 +367,7 @@
       color: #a0c0d0;
     }
 
-    /* Дополнительный материал - ОБНОВЛЕН */
+    /* Дополнительный материал */
     .advanced-section {
       margin: 40px 0;
       padding: 20px;
@@ -408,7 +408,7 @@
       font-family: 'Oswald', sans-serif;
     }
 
-    /* Темы для углубления - ОБНОВЛЕН */
+    /* Темы для углубления */
     .topics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -447,22 +447,7 @@
       color: #557585;
       font-size: 0.9rem;
       flex-shrink: 0;
-      background: #050d15;
-    }
-
-    /* Исправление проблемы с черными полосами */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        radial-gradient(circle at 25% 25%, rgba(30, 144, 255, 0.03) 0%, transparent 55%),
-        radial-gradient(circle at 75% 75%, rgba(0, 206, 209, 0.03) 0%, transparent 55%);
-      pointer-events: none;
-      z-index: -1;
+      background: #0a1a2a;
     }
 
     /* Адаптивность */
@@ -531,7 +516,6 @@
         grid-template-columns: 1fr;
       }
       
-      /* Перемещаем навигацию в нужное место */
       .theory-nav {
         flex-direction: column;
         gap: 15px;
@@ -579,7 +563,6 @@
         font-size: 0.8rem;
       }
       
-      /* Навигация по центру на мобильных */
       .nav-links {
         justify-content: center;
         gap: 10px;
@@ -621,13 +604,13 @@
   </style>
 </head>
 <body>
-  <!-- Навигация - ОБНОВЛЕНА -->
+  <!-- Навигация -->
   <nav class="theory-nav">
     <a href="/" class="nav-logo">LUDUS LAB</a>
     <div class="nav-links">
-      <a href="/" class="nav-link">Главная</a>
-      <a href="/#theory-section" class="nav-link">Теория</a>
-      <a href="games/bb84/index.html" class="nav-link">Играть</a>
+      <a href="/" class="nav-link">Главная</a> <!-- Ведет на главную страницу -->
+      <a href="/#theory-section" class="nav-link">Теория</a> <!-- Ведет на раздел "Как это устроено" на главной -->
+      <a href="games/bb84/index.html" class="nav-link">Играть</a> <!-- Ведет непосредственно к игре -->
     </div>
   </nav>
 
@@ -725,7 +708,7 @@
       </div>
     </section>
 
-    <!-- Блок "А теперь — главная магия" - ОБНОВЛЕН -->
+    <!-- Блок "А теперь — главная магия" -->
     <section class="content-block">
       <h2>А теперь — главная магия</h2>
       <p>Что вы <span class="highlight">сделаете</span> в симуляции?</p>
@@ -766,7 +749,7 @@
       <p>В игре вы не просто читаете о BB84 — вы <span class="highlight">проживаете его</span> со всех ролей. Вы увидите, как случайность в выборе базисов превращается в абсолютную безопасность, и поймёте, почему квантовая криптография — это не магия, а физика.</p>
     </section>
 
-    <!-- Дополнительный материал - ОБНОВЛЕН -->
+    <!-- Дополнительный материал -->
     <details class="advanced-section">
       <summary>Для любознательных</summary>
       <div class="advanced-content">
@@ -783,7 +766,7 @@
         <div class="topics-grid">
           <div class="topic-card">
             <h4>Квантовые базисы и состояния</h4>
-            <p>Поляризация фотонов, диагональная и круговая поляризация, представнение состояний на сфере Блоха</p>
+            <p>Поляризация фотонов, диагональная и круговая поляризация, представление состояний на сфере Блоха</p>
           </div>
           
           <div class="topic-card">

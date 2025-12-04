@@ -170,11 +170,18 @@
       border-top: 1px solid rgba(0, 162, 255, 0.2);
     }
 
-    .back-to-lab {
-      display: block;
-      width: fit-content;
+    .navigation-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
       margin: 40px auto 20px;
-      padding: 8px 16px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
       background: rgba(0, 10, 20, 0.7);
       color: #8ab0c5;
       text-decoration: none;
@@ -182,20 +189,92 @@
       border-radius: 6px;
       font-size: 0.95rem;
       transition: all 0.2s;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      gap: 8px;
     }
 
-    .back-to-lab:hover {
+    .nav-link:hover {
       color: #00a2ff;
       border-color: #00a2ff;
       background: rgba(0, 20, 35, 0.7);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 162, 255, 0.2);
+    }
+
+    .nav-link.primary {
+      background: rgba(0, 40, 80, 0.7);
+      color: #00a2ff;
+      border-color: rgba(0, 162, 255, 0.5);
+    }
+
+    .nav-link.secondary {
+      background: rgba(212, 175, 55, 0.1);
+      color: #d4af37;
+      border-color: rgba(212, 175, 55, 0.3);
+    }
+
+    .nav-link.secondary:hover {
+      color: #ffd700;
+      border-color: #d4af37;
     }
 
     @keyframes flicker {
       0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
       20%, 22%, 24%, 55% { opacity: 0.8; }
     }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .line {
+        width: 90%;
+      }
+      
+      .navigation-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+      
+      .nav-link {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
+      
+      .game-area {
+        padding: 15px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .subtitle {
+        font-size: 1rem;
+      }
+      
+      .action-button {
+        width: 100%;
+        padding: 10px 15px;
+        font-size: 0.95rem;
+      }
+      
+      .explanation {
+        padding: 15px;
+        font-size: 0.9rem;
+      }
+      
+      .visualizer {
+        padding: 12px;
+        font-size: 0.85rem;
+      }
+    }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <div class="container">
@@ -222,42 +301,44 @@
       <p>Чем хаотичнее вы двигаете мышью, тем менее предсказуем ключ — как в настоящих системах защиты.</p>
     </div>
 
-    <button class="action-button" id="startButton">Сгенерировать ключ</button>
+    <button class="action-button" id="startButton">
+      <i class="fas fa-play-circle"></i> Сгенерировать ключ
+    </button>
 
     <div class="game-area">
       <canvas id="gameCanvas" width="600" height="320"></canvas>
 
-
       <div class="visualizer">
-          <div>X = <span id="xVal">—</span> → нечётное? <span id="xParity">?</span></div>
-          <div>Y = <span id="yVal">—</span> → нечётное? <span id="yParity">?</span></div>
-          <div>ВРЕМЯ = <span id="timeVal">—</span> → нечётное? <span id="tParity">?</span></div>
-          <div>XOR: нечётных значений = <span id="oddCount">0</span></div>
-          <div>БИТ = <span id="bitVal">?</span></div>
-          <div id="statusLine">Нажмите «Сгенерировать ключ»</div>
-        </div>
+        <div>X = <span id="xVal">—</span> → нечётное? <span id="xParity">?</span></div>
+        <div>Y = <span id="yVal">—</span> → нечётное? <span id="yParity">?</span></div>
+        <div>ВРЕМЯ = <span id="timeVal">—</span> → нечётное? <span id="tParity">?</span></div>
+        <div>XOR: нечётных значений = <span id="oddCount">0</span></div>
+        <div>БИТ = <span id="bitVal">?</span></div>
+        <div id="statusLine">Нажмите «Сгенерировать ключ»</div>
       </div>
 
       <div class="key-display" id="keyDisplay">
         <div class="explanation">
           <p>Мастер-ключ успешно сгенерирован. Вы можете скопировать его для дальнейшего использования.</p>
         </div>
-        <button class="action-button" style="width: 320px;" onclick="copyKey()">Скопировать ключ</button>
-        <button class="action-button" style="width: 320px;" id="newKeyBtn">Новый ключ</button>
+        <button class="action-button" style="width: 280px;" onclick="copyKey()">
+          <i class="fas fa-copy"></i> Скопировать ключ
+        </button>
+        <button class="action-button" style="width: 280px;" id="newKeyBtn">
+          <i class="fas fa-redo"></i> Новый ключ
+        </button>
       </div>
     </div>
 
-
-    <div class="key-display" id="keyDisplay">
-      <div class="explanation">
-        <p>Мастер-ключ успешно сгенерирован. Вы можете скопировать его для дальнейшего использования.</p>
-      </div>
-      <button class="action-button" style="width: 320px;" onclick="copyKey()">Скопировать ключ</button>
-      <button class="action-button" style="width: 320px;" id="newKeyBtn">Новый ключ</button>
+    <div class="navigation-links">
+      <a href="../theory.html" class="nav-link secondary">
+        <i class="fas fa-book-open"></i> Прочитать теорию
+      </a>
+      <a href="../../index.html" class="nav-link primary">
+        <i class="fas fa-home"></i> Вернуться в лабораторию
+      </a>
     </div>
   </div>
-
-  <a href="../../index.html" class="back-to-lab">← Вернуться в лабораторию</a>
 
   <script>
     const canvas = document.getElementById('gameCanvas');
@@ -278,7 +359,6 @@
 
     const KEY_LENGTH = 16;
     const CAPTURE_INTERVAL = 2000;
-    const SPARKS_PER_EVENT = 32;
     const GRAVITY = 0.25;
     const ATTRACTION_THRESHOLD = (3 / 4) * canvas.height;
     const BOOSTED_ATTRACTION_SPEED = 8.0;
@@ -339,7 +419,7 @@
       gameActive = false;
       generationComplete = false;
       keyDisplay.style.display = 'none';
-      startButton.style.display = ''; // ✅ корректный сброс
+      startButton.style.display = '';
       mouseX = canvas.width / 2;
       mouseY = canvas.height / 2;
       statusLineEl.textContent = 'Нажмите «Сгенерировать ключ»';
@@ -383,7 +463,7 @@
       const yOdd = yInt % 2;
       const tOdd = tInt % 2;
       const oddCount = xOdd + yOdd + tOdd;
-      const bit = oddCount % 2; // это XOR трёх битов
+      const bit = oddCount % 2;
 
       if (now < freezeUntil && frozenValues) {
         xValEl.textContent = frozenValues.x;
@@ -430,6 +510,7 @@
         this.reached = false;
         this.inAttractionZone = false;
       }
+      
       update() {
         if (this.reached) return;
         this.age++;
@@ -459,6 +540,7 @@
           if (this.y < 0) this.vy *= -0.5;
         }
       }
+      
       draw() {
         if (this.reached || this.age > this.lifetime) return;
         ctx.fillStyle = this.color;
@@ -467,6 +549,7 @@
         ctx.arc(this.x, this.y, size, 0, Math.PI * 2);
         ctx.fill();
       }
+      
       isAlive() {
         if (this.inAttractionZone && !this.reached) return true;
         return !this.reached && this.age <= this.lifetime;
@@ -634,12 +717,15 @@
 
     function copyKey() {
       const binStr = bits.join('');
+      const hexStr = '0x' + parseInt(binStr, 2).toString(16).toUpperCase().padStart(4, '0');
+      const displayStr = `${binStr}\n${hexStr}`;
+      
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(binStr).then(() => {
-          alert('Ключ скопирован!');
-        }).catch(() => fallbackCopy(binStr));
+        navigator.clipboard.writeText(displayStr).then(() => {
+          alert('Ключ скопирован в буфер обмена!\n\nБинарный: ' + binStr + '\nШестнадцатеричный: ' + hexStr);
+        }).catch(() => fallbackCopy(displayStr));
       } else {
-        fallbackCopy(binStr);
+        fallbackCopy(displayStr);
       }
     }
 
@@ -652,7 +738,7 @@
       el.select();
       document.execCommand('copy');
       document.body.removeChild(el);
-      alert('Ключ скопирован!');
+      alert('Ключ скопирован в буфер обмена!');
     }
 
     canvas.addEventListener('mousemove', handlePointerMove);

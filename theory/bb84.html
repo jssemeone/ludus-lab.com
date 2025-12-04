@@ -23,7 +23,7 @@
     }
 
     body {
-      background: #0a1a2a; /* Однородный фон вместо градиента */
+      background: #0a1a2a;
       color: #c5d5e0;
       font-family: 'Roboto', sans-serif;
       line-height: 1.8;
@@ -588,20 +588,18 @@
   </style>
 </head>
 <body>
-  <!-- Навигация -->
+  <!-- Навигация с правильными ссылками -->
   <nav class="theory-nav">
     <a href="/" class="nav-logo">LUDUS LAB</a>
     <div class="nav-links">
-      <a href="/" class="nav-link">Главная</a> <!-- Ведет на главную страницу -->
-      <a href="/#theory-section" class="nav-link">Теория</a> <!-- Ведет на раздел "Как это устроено" на главной -->
+      <a href="/" class="nav-link">Главная</a>
+      <a href="/#theory-section" class="nav-link">Теория</a> <!-- Ведет в раздел "Как это устроено" -->
       <a href="games/bb84/index.html" class="nav-link">Играть</a> <!-- Ведет непосредственно к игре -->
     </div>
   </nav>
 
   <!-- Основной контент -->
   <div class="theory-container">
-    <!-- Убраны хлебные крошки -->
-
     <!-- Заголовок статьи -->
     <header class="article-header">
       <div class="article-category">Квантовая криптография</div>
@@ -786,15 +784,15 @@
       </div>
     </details>
 
-    <!-- Кнопки действий -->
+    <!-- Кнопки действий с правильными ссылками -->
     <div class="article-actions" id="article-actions">
       <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;">
         Теперь, когда вы понимаете основы, самое время попробовать на практике и увидеть протокол в действии!
       </p>
       
       <div class="action-buttons">
-        <a href="games/bb84/index.html" class="btn-primary">▶ Перейти к эксперименту</a>
-        <a href="/#theory-section" class="btn-secondary">← Вернуться к списку тем</a>
+        <a href="games/bb84/index.html" class="btn-primary">▶ Перейти к эксперименту</a> <!-- Ведет к игре -->
+        <a href="/#theory-section" class="btn-secondary">← Вернуться к списку тем</a> <!-- Ведет в раздел "Как это устроено" -->
       </div>
       
       <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;">

@@ -481,6 +481,133 @@
       box-shadow: 0 0 10px rgba(255, 165, 0, 0.1); /* Добавим легкое свечение */
     }
 
+    /* Стили для раздела "Как это устроено" (НОВАЯ СЕКЦИЯ) */
+    .theory-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin: 40px 0;
+    }
+    
+    .theory-card {
+      background: rgba(10, 30, 45, 0.6);
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      border-radius: 8px;
+      padding: 25px;
+      text-align: left;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .theory-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, #00a2ff, #006ba6);
+      opacity: 0.7;
+    }
+    
+    .theory-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 162, 255, 0.15);
+      border-color: rgba(0, 162, 255, 0.6);
+    }
+    
+    .theory-card h3 {
+      color: #00a2ff;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 5px rgba(0, 162, 255, 0.3);
+    }
+    
+    .theory-excerpt {
+      color: #8ab0c5;
+      font-size: 1rem;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+    
+    .theory-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #557585;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0, 162, 255, 0.1);
+    }
+    
+    .theory-time {
+      background: rgba(0, 162, 255, 0.1);
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+    
+    .theory-level {
+      background: rgba(212, 175, 55, 0.1);
+      padding: 3px 8px;
+      border-radius: 3px;
+      color: #d4af37;
+    }
+    
+    .theory-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .btn-learn, .btn-play {
+      display: block;
+      text-align: center;
+      padding: 10px 15px;
+      text-decoration: none;
+      border-radius: 4px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      border: 1px solid;
+    }
+    
+    .btn-learn {
+      background: rgba(0, 162, 255, 0.15);
+      color: #00a2ff;
+      border-color: rgba(0, 162, 255, 0.4);
+    }
+    
+    .btn-learn:hover {
+      background: rgba(0, 162, 255, 0.3);
+      border-color: #00a2ff;
+    }
+    
+    .btn-play {
+      background: rgba(72, 187, 120, 0.15);
+      color: #48bb78;
+      border-color: rgba(72, 187, 120, 0.4);
+    }
+    
+    .btn-play:hover {
+      background: rgba(72, 187, 120, 0.3);
+      border-color: #48bb78;
+    }
+    
+    /* Адаптивность для карточек теории */
+    @media (max-width: 768px) {
+      .theory-preview {
+        grid-template-columns: 1fr;
+      }
+      
+      .theory-card {
+        padding: 20px;
+      }
+    }
+
     footer {
       margin-top: 60px;
       font-size: 0.9rem;
@@ -611,6 +738,7 @@
       
       <div class="nav-menu">
         <button class="nav-button active" onclick="showSection('games')">🎮 Игры</button>
+        <button class="nav-button" onclick="showSection('theory')">📚 Как это устроено</button> <!-- НОВАЯ КНОПКА -->
         <button class="nav-button" onclick="showSection('about')">📖 О проекте</button>
         <button class="nav-button" onclick="showSection('team')">👤 Команда</button>
       </div>
@@ -654,6 +782,78 @@
           <h3>Симметричная криптография</h3>
           <p>Изучите принципы симметричного шифрования и установки защищенных каналов связи. Узнайте, как работает общий ключ для шифрования и расшифрования данных.</p>
           <a href="games/symmetric/index.html" class="play-btn">Скоро</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Секция "Как это устроено" (НОВАЯ СЕКЦИЯ) -->
+    <section id="theory-section" class="section">
+      <h2>📚 Как это устроено</h2>
+      <p>Разберитесь в основах, прежде чем погрузиться в эксперимент</p>
+      
+      <div class="section-content">
+        <p>Каждая сложная технология состоит из простых принципов. Здесь мы разбираем их на понятные составляющие:</p>
+        
+        <div class="theory-preview">
+          <!-- Карточка BB84 -->
+          <div class="theory-card">
+            <h3>Протокол BB84</h3>
+            <p class="theory-excerpt">Как создать ключ шифрования, который невозможно подслушать, не нарушив законы физики?</p>
+            <div class="theory-meta">
+              <span class="theory-time">3 мин чтения</span>
+              <span class="theory-level">Квантовая криптография</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/theory/bb84.html" class="btn-learn">Разобраться в теории</a>
+              <a href="games/bb84/index.html" class="btn-play">Сразу к эксперименту</a>
+            </div>
+          </div>
+          
+          <!-- Карточка Центра выработки ключей -->
+          <div class="theory-card">
+            <h3>Энтропия и генерация ключей</h3>
+            <p class="theory-excerpt">Откуда берётся настоящая случайность и почему её нельзя подделать?</p>
+            <div class="theory-meta">
+              <span class="theory-time">2 мин чтения</span>
+              <span class="theory-level">Криптография</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/theory/keygen.html" class="btn-learn">Разобраться в теории</a>
+              <a href="games/cvk/index.html" class="btn-play">Сразу к эксперименту</a>
+            </div>
+          </div>
+          
+          <!-- Карточка E91 -->
+          <div class="theory-card">
+            <h3>Протокол E91</h3>
+            <p class="theory-excerpt">Как квантовая запутанность делает связь абсолютно защищённой?</p>
+            <div class="theory-meta">
+              <span class="theory-time">4 мин чтения</span>
+              <span class="theory-level">Квантовая запутанность</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/theory/e91.html" class="btn-learn">Разобраться в теории</a>
+              <a href="games/e91/index.html" class="btn-play">Сразу к эксперименту</a>
+            </div>
+          </div>
+          
+          <!-- Карточка Симметричной криптографии -->
+          <div class="theory-card">
+            <h3>Симметричная криптография</h3>
+            <p class="theory-excerpt">Как один ключ может и шифровать, и расшифровывать сообщения?</p>
+            <div class="theory-meta">
+              <span class="theory-time">3 мин чтения</span>
+              <span class="theory-level">Основы криптографии</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/theory/symmetric.html" class="btn-learn">Разобраться в теории</a>
+              <a href="games/symmetric/index.html" class="btn-play">Скоро</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="disclaimer" style="margin-top: 30px;">
+          💡 <strong>Совет:</strong> Начните с теории, чтобы понять основные принципы, затем переходите к игре — так вы получите максимум пользы от эксперимента!
         </div>
       </div>
     </section>
@@ -807,7 +1007,7 @@
 
     // Обработка клавиатуры для навигации
     document.addEventListener('keydown', function(e) {
-      const sections = ['games', 'about', 'team'];
+      const sections = ['games', 'theory', 'about', 'team']; // Добавили 'theory'
       const currentSection = document.querySelector('.section.active').id.replace('-section', '');
       const currentIndex = sections.indexOf(currentSection);
       
@@ -820,9 +1020,10 @@
       }
     });
 
-    // Добавляем немного интерактивности для игр
+    // Добавляем немного интерактивности для игр и карточек теории
     document.addEventListener('DOMContentLoaded', function() {
       const gameItems = document.querySelectorAll('.game-item');
+      const theoryCards = document.querySelectorAll('.theory-card');
       
       gameItems.forEach(item => {
         item.addEventListener('mouseenter', function() {
@@ -830,6 +1031,16 @@
         });
         
         item.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateY(0)';
+        });
+      });
+      
+      theoryCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-5px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
           this.style.transform = 'translateY(0)';
         });
       });

@@ -176,6 +176,87 @@
       line-height: 1.7;
     }
 
+    /* Баннер переезда */
+    .migration-banner {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(0, 162, 255, 0.15));
+      border: 2px solid #d4af37;
+      border-radius: 10px;
+      padding: 25px;
+      margin: 30px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+    }
+
+    .migration-banner::before {
+      content: "🚀";
+      font-size: 3rem;
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      opacity: 0.3;
+    }
+
+    .migration-banner h3 {
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+    }
+
+    .migration-banner p {
+      color: #c5d5e0;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .migration-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #d4af37, #b8941f);
+      color: #0a1a2a;
+      padding: 14px 35px;
+      font-size: 1.2rem;
+      font-family: 'Oswald', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-decoration: none;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 700;
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+      margin-top: 10px;
+    }
+
+    .migration-button:hover {
+      background: linear-gradient(135deg, #e6c158, #d4af37);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(212, 175, 55, 0.6);
+    }
+
+    .migration-button:active {
+      transform: translateY(-1px);
+    }
+
+    .new-address {
+      display: inline-block;
+      background: rgba(0, 162, 255, 0.15);
+      color: #00a2ff;
+      padding: 8px 15px;
+      border-radius: 4px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 1.1rem;
+      margin: 10px 0;
+      border: 1px solid rgba(0, 162, 255, 0.3);
+    }
+
     /* ОБНОВЛЕННЫЙ выделенный текст - такой же как заголовок, но синий */
     .highlight {
       font-family: 'Oswald', sans-serif;
@@ -218,161 +299,6 @@
     /* Класс для предотвращения переноса текста */
     .nowrap {
       white-space: nowrap;
-    }
-
-    /* Секция "Как это устроено" (ОСНОВНАЯ СЕКЦИЯ) */
-    .theory-preview {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-      margin: 40px 0;
-    }
-    
-    .theory-card {
-      background: rgba(10, 30, 45, 0.6);
-      border: 1px solid rgba(0, 162, 255, 0.3);
-      border-radius: 8px;
-      padding: 25px;
-      text-align: left;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .theory-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-      background: linear-gradient(to bottom, #00a2ff, #006ba6);
-      opacity: 0.7;
-    }
-    
-    .theory-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 162, 255, 0.15);
-      border-color: rgba(0, 162, 255, 0.6);
-    }
-    
-    .theory-card h3 {
-      color: #00a2ff;
-      font-family: 'Oswald', sans-serif;
-      font-size: 1.4rem;
-      margin-bottom: 10px;
-      text-shadow: 0 0 5px rgba(0, 162, 255, 0.3);
-    }
-    
-    .theory-excerpt {
-      color: #8ab0c5;
-      font-size: 1rem;
-      margin-bottom: 15px;
-      line-height: 1.5;
-    }
-    
-    .theory-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.85rem;
-      color: #557585;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(0, 162, 255, 0.1);
-    }
-    
-    .theory-time {
-      background: rgba(0, 162, 255, 0.1);
-      padding: 3px 8px;
-      border-radius: 3px;
-    }
-    
-    .theory-level {
-      background: rgba(212, 175, 55, 0.1);
-      padding: 3px 8px;
-      border-radius: 3px;
-      color: #d4af37;
-    }
-    
-    .theory-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    
-    .btn-learn, .btn-play {
-      display: block;
-      text-align: center;
-      padding: 10px 15px;
-      text-decoration: none;
-      border-radius: 4px;
-      font-family: 'Oswald', sans-serif;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-      border: 1px solid;
-    }
-    
-    .btn-learn {
-      background: rgba(0, 162, 255, 0.15);
-      color: #00a2ff;
-      border-color: rgba(0, 162, 255, 0.4);
-    }
-    
-    .btn-learn:hover {
-      background: rgba(0, 162, 255, 0.3);
-      border-color: #00a2ff;
-    }
-    
-    .btn-play {
-      background: rgba(72, 187, 120, 0.15);
-      color: #48bb78;
-      border-color: rgba(72, 187, 120, 0.4);
-    }
-    
-    .btn-play:hover {
-      background: rgba(72, 187, 120, 0.3);
-      border-color: #48bb78;
-    }
-    
-    /* Кнопка "Играть" внутри карточек */
-    .play-btn {
-      display: inline-block;
-      background: linear-gradient(to bottom, #006ba6, #004d7a);
-      color: #e6f0ff;
-      padding: 10px 25px;
-      text-decoration: none;
-      border-radius: 4px;
-      font-family: 'Oswald', sans-serif;
-      font-size: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border: 1px solid #00a2ff;
-      transition: all 0.3s;
-      box-shadow: 
-        0 0 10px rgba(0, 162, 255, 0.3),
-        inset 0 0 5px rgba(255, 255, 255, 0.1);
-      text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
-    }
-
-    .play-btn:hover {
-      background: linear-gradient(to bottom, #0088cc, #006ba6);
-      box-shadow: 
-        0 0 15px rgba(0, 162, 255, 0.6),
-        inset 0 0 10px rgba(255, 255, 255, 0.2);
-      transform: scale(1.05);
-    }
-    
-    /* Адаптивность для карточек теории */
-    @media (max-width: 768px) {
-      .theory-preview {
-        grid-template-columns: 1fr;
-      }
-      
-      .theory-card {
-        padding: 20px;
-      }
     }
 
     /* Раздел "О команде" */
@@ -603,6 +529,19 @@
         width: 200px;
       }
       
+      .migration-banner {
+        padding: 20px;
+      }
+      
+      .migration-banner h3 {
+        font-size: 1.5rem;
+      }
+      
+      .migration-button {
+        padding: 12px 25px;
+        font-size: 1.1rem;
+      }
+      
       .timeline-items::before {
         left: 20px;
       }
@@ -637,6 +576,20 @@
       
       body {
         padding: 20px 10px;
+      }
+      
+      .migration-banner {
+        padding: 15px;
+      }
+      
+      .migration-banner h3 {
+        font-size: 1.3rem;
+      }
+      
+      .migration-button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        width: 100%;
       }
       
       .project-timeline {
@@ -698,75 +651,17 @@
       <p>Разберитесь в основах, прежде чем погрузиться в эксперимент</p>
       
       <div class="section-content">
-        <p>Каждая сложная технология состоит из простых принципов. Здесь мы разбираем их на понятные составляющие:</p>
-        
-        <div class="theory-preview">
-          <!-- Карточка BB84 -->
-          <div class="theory-card">
-            <h3>Протокол BB84</h3>
-            <p class="theory-excerpt">Как создать ключ шифрования, который невозможно подслушать, не нарушив законы физики?</p>
-            <div class="theory-meta">
-              <span class="theory-time">3 мин чтения</span>
-              <span class="theory-level">Квантовая криптография</span>
-            </div>
-            <div class="theory-actions">
-              <a href="/theory/bb84.html" class="btn-learn">Разобраться в теории</a>
-              <a href="games/bb84/index.html" class="btn-play">Сразу к эксперименту</a>
-            </div>
-          </div>
-          
-          <!-- Карточка Центра выработки ключей -->
-          <div class="theory-card">
-            <h3>Энтропия и генерация ключей</h3>
-            <p class="theory-excerpt">Откуда берётся настоящая случайность и почему её нельзя подделать?</p>
-            <div class="theory-meta">
-              <span class="theory-time">2 мин чтения</span>
-              <span class="theory-level">Криптография</span>
-            </div>
-            <div class="theory-actions">
-              <a href="/theory/keygen.html" class="btn-learn">Разобраться в теории</a>
-              <a href="games/cvk/index.html" class="btn-play">Сразу к эксперименту</a>
-            </div>
-          </div>
-          
-          <!-- Карточка E91 -->
-          <div class="theory-card">
-            <h3>Протокол E91</h3>
-            <p class="theory-excerpt">Как квантовая запутанность делает связь абсолютно защищённой?</p>
-            <div class="theory-meta">
-              <span class="theory-time">4 мин чтения</span>
-              <span class="theory-level">Квантовая запутанность</span>
-            </div>
-            <div class="theory-actions">
-              <a href="/theory/e91.html" class="btn-learn">Разобраться в теории</a>
-              <a href="games/e91/index.html" class="btn-play">Сразу к эксперименту</a>
-            </div>
-          </div>
-          
-          <!-- Карточка Симметричной криптографии -->
-          <div class="theory-card">
-            <h3>Симметричная криптография</h3>
-            <p class="theory-excerpt">Как один ключ может и шифровать, и расшифровывать сообщения?</p>
-            <div class="theory-meta">
-              <span class="theory-time">3 мин чтения</span>
-              <span class="theory-level">Основы криптографии</span>
-            </div>
-            <div class="theory-actions">
-              <a href="/theory/symmetric.html" class="btn-learn">Разобраться в теории</a>
-              <a href="games/symmetric/index.html" class="btn-play">Скоро</a>
-            </div>
-          </div>
+        <!-- Баннер переезда -->
+        <div class="migration-banner">
+          <h3>Важное обновление: Ludus Lab переезжает!</h3>
+          <p>Мы плавно переходим на новый домен, чтобы обеспечить бесперебойный доступ к нашим играм и материалам.</p>
+          <p>Новый адрес: <span class="new-address">https://ludus-lab.ru</span></p>
+          <p>Это техническое обновление позволит избежать возможных ограничений доступа к ресурсам с доменом .com из РФ.</p>
+          <p>Все игры и теория уже доступны на новом сайте в полном объёме.</p>
+          <button class="migration-button" onclick="window.location.href='https://ludus-lab.ru'">Перейти на новый сайт →</button>
         </div>
         
-        <div class="disclaimer" style="margin-top: 30px;">
-          ⚠️ Важное уточнение: наши игры не претендуют на абсолютную точность в реализации протоколов. 
-          Мы сознательно допускаем упрощения, чтобы сосредоточить внимание на понимании <span class="highlight nowrap">общего принципа работы</span>, 
-          а не на деталях реализации. Наша цель — сделать сложное доступным, а не воспроизвести протокол один в один.
-        </div>
-        
-        <div class="disclaimer" style="margin-top: 20px; background: rgba(0, 162, 255, 0.1); border-left-color: #00a2ff; color: #a0c0d0;">
-          💡 <strong>Совет:</strong> Начните с теории, чтобы понять основные принципы, затем переходите к игре — так вы получите максимум пользы от эксперимента!
-        </div>
+        <!-- Убраны все карточки теорий и другие элементы -->
       </div>
     </section>
 
@@ -781,7 +676,7 @@
           ⚠️ Наши игры — это упрощённые модели, а не точные симуляции. Мы сознательно жертвуем точностью в пользу понятности, чтобы помочь сформировать <span class="highlight nowrap">интуитивное понимание принципов</span>, а не знание деталей протоколов.
         </div>
         
-        <p>Мы живём в мире, наполненном сложными технологиями: квантовая криптография, блокчейн, машинное обучение. Эти термины звучат впечатляюще, но зачастую остаются абстрактными понятиями, которые сложно представить.</p>
+        <p>Мы живём в мире, наполненном сложными технологиями: квантовая криптография, блокчейн, машинное обучение. Эти термины звучат впечатляюще, но зачастю остаются абстрактными понятиями, которые сложно представить.</p>
         
         <p><span class="highlight">Что если бы можно было "пощупать" квантовую запутанность?</span> Или увидеть, как на самом деле работает обмен криптографическими ключами?</p>
         
@@ -888,6 +783,7 @@
     <footer>
       <p>© 2025 Ludus Lab · Сделано с любопытством и желанием разобраться</p>
       <p style="font-size: 0.8rem; margin-top: 10px;">Присоединяйтесь к исследованию сложного через простое</p>
+      <p style="font-size: 0.8rem; margin-top: 10px; color: #8ab0c5;">Ресурс переезжает на новый адрес: <a href="https://ludus-lab.ru" style="color: #00a2ff;">https://ludus-lab.ru</a></p>
     </footer>
   </div>
 
@@ -930,21 +826,6 @@
         const nextIndex = (currentIndex + 1) % sections.length;
         document.querySelector(`[onclick="showSection('${sections[nextIndex]}')"]`).click();
       }
-    });
-
-    // Добавляем немного интерактивности для карточек теории
-    document.addEventListener('DOMContentLoaded', function() {
-      const theoryCards = document.querySelectorAll('.theory-card');
-      
-      theoryCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-          this.style.transform = 'translateY(-5px)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-          this.style.transform = 'translateY(0)';
-        });
-      });
     });
   </script>
 </body>

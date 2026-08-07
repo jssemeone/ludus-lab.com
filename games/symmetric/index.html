@@ -3,10 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Симметричная криптография: Защищенный канал</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="../../favicon.ico">
+  <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+
+    ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+  
+  <title id="pageTitle">Симметричная криптография: Защищенный канал</title>
   <style>
     /* Шрифты */
     @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Segoe+UI:wght@400;500&display=swap');
+    .lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+    .lang-btn { background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3); font-size: 0.7rem; letter-spacing: 0.5px; padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+    .lang-btn.active { background: rgba(255, 215, 0, 0.18); border-color: #ffd700; color: #ffd700; box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+    @media (max-width: 600px) { .lang-switch { top: 8px; right: 8px; } .lang-btn { font-size: 0.6rem; padding: 3px 7px; } }
     * {
       margin: 0;
       padding: 0;
@@ -21,6 +49,22 @@
       padding: 20px;
       overflow-x: hidden;
       position: relative;
+    }
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 10, 20, 0.8);
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #00a2ff;
+      border-radius: 5px;
+      border: 2px solid rgba(0, 10, 20, 0.8);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00c2ff;
     }
     .container {
       max-width: 1200px;
@@ -1142,6 +1186,55 @@
       80% { opacity: 1; }
       100% { opacity: 0; }
     }
+    
+    /* Стили для новых кнопок навигации */
+    .navigation-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 40px auto 20px;
+      flex-wrap: wrap;
+    }
+    
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      background: rgba(0, 10, 20, 0.7);
+      color: #8ab0c5;
+      text-decoration: none;
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      gap: 8px;
+    }
+    
+    .nav-link:hover {
+      color: #00a2ff;
+      border-color: #00a2ff;
+      background: rgba(0, 20, 35, 0.7);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 162, 255, 0.2);
+    }
+    
+    .nav-link.primary {
+      background: rgba(0, 40, 80, 0.7);
+      color: #00a2ff;
+      border-color: rgba(0, 162, 255, 0.5);
+    }
+    
+    .nav-link.secondary {
+      background: rgba(212, 175, 55, 0.1);
+      color: #d4af37;
+      border-color: rgba(212, 175, 55, 0.3);
+    }
+    
+    .nav-link.secondary:hover {
+      color: #ffd700;
+      border-color: #d4af37;
+    }
+    
     /* Адаптивные стили для мобильных устройств */
     @media (max-width: 768px) {
       .data-type-grid {
@@ -1267,6 +1360,18 @@
         max-width: 300px;
         justify-content: center;
       }
+      
+      .navigation-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .nav-link {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
     }
     @media (max-width: 480px) {
       .container {
@@ -1358,252 +1463,1125 @@
       color: #ff8888;
     }
   </style>
+  <!-- Подключаем Font Awesome для иконок -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <div class="lang-switch" role="group" aria-label="Language">
+    <button class="lang-btn" data-lang-btn="ru">RU</button>
+    <button class="lang-btn" data-lang-btn="en">EN</button>
+    <button class="lang-btn" data-lang-btn="es">ES</button>
+  </div>
   <div class="container">
     <header class="game-header">
-      <h1>СИММЕТРИЧНАЯ КРИПТОГРАФИЯ: ЗАЩИЩЕННЫЙ КАНАЛ</h1>
+      <h1 data-i18n="game.title">СИММЕТРИЧНАЯ КРИПТОГРАФИЯ: ЗАЩИЩЕННЫЙ КАНАЛ</h1>
       <div class="header-decoration"></div>
-      <p class="subtitle">Ludus Lab · Сложные вещи — простыми играми</p>
+      <p class="subtitle" data-i18n="game.subtitle">Ludus Lab · Сложные вещи — простыми играми</p>
     </header>
     <!-- Описание протокола над выбором типа данных -->
     <div class="protocol-container">
       <div class="protocol-header" id="protocolHeader" tabindex="0" role="button" aria-expanded="false" aria-controls="protocolContent">
-        <h2>Описание симметричной криптографии <span class="toggle-icon">+</span></h2>
+        <h2><span data-i18n="protocol.toggle">Описание симметричной криптографии</span> <span class="toggle-icon">+</span></h2>
       </div>
       <div class="protocol-description" id="protocolContent" aria-hidden="true">
-        <p>Симметричная криптография использует один и тот же секретный ключ для шифрования и расшифрования данных. Алиса и Боб должны заранее договориться о ключе и алгоритме шифрования.</p>
+        <p data-i18n="protocol.intro">Симметричная криптография использует один и тот же секретный ключ для шифрования и расшифрования данных. Алиса и Боб должны заранее договориться о ключе и алгоритме шифрования.</p>
         <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">1</span> Выбор типа данных</div>
-          <p>Выберите тип защищаемых данных, который определяет требования к оборудованию.</p>
-          <p><strong>Без требований регуляторов:</strong> Можно использовать любое оборудование.</p>
-          <p><strong>По требованиям РФ:</strong> Только российское оборудование с алгоритмом "Кузнечик".</p>
-          <p><strong>По требованиям США/ЕС:</strong> Только Thales, Senetas, Rohde & Schwarz с алгоритмом AES.</p>
+          <div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">Выбор типа данных</span></div>
+          <p data-i18n="protocol.step1.desc">Выберите тип защищаемых данных, который определяет требования к оборудованию.</p>
+          <p data-i18n="protocol.step1.p1"><strong>Без требований регуляторов:</strong> Можно использовать любое оборудование.</p>
+          <p data-i18n="protocol.step1.p2"><strong>По требованиям РФ:</strong> Только российское оборудование с алгоритмом "Кузнечик".</p>
+          <p data-i18n="protocol.step1.p3"><strong>По требованиям США/ЕС:</strong> Только Thales, Senetas, Rohde & Schwarz с алгоритмом AES.</p>
         </div>
         <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">2</span> Выбор оборудования</div>
-          <p>Алиса и Боб выбирают криптографическое оборудование в соответствии с требованиями к данным.</p>
-          <p><strong>Западное оборудование:</strong> Thales работает только с Thales, Senetas только с Senetas, Rohde & Schwarz только с Rohde & Schwarz.</p>
+          <div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">Выбор оборудования</span></div>
+          <p data-i18n="protocol.step2.desc">Алиса и Боб выбирают криптографическое оборудование в соответствии с требованиями к данным.</p>
+          <p data-i18n="protocol.step2.p1"><strong>Западное оборудование:</strong> Thales работает только с Thales, Senetas только с Senetas, Rohde & Schwarz только с Rohde & Schwarz.</p>
         </div>
         <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">3</span> Алгоритм шифрования</div>
-          <p>Алгоритм шифрования автоматически определяется выбранным оборудованием.</p>
+          <div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">Алгоритм шифрования</span></div>
+          <p data-i18n="protocol.step3.desc">Алгоритм шифрования автоматически определяется выбранным оборудованием.</p>
         </div>
         <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">4</span> Получение ключа</div>
-          <p>Алиса и Боб должны получить одинаковый секретный ключ одним из методов.</p>
-          <p><strong>Сетевой PSK:</strong> Для Cisco/Juniper/Huawei - единый ключ для всей сети.</p>
-          <p><strong>Парные ключи:</strong> Для шифраторов - уникальные ключи для каждой пары узлов.</p>
+          <div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">Получение ключа</span></div>
+          <p data-i18n="protocol.step4.desc">Алиса и Боб должны получить одинаковый секретный ключ одним из методов.</p>
+          <p data-i18n="protocol.step4.p1"><strong>Сетевой PSK:</strong> Для Cisco/Juniper/Huawei - единый ключ для всей сети.</p>
+          <p data-i18n="protocol.step4.p2"><strong>Парные ключи:</strong> Для шифраторов - уникальные ключи для каждой пары узлов.</p>
         </div>
         <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">5</span> Установка защищенного канала</div>
-          <p>Протокол IKEv2/IPsec используется для установления защищенного канала.</p>
+          <div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">Установка защищенного канала</span></div>
+          <p data-i18n="protocol.step5.desc">Протокол IKEv2/IPsec используется для установления защищенного канала.</p>
         </div>
         <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">6</span> Обмен сообщениями</div>
-          <p>Сообщения шифруются на стороне отправителя и расшифровываются на стороне получателя.</p>
+          <div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">Обмен сообщениями</span></div>
+          <p data-i18n="protocol.step6.desc">Сообщения шифруются на стороне отправителя и расшифровываются на стороне получателя.</p>
         </div>
       </div>
     </div>
     <!-- Этап 1: Выбор типа данных -->
     <div class="data-type-selection" id="dataTypeSelection" aria-live="polite">
-      <h2 class="data-type-title">Выберите тип защищаемых данных</h2>
+      <h2 class="data-type-title" data-i18n="dataType.title">Выберите тип защищаемых данных</h2>
       <div class="data-type-grid">
-        <div class="data-type-option" data-type="no-regulations" tabindex="0" role="button" aria-label="Выбрать защиту коммерческой тайны без требований регуляторов">
+        <div class="data-type-option" data-type="no-regulations" tabindex="0" role="button" data-i18n-aria-label="dataType.no.aria" aria-label="Выбрать защиту коммерческой тайны без требований регуляторов">
           <div class="data-type-icon">🔓</div>
-          <div class="data-type-name">Коммерческая тайна без требований регуляторов</div>
-          <div class="data-type-description">
-            Данные, защита которых не регламентируется требованиями регуляторов. 
+          <div class="data-type-name" data-i18n="dataType.no.name">Коммерческая тайна без требований регуляторов</div>
+          <div class="data-type-description" data-i18n="dataType.no.desc">
+            Данные, защита которых не регламентируется требованиями регуляторов.
             Можно использовать любое оборудование.
           </div>
           <div class="data-type-recommendation">
-            <span class="recommendation-line">Рекомендуется: Cisco, Juniper, Huawei</span>
-            <span class="recommendation-line">(AES алгоритм, сетевой PSK)</span>
+            <span class="recommendation-line" data-i18n="dataType.no.rec1">Рекомендуется: Cisco, Juniper, Huawei</span>
+            <span class="recommendation-line" data-i18n="dataType.no.rec2">(AES алгоритм, сетевой PSK)</span>
           </div>
         </div>
-        <div class="data-type-option" data-type="russian-regulations" tabindex="0" role="button" aria-label="Выбрать защиту по требованиям РФ">
+        <div class="data-type-option" data-type="russian-regulations" tabindex="0" role="button" data-i18n-aria-label="dataType.ru.aria" aria-label="Выбрать защиту по требованиям РФ">
           <div class="data-type-icon">🇷🇺</div>
-          <div class="data-type-name">Защита по требованиям РФ</div>
-          <div class="data-type-description">
+          <div class="data-type-name" data-i18n="dataType.ru.name">Защита по требованиям РФ</div>
+          <div class="data-type-description" data-i18n="dataType.ru.desc">
             Коммерческая тайна, защита которой регламентируется требованиями регуляторов РФ.
             Требуется использование российского оборудования с алгоритмом "Кузнечик".
           </div>
           <div class="data-type-recommendation">
-            <span class="recommendation-line">Обязательно: КОТ, Земля, Текстиль</span>
-            <span class="recommendation-line">(алгоритм "Кузнечик", парные ключи через ЦУС)</span>
+            <span class="recommendation-line" data-i18n="dataType.ru.rec1">Обязательно: КОТ, Земля, Текстиль</span>
+            <span class="recommendation-line" data-i18n="dataType.ru.rec2">(алгоритм "Кузнечик", парные ключи через ЦУС)</span>
           </div>
         </div>
-        <div class="data-type-option" data-type="eu-us-regulations" tabindex="0" role="button" aria-label="Выбрать защиту по требованиям США/ЕС">
+        <div class="data-type-option" data-type="eu-us-regulations" tabindex="0" role="button" data-i18n-aria-label="dataType.eu.aria" aria-label="Выбрать защиту по требованиям США/ЕС">
           <div class="data-type-icon">🏛️</div>
-          <div class="data-type-name">Защита по требованиям США/ЕС</div>
-          <div class="data-type-description">
+          <div class="data-type-name" data-i18n="dataType.eu.name">Защита по требованиям США/ЕС</div>
+          <div class="data-type-description" data-i18n="dataType.eu.desc">
             Коммерческая тайна, защита которой регламентируется требованиями регуляторов США и ЕС.
             Требуется использование оборудования западных производителей.
           </div>
           <div class="data-type-recommendation">
-            <span class="recommendation-line">Обязательно: Thales, Senetas, Rohde & Schwarz</span>
-            <span class="recommendation-line">(AES алгоритм, парные ключи через Центр Управления)</span>
+            <span class="recommendation-line" data-i18n="dataType.eu.rec1">Обязательно: Thales, Senetas, Rohde & Schwarz</span>
+            <span class="recommendation-line" data-i18n="dataType.eu.rec2">(AES алгоритм, парные ключи через Центр Управления)</span>
           </div>
         </div>
         <!-- Блок с кнопкой продолжения -->
         <div class="continue-container disabled" id="continueContainer">
-          <button class="continue-button" id="continueButton" disabled>Перейти к выбору оборудования</button>
-          <div class="continue-description" id="continueDescription">
+          <button class="continue-button" id="continueButton" disabled data-i18n="continue.button">Перейти к выбору оборудования</button>
+          <div class="continue-description" id="continueDescription" data-i18n="continue.desc">
             После нажатия этой кнопки вы перейдете к выбору оборудования для Алисы и Боба
           </div>
         </div>
       </div>
     </div>
     <div class="game-area" id="gameArea" aria-live="polite">
-      <div class="connection-status disconnected" id="connectionStatus" aria-live="polite">
+      <div class="connection-status disconnected" id="connectionStatus" data-i18n="connection.notEstablished" aria-live="polite">
         СОЕДИНЕНИЕ НЕ УСТАНОВЛЕНО
       </div>
       <div class="quantum-setup">
-        <div class="character alice" aria-label="Параметры Алисы">
+        <div class="character alice" data-i18n-aria-label="aria.aliceParams" aria-label="Параметры Алисы">
           <div class="character-icon">A</div>
-          <div class="character-name">Алиса</div>
+          <div class="character-name" data-i18n="char.alice">Алиса</div>
           <div class="config-section">
-            <h3>Оборудование</h3>
+            <h3 data-i18n="hardware.heading">Оборудование</h3>
             <div class="select-container">
-              <select class="custom-select" id="aliceHardware" aria-label="Выберите оборудование для Алисы">
-                <option value="" selected disabled>Выберите оборудование</option>
+              <select class="custom-select" id="aliceHardware" data-i18n-aria-label="aria.aliceHwSelect" aria-label="Выберите оборудование для Алисы">
+                <option value="" selected disabled data-i18n="hardware.choosePlaceholder">Выберите оборудование</option>
                 <!-- Опции будут заполнены динамически в зависимости от типа данных -->
               </select>
               <div class="option-description" id="aliceHardwareDesc" aria-live="polite"></div>
               <div class="compatibility-info" id="aliceCompatInfo" aria-live="polite"></div>
             </div>
           </div>
-          <div class="algorithm-display" id="aliceAlgorithm">Не выбран</div>
+          <div class="algorithm-display" id="aliceAlgorithm" data-i18n="algorithm.notSelected">Не выбран</div>
         </div>
-        <div class="channels-log-container" aria-label="Каналы связи и логи">
+        <div class="channels-log-container" data-i18n-aria-label="aria.channelsAndLogs" aria-label="Каналы связи и логи">
           <div class="channels-container">
             <div class="channel-wrapper">
-              <div class="channel-label">Пользовательский канал</div>
-              <div class="channel inactive" id="quantumChannel" aria-label="Пользовательский канал">
+              <div class="channel-label" data-i18n="channel.userLabel">Пользовательский канал</div>
+              <div class="channel inactive" id="quantumChannel" data-i18n-aria-label="channel.userLabel" aria-label="Пользовательский канал">
                 <div class="eve-icon" id="eveIcon" aria-hidden="true">👁️‍🗨️</div>
               </div>
             </div>
             <div class="channel-wrapper">
-              <div class="channel-label">Служебный канал (IKEv2)</div>
-              <div class="channel inactive" id="classicalChannel" aria-label="Служебный канал IKEv2">
+              <div class="channel-label" data-i18n="channel.serviceLabel">Служебный канал (IKEv2)</div>
+              <div class="channel inactive" id="classicalChannel" data-i18n-aria-label="channel.serviceAriaLabel" aria-label="Служебный канал IKEv2">
                 <!-- Пакеты данных будут добавляться динамически -->
               </div>
             </div>
           </div>
           <div class="log-area">
-            <h2 class="section-title">Log файл</h2>
+            <h2 class="section-title" data-i18n="log.title">Log файл</h2>
             <div class="log-box" id="logBox" aria-live="polite">
               <div class="log-entry system">
                 <span class="log-timestamp">[12:00:01]</span>
                 <span class="log-sender system">SYSTEM:</span>
-                <div class="log-content">Инициализация протокола симметричного шифрования</div>
+                <div class="log-content" data-i18n="log.init">Инициализация протокола симметричного шифрования</div>
               </div>
             </div>
           </div>
         </div>
-        <div class="character bob" aria-label="Параметры Боба">
+        <div class="character bob" data-i18n-aria-label="aria.bobParams" aria-label="Параметры Боба">
           <div class="character-icon">B</div>
-          <div class="character-name">Боб</div>
+          <div class="character-name" data-i18n="char.bob">Боб</div>
           <div class="config-section">
-            <h3>Оборудование</h3>
+            <h3 data-i18n="hardware.heading">Оборудование</h3>
             <div class="select-container">
-              <select class="custom-select" id="bobHardware" aria-label="Выберите оборудование для Боба">
-                <option value="" selected disabled>Выберите оборудование</option>
+              <select class="custom-select" id="bobHardware" data-i18n-aria-label="aria.bobHwSelect" aria-label="Выберите оборудование для Боба">
+                <option value="" selected disabled data-i18n="hardware.choosePlaceholder">Выберите оборудование</option>
                 <!-- Опции будут заполнены динамически в зависимости от типа данных -->
               </select>
               <div class="option-description" id="bobHardwareDesc" aria-live="polite"></div>
               <div class="compatibility-info" id="bobCompatInfo" aria-live="polite"></div>
             </div>
           </div>
-          <div class="algorithm-display" id="bobAlgorithm">Не выбран</div>
+          <div class="algorithm-display" id="bobAlgorithm" data-i18n="algorithm.notSelected">Не выбран</div>
         </div>
       </div>
-      <div class="key-setup-container" id="keySetupContainer" aria-label="Установка ключа шифрования">
-        <h2 class="section-title">Установка ключа шифрования</h2>
-        <p style="margin-bottom: 15px; color: #8ab0c5; font-size: 0.9rem;">
+      <div class="key-setup-container" id="keySetupContainer" data-i18n-aria-label="keySetup.aria" aria-label="Установка ключа шифрования">
+        <h2 class="section-title" data-i18n="keySetup.heading">Установка ключа шифрования</h2>
+        <p style="margin-bottom: 15px; color: #8ab0c5; font-size: 0.9rem;" data-i18n="keySetup.intro">
           Алиса и Боб должны иметь одинаковый секретный ключ. Выберите метод получения ключа:
         </p>
         <div class="key-methods" id="keyMethods">
-          <div class="key-method" data-method="manual" tabindex="0" role="button" aria-label="Ввод сетевого PSK вручную">
-            <div class="key-method-title">Ввод вручную</div>
-            <div class="key-method-description">Установить сетевой PSK</div>
+          <div class="key-method" data-method="manual" tabindex="0" role="button" data-i18n-aria-label="keyMethod.manual.aria" aria-label="Ввод сетевого PSK вручную">
+            <div class="key-method-title" data-i18n="keyMethod.manual.title">Ввод вручную</div>
+            <div class="key-method-description" data-i18n="keyMethod.manual.desc">Установить сетевой PSK</div>
           </div>
-          <div class="key-method" data-method="cvk" tabindex="0" role="button" aria-label="Получение парных ключей через Центр Управления Сетями">
-            <div class="key-method-title">Центр выработки ключей</div>
-            <div class="key-method-description">Использовать ЦУС/Центр Управления</div>
+          <div class="key-method" data-method="cvk" tabindex="0" role="button" data-i18n-aria-label="keyMethod.cvk.aria" aria-label="Получение парных ключей через Центр Управления Сетями">
+            <div class="key-method-title" data-i18n="keyMethod.cvk.title">Центр выработки ключей</div>
+            <div class="key-method-description" data-i18n="keyMethod.cvk.desc">Использовать ЦУС/Центр Управления</div>
           </div>
-          <div class="key-method" data-method="krk" tabindex="0" role="button" aria-label="Получение парного ключа через квантовое распределение">
-            <div class="key-method-title">Квантовое распределение</div>
-            <div class="key-method-description">Использовать квантовую криптографию</div>
+          <div class="key-method" data-method="krk" tabindex="0" role="button" data-i18n-aria-label="keyMethod.krk.aria" aria-label="Получение парного ключа через квантовое распределение">
+            <div class="key-method-title" data-i18n="keyMethod.krk.title">Квантовое распределение</div>
+            <div class="key-method-description" data-i18n="keyMethod.krk.desc">Использовать квантовую криптографию</div>
           </div>
-          <div class="key-method" data-method="rnd" tabindex="0" role="button" aria-label="Генерация случайного сетевого PSK">
-            <div class="key-method-title">Генерация RND</div>
-            <div class="key-method-description">Сгенерировать случайный PSK</div>
+          <div class="key-method" data-method="rnd" tabindex="0" role="button" data-i18n-aria-label="keyMethod.rnd.aria" aria-label="Генерация случайного сетевого PSK">
+            <div class="key-method-title" data-i18n="keyMethod.rnd.title">Генерация RND</div>
+            <div class="key-method-description" data-i18n="keyMethod.rnd.desc">Сгенерировать случайный PSK</div>
           </div>
         </div>
         <div class="key-input-container" id="keyInputContainer">
-          <input type="text" class="key-input" id="sharedKey" placeholder="Ключ будет сгенерирован автоматически..." readonly aria-label="Ключ шифрования">
-          <button class="key-action-button" id="applyKeyBtn" disabled>Применить ключ</button>
+          <input type="text" class="key-input" id="sharedKey" data-i18n-placeholder="key.inputPlaceholderDefault" placeholder="Ключ будет сгенерирован автоматически..." readonly data-i18n-aria-label="key.encryptionKeyAria" aria-label="Ключ шифрования">
+          <button class="key-action-button" id="applyKeyBtn" disabled data-i18n="btn.applyKey">Применить ключ</button>
         </div>
         <div style="margin-top: 10px; font-size: 0.8rem; color: #8ab0c5;">
-          <div id="keyMethodDescription" aria-live="polite">Выберите метод получения ключа</div>
-          <div id="keyWarning" style="color: #ff4444; display: none; margin-top: 5px;" aria-live="polite">
+          <div id="keyMethodDescription" data-i18n="keyMethodDesc.default" aria-live="polite">Выберите метод получения ключа</div>
+          <div id="keyWarning" style="color: #ff4444; display: none; margin-top: 5px;" data-i18n="key.warningUnsafe" aria-live="polite">
             ⚠️ Этот метод небезопасен и не рекомендуется для реального использования
           </div>
         </div>
       </div>
       <div class="alert-container" aria-live="assertive">
-        <div class="eve-alert" id="eveAlert">
+        <div class="eve-alert" id="eveAlert" data-i18n="alert.eveDefault">
           ⚠️ Ева пытается перехватить сообщение!
         </div>
-        <div class="success-alert" id="successAlert">
+        <div class="success-alert" id="successAlert" data-i18n="alert.successDefault">
           ✅ Защищенный канал успешно установлен!
         </div>
-        <div class="info-alert" id="infoAlert">
+        <div class="info-alert" id="infoAlert" data-i18n="alert.infoDefault">
           ℹ️ Выберите оборудование и метод получения ключа
         </div>
-        <div class="warning-alert" id="warningAlert">
+        <div class="warning-alert" id="warningAlert" data-i18n="alert.warningDefault">
           ⚠️ Используется небезопасный метод получения ключа!
         </div>
       </div>
       <div class="controls" id="controlsContainer">
-        <h2 class="section-title">Панель управления</h2>
+        <h2 class="section-title" data-i18n="controls.heading">Панель управления</h2>
         <div class="action-buttons">
           <div class="button-row">
-            <button class="action-button" id="establishBtn" aria-label="Установить защищенное соединение">
+            <button class="action-button" id="establishBtn" data-i18n-aria-label="btn.establish.aria" aria-label="Установить защищенное соединение">
               <div>
-                <div>Установить соединение</div>
-                <div class="mode-description">Проверит совместимость конфигураций</div>
+                <div data-i18n="btn.establish.title">Установить соединение</div>
+                <div class="mode-description" data-i18n="btn.establish.desc">Проверит совместимость конфигураций</div>
               </div>
             </button>
-            <button class="action-button danger" id="stopBtn" disabled aria-label="Остановить трафик в канале">
+            <button class="action-button danger" id="stopBtn" disabled data-i18n-aria-label="btn.stop.aria" aria-label="Остановить трафик в канале">
               <div>
-                <div>СТОП</div>
-                <div class="mode-description">Остановить трафик в канале</div>
+                <div data-i18n="btn.stop.title">СТОП</div>
+                <div class="mode-description" data-i18n="btn.stop.desc">Остановить трафик в канале</div>
               </div>
             </button>
           </div>
           <div class="button-row">
-            <button class="action-button" id="startTrafficBtn" disabled aria-label="Запустить трафик в пользовательский канал">
+            <button class="action-button" id="startTrafficBtn" disabled data-i18n-aria-label="btn.startTraffic.aria" aria-label="Запустить трафик в пользовательский канал">
               <div>
-                <div>Запустить трафик</div>
-                <div class="mode-description">Запустить трафик в пользовательский канал</div>
+                <div data-i18n="btn.startTraffic.title">Запустить трафик</div>
+                <div class="mode-description" data-i18n="btn.startTraffic.desc">Запустить трафик в пользовательский канал</div>
               </div>
             </button>
-            <button class="action-button" id="resetBtn" aria-label="Сбросить настройки">
+            <button class="action-button" id="resetBtn" data-i18n="btn.reset" data-i18n-aria-label="btn.reset" aria-label="Сбросить настройки">
               Сбросить настройки
             </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="lab-return-container">
-      <button class="return-to-selection-button" id="returnToSelectionBtn" aria-label="Вернуться к выбору типа данных">Вернуться к выбору типа данных</button>
-      <a href="https://ludus-lab.com/" class="lab-return-button" aria-label="Вернуться в лабораторию Ludus Lab">Вернуться в лабораторию</a>
+    
+    <!-- Новый блок навигации -->
+    <div class="navigation-links">
+      <a href="https://ludus-lab.ru/theory/symmetric.html" class="nav-link secondary">
+        <i class="fas fa-book-open"></i> <span data-i18n="nav.theory">Прочитать теорию</span>
+      </a>
+      <a href="https://ludus-lab.ru/" class="nav-link primary">
+        <i class="fas fa-home"></i> <span data-i18n="nav.home">Вернуться в лабораторию</span>
+      </a>
+    </div>
+
+    <!-- Старый блок навигации (скрыт) -->
+    <div class="lab-return-container" style="display: none;">
+      <button class="return-to-selection-button" id="returnToSelectionBtn" data-i18n="legacyNav.returnToSelection" data-i18n-aria-label="legacyNav.returnToSelection" aria-label="Вернуться к выбору типа данных">Вернуться к выбору типа данных</button>
+      <a href="https://ludus-lab.ru/" class="lab-return-button" data-i18n="nav.home" data-i18n-aria-label="legacyNav.returnToLabAria" aria-label="Вернуться в лабораторию Ludus Lab">Вернуться в лабораторию</a>
     </div>
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // ===== I18N =====
+      const I18N = {
+        ru: {
+          'game.title': 'СИММЕТРИЧНАЯ КРИПТОГРАФИЯ: ЗАЩИЩЕННЫЙ КАНАЛ',
+          'game.subtitle': 'Ludus Lab · Сложные вещи — простыми играми',
+          'protocol.toggle': 'Описание симметричной криптографии',
+          'protocol.intro': 'Симметричная криптография использует один и тот же секретный ключ для шифрования и расшифрования данных. Алиса и Боб должны заранее договориться о ключе и алгоритме шифрования.',
+          'protocol.step1.title': 'Выбор типа данных',
+          'protocol.step1.desc': 'Выберите тип защищаемых данных, который определяет требования к оборудованию.',
+          'protocol.step1.p1': '<strong>Без требований регуляторов:</strong> Можно использовать любое оборудование.',
+          'protocol.step1.p2': '<strong>По требованиям РФ:</strong> Только российское оборудование с алгоритмом "Кузнечик".',
+          'protocol.step1.p3': '<strong>По требованиям США/ЕС:</strong> Только Thales, Senetas, Rohde & Schwarz с алгоритмом AES.',
+          'protocol.step2.title': 'Выбор оборудования',
+          'protocol.step2.desc': 'Алиса и Боб выбирают криптографическое оборудование в соответствии с требованиями к данным.',
+          'protocol.step2.p1': '<strong>Западное оборудование:</strong> Thales работает только с Thales, Senetas только с Senetas, Rohde & Schwarz только с Rohde & Schwarz.',
+          'protocol.step3.title': 'Алгоритм шифрования',
+          'protocol.step3.desc': 'Алгоритм шифрования автоматически определяется выбранным оборудованием.',
+          'protocol.step4.title': 'Получение ключа',
+          'protocol.step4.desc': 'Алиса и Боб должны получить одинаковый секретный ключ одним из методов.',
+          'protocol.step4.p1': '<strong>Сетевой PSK:</strong> Для Cisco/Juniper/Huawei - единый ключ для всей сети.',
+          'protocol.step4.p2': '<strong>Парные ключи:</strong> Для шифраторов - уникальные ключи для каждой пары узлов.',
+          'protocol.step5.title': 'Установка защищенного канала',
+          'protocol.step5.desc': 'Протокол IKEv2/IPsec используется для установления защищенного канала.',
+          'protocol.step6.title': 'Обмен сообщениями',
+          'protocol.step6.desc': 'Сообщения шифруются на стороне отправителя и расшифровываются на стороне получателя.',
+          'dataType.title': 'Выберите тип защищаемых данных',
+          'dataType.no.aria': 'Выбрать защиту коммерческой тайны без требований регуляторов',
+          'dataType.no.name': 'Коммерческая тайна без требований регуляторов',
+          'dataType.no.desc': 'Данные, защита которых не регламентируется требованиями регуляторов. Можно использовать любое оборудование.',
+          'dataType.no.rec1': 'Рекомендуется: Cisco, Juniper, Huawei',
+          'dataType.no.rec2': '(AES алгоритм, сетевой PSK)',
+          'dataType.ru.aria': 'Выбрать защиту по требованиям РФ',
+          'dataType.ru.name': 'Защита по требованиям РФ',
+          'dataType.ru.desc': 'Коммерческая тайна, защита которой регламентируется требованиями регуляторов РФ. Требуется использование российского оборудования с алгоритмом "Кузнечик".',
+          'dataType.ru.rec1': 'Обязательно: КОТ, Земля, Текстиль',
+          'dataType.ru.rec2': '(алгоритм "Кузнечик", парные ключи через ЦУС)',
+          'dataType.eu.aria': 'Выбрать защиту по требованиям США/ЕС',
+          'dataType.eu.name': 'Защита по требованиям США/ЕС',
+          'dataType.eu.desc': 'Коммерческая тайна, защита которой регламентируется требованиями регуляторов США и ЕС. Требуется использование оборудования западных производителей.',
+          'dataType.eu.rec1': 'Обязательно: Thales, Senetas, Rohde & Schwarz',
+          'dataType.eu.rec2': '(AES алгоритм, парные ключи через Центр Управления)',
+          'continue.button': 'Перейти к выбору оборудования',
+          'continue.desc': 'После нажатия этой кнопки вы перейдете к выбору оборудования для Алисы и Боба',
+          'connection.notEstablished': 'СОЕДИНЕНИЕ НЕ УСТАНОВЛЕНО',
+          'connection.establishing': 'УСТАНАВЛИВАЕТСЯ...',
+          'connection.compatible': 'КОНФИГУРАЦИЯ СОВМЕСТИМА',
+          'connection.incompatible': 'КОНФИГУРАЦИЯ НЕСОВМЕСТИМА',
+          'connection.established': 'СОЕДИНЕНИЕ УСТАНОВЛЕНО',
+          'aria.aliceParams': 'Параметры Алисы',
+          'aria.bobParams': 'Параметры Боба',
+          'char.alice': 'Алиса',
+          'char.bob': 'Боб',
+          'hardware.heading': 'Оборудование',
+          'aria.aliceHwSelect': 'Выберите оборудование для Алисы',
+          'aria.bobHwSelect': 'Выберите оборудование для Боба',
+          'hardware.choosePlaceholder': 'Выберите оборудование',
+          'algorithm.notSelected': 'Не выбран',
+          'algorithm.aes': 'AES (меж.стандарт)',
+          'algorithm.kuznyechik': 'Кузнечик (ГОСТ РФ)',
+          'aria.channelsAndLogs': 'Каналы связи и логи',
+          'channel.userLabel': 'Пользовательский канал',
+          'channel.serviceLabel': 'Служебный канал (IKEv2)',
+          'channel.serviceAriaLabel': 'Служебный канал IKEv2',
+          'log.title': 'Log файл',
+          'log.init': 'Инициализация протокола симметричного шифрования',
+          'keySetup.aria': 'Установка ключа шифрования',
+          'keySetup.heading': 'Установка ключа шифрования',
+          'keySetup.intro': 'Алиса и Боб должны иметь одинаковый секретный ключ. Выберите метод получения ключа:',
+          'keyMethod.manual.aria': 'Ввод сетевого PSK вручную',
+          'keyMethod.manual.title': 'Ввод вручную',
+          'keyMethod.manual.desc': 'Установить сетевой PSK',
+          'keyMethod.cvk.aria': 'Получение парных ключей через Центр Управления Сетями',
+          'keyMethod.cvk.title': 'Центр выработки ключей',
+          'keyMethod.cvk.desc': 'Использовать ЦУС/Центр Управления',
+          'keyMethod.krk.aria': 'Получение парного ключа через квантовое распределение',
+          'keyMethod.krk.title': 'Квантовое распределение',
+          'keyMethod.krk.desc': 'Использовать квантовую криптографию',
+          'keyMethod.rnd.aria': 'Генерация случайного сетевого PSK',
+          'keyMethod.rnd.title': 'Генерация RND',
+          'keyMethod.rnd.desc': 'Сгенерировать случайный PSK',
+          'key.encryptionKeyAria': 'Ключ шифрования',
+          'key.inputPlaceholderDefault': 'Ключ будет сгенерирован автоматически...',
+          'key.choosePlaceholder': 'Выберите метод получения ключа...',
+          'key.placeholderNetworkPSK': 'Введите сетевой PSK (один для всей сети)...',
+          'key.placeholderCenterRu': 'ЦУС сгенерирует парные ключи...',
+          'key.placeholderCenterWest': 'Центр Управления сгенерирует парные ключи...',
+          'key.placeholderKRK': 'Получите парный ключ в игре КРК...',
+          'key.placeholderPSKGenerated': 'Сетевой PSK сгенерирован',
+          'key.placeholderPairedKey': '{center}: Парный ключ для тоннеля Алиса-Боб',
+          'key.typeNetwork': 'сетевой PSK (общий для всех узлов)',
+          'key.typePaired': 'парный ключ (уникальный для этой пары)',
+          'btn.applyKey': 'Применить ключ',
+          'btn.setNetworkPSK': 'Установить сетевой PSK',
+          'btn.getKeyFromCenterRu': 'Получить ключ из ЦУС',
+          'btn.getKeyFromCenterWest': 'Получить ключ из Центра Управления',
+          'btn.openKRK': 'Открыть КРК',
+          'btn.applyQuantumKey': 'Применить квантовый ключ',
+          'btn.applyNetworkPSK': 'Применить сетевой PSK',
+          'btn.loadPairedKey': 'Загрузить парный ключ в шифраторы',
+          'keyMethodDesc.default': 'Выберите метод получения ключа',
+          'key.warningUnsafe': '⚠️ Этот метод небезопасен и не рекомендуется для реального использования',
+          'keyMethod.manual.international': 'Введите общий сетевой PSK в конфигурацию оборудования. Этот PSK будет одинаковым для всех маршрутизаторов в сети (Алиса, Боб, Чарли и т.д.).',
+          'keyMethod.manual.russian': '⚠️ НЕДОСТУПНО: Для российских шифраторов ключи устанавливаются только через ЦУС.',
+          'keyMethod.manual.western': '⚠️ НЕДОСТУПНО: Для западных шифраторов ключи устанавливаются только через Центр Управления.',
+          'keyMethod.cvk.international': '⚠️ НЕДОСТУПНО: Для международного оборудования используется сетевой PSK.',
+          'keyMethod.cvk.russian': 'Используйте Центр Управления Сетями для генерации парных ключей. Каждая пара (Алиса-Боб, Алиса-Чарли, Боб-Чарли) получает уникальные ключи.',
+          'keyMethod.cvk.western': 'Используйте Центр Управления для генерации парных ключей. Каждый тоннель имеет уникальный ключ.',
+          'keyMethod.krk.international': '⚠️ НЕДОСТУПНО: Для международного оборудования используется сетевой PSK.',
+          'keyMethod.krk.russian': 'Используйте Квантовое распределение ключей для абсолютно безопасного получения парного ключа для этого конкретного тоннеля.',
+          'keyMethod.krk.western': 'Используйте Квантовое распределение ключей для абсолютно безопасного получения парного ключа для этого конкретного тоннеля.',
+          'keyMethod.rnd.international': 'Сгенерировать случайный сетевой PSK для настройки на всех маршрутизаторов сети.',
+          'keyMethod.rnd.russian': '⚠️ НЕДОСТУПНО: Для российских шифраторов ключи устанавливаются только через ЦУС.',
+          'keyMethod.rnd.western': '⚠️ НЕДОПУСТИМО: Для западных шифраторов ключи устанавливаются только через Центр Управления.',
+          'alert.eveDefault': '⚠️ Ева пытается перехватить сообщение!',
+          'alert.successDefault': '✅ Защищенный канал успешно установлен!',
+          'alert.infoDefault': 'ℹ️ Выберите оборудование и метод получения ключа',
+          'alert.warningDefault': '⚠️ Используется небезопасный метод получения ключа!',
+          'controls.heading': 'Панель управления',
+          'btn.establish.aria': 'Установить защищенное соединение',
+          'btn.establish.title': 'Установить соединение',
+          'btn.establish.desc': 'Проверит совместимость конфигураций',
+          'btn.stop.aria': 'Остановить трафик в канале',
+          'btn.stop.title': 'СТОП',
+          'btn.stop.desc': 'Остановить трафик в канале',
+          'btn.startTraffic.aria': 'Запустить трафик в пользовательский канал',
+          'btn.startTraffic.title': 'Запустить трафик',
+          'btn.startTraffic.desc': 'Запустить трафик в пользовательский канал',
+          'btn.reset': 'Сбросить настройки',
+          'nav.theory': 'Прочитать теорию',
+          'nav.home': 'Вернуться в лабораторию',
+          'legacyNav.returnToSelection': 'Вернуться к выбору типа данных',
+          'legacyNav.returnToLabAria': 'Вернуться в лабораторию Ludus Lab',
+          'hardware.desc.cisco': 'Международное оборудование (США). Использует алгоритм AES. Сетевой PSK - единый для всех узлов сети.',
+          'hardware.desc.juniper': 'Международное оборудование (США). Использует алгоритм AES. Сетевой PSK - единый для всех узлов сети.',
+          'hardware.desc.huawei': 'Международное оборудование (Китай). Использует алгоритм AES. Сетевой PSK - единый для всех узлов сети.',
+          'hardware.desc.kot': 'Российское оборудование КОТ. Использует алгоритм "Кузнечик" (ГОСТ РФ). Парные ключи через ЦУС.',
+          'hardware.desc.zemlya': 'Российское оборудование. Использует алгоритм "Кузнечик" (ГОСТ РФ). Парные ключи через ЦУС.',
+          'hardware.desc.tekstit': 'Российское оборудование. Использует алгоритм "Кузнечик" (ГОСТ РФ). Парные ключи через ЦУС.',
+          'hardware.desc.thales': 'Западное оборудование (Франция). Использует алгоритм AES. Парные ключи через Центр Управления.',
+          'hardware.desc.senetas': 'Западное оборудование (Австралия). Использует алгоритм AES. Парные ключи через Центр Управления.',
+          'hardware.desc.rohde-schwarz': 'Западное оборудование (Германия). Использует алгоритм AES. Парные ключи через Центр Управления.',
+          'hardware.name.kot': 'КОТ',
+          'hardware.name.zemlya': 'Земля',
+          'hardware.name.tekstit': 'Текстиль',
+          'dataType.desc.no-regulations': 'Коммерческая тайна без требований регуляторов',
+          'dataType.desc.russian-regulations': 'Коммерческая тайна по требованиям регуляторов РФ',
+          'dataType.desc.eu-us-regulations': 'Коммерческая тайна по требованиям регуляторов США/ЕС',
+          'compat.international': '✅ Совместимо с Cisco, Juniper, Huawei (используют сетевой PSK)',
+          'compat.russian': '✅ Совместимо только с {name} (использует парные ключи через ЦУС)',
+          'compat.western': '✅ Совместимо только с {name} (использует парные ключи через Центр Управления)',
+          'log.intlPSKInfo': 'ℹ️ Международное оборудование использует сетевой PSK, общий для всех узлов сети',
+          'log.russianPairedInfo': 'ℹ️ Российские шифраторы используют уникальные парные ключи для каждого тоннеля',
+          'log.westernPairedInfo': 'ℹ️ Западные шифраторы используют уникальные парные ключи для каждого тоннеля',
+          'centerName.ru': 'ЦУС',
+          'centerName.west': 'Центр Управления',
+          'log.cvkRequest': 'Запрос в {center} для генерации парного ключа для тоннеля Алиса-Боб...',
+          'log.cvkCheckingRights': '{center}: Проверка прав доступа Алисы и Боба...',
+          'log.cvkGenerating': '{center}: Генерация уникального парного ключа для тоннеля Алиса-Боб...',
+          'log.cvkKeyGenerated': '{center}: Парный ключ сгенерирован: {key}...',
+          'log.cvkKeyAlice': '{center}: Ключ для Алисы: связан только с Бобом',
+          'log.cvkKeyBob': '{center}: Ключ для Боба: связан только с Алисой',
+          'info.cvkGenerated': '✅ {center} сгенерировал уникальный парный ключ для тоннеля Алиса-Боб',
+          'log.networkPSKConfigured': 'Сетевой PSK настроен в конфигурациях оборудования',
+          'log.networkPSKSameForAll': 'Этот же PSK используется для всех маршрутизаторов в сети (OSPF/MPLS)',
+          'log.networkPSKCharlie': 'При добавлении Чарли в сеть ему будет задан этот же PSK',
+          'log.networkPSKLength': 'Длина сетевого PSK: {n} символов',
+          'log.pairedKeysLoaded': '{center}: Парные ключи загружены в шифраторы',
+          'log.aliceKeyOnly': 'Алиса получила ключ, который работает ТОЛЬКО для тоннеля с Бобом',
+          'log.bobKeyOnly': 'Боб получил ключ, который работает ТОЛЬКО для тоннеля с Алисой',
+          'log.charlieDifferentKeys': '{center}: Если добавить Чарли, для Алиса-Чарли и Боб-Чарли будут сгенерированы другие ключи',
+          'log.tunnelCommandSent': '{center}: Команда на построение тоннеля Алиса-Боб отправлена',
+          'log.keySet': 'Ключ установлен: {key}',
+          'method.manual': 'вручную (сетевой PSK)',
+          'method.cvk': 'через Центр Управления Сетями (парные ключи)',
+          'method.krk': 'через Квантовое распределение ключей (парный ключ)',
+          'method.rnd': 'случайной генерацией (сетевой PSK)',
+          'security.unsafe': ' (небезопасно)',
+          'security.safe': ' (безопасно)',
+          'log.keyMethodUsed': 'Метод получения ключа: {method}{security}',
+          'ikev2.initPSK': 'Инициализация IKEv2 с сетевым PSK...',
+          'ikev2.pskShared': 'PSK: общий для всех узлов сети (Алиса, Боб, Чарли...)',
+          'ikev2.phase1Init': 'Фаза 1 IKEv2: Алиса → Боб: IKE_SA_INIT_REQUEST',
+          'ikev2.phase1DH': 'Фаза 1 IKEv2: Обмен параметрами Диффи-Хеллмана',
+          'ikev2.phase2Auth': 'Фаза 2 IKEv2: Алиса → Боб: IKE_AUTH_REQUEST с хэшем сетевого PSK',
+          'ikev2.bobComputeHash': 'Боб: Вычисление хэша от своего сетевого PSK...',
+          'ikev2.hashMatchBob': 'Боб: Хэши совпали! → Алиса: IKE_AUTH_RESPONSE с подтверждением',
+          'ikev2.aliceComputeHash': 'Алиса: Вычисление хэша от PSK Боба...',
+          'ikev2.hashMatchAlice': 'Алиса: Хэши совпали! Взаимная аутентификация успешна',
+          'ikev2.saEstablished': 'IKE_SA установлен: создан защищенный канал управления',
+          'ikev2.ipsecCreating': 'Создание IPsec SA для данных...',
+          'ikev2.ipsecReady': 'IPsec SA установлен: готов к передаче данных',
+          'equipment.international': 'Международное оборудование (сетевой PSK)',
+          'ikev2.pairedInit': '{center}: Инициализация парного ключа для тоннеля Алиса-Боб',
+          'ikev2.pairedUnique': 'Ключ уникален только для этой пары (Алиса-Боб)',
+          'ikev2.pairedCmdAlice': '{center}: Команда Алисе: инициировать IKEv2 с Бобом',
+          'ikev2.pairedInitReq': 'Алиса → Боб: IKE_SA_INIT_REQUEST с использованием парного ключа',
+          'ikev2.phase2PairedAuth': 'Фаза 2 IKEv2: Аутентификация с использованием парного ключа',
+          'ikev2.bobVerify': 'Боб: Проверка парного ключа... Ключ предназначен именно для Алисы',
+          'ikev2.aliceVerify': 'Алиса: Проверка парного ключа... Ключ предназначен именно для Боба',
+          'ikev2.pairedVerified': 'Парные ключи верифицированы: взаимная аутентификация успешна',
+          'ikev2.ipsecPairedReady': 'IPsec SA установлен: шифраторы готовы к передаче данных',
+          'equipment.russian': 'Российские',
+          'equipment.western': 'Западные',
+          'equipment.encryptorsPaired': '{type} шифраторы (парный ключ)',
+          'ikev2.channelEstablished': '{type}: Защищенный канал успешно установлен',
+          'success.channelEstablished': '✅ Защищенный канал успешно установлен!',
+          'log.equipmentType': 'Тип оборудования: {type}',
+          'log.keyType': 'Тип ключа: {type}',
+          'log.readyToTransfer': 'Готов к передаче защищенных данных',
+          'log.charlieIntlSamePSK': 'ℹ️ Если в сеть добавить маршрутизатор Чарли, ему будет задан этот же сетевой PSK',
+          'log.charlieIntlCommunicate': 'ℹ️ Чарли сможет общаться и с Алисой, и с Бобом, используя тот же PSK',
+          'log.charlieIntlScale': 'ℹ️ Это удобно для масштабирования, но повышает риски при компрометации PSK',
+          'log.charlieNewKeys': 'ℹ️ Если добавить шифратор Чарли, {center} сгенерирует новые парные ключи:',
+          'log.charlieKeyAlice': 'ℹ️ Для Алиса-Чарли: уникальный ключ 1',
+          'log.charlieKeyBob': 'ℹ️ Для Боб-Чарли: уникальный ключ 2',
+          'log.aliceBobKeyUnchanged': 'ℹ️ Ключ Алиса-Боб останется прежним и не будет работать для других пар',
+          'eve.interceptPSKVulnerable': 'ПЕРЕХВАЧЕНО: сетевой PSK уязвим - ключ общий для всей сети',
+          'eve.interceptPairedHarder': 'ПЕРЕХВАЧЕНО: парный ключ сложнее взломать',
+          'log.aliceIPsecESP': 'IPsec ESP: {message}',
+          'eve.interceptedDecrypted': 'ПЕРЕХВАЧЕНО И РАСШИФРОВАНО: "{message}"',
+          'log.criticalPSKCompromised': '⚠️ КРИТИЧЕСКАЯ УГРОЗА: Сетевой PSK скомпрометирован! Все узлы сети под угрозой.',
+          'log.pairedKeyCompromised': '⚠️ УГРОЗА: Парный ключ для тоннеля Алиса-Боб скомпрометирован.',
+          'log.otherTunnelsSafe': '⚠️ Но другие тоннели (Алиса-Чарли, Боб-Чарли) остаются защищёнными.',
+          'eve.interceptFailedDecrypt': 'ПЕРЕХВАЧЕНО: не удалось расшифровать IPsec ESP пакет',
+          'log.bobReceived': 'IPsec ESP: Сообщение получено и расшифровано: {message}',
+          'log.bobUsesNetworkPSK': 'Используется сетевой PSK: общий для всех узлов сети',
+          'log.bobUsesPairedKey': 'Используется парный ключ: уникальный для тоннеля Алиса-Боб',
+          'log.messageNotDelivered': 'IPsec ESP: Сообщение не доставлено: канал скомпрометирован',
+          'log.dataTypeSelected': 'Выбран тип данных: {desc}',
+          'log.protocolInit': 'Инициализация протокола для защиты: {desc}',
+          'log.chooseHardware': 'Выберите оборудование для Алисы и Боба',
+          'info.chooseHardwareReqs': 'ℹ️ Выберите оборудование для Алисы и Боба в соответствии с требованиями',
+          'log.returnToSelection': 'Возврат к выбору типа данных',
+          'info.hardwareSelectedChooseMethod': '✅ Оборудование выбрано. Теперь выберите метод получения ключа',
+          'warning.methodNotAvailable': '⚠️ Метод "{method}" не доступен для выбранного типа оборудования',
+          'warning.manualPSKUnsafe': '⚠️ Ручной ввод PSK уязвим для атак! Рекомендуется использовать HSMs для безопасного хранения ключей.',
+          'error.networkPSKTooShort': '⚠️ Сетевой PSK должен быть не менее 20 символов',
+          'success.networkPSKSetManual': '✅ Сетевой PSK установлен в конфигурации оборудования',
+          'log.networkPSKManualConfig': 'Сетевой PSK настроен вручную в конфигах оборудования Cisco/Juniper/Huawei',
+          'success.pairedKeysLoaded': '✅ Парные ключи загружены в {type} шифраторы',
+          'info.krkOpened': 'ℹ️ Открыта игра Квантовое распределение ключей. Получите ключ и введите его выше.',
+          'success.quantumKeyApplied': '✅ Квантовый ключ применен для Алисы и Боба',
+          'success.randomPSKSet': '✅ Случайный сетевой PSK установлен в конфигурации оборудования',
+          'log.randomPSKGenerated': 'Случайный сетевой PSK сгенерирован и установлен в оборудование',
+          'error.paramsNotSet': 'Не все параметры настроены. Пожалуйста, завершите настройку Алисы и Боба.',
+          'error.notCompatible': 'Оборудование не совместимо! ',
+          'error.intlMustUseAES': 'Международное оборудование должно использовать протокол AES.',
+          'error.russianMustMatch': 'Российское оборудование должно быть одинаковым ({a} ↔ {b}) и использовать протокол "Кузнечик".',
+          'error.westernMustMatch': 'Западное оборудование должно быть одинаковым ({a} ↔ {b}) и использовать протокол AES.',
+          'error.differentTypesIncompatible': 'Разные типы оборудования не совместимы между собой.',
+          'error.keysDoNotMatch': 'Ключи шифрования не совпадают! У Алисы и Боба должны быть одинаковые ключи.',
+          'warning.unsafeMethodUsed': '⚠️ Вы используете небезопасный метод получения ключа. В реальной системе это может привести к компрометации данных.',
+          'error.connectFirst': 'Сначала установите защищенное соединение!',
+          'info.trafficStarted': '🚦 Трафик запущен в пользовательском канале через IPsec ESP',
+          'info.trafficStopped': '🛑 Трафик остановлен в пользовательском канале',
+          'log.settingsReset': 'Настройки сброшены. Выберите оборудование для Алисы и Боба',
+          'info.chooseDataTypeStart': 'ℹ️ Выберите тип защищаемых данных для начала работы',
+          'error.connectionError': 'Произошла ошибка при установке соединения. Пожалуйста, попробуйте еще раз.',
+          'error.initTitle': 'Ошибка инициализации игры',
+          'error.initMessage': 'Произошла критическая ошибка. Пожалуйста, обновите страницу или обратитесь в техподдержку.',
+          'error.codeLabel': 'Код ошибки: {code}'
+        },
+        en: {
+          'game.title': 'SYMMETRIC CRYPTOGRAPHY: SECURE CHANNEL',
+          'game.subtitle': 'Ludus Lab · Complex things made simple games',
+          'protocol.toggle': 'About symmetric cryptography',
+          'protocol.intro': 'Symmetric cryptography uses the same secret key to encrypt and decrypt data. Alice and Bob must agree on a key and encryption algorithm in advance.',
+          'protocol.step1.title': 'Choosing the data type',
+          'protocol.step1.desc': 'Choose the type of data being protected, which determines the hardware requirements.',
+          'protocol.step1.p1': '<strong>No regulatory requirements:</strong> Any hardware can be used.',
+          'protocol.step1.p2': '<strong>Russian regulatory requirements:</strong> Only Russian hardware with the "Kuznyechik" algorithm.',
+          'protocol.step1.p3': '<strong>US/EU regulatory requirements:</strong> Only Thales, Senetas, Rohde & Schwarz with the AES algorithm.',
+          'protocol.step2.title': 'Choosing hardware',
+          'protocol.step2.desc': 'Alice and Bob choose cryptographic hardware in line with the data requirements.',
+          'protocol.step2.p1': '<strong>Western hardware:</strong> Thales only works with Thales, Senetas only with Senetas, Rohde & Schwarz only with Rohde & Schwarz.',
+          'protocol.step3.title': 'Encryption algorithm',
+          'protocol.step3.desc': 'The encryption algorithm is determined automatically by the chosen hardware.',
+          'protocol.step4.title': 'Obtaining the key',
+          'protocol.step4.desc': 'Alice and Bob must obtain the same secret key using one of the methods.',
+          'protocol.step4.p1': '<strong>Network PSK:</strong> For Cisco/Juniper/Huawei - a single key for the whole network.',
+          'protocol.step4.p2': '<strong>Paired keys:</strong> For encryptors - unique keys for each pair of nodes.',
+          'protocol.step5.title': 'Establishing a secure channel',
+          'protocol.step5.desc': 'The IKEv2/IPsec protocol is used to establish a secure channel.',
+          'protocol.step6.title': 'Exchanging messages',
+          'protocol.step6.desc': 'Messages are encrypted on the sender side and decrypted on the receiver side.',
+          'dataType.title': 'Choose the type of data to protect',
+          'dataType.no.aria': 'Choose protection for trade secrets with no regulatory requirements',
+          'dataType.no.name': 'Trade secret with no regulatory requirements',
+          'dataType.no.desc': 'Data whose protection is not regulated by any authority. Any hardware can be used.',
+          'dataType.no.rec1': 'Recommended: Cisco, Juniper, Huawei',
+          'dataType.no.rec2': '(AES algorithm, network PSK)',
+          'dataType.ru.aria': 'Choose protection per Russian regulatory requirements',
+          'dataType.ru.name': 'Protection per Russian regulatory requirements',
+          'dataType.ru.desc': 'Trade secret whose protection is regulated by Russian authorities. Russian hardware with the "Kuznyechik" algorithm is required.',
+          'dataType.ru.rec1': 'Required: KOT, Zemlya, Tekstit',
+          'dataType.ru.rec2': '("Kuznyechik" algorithm, paired keys via CMC)',
+          'dataType.eu.aria': 'Choose protection per US/EU regulatory requirements',
+          'dataType.eu.name': 'Protection per US/EU regulatory requirements',
+          'dataType.eu.desc': 'Trade secret whose protection is regulated by US and EU authorities. Hardware from Western manufacturers is required.',
+          'dataType.eu.rec1': 'Required: Thales, Senetas, Rohde & Schwarz',
+          'dataType.eu.rec2': '(AES algorithm, paired keys via Management Center)',
+          'continue.button': 'Proceed to hardware selection',
+          'continue.desc': 'After pressing this button you will proceed to selecting hardware for Alice and Bob',
+          'connection.notEstablished': 'CONNECTION NOT ESTABLISHED',
+          'connection.establishing': 'ESTABLISHING...',
+          'connection.compatible': 'CONFIGURATION COMPATIBLE',
+          'connection.incompatible': 'CONFIGURATION INCOMPATIBLE',
+          'connection.established': 'CONNECTION ESTABLISHED',
+          'aria.aliceParams': "Alice's parameters",
+          'aria.bobParams': "Bob's parameters",
+          'char.alice': 'Alice',
+          'char.bob': 'Bob',
+          'hardware.heading': 'Hardware',
+          'aria.aliceHwSelect': 'Choose hardware for Alice',
+          'aria.bobHwSelect': 'Choose hardware for Bob',
+          'hardware.choosePlaceholder': 'Choose hardware',
+          'algorithm.notSelected': 'Not selected',
+          'algorithm.aes': 'AES (international standard)',
+          'algorithm.kuznyechik': 'Kuznyechik (Russian GOST)',
+          'aria.channelsAndLogs': 'Communication channels and logs',
+          'channel.userLabel': 'User channel',
+          'channel.serviceLabel': 'Service channel (IKEv2)',
+          'channel.serviceAriaLabel': 'IKEv2 service channel',
+          'log.title': 'Log file',
+          'log.init': 'Initializing the symmetric encryption protocol',
+          'keySetup.aria': 'Setting up the encryption key',
+          'keySetup.heading': 'Setting up the encryption key',
+          'keySetup.intro': 'Alice and Bob must have the same secret key. Choose a key acquisition method:',
+          'keyMethod.manual.aria': 'Enter a network PSK manually',
+          'keyMethod.manual.title': 'Manual entry',
+          'keyMethod.manual.desc': 'Set the network PSK',
+          'keyMethod.cvk.aria': 'Obtain paired keys via the Network Management Center',
+          'keyMethod.cvk.title': 'Key Management Center',
+          'keyMethod.cvk.desc': 'Use the CMC/Management Center',
+          'keyMethod.krk.aria': 'Obtain a paired key via quantum key distribution',
+          'keyMethod.krk.title': 'Quantum distribution',
+          'keyMethod.krk.desc': 'Use quantum cryptography',
+          'keyMethod.rnd.aria': 'Generate a random network PSK',
+          'keyMethod.rnd.title': 'RND generation',
+          'keyMethod.rnd.desc': 'Generate a random PSK',
+          'key.encryptionKeyAria': 'Encryption key',
+          'key.inputPlaceholderDefault': 'The key will be generated automatically...',
+          'key.choosePlaceholder': 'Choose a key acquisition method...',
+          'key.placeholderNetworkPSK': 'Enter the network PSK (one for the whole network)...',
+          'key.placeholderCenterRu': 'The CMC will generate paired keys...',
+          'key.placeholderCenterWest': 'The Management Center will generate paired keys...',
+          'key.placeholderKRK': 'Get a paired key in the KRK game...',
+          'key.placeholderPSKGenerated': 'Network PSK generated',
+          'key.placeholderPairedKey': '{center}: Paired key for the Alice-Bob tunnel',
+          'key.typeNetwork': 'network PSK (shared by all nodes)',
+          'key.typePaired': 'paired key (unique to this pair)',
+          'btn.applyKey': 'Apply key',
+          'btn.setNetworkPSK': 'Set network PSK',
+          'btn.getKeyFromCenterRu': 'Get key from CMC',
+          'btn.getKeyFromCenterWest': 'Get key from Management Center',
+          'btn.openKRK': 'Open KRK',
+          'btn.applyQuantumKey': 'Apply quantum key',
+          'btn.applyNetworkPSK': 'Apply network PSK',
+          'btn.loadPairedKey': 'Load paired key into encryptors',
+          'keyMethodDesc.default': 'Choose a key acquisition method',
+          'key.warningUnsafe': '⚠️ This method is unsafe and not recommended for real-world use',
+          'keyMethod.manual.international': 'Enter a shared network PSK in the hardware configuration. This PSK will be the same for all routers in the network (Alice, Bob, Charlie, etc.).',
+          'keyMethod.manual.russian': '⚠️ NOT AVAILABLE: For Russian encryptors, keys are only set via the CMC.',
+          'keyMethod.manual.western': '⚠️ NOT AVAILABLE: For Western encryptors, keys are only set via the Management Center.',
+          'keyMethod.cvk.international': '⚠️ NOT AVAILABLE: International hardware uses a network PSK.',
+          'keyMethod.cvk.russian': 'Use the Network Management Center to generate paired keys. Each pair (Alice-Bob, Alice-Charlie, Bob-Charlie) gets unique keys.',
+          'keyMethod.cvk.western': 'Use the Management Center to generate paired keys. Each tunnel has a unique key.',
+          'keyMethod.krk.international': '⚠️ NOT AVAILABLE: International hardware uses a network PSK.',
+          'keyMethod.krk.russian': 'Use Quantum Key Distribution to obtain an absolutely secure paired key for this specific tunnel.',
+          'keyMethod.krk.western': 'Use Quantum Key Distribution to obtain an absolutely secure paired key for this specific tunnel.',
+          'keyMethod.rnd.international': 'Generate a random network PSK to configure on all routers of the network.',
+          'keyMethod.rnd.russian': '⚠️ NOT AVAILABLE: For Russian encryptors, keys are only set via the CMC.',
+          'keyMethod.rnd.western': '⚠️ NOT AVAILABLE: For Western encryptors, keys are only set via the Management Center.',
+          'alert.eveDefault': '⚠️ Eve is trying to intercept the message!',
+          'alert.successDefault': '✅ Secure channel established successfully!',
+          'alert.infoDefault': 'ℹ️ Choose hardware and a key acquisition method',
+          'alert.warningDefault': '⚠️ An unsafe key acquisition method is being used!',
+          'controls.heading': 'Control panel',
+          'btn.establish.aria': 'Establish a secure connection',
+          'btn.establish.title': 'Establish connection',
+          'btn.establish.desc': 'Will check configuration compatibility',
+          'btn.stop.aria': 'Stop traffic on the channel',
+          'btn.stop.title': 'STOP',
+          'btn.stop.desc': 'Stop traffic on the channel',
+          'btn.startTraffic.aria': 'Start traffic on the user channel',
+          'btn.startTraffic.title': 'Start traffic',
+          'btn.startTraffic.desc': 'Start traffic on the user channel',
+          'btn.reset': 'Reset settings',
+          'nav.theory': 'Read the theory',
+          'nav.home': 'Return to the lab',
+          'legacyNav.returnToSelection': 'Return to data type selection',
+          'legacyNav.returnToLabAria': 'Return to the Ludus Lab',
+          'hardware.desc.cisco': 'International hardware (USA). Uses the AES algorithm. Network PSK - shared by all nodes in the network.',
+          'hardware.desc.juniper': 'International hardware (USA). Uses the AES algorithm. Network PSK - shared by all nodes in the network.',
+          'hardware.desc.huawei': 'International hardware (China). Uses the AES algorithm. Network PSK - shared by all nodes in the network.',
+          'hardware.desc.kot': 'Russian hardware KOT. Uses the "Kuznyechik" algorithm (Russian GOST). Paired keys via CMC.',
+          'hardware.desc.zemlya': 'Russian hardware. Uses the "Kuznyechik" algorithm (Russian GOST). Paired keys via CMC.',
+          'hardware.desc.tekstit': 'Russian hardware. Uses the "Kuznyechik" algorithm (Russian GOST). Paired keys via CMC.',
+          'hardware.desc.thales': 'Western hardware (France). Uses the AES algorithm. Paired keys via Management Center.',
+          'hardware.desc.senetas': 'Western hardware (Australia). Uses the AES algorithm. Paired keys via Management Center.',
+          'hardware.desc.rohde-schwarz': 'Western hardware (Germany). Uses the AES algorithm. Paired keys via Management Center.',
+          'hardware.name.kot': 'KOT',
+          'hardware.name.zemlya': 'Zemlya',
+          'hardware.name.tekstit': 'Tekstit',
+          'dataType.desc.no-regulations': 'Trade secret with no regulatory requirements',
+          'dataType.desc.russian-regulations': 'Trade secret per Russian regulatory requirements',
+          'dataType.desc.eu-us-regulations': 'Trade secret per US/EU regulatory requirements',
+          'compat.international': '✅ Compatible with Cisco, Juniper, Huawei (use network PSK)',
+          'compat.russian': '✅ Compatible only with {name} (uses paired keys via CMC)',
+          'compat.western': '✅ Compatible only with {name} (uses paired keys via Management Center)',
+          'log.intlPSKInfo': 'ℹ️ International hardware uses a network PSK, shared by all nodes in the network',
+          'log.russianPairedInfo': 'ℹ️ Russian encryptors use unique paired keys for each tunnel',
+          'log.westernPairedInfo': 'ℹ️ Western encryptors use unique paired keys for each tunnel',
+          'centerName.ru': 'CMC',
+          'centerName.west': 'Management Center',
+          'log.cvkRequest': 'Request to {center} to generate a paired key for the Alice-Bob tunnel...',
+          'log.cvkCheckingRights': '{center}: Checking access rights for Alice and Bob...',
+          'log.cvkGenerating': '{center}: Generating a unique paired key for the Alice-Bob tunnel...',
+          'log.cvkKeyGenerated': '{center}: Paired key generated: {key}...',
+          'log.cvkKeyAlice': "{center}: Alice's key: linked only to Bob",
+          'log.cvkKeyBob': "{center}: Bob's key: linked only to Alice",
+          'info.cvkGenerated': '✅ {center} generated a unique paired key for the Alice-Bob tunnel',
+          'log.networkPSKConfigured': 'Network PSK configured in the hardware settings',
+          'log.networkPSKSameForAll': 'The same PSK is used for all routers in the network (OSPF/MPLS)',
+          'log.networkPSKCharlie': 'When Charlie is added to the network, he will be given the same PSK',
+          'log.networkPSKLength': 'Network PSK length: {n} characters',
+          'log.pairedKeysLoaded': '{center}: Paired keys loaded into the encryptors',
+          'log.aliceKeyOnly': 'Alice received a key that works ONLY for the tunnel with Bob',
+          'log.bobKeyOnly': 'Bob received a key that works ONLY for the tunnel with Alice',
+          'log.charlieDifferentKeys': "{center}: If Charlie is added, different keys will be generated for Alice-Charlie and Bob-Charlie",
+          'log.tunnelCommandSent': '{center}: Command to build the Alice-Bob tunnel has been sent',
+          'log.keySet': 'Key set: {key}',
+          'method.manual': 'manually (network PSK)',
+          'method.cvk': 'via the Network Management Center (paired keys)',
+          'method.krk': 'via Quantum Key Distribution (paired key)',
+          'method.rnd': 'random generation (network PSK)',
+          'security.unsafe': ' (unsafe)',
+          'security.safe': ' (safe)',
+          'log.keyMethodUsed': 'Key acquisition method: {method}{security}',
+          'ikev2.initPSK': 'Initializing IKEv2 with the network PSK...',
+          'ikev2.pskShared': 'PSK: shared by all nodes in the network (Alice, Bob, Charlie...)',
+          'ikev2.phase1Init': 'IKEv2 Phase 1: Alice → Bob: IKE_SA_INIT_REQUEST',
+          'ikev2.phase1DH': 'IKEv2 Phase 1: Diffie-Hellman parameter exchange',
+          'ikev2.phase2Auth': 'IKEv2 Phase 2: Alice → Bob: IKE_AUTH_REQUEST with network PSK hash',
+          'ikev2.bobComputeHash': "Bob: Computing the hash of his network PSK...",
+          'ikev2.hashMatchBob': 'Bob: Hashes match! → Alice: IKE_AUTH_RESPONSE with confirmation',
+          'ikev2.aliceComputeHash': "Alice: Computing the hash of Bob's PSK...",
+          'ikev2.hashMatchAlice': 'Alice: Hashes match! Mutual authentication successful',
+          'ikev2.saEstablished': 'IKE_SA established: secure control channel created',
+          'ikev2.ipsecCreating': 'Creating IPsec SA for data...',
+          'ikev2.ipsecReady': 'IPsec SA established: ready for data transfer',
+          'equipment.international': 'International hardware (network PSK)',
+          'ikev2.pairedInit': '{center}: Initializing the paired key for the Alice-Bob tunnel',
+          'ikev2.pairedUnique': 'The key is unique to this pair only (Alice-Bob)',
+          'ikev2.pairedCmdAlice': '{center}: Command to Alice: initiate IKEv2 with Bob',
+          'ikev2.pairedInitReq': 'Alice → Bob: IKE_SA_INIT_REQUEST using the paired key',
+          'ikev2.phase2PairedAuth': 'IKEv2 Phase 2: Authentication using the paired key',
+          'ikev2.bobVerify': 'Bob: Verifying the paired key... The key is meant specifically for Alice',
+          'ikev2.aliceVerify': 'Alice: Verifying the paired key... The key is meant specifically for Bob',
+          'ikev2.pairedVerified': 'Paired keys verified: mutual authentication successful',
+          'ikev2.ipsecPairedReady': 'IPsec SA established: encryptors ready for data transfer',
+          'equipment.russian': 'Russian',
+          'equipment.western': 'Western',
+          'equipment.encryptorsPaired': '{type} encryptors (paired key)',
+          'ikev2.channelEstablished': '{type}: Secure channel established successfully',
+          'success.channelEstablished': '✅ Secure channel established successfully!',
+          'log.equipmentType': 'Hardware type: {type}',
+          'log.keyType': 'Key type: {type}',
+          'log.readyToTransfer': 'Ready to transmit protected data',
+          'log.charlieIntlSamePSK': "ℹ️ If router Charlie is added to the network, he will be given the same network PSK",
+          'log.charlieIntlCommunicate': 'ℹ️ Charlie will be able to communicate with both Alice and Bob using the same PSK',
+          'log.charlieIntlScale': 'ℹ️ This is convenient for scaling, but increases the risk if the PSK is compromised',
+          'log.charlieNewKeys': 'ℹ️ If encryptor Charlie is added, {center} will generate new paired keys:',
+          'log.charlieKeyAlice': 'ℹ️ For Alice-Charlie: unique key 1',
+          'log.charlieKeyBob': 'ℹ️ For Bob-Charlie: unique key 2',
+          'log.aliceBobKeyUnchanged': 'ℹ️ The Alice-Bob key will remain unchanged and will not work for other pairs',
+          'eve.interceptPSKVulnerable': 'INTERCEPTED: the network PSK is vulnerable - the key is shared by the whole network',
+          'eve.interceptPairedHarder': 'INTERCEPTED: a paired key is harder to break',
+          'log.aliceIPsecESP': 'IPsec ESP: {message}',
+          'eve.interceptedDecrypted': 'INTERCEPTED AND DECRYPTED: "{message}"',
+          'log.criticalPSKCompromised': '⚠️ CRITICAL THREAT: The network PSK has been compromised! All network nodes are at risk.',
+          'log.pairedKeyCompromised': '⚠️ THREAT: The paired key for the Alice-Bob tunnel has been compromised.',
+          'log.otherTunnelsSafe': '⚠️ But other tunnels (Alice-Charlie, Bob-Charlie) remain protected.',
+          'eve.interceptFailedDecrypt': 'INTERCEPTED: failed to decrypt the IPsec ESP packet',
+          'log.bobReceived': 'IPsec ESP: Message received and decrypted: {message}',
+          'log.bobUsesNetworkPSK': 'Using the network PSK: shared by all nodes in the network',
+          'log.bobUsesPairedKey': 'Using the paired key: unique to the Alice-Bob tunnel',
+          'log.messageNotDelivered': 'IPsec ESP: Message not delivered: channel compromised',
+          'log.dataTypeSelected': 'Data type selected: {desc}',
+          'log.protocolInit': 'Initializing the protocol to protect: {desc}',
+          'log.chooseHardware': 'Choose hardware for Alice and Bob',
+          'info.chooseHardwareReqs': 'ℹ️ Choose hardware for Alice and Bob according to the requirements',
+          'log.returnToSelection': 'Returning to data type selection',
+          'info.hardwareSelectedChooseMethod': '✅ Hardware selected. Now choose a key acquisition method',
+          'warning.methodNotAvailable': '⚠️ The "{method}" method is not available for the selected hardware type',
+          'warning.manualPSKUnsafe': '⚠️ Manual PSK entry is vulnerable to attacks! It is recommended to use HSMs for secure key storage.',
+          'error.networkPSKTooShort': '⚠️ The network PSK must be at least 20 characters long',
+          'success.networkPSKSetManual': '✅ Network PSK set in the hardware configuration',
+          'log.networkPSKManualConfig': 'Network PSK manually configured in the Cisco/Juniper/Huawei hardware configs',
+          'success.pairedKeysLoaded': '✅ Paired keys loaded into the {type} encryptors',
+          'info.krkOpened': 'ℹ️ The Quantum Key Distribution game has been opened. Get the key and enter it above.',
+          'success.quantumKeyApplied': '✅ Quantum key applied for Alice and Bob',
+          'success.randomPSKSet': '✅ Random network PSK set in the hardware configuration',
+          'log.randomPSKGenerated': 'Random network PSK generated and set on the hardware',
+          'error.paramsNotSet': 'Not all parameters are set. Please complete the configuration for Alice and Bob.',
+          'error.notCompatible': 'The hardware is not compatible! ',
+          'error.intlMustUseAES': 'International hardware must use the AES protocol.',
+          'error.russianMustMatch': 'Russian hardware must match ({a} ↔ {b}) and use the "Kuznyechik" protocol.',
+          'error.westernMustMatch': 'Western hardware must match ({a} ↔ {b}) and use the AES protocol.',
+          'error.differentTypesIncompatible': 'Different hardware types are not compatible with each other.',
+          'error.keysDoNotMatch': "Encryption keys do not match! Alice and Bob must have the same key.",
+          'warning.unsafeMethodUsed': '⚠️ You are using an unsafe key acquisition method. In a real system this could lead to data compromise.',
+          'error.connectFirst': 'Establish a secure connection first!',
+          'info.trafficStarted': '🚦 Traffic started on the user channel via IPsec ESP',
+          'info.trafficStopped': '🛑 Traffic stopped on the user channel',
+          'log.settingsReset': 'Settings reset. Choose hardware for Alice and Bob',
+          'info.chooseDataTypeStart': 'ℹ️ Choose the type of data to protect to get started',
+          'error.connectionError': 'An error occurred while establishing the connection. Please try again.',
+          'error.initTitle': 'Game initialization error',
+          'error.initMessage': 'A critical error occurred. Please refresh the page or contact support.',
+          'error.codeLabel': 'Error code: {code}'
+        },
+        es: {
+          'game.title': 'CRIPTOGRAFÍA SIMÉTRICA: CANAL SEGURO',
+          'game.subtitle': 'Ludus Lab · Cosas complejas mediante juegos sencillos',
+          'protocol.toggle': 'Sobre la criptografía simétrica',
+          'protocol.intro': 'La criptografía simétrica utiliza la misma clave secreta para cifrar y descifrar datos. Alicia y Bob deben acordar de antemano una clave y un algoritmo de cifrado.',
+          'protocol.step1.title': 'Elección del tipo de datos',
+          'protocol.step1.desc': 'Elija el tipo de datos a proteger, lo que determina los requisitos de hardware.',
+          'protocol.step1.p1': '<strong>Sin requisitos regulatorios:</strong> Se puede usar cualquier hardware.',
+          'protocol.step1.p2': '<strong>Requisitos regulatorios de Rusia:</strong> Solo hardware ruso con el algoritmo "Kuznyechik".',
+          'protocol.step1.p3': '<strong>Requisitos regulatorios de EE. UU./UE:</strong> Solo Thales, Senetas, Rohde & Schwarz con el algoritmo AES.',
+          'protocol.step2.title': 'Elección del hardware',
+          'protocol.step2.desc': 'Alicia y Bob eligen el hardware criptográfico de acuerdo con los requisitos de los datos.',
+          'protocol.step2.p1': '<strong>Hardware occidental:</strong> Thales solo funciona con Thales, Senetas solo con Senetas, Rohde & Schwarz solo con Rohde & Schwarz.',
+          'protocol.step3.title': 'Algoritmo de cifrado',
+          'protocol.step3.desc': 'El algoritmo de cifrado se determina automáticamente según el hardware elegido.',
+          'protocol.step4.title': 'Obtención de la clave',
+          'protocol.step4.desc': 'Alicia y Bob deben obtener la misma clave secreta mediante uno de los métodos.',
+          'protocol.step4.p1': '<strong>PSK de red:</strong> Para Cisco/Juniper/Huawei: una clave única para toda la red.',
+          'protocol.step4.p2': '<strong>Claves emparejadas:</strong> Para los cifradores: claves únicas para cada par de nodos.',
+          'protocol.step5.title': 'Establecimiento del canal seguro',
+          'protocol.step5.desc': 'El protocolo IKEv2/IPsec se usa para establecer el canal seguro.',
+          'protocol.step6.title': 'Intercambio de mensajes',
+          'protocol.step6.desc': 'Los mensajes se cifran en el lado del emisor y se descifran en el lado del receptor.',
+          'dataType.title': 'Elija el tipo de datos a proteger',
+          'dataType.no.aria': 'Elegir protección de secreto comercial sin requisitos regulatorios',
+          'dataType.no.name': 'Secreto comercial sin requisitos regulatorios',
+          'dataType.no.desc': 'Datos cuya protección no está regulada por ninguna autoridad. Se puede usar cualquier hardware.',
+          'dataType.no.rec1': 'Recomendado: Cisco, Juniper, Huawei',
+          'dataType.no.rec2': '(algoritmo AES, PSK de red)',
+          'dataType.ru.aria': 'Elegir protección según los requisitos regulatorios de Rusia',
+          'dataType.ru.name': 'Protección según los requisitos regulatorios de Rusia',
+          'dataType.ru.desc': 'Secreto comercial cuya protección está regulada por las autoridades rusas. Se requiere hardware ruso con el algoritmo "Kuznyechik".',
+          'dataType.ru.rec1': 'Obligatorio: KOT, Zemlya, Tekstit',
+          'dataType.ru.rec2': '(algoritmo "Kuznyechik", claves emparejadas vía CGC)',
+          'dataType.eu.aria': 'Elegir protección según los requisitos regulatorios de EE. UU./UE',
+          'dataType.eu.name': 'Protección según los requisitos regulatorios de EE. UU./UE',
+          'dataType.eu.desc': 'Secreto comercial cuya protección está regulada por las autoridades de EE. UU. y la UE. Se requiere hardware de fabricantes occidentales.',
+          'dataType.eu.rec1': 'Obligatorio: Thales, Senetas, Rohde & Schwarz',
+          'dataType.eu.rec2': '(algoritmo AES, claves emparejadas vía Centro de Gestión)',
+          'continue.button': 'Continuar a la selección de hardware',
+          'continue.desc': 'Después de pulsar este botón pasará a elegir el hardware para Alicia y Bob',
+          'connection.notEstablished': 'CONEXIÓN NO ESTABLECIDA',
+          'connection.establishing': 'ESTABLECIENDO...',
+          'connection.compatible': 'CONFIGURACIÓN COMPATIBLE',
+          'connection.incompatible': 'CONFIGURACIÓN INCOMPATIBLE',
+          'connection.established': 'CONEXIÓN ESTABLECIDA',
+          'aria.aliceParams': 'Parámetros de Alicia',
+          'aria.bobParams': 'Parámetros de Bob',
+          'char.alice': 'Alicia',
+          'char.bob': 'Bob',
+          'hardware.heading': 'Hardware',
+          'aria.aliceHwSelect': 'Elija el hardware para Alicia',
+          'aria.bobHwSelect': 'Elija el hardware para Bob',
+          'hardware.choosePlaceholder': 'Elija el hardware',
+          'algorithm.notSelected': 'No seleccionado',
+          'algorithm.aes': 'AES (estándar internacional)',
+          'algorithm.kuznyechik': 'Kuznyechik (GOST ruso)',
+          'aria.channelsAndLogs': 'Canales de comunicación y registros',
+          'channel.userLabel': 'Canal de usuario',
+          'channel.serviceLabel': 'Canal de servicio (IKEv2)',
+          'channel.serviceAriaLabel': 'Canal de servicio IKEv2',
+          'log.title': 'Archivo de registro',
+          'log.init': 'Inicializando el protocolo de cifrado simétrico',
+          'keySetup.aria': 'Configuración de la clave de cifrado',
+          'keySetup.heading': 'Configuración de la clave de cifrado',
+          'keySetup.intro': 'Alicia y Bob deben tener la misma clave secreta. Elija un método para obtener la clave:',
+          'keyMethod.manual.aria': 'Introducir manualmente un PSK de red',
+          'keyMethod.manual.title': 'Entrada manual',
+          'keyMethod.manual.desc': 'Establecer el PSK de red',
+          'keyMethod.cvk.aria': 'Obtener claves emparejadas a través del Centro de Gestión de Red',
+          'keyMethod.cvk.title': 'Centro de generación de claves',
+          'keyMethod.cvk.desc': 'Usar el CGC/Centro de Gestión',
+          'keyMethod.krk.aria': 'Obtener una clave emparejada mediante distribución cuántica',
+          'keyMethod.krk.title': 'Distribución cuántica',
+          'keyMethod.krk.desc': 'Usar criptografía cuántica',
+          'keyMethod.rnd.aria': 'Generar un PSK de red aleatorio',
+          'keyMethod.rnd.title': 'Generación RND',
+          'keyMethod.rnd.desc': 'Generar un PSK aleatorio',
+          'key.encryptionKeyAria': 'Clave de cifrado',
+          'key.inputPlaceholderDefault': 'La clave se generará automáticamente...',
+          'key.choosePlaceholder': 'Elija un método para obtener la clave...',
+          'key.placeholderNetworkPSK': 'Introduzca el PSK de red (uno para toda la red)...',
+          'key.placeholderCenterRu': 'El CGC generará claves emparejadas...',
+          'key.placeholderCenterWest': 'El Centro de Gestión generará claves emparejadas...',
+          'key.placeholderKRK': 'Obtenga una clave emparejada en el juego KRK...',
+          'key.placeholderPSKGenerated': 'PSK de red generado',
+          'key.placeholderPairedKey': '{center}: Clave emparejada para el túnel Alicia-Bob',
+          'key.typeNetwork': 'PSK de red (compartido por todos los nodos)',
+          'key.typePaired': 'clave emparejada (única para este par)',
+          'btn.applyKey': 'Aplicar clave',
+          'btn.setNetworkPSK': 'Establecer PSK de red',
+          'btn.getKeyFromCenterRu': 'Obtener clave del CGC',
+          'btn.getKeyFromCenterWest': 'Obtener clave del Centro de Gestión',
+          'btn.openKRK': 'Abrir KRK',
+          'btn.applyQuantumKey': 'Aplicar clave cuántica',
+          'btn.applyNetworkPSK': 'Aplicar PSK de red',
+          'btn.loadPairedKey': 'Cargar clave emparejada en los cifradores',
+          'keyMethodDesc.default': 'Elija un método para obtener la clave',
+          'key.warningUnsafe': '⚠️ Este método es inseguro y no se recomienda para uso real',
+          'keyMethod.manual.international': 'Introduzca un PSK de red compartido en la configuración del hardware. Este PSK será el mismo para todos los enrutadores de la red (Alicia, Bob, Carlos, etc.).',
+          'keyMethod.manual.russian': '⚠️ NO DISPONIBLE: Para los cifradores rusos, las claves solo se establecen a través del CGC.',
+          'keyMethod.manual.western': '⚠️ NO DISPONIBLE: Para los cifradores occidentales, las claves solo se establecen a través del Centro de Gestión.',
+          'keyMethod.cvk.international': '⚠️ NO DISPONIBLE: El hardware internacional usa un PSK de red.',
+          'keyMethod.cvk.russian': 'Use el Centro de Gestión de Red para generar claves emparejadas. Cada par (Alicia-Bob, Alicia-Carlos, Bob-Carlos) recibe claves únicas.',
+          'keyMethod.cvk.western': 'Use el Centro de Gestión para generar claves emparejadas. Cada túnel tiene una clave única.',
+          'keyMethod.krk.international': '⚠️ NO DISPONIBLE: El hardware internacional usa un PSK de red.',
+          'keyMethod.krk.russian': 'Use la Distribución Cuántica de Claves para obtener una clave emparejada absolutamente segura para este túnel específico.',
+          'keyMethod.krk.western': 'Use la Distribución Cuántica de Claves para obtener una clave emparejada absolutamente segura para este túnel específico.',
+          'keyMethod.rnd.international': 'Generar un PSK de red aleatorio para configurarlo en todos los enrutadores de la red.',
+          'keyMethod.rnd.russian': '⚠️ NO DISPONIBLE: Para los cifradores rusos, las claves solo se establecen a través del CGC.',
+          'keyMethod.rnd.western': '⚠️ NO DISPONIBLE: Para los cifradores occidentales, las claves solo se establecen a través del Centro de Gestión.',
+          'alert.eveDefault': '⚠️ ¡Eva está intentando interceptar el mensaje!',
+          'alert.successDefault': '✅ ¡Canal seguro establecido correctamente!',
+          'alert.infoDefault': 'ℹ️ Elija el hardware y un método para obtener la clave',
+          'alert.warningDefault': '⚠️ ¡Se está usando un método inseguro para obtener la clave!',
+          'controls.heading': 'Panel de control',
+          'btn.establish.aria': 'Establecer una conexión segura',
+          'btn.establish.title': 'Establecer conexión',
+          'btn.establish.desc': 'Comprobará la compatibilidad de las configuraciones',
+          'btn.stop.aria': 'Detener el tráfico en el canal',
+          'btn.stop.title': 'DETENER',
+          'btn.stop.desc': 'Detener el tráfico en el canal',
+          'btn.startTraffic.aria': 'Iniciar tráfico en el canal de usuario',
+          'btn.startTraffic.title': 'Iniciar tráfico',
+          'btn.startTraffic.desc': 'Iniciar tráfico en el canal de usuario',
+          'btn.reset': 'Restablecer configuración',
+          'nav.theory': 'Leer la teoría',
+          'nav.home': 'Volver al laboratorio',
+          'legacyNav.returnToSelection': 'Volver a la selección de tipo de datos',
+          'legacyNav.returnToLabAria': 'Volver al Ludus Lab',
+          'hardware.desc.cisco': 'Hardware internacional (EE. UU.). Usa el algoritmo AES. PSK de red, compartido por todos los nodos.',
+          'hardware.desc.juniper': 'Hardware internacional (EE. UU.). Usa el algoritmo AES. PSK de red, compartido por todos los nodos.',
+          'hardware.desc.huawei': 'Hardware internacional (China). Usa el algoritmo AES. PSK de red, compartido por todos los nodos.',
+          'hardware.desc.kot': 'Hardware ruso KOT. Usa el algoritmo "Kuznyechik" (GOST ruso). Claves emparejadas vía CGC.',
+          'hardware.desc.zemlya': 'Hardware ruso. Usa el algoritmo "Kuznyechik" (GOST ruso). Claves emparejadas vía CGC.',
+          'hardware.desc.tekstit': 'Hardware ruso. Usa el algoritmo "Kuznyechik" (GOST ruso). Claves emparejadas vía CGC.',
+          'hardware.desc.thales': 'Hardware occidental (Francia). Usa el algoritmo AES. Claves emparejadas vía Centro de Gestión.',
+          'hardware.desc.senetas': 'Hardware occidental (Australia). Usa el algoritmo AES. Claves emparejadas vía Centro de Gestión.',
+          'hardware.desc.rohde-schwarz': 'Hardware occidental (Alemania). Usa el algoritmo AES. Claves emparejadas vía Centro de Gestión.',
+          'hardware.name.kot': 'KOT',
+          'hardware.name.zemlya': 'Zemlya',
+          'hardware.name.tekstit': 'Tekstit',
+          'dataType.desc.no-regulations': 'Secreto comercial sin requisitos regulatorios',
+          'dataType.desc.russian-regulations': 'Secreto comercial según los requisitos regulatorios de Rusia',
+          'dataType.desc.eu-us-regulations': 'Secreto comercial según los requisitos regulatorios de EE. UU./UE',
+          'compat.international': '✅ Compatible con Cisco, Juniper, Huawei (usan PSK de red)',
+          'compat.russian': '✅ Compatible solo con {name} (usa claves emparejadas vía CGC)',
+          'compat.western': '✅ Compatible solo con {name} (usa claves emparejadas vía Centro de Gestión)',
+          'log.intlPSKInfo': 'ℹ️ El hardware internacional usa un PSK de red, compartido por todos los nodos',
+          'log.russianPairedInfo': 'ℹ️ Los cifradores rusos usan claves emparejadas únicas para cada túnel',
+          'log.westernPairedInfo': 'ℹ️ Los cifradores occidentales usan claves emparejadas únicas para cada túnel',
+          'centerName.ru': 'CGC',
+          'centerName.west': 'Centro de Gestión',
+          'log.cvkRequest': 'Solicitud al {center} para generar una clave emparejada para el túnel Alicia-Bob...',
+          'log.cvkCheckingRights': '{center}: Comprobando los permisos de acceso de Alicia y Bob...',
+          'log.cvkGenerating': '{center}: Generando una clave emparejada única para el túnel Alicia-Bob...',
+          'log.cvkKeyGenerated': '{center}: Clave emparejada generada: {key}...',
+          'log.cvkKeyAlice': '{center}: Clave de Alicia: vinculada solo a Bob',
+          'log.cvkKeyBob': '{center}: Clave de Bob: vinculada solo a Alicia',
+          'info.cvkGenerated': '✅ {center} generó una clave emparejada única para el túnel Alicia-Bob',
+          'log.networkPSKConfigured': 'PSK de red configurado en las configuraciones del hardware',
+          'log.networkPSKSameForAll': 'El mismo PSK se usa en todos los enrutadores de la red (OSPF/MPLS)',
+          'log.networkPSKCharlie': 'Cuando se añada Carlos a la red, se le asignará el mismo PSK',
+          'log.networkPSKLength': 'Longitud del PSK de red: {n} caracteres',
+          'log.pairedKeysLoaded': '{center}: Claves emparejadas cargadas en los cifradores',
+          'log.aliceKeyOnly': 'Alicia recibió una clave que funciona SOLO para el túnel con Bob',
+          'log.bobKeyOnly': 'Bob recibió una clave que funciona SOLO para el túnel con Alicia',
+          'log.charlieDifferentKeys': '{center}: Si se añade Carlos, se generarán otras claves para Alicia-Carlos y Bob-Carlos',
+          'log.tunnelCommandSent': '{center}: Se envió la orden para construir el túnel Alicia-Bob',
+          'log.keySet': 'Clave establecida: {key}',
+          'method.manual': 'manualmente (PSK de red)',
+          'method.cvk': 'a través del Centro de Gestión de Red (claves emparejadas)',
+          'method.krk': 'a través de Distribución Cuántica de Claves (clave emparejada)',
+          'method.rnd': 'generación aleatoria (PSK de red)',
+          'security.unsafe': ' (inseguro)',
+          'security.safe': ' (seguro)',
+          'log.keyMethodUsed': 'Método de obtención de la clave: {method}{security}',
+          'ikev2.initPSK': 'Inicializando IKEv2 con el PSK de red...',
+          'ikev2.pskShared': 'PSK: compartido por todos los nodos de la red (Alicia, Bob, Carlos...)',
+          'ikev2.phase1Init': 'Fase 1 de IKEv2: Alicia → Bob: IKE_SA_INIT_REQUEST',
+          'ikev2.phase1DH': 'Fase 1 de IKEv2: Intercambio de parámetros Diffie-Hellman',
+          'ikev2.phase2Auth': 'Fase 2 de IKEv2: Alicia → Bob: IKE_AUTH_REQUEST con el hash del PSK de red',
+          'ikev2.bobComputeHash': 'Bob: Calculando el hash de su PSK de red...',
+          'ikev2.hashMatchBob': 'Bob: ¡Los hashes coinciden! → Alicia: IKE_AUTH_RESPONSE con confirmación',
+          'ikev2.aliceComputeHash': 'Alicia: Calculando el hash del PSK de Bob...',
+          'ikev2.hashMatchAlice': 'Alicia: ¡Los hashes coinciden! Autenticación mutua exitosa',
+          'ikev2.saEstablished': 'IKE_SA establecida: canal de control seguro creado',
+          'ikev2.ipsecCreating': 'Creando la SA de IPsec para los datos...',
+          'ikev2.ipsecReady': 'SA de IPsec establecida: lista para la transferencia de datos',
+          'equipment.international': 'Hardware internacional (PSK de red)',
+          'ikev2.pairedInit': '{center}: Inicializando la clave emparejada para el túnel Alicia-Bob',
+          'ikev2.pairedUnique': 'La clave es única solo para este par (Alicia-Bob)',
+          'ikev2.pairedCmdAlice': '{center}: Orden a Alicia: iniciar IKEv2 con Bob',
+          'ikev2.pairedInitReq': 'Alicia → Bob: IKE_SA_INIT_REQUEST usando la clave emparejada',
+          'ikev2.phase2PairedAuth': 'Fase 2 de IKEv2: Autenticación usando la clave emparejada',
+          'ikev2.bobVerify': 'Bob: Verificando la clave emparejada... La clave está destinada específicamente a Alicia',
+          'ikev2.aliceVerify': 'Alicia: Verificando la clave emparejada... La clave está destinada específicamente a Bob',
+          'ikev2.pairedVerified': 'Claves emparejadas verificadas: autenticación mutua exitosa',
+          'ikev2.ipsecPairedReady': 'SA de IPsec establecida: los cifradores están listos para la transferencia de datos',
+          'equipment.russian': 'Rusos',
+          'equipment.western': 'Occidentales',
+          'equipment.encryptorsPaired': 'Cifradores {type} (clave emparejada)',
+          'ikev2.channelEstablished': '{type}: Canal seguro establecido correctamente',
+          'success.channelEstablished': '✅ ¡Canal seguro establecido correctamente!',
+          'log.equipmentType': 'Tipo de hardware: {type}',
+          'log.keyType': 'Tipo de clave: {type}',
+          'log.readyToTransfer': 'Listo para transmitir datos protegidos',
+          'log.charlieIntlSamePSK': 'ℹ️ Si se añade el enrutador Carlos a la red, se le asignará el mismo PSK de red',
+          'log.charlieIntlCommunicate': 'ℹ️ Carlos podrá comunicarse con Alicia y con Bob usando el mismo PSK',
+          'log.charlieIntlScale': 'ℹ️ Esto es conveniente para escalar, pero aumenta los riesgos si el PSK se compromete',
+          'log.charlieNewKeys': 'ℹ️ Si se añade el cifrador Carlos, el {center} generará nuevas claves emparejadas:',
+          'log.charlieKeyAlice': 'ℹ️ Para Alicia-Carlos: clave única 1',
+          'log.charlieKeyBob': 'ℹ️ Para Bob-Carlos: clave única 2',
+          'log.aliceBobKeyUnchanged': 'ℹ️ La clave Alicia-Bob seguirá siendo la misma y no funcionará para otros pares',
+          'eve.interceptPSKVulnerable': 'INTERCEPTADO: el PSK de red es vulnerable, la clave es compartida por toda la red',
+          'eve.interceptPairedHarder': 'INTERCEPTADO: una clave emparejada es más difícil de romper',
+          'log.aliceIPsecESP': 'IPsec ESP: {message}',
+          'eve.interceptedDecrypted': 'INTERCEPTADO Y DESCIFRADO: "{message}"',
+          'log.criticalPSKCompromised': '⚠️ AMENAZA CRÍTICA: ¡El PSK de red ha sido comprometido! Todos los nodos de la red están en riesgo.',
+          'log.pairedKeyCompromised': '⚠️ AMENAZA: La clave emparejada del túnel Alicia-Bob ha sido comprometida.',
+          'log.otherTunnelsSafe': '⚠️ Pero los demás túneles (Alicia-Carlos, Bob-Carlos) permanecen protegidos.',
+          'eve.interceptFailedDecrypt': 'INTERCEPTADO: no se pudo descifrar el paquete IPsec ESP',
+          'log.bobReceived': 'IPsec ESP: Mensaje recibido y descifrado: {message}',
+          'log.bobUsesNetworkPSK': 'Se usa el PSK de red: compartido por todos los nodos de la red',
+          'log.bobUsesPairedKey': 'Se usa la clave emparejada: única para el túnel Alicia-Bob',
+          'log.messageNotDelivered': 'IPsec ESP: Mensaje no entregado: canal comprometido',
+          'log.dataTypeSelected': 'Tipo de datos seleccionado: {desc}',
+          'log.protocolInit': 'Inicializando el protocolo para proteger: {desc}',
+          'log.chooseHardware': 'Elija el hardware para Alicia y Bob',
+          'info.chooseHardwareReqs': 'ℹ️ Elija el hardware para Alicia y Bob según los requisitos',
+          'log.returnToSelection': 'Volviendo a la selección de tipo de datos',
+          'info.hardwareSelectedChooseMethod': '✅ Hardware seleccionado. Ahora elija un método para obtener la clave',
+          'warning.methodNotAvailable': '⚠️ El método "{method}" no está disponible para el tipo de hardware seleccionado',
+          'warning.manualPSKUnsafe': '⚠️ ¡La introducción manual del PSK es vulnerable a ataques! Se recomienda usar HSM para el almacenamiento seguro de claves.',
+          'error.networkPSKTooShort': '⚠️ El PSK de red debe tener al menos 20 caracteres',
+          'success.networkPSKSetManual': '✅ PSK de red establecido en la configuración del hardware',
+          'log.networkPSKManualConfig': 'PSK de red configurado manualmente en las configuraciones del hardware Cisco/Juniper/Huawei',
+          'success.pairedKeysLoaded': '✅ Claves emparejadas cargadas en los cifradores {type}',
+          'info.krkOpened': 'ℹ️ Se abrió el juego de Distribución Cuántica de Claves. Obtenga la clave e introdúzcala arriba.',
+          'success.quantumKeyApplied': '✅ Clave cuántica aplicada para Alicia y Bob',
+          'success.randomPSKSet': '✅ PSK de red aleatorio establecido en la configuración del hardware',
+          'log.randomPSKGenerated': 'PSK de red aleatorio generado y establecido en el hardware',
+          'error.paramsNotSet': 'No se han configurado todos los parámetros. Por favor, complete la configuración de Alicia y Bob.',
+          'error.notCompatible': '¡El hardware no es compatible! ',
+          'error.intlMustUseAES': 'El hardware internacional debe usar el protocolo AES.',
+          'error.russianMustMatch': 'El hardware ruso debe ser igual ({a} ↔ {b}) y usar el protocolo "Kuznyechik".',
+          'error.westernMustMatch': 'El hardware occidental debe ser igual ({a} ↔ {b}) y usar el protocolo AES.',
+          'error.differentTypesIncompatible': 'Los distintos tipos de hardware no son compatibles entre sí.',
+          'error.keysDoNotMatch': 'Las claves de cifrado no coinciden. Alicia y Bob deben tener la misma clave.',
+          'warning.unsafeMethodUsed': '⚠️ Está usando un método inseguro para obtener la clave. En un sistema real esto podría provocar el compromiso de los datos.',
+          'error.connectFirst': '¡Primero establezca una conexión segura!',
+          'info.trafficStarted': '🚦 Tráfico iniciado en el canal de usuario a través de IPsec ESP',
+          'info.trafficStopped': '🛑 Tráfico detenido en el canal de usuario',
+          'log.settingsReset': 'Configuración restablecida. Elija el hardware para Alicia y Bob',
+          'info.chooseDataTypeStart': 'ℹ️ Elija el tipo de datos a proteger para empezar',
+          'error.connectionError': 'Se produjo un error al establecer la conexión. Por favor, inténtelo de nuevo.',
+          'error.initTitle': 'Error de inicialización del juego',
+          'error.initMessage': 'Se produjo un error crítico. Por favor, actualice la página o contacte con soporte.',
+          'error.codeLabel': 'Código de error: {code}'
+        }
+      };
+
+      let currentLang = 'ru';
+
+      function t(key, vars) {
+        let str = (I18N[currentLang] && I18N[currentLang][key]) || I18N.ru[key] || key;
+        if (vars) {
+          Object.keys(vars).forEach(k => {
+            str = str.split('{' + k + '}').join(vars[k]);
+          });
+        }
+        return str;
+      }
+
+      function setDynamicText(el, key, vars) {
+        el.textContent = t(key, vars);
+        el.dataset.dynKey = key;
+        if (vars) el.dataset.dynVars = JSON.stringify(vars);
+        else delete el.dataset.dynVars;
+      }
+
+      function setDynamicPlaceholder(el, key, vars) {
+        el.placeholder = t(key, vars);
+        el.dataset.dynPhKey = key;
+        if (vars) el.dataset.dynPhVars = JSON.stringify(vars);
+        else delete el.dataset.dynPhVars;
+      }
+
+      function applyLanguage(lang) {
+        currentLang = lang;
+        document.documentElement.lang = lang;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          el.innerHTML = t(key);
+        });
+        document.querySelectorAll('[data-i18n-title]').forEach(el => {
+          el.title = t(el.getAttribute('data-i18n-title'));
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+        });
+        document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+          el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label')));
+        });
+        document.querySelectorAll('[data-dyn-key]').forEach(el => {
+          const vars = el.dataset.dynVars ? JSON.parse(el.dataset.dynVars) : undefined;
+          el.textContent = t(el.dataset.dynKey, vars);
+        });
+        document.querySelectorAll('[data-dyn-ph-key]').forEach(el => {
+          const vars = el.dataset.dynPhVars ? JSON.parse(el.dataset.dynPhVars) : undefined;
+          el.placeholder = t(el.dataset.dynPhKey, vars);
+        });
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-lang-btn') === lang);
+        });
+        try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+      }
+
+      function initLanguage() {
+        let lang = null;
+        try { lang = localStorage.getItem('ludusLang'); } catch (e) {}
+        if (!lang) {
+          const browserLang = (navigator.language || 'ru').slice(0, 2).toLowerCase();
+          lang = (browserLang === 'en' || browserLang === 'es') ? browserLang : 'ru';
+        }
+        applyLanguage(lang);
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+          btn.addEventListener('click', () => applyLanguage(btn.getAttribute('data-lang-btn')));
+        });
+      }
+      // ===== /I18N =====
+
       // Класс для управления состоянием игры
       class GameState {
         constructor() {
@@ -1705,8 +2683,8 @@
           };
         }
         
-        updateConnectionStatus(text, className) {
-          this.elements.connectionStatus.textContent = text;
+        updateConnectionStatus(key, className) {
+          setDynamicText(this.elements.connectionStatus, key);
           this.elements.connectionStatus.className = `connection-status ${className}`;
         }
         
@@ -1823,25 +2801,26 @@
         
         resetUI() {
           // Сбрасываем отображение алгоритмов
-          this.elements.aliceAlgorithm.textContent = 'Не выбран';
+          setDynamicText(this.elements.aliceAlgorithm, 'algorithm.notSelected');
           this.elements.aliceAlgorithm.className = 'algorithm-display';
-          this.elements.bobAlgorithm.textContent = 'Не выбран';
+          setDynamicText(this.elements.bobAlgorithm, 'algorithm.notSelected');
           this.elements.bobAlgorithm.className = 'algorithm-display';
-          
+
           // Сбрасываем методы получения ключа
           this.elements.keyMethods.forEach(m => {
             m.classList.remove('selected', 'disabled');
             m.style.cursor = 'pointer';
           });
-          
+
           // Сбрасываем поле ввода ключа
           this.elements.sharedKey.value = '';
-          this.elements.sharedKey.placeholder = 'Ключ будет сгенерирован автоматически...';
+          setDynamicPlaceholder(this.elements.sharedKey, 'key.inputPlaceholderDefault');
           this.elements.sharedKey.readOnly = true;
           this.elements.sharedKey.disabled = false;
           this.elements.applyKeyBtn.disabled = true;
-          this.elements.applyKeyBtn.textContent = 'Применить ключ';
-          this.elements.keyMethodDescription.textContent = 'Выберите метод получения ключа';
+          setDynamicText(this.elements.applyKeyBtn, 'btn.applyKey');
+          delete this.elements.applyKeyBtn.dataset.krkState;
+          setDynamicText(this.elements.keyMethodDescription, 'keyMethodDesc.default');
           this.elements.keyWarning.style.display = 'none';
           
           // Сбрасываем описания
@@ -1854,7 +2833,7 @@
           this.elements.controlsContainer.style.display = 'none';
           
           // Сбрасываем статусы
-          this.updateConnectionStatus("СОЕДИНЕНИЕ НЕ УСТАНОВЛЕНО", "disconnected");
+          this.updateConnectionStatus('connection.notEstablished', 'disconnected');
           
           // Сбрасываем кнопки
           this.elements.establishBtn.disabled = false;
@@ -2001,19 +2980,9 @@
           this.domManager = domManager;
           this.animationManager = animationManager;
           
-          // Описания оборудования
-          this.hardwareDescriptions = {
-            'cisco': 'Международное оборудование (США). Использует алгоритм AES. Сетевой PSK - единый для всех узлов сети.',
-            'juniper': 'Международное оборудование (США). Использует алгоритм AES. Сетевой PSK - единый для всех узлов сети.',
-            'huawei': 'Международное оборудование (Китай). Использует алгоритм AES. Сетевой PSK - единый для всех узлов сети.',
-            'kot': 'Российское оборудование КОТ. Использует алгоритм "Кузнечик" (ГОСТ РФ). Парные ключи через ЦУС.',
-            'zemlya': 'Российское оборудование. Использует алгоритм "Кузнечик" (ГОСТ РФ). Парные ключи через ЦУС.',
-            'tekstit': 'Российское оборудование. Использует алгоритм "Кузнечик" (ГОСТ РФ). Парные ключи через ЦУС.',
-            'thales': 'Западное оборудование (Франция). Использует алгоритм AES. Парные ключи через Центр Управления.',
-            'senetas': 'Западное оборудование (Австралия). Использует алгоритм AES. Парные ключи через Центр Управления.',
-            'rohde-schwarz': 'Западное оборудование (Германия). Использует алгоритм AES. Парные ключи через Центр Управления.'
-          };
-        
+          // Описания оборудования (см. ключи hardware.desc.* в I18N)
+          this.hardwareDescriptionKeys = ['cisco', 'juniper', 'huawei', 'kot', 'zemlya', 'tekstit', 'thales', 'senetas', 'rohde-schwarz'];
+
           // Группы оборудования по типу данных
           this.hardwareByDataType = {
             'no-regulations': [
@@ -2039,84 +3008,56 @@
             ]
           };
         
-          // Описания методов получения ключа
-          this.keyMethodDescriptions = {
-            'manual': {
-              'international': 'Введите общий сетевой PSK в конфигурацию оборудования. Этот PSK будет одинаковым для всех маршрутизаторов в сети (Алиса, Боб, Чарли и т.д.).',
-              'russian': '⚠️ НЕДОСТУПНО: Для российских шифраторов ключи устанавливаются только через ЦУС.',
-              'western': '⚠️ НЕДОСТУПНО: Для западных шифраторов ключи устанавливаются только через Центр Управления.'
-            },
-            'cvk': {
-              'international': '⚠️ НЕДОСТУПНО: Для международного оборудования используется сетевой PSK.',
-              'russian': 'Используйте Центр Управления Сетями для генерации парных ключей. Каждая пара (Алиса-Боб, Алиса-Чарли, Боб-Чарли) получает уникальные ключи.',
-              'western': 'Используйте Центр Управления для генерации парных ключей. Каждый тоннель имеет уникальный ключ.'
-            },
-            'krk': {
-              'international': '⚠️ НЕДОСТУПНО: Для международного оборудования используется сетевой PSK.',
-              'russian': 'Используйте Квантовое распределение ключей для абсолютно безопасного получения парного ключа для этого конкретного тоннеля.',
-              'western': 'Используйте Квантовое распределение ключей для абсолютно безопасного получения парного ключа для этого конкретного тоннеля.'
-            },
-            'rnd': {
-              'international': 'Сгенерировать случайный сетевой PSK для настройки на всех маршрутизаторах сети.',
-              'russian': '⚠️ НЕДОСТУПНО: Для российских шифраторов ключи устанавливаются только через ЦУС.',
-              'western': '⚠️ НЕДОПУСТИМО: Для западных шифраторов ключи устанавливаются только через Центр Управления.'
-            }
-          };
-        
-          // Отображение названий алгоритмов
-          this.algorithmNames = {
-            'aes': 'AES (меж.стандарт)',
-            'kuznyechik': 'Кузнечик (ГОСТ РФ)'
-          };
-        
           // URL игр для получения ключа
           this.keyGameUrls = {
             'cvk': 'https://ludus-lab.com/games/cvk/index.html',
-            'krk': 'https://ludus-lab.com/games/bb84/index.html'
+            'krk': 'https://ludus-lab.ru/games/bb84/index.html'
           };
         }
         
         getHardwareName(value) {
+          const translatedNames = ['kot', 'zemlya', 'tekstit'];
+          if (translatedNames.includes(value)) return t('hardware.name.' + value);
           const names = {
             'cisco': 'Cisco',
             'juniper': 'Juniper',
             'huawei': 'Huawei',
-            'kot': 'КОТ',
-            'zemlya': 'Земля',
-            'tekstit': 'Текстиль',
             'thales': 'Thales',
             'senetas': 'Senetas',
             'rohde-schwarz': 'Rohde & Schwarz'
           };
           return names[value] || value;
         }
-        
+
         getDataTypeDescription(type) {
-          const descriptions = {
-            'no-regulations': 'Коммерческая тайна без требований регуляторов',
-            'russian-regulations': 'Коммерческая тайна по требованиям регуляторов РФ',
-            'eu-us-regulations': 'Коммерческая тайна по требованиям регуляторов США/ЕС'
-          };
-          return descriptions[type] || type;
+          return t('dataType.desc.' + type) !== 'dataType.desc.' + type ? t('dataType.desc.' + type) : type;
         }
-        
+
         populateHardwareOptions(dataType) {
           const hardwareOptions = this.hardwareByDataType[dataType] || [];
+          const translatedNames = ['kot', 'zemlya', 'tekstit'];
           // Очищаем текущие опции
-          this.domManager.elements.aliceHardware.innerHTML = '<option value="" selected disabled>Выберите оборудование</option>';
-          this.domManager.elements.bobHardware.innerHTML = '<option value="" selected disabled>Выберите оборудование</option>';
+          const defaultOptionHTML = () => `<option value="" selected disabled data-i18n="hardware.choosePlaceholder">${t('hardware.choosePlaceholder')}</option>`;
+          this.domManager.elements.aliceHardware.innerHTML = defaultOptionHTML();
+          this.domManager.elements.bobHardware.innerHTML = defaultOptionHTML();
           // Добавляем новые опции
           hardwareOptions.forEach(hw => {
             const option1 = document.createElement('option');
             option1.value = hw.value;
-            option1.textContent = hw.name;
+            if (translatedNames.includes(hw.value)) {
+              option1.setAttribute('data-dyn-key', 'hardware.name.' + hw.value);
+            }
+            option1.textContent = this.getHardwareName(hw.value);
             option1.setAttribute('data-type', hw.type);
             option1.setAttribute('data-protocol', hw.protocol);
             this.domManager.elements.aliceHardware.appendChild(option1);
-            
+
             const option2 = document.createElement('option');
             option2.value = hw.value;
-            option2.textContent = hw.name;
+            if (translatedNames.includes(hw.value)) {
+              option2.setAttribute('data-dyn-key', 'hardware.name.' + hw.value);
+            }
+            option2.textContent = this.getHardwareName(hw.value);
             option2.setAttribute('data-type', hw.type);
             option2.setAttribute('data-protocol', hw.protocol);
             this.domManager.elements.bobHardware.appendChild(option2);
@@ -2163,36 +3104,35 @@
         
         resetKeyInput() {
           this.domManager.elements.sharedKey.value = '';
-          this.domManager.elements.sharedKey.placeholder = 'Выберите метод получения ключа...';
+          setDynamicPlaceholder(this.domManager.elements.sharedKey, 'key.choosePlaceholder');
           this.domManager.elements.sharedKey.readOnly = true;
           this.domManager.elements.applyKeyBtn.disabled = true;
-          this.domManager.elements.keyMethodDescription.textContent = 'Выберите метод получения ключа';
+          delete this.domManager.elements.applyKeyBtn.dataset.krkState;
+          setDynamicText(this.domManager.elements.keyMethodDescription, 'keyMethodDesc.default');
           this.domManager.elements.keyWarning.style.display = 'none';
         }
         
         showCompatibilityInfo(selectElement, compatElement, hardwareValue, hardwareType) {
           if (!hardwareValue) return;
-          let compatibilityText = '';
           if (hardwareType === 'international') {
-            compatibilityText = '✅ Совместимо с Cisco, Juniper, Huawei (используют сетевой PSK)';
+            setDynamicText(compatElement, 'compat.international');
             // Добавляем дополнительную информацию
             setTimeout(() => {
-              this.domManager.addLogEntry("system", "ℹ️ Международное оборудование использует сетевой PSK, общий для всех узлов сети");
+              this.domManager.addLogEntry("system", t('log.intlPSKInfo'));
             }, 500);
           } else if (hardwareType === 'russian') {
             const hardwareName = this.getHardwareName(hardwareValue);
-            compatibilityText = `✅ Совместимо только с ${hardwareName} (использует парные ключи через ЦУС)`;
+            setDynamicText(compatElement, 'compat.russian', {name: hardwareName});
             setTimeout(() => {
-              this.domManager.addLogEntry("system", "ℹ️ Российские шифраторы используют уникальные парные ключи для каждого тоннеля");
+              this.domManager.addLogEntry("system", t('log.russianPairedInfo'));
             }, 500);
           } else if (hardwareType === 'western') {
             const hardwareName = this.getHardwareName(hardwareValue);
-            compatibilityText = `✅ Совместимо только с ${hardwareName} (использует парные ключи через Центр Управления)`;
+            setDynamicText(compatElement, 'compat.western', {name: hardwareName});
             setTimeout(() => {
-              this.domManager.addLogEntry("system", "ℹ️ Западные шифраторы используют уникальные парные ключи для каждого тоннеля");
+              this.domManager.addLogEntry("system", t('log.westernPairedInfo'));
             }, 500);
           }
-          compatElement.textContent = compatibilityText;
           compatElement.classList.add('show');
         }
         
@@ -2206,16 +3146,16 @@
           switch(method) {
             case 'manual':
               if (equipmentType === 'international') {
-                this.domManager.elements.sharedKey.placeholder = 'Введите сетевой PSK (один для всей сети)...';
+                setDynamicPlaceholder(this.domManager.elements.sharedKey, 'key.placeholderNetworkPSK');
                 this.domManager.elements.sharedKey.readOnly = false;
-                this.domManager.elements.applyKeyBtn.textContent = 'Установить сетевой PSK';
+                setDynamicText(this.domManager.elements.applyKeyBtn, 'btn.setNetworkPSK');
                 this.domManager.elements.applyKeyBtn.disabled = false;
               }
               break;
             case 'cvk':
               if (equipmentType === 'russian' || equipmentType === 'western') {
-                this.domManager.elements.sharedKey.placeholder = equipmentType === 'russian' ? 'ЦУС сгенерирует парные ключи...' : 'Центр Управления сгенерирует парные ключи...';
-                this.domManager.elements.applyKeyBtn.textContent = equipmentType === 'russian' ? 'Получить ключ из ЦУС' : 'Получить ключ из Центра Управления';
+                setDynamicPlaceholder(this.domManager.elements.sharedKey, equipmentType === 'russian' ? 'key.placeholderCenterRu' : 'key.placeholderCenterWest');
+                setDynamicText(this.domManager.elements.applyKeyBtn, equipmentType === 'russian' ? 'btn.getKeyFromCenterRu' : 'btn.getKeyFromCenterWest');
                 this.domManager.elements.applyKeyBtn.disabled = false;
                 // Имитируем процесс получения парного ключа из ЦУС
                 this.simulateCVKProcess(equipmentType);
@@ -2223,9 +3163,10 @@
               break;
             case 'krk':
               if (equipmentType === 'russian' || equipmentType === 'western') {
-                this.domManager.elements.sharedKey.placeholder = 'Получите парный ключ в игре КРК...';
+                setDynamicPlaceholder(this.domManager.elements.sharedKey, 'key.placeholderKRK');
                 this.domManager.elements.sharedKey.readOnly = false;
-                this.domManager.elements.applyKeyBtn.textContent = 'Открыть КРК';
+                setDynamicText(this.domManager.elements.applyKeyBtn, 'btn.openKRK');
+                this.domManager.elements.applyKeyBtn.dataset.krkState = 'open';
                 this.domManager.elements.applyKeyBtn.disabled = false;
               }
               break;
@@ -2233,8 +3174,8 @@
               if (equipmentType === 'international') {
                 const randomKey = this.generateNetworkPSK();
                 this.domManager.elements.sharedKey.value = randomKey;
-                this.domManager.elements.sharedKey.placeholder = 'Сетевой PSK сгенерирован';
-                this.domManager.elements.applyKeyBtn.textContent = 'Применить сетевой PSK';
+                setDynamicPlaceholder(this.domManager.elements.sharedKey, 'key.placeholderPSKGenerated');
+                setDynamicText(this.domManager.elements.applyKeyBtn, 'btn.applyNetworkPSK');
                 this.domManager.elements.applyKeyBtn.disabled = false;
               }
               break;
@@ -2264,26 +3205,27 @@
         }
         
         simulateCVKProcess(equipmentType) {
-          const centerName = equipmentType === 'russian' ? 'ЦУС' : 'Центр Управления';
+          const centerKey = equipmentType === 'russian' ? 'centerName.ru' : 'centerName.west';
+          const centerName = t(centerKey);
           // Добавляем записи в лог
-          this.domManager.addLogEntry("system", `Запрос в ${centerName} для генерации парного ключа для тоннеля Алиса-Боб...`);
+          this.domManager.addLogEntry("system", t('log.cvkRequest', {center: centerName}));
           // Имитация задержки получения ключа из ЦУС
           setTimeout(() => {
-            this.domManager.addLogEntry("system", `${centerName}: Проверка прав доступа Алисы и Боба...`);
-            this.domManager.addLogEntry("system", `${centerName}: Генерация уникального парного ключа для тоннеля Алиса-Боб...`);
+            this.domManager.addLogEntry("system", t('log.cvkCheckingRights', {center: centerName}));
+            this.domManager.addLogEntry("system", t('log.cvkGenerating', {center: centerName}));
           }, 1000);
           setTimeout(() => {
             // Генерация парного ключа (уникального для пары Алиса-Боб)
             const pairedKey = this.generatePairedKey(equipmentType);
             // Автоматически заполняем поле ключа
             this.domManager.elements.sharedKey.value = pairedKey;
-            this.domManager.elements.sharedKey.placeholder = `${centerName}: Парный ключ для тоннеля Алиса-Боб`;
-            this.domManager.elements.applyKeyBtn.textContent = 'Загрузить парный ключ в шифраторы';
+            setDynamicPlaceholder(this.domManager.elements.sharedKey, 'key.placeholderPairedKey', {center: centerName});
+            setDynamicText(this.domManager.elements.applyKeyBtn, 'btn.loadPairedKey');
             this.domManager.elements.applyKeyBtn.disabled = false;
-            this.domManager.addLogEntry("system", `${centerName}: Парный ключ сгенерирован: ${pairedKey.substring(0, 15)}...`);
-            this.domManager.addLogEntry("system", `${centerName}: Ключ для Алисы: связан только с Бобом`);
-            this.domManager.addLogEntry("system", `${centerName}: Ключ для Боба: связан только с Алисой`);
-            this.domManager.showInfo(`✅ ${centerName} сгенерировал уникальный парный ключ для тоннеля Алиса-Боб`);
+            this.domManager.addLogEntry("system", t('log.cvkKeyGenerated', {center: centerName, key: pairedKey.substring(0, 15)}));
+            this.domManager.addLogEntry("system", t('log.cvkKeyAlice', {center: centerName}));
+            this.domManager.addLogEntry("system", t('log.cvkKeyBob', {center: centerName}));
+            this.domManager.showInfo(t('info.cvkGenerated', {center: centerName}));
           }, 3000);
         }
         
@@ -2300,47 +3242,42 @@
           this.state.aliceConfig.key = keyValue;
           this.state.bobConfig.key = keyValue;
           // Добавляем специфичные записи для сетевого PSK
-          this.domManager.addLogEntry("system", "Сетевой PSK настроен в конфигурациях оборудования");
-          this.domManager.addLogEntry("system", "Этот же PSK используется для всех маршрутизаторов в сети (OSPF/MPLS)");
-          this.domManager.addLogEntry("system", "При добавлении Чарли в сеть ему будет задан этот же PSK");
-          this.domManager.addLogEntry("system", "Длина сетевого PSK: " + keyValue.length + " символов");
+          this.domManager.addLogEntry("system", t('log.networkPSKConfigured'));
+          this.domManager.addLogEntry("system", t('log.networkPSKSameForAll'));
+          this.domManager.addLogEntry("system", t('log.networkPSKCharlie'));
+          this.domManager.addLogEntry("system", t('log.networkPSKLength', {n: keyValue.length}));
           this.updateConnectionStatus();
         }
-        
+
         applyPairedKeyToBoth(keyValue, equipmentType) {
           this.state.aliceConfig.key = keyValue;
           this.state.bobConfig.key = keyValue;
-          const centerName = equipmentType === 'russian' ? 'ЦУС' : 'Центр Управления';
+          const centerName = t(equipmentType === 'russian' ? 'centerName.ru' : 'centerName.west');
           // Добавляем специфичные записи для парных ключей
-          this.domManager.addLogEntry("system", `${centerName}: Парные ключи загружены в шифраторы`);
-          this.domManager.addLogEntry("system", "Алиса получила ключ, который работает ТОЛЬКО для тоннеля с Бобом");
-          this.domManager.addLogEntry("system", "Боб получил ключ, который работает ТОЛЬКО для тоннеля с Алисой");
-          this.domManager.addLogEntry("system", `${centerName}: Если добавить Чарли, для Алиса-Чарли и Боб-Чарли будут сгенерированы другие ключи`);
-          this.domManager.addLogEntry("system", `${centerName}: Команда на построение тоннеля Алиса-Боб отправлена`);
+          this.domManager.addLogEntry("system", t('log.pairedKeysLoaded', {center: centerName}));
+          this.domManager.addLogEntry("system", t('log.aliceKeyOnly'));
+          this.domManager.addLogEntry("system", t('log.bobKeyOnly'));
+          this.domManager.addLogEntry("system", t('log.charlieDifferentKeys', {center: centerName}));
+          this.domManager.addLogEntry("system", t('log.tunnelCommandSent', {center: centerName}));
           this.updateConnectionStatus();
         }
-        
+
         applyKeyToBoth(keyValue) {
           this.state.aliceConfig.key = keyValue;
           this.state.bobConfig.key = keyValue;
           this.updateConnectionStatus();
           // Добавляем запись в лог
-          this.domManager.addLogEntry("system", `Ключ установлен: ${keyValue.length > 15 ? keyValue.substring(0, 15) + '...' : keyValue}`);
+          this.domManager.addLogEntry("system", t('log.keySet', {key: keyValue.length > 15 ? keyValue.substring(0, 15) + '...' : keyValue}));
           // Показываем метод получения ключа
-          const methodNames = {
-            'manual': 'вручную (сетевой PSK)',
-            'cvk': 'через Центр Управления Сетями (парные ключи)',
-            'krk': 'через Квантовое распределение ключей (парный ключ)',
-            'rnd': 'случайной генерацией (сетевой PSK)'
-          };
-          const securityStatus = this.state.currentKeyMethod === 'manual' || this.state.currentKeyMethod === 'rnd' ? ' (небезопасно)' : ' (безопасно)';
-          this.domManager.addLogEntry("system", `Метод получения ключа: ${methodNames[this.state.currentKeyMethod]}${securityStatus}`);
+          const methodKey = this.state.currentKeyMethod;
+          const securityKey = methodKey === 'manual' || methodKey === 'rnd' ? 'security.unsafe' : 'security.safe';
+          this.domManager.addLogEntry("system", t('log.keyMethodUsed', {method: t('method.' + methodKey), security: t(securityKey)}));
         }
         
         updateConnectionStatus() {
           // Проверяем, что все параметры установлены
           if (!this.state.isAllParamsSet()) {
-            this.domManager.updateConnectionStatus("СОЕДИНЕНИЕ НЕ УСТАНОВЛЕНО", "disconnected");
+            this.domManager.updateConnectionStatus('connection.notEstablished', 'disconnected');
             this.domManager.elements.establishBtn.disabled = false;
             this.domManager.elements.establishBtn.classList.remove('success');
             this.domManager.elements.startTrafficBtn.disabled = true;
@@ -2351,11 +3288,11 @@
           // Проверяем совместимость конфигураций
           const isCompatible = this.state.isCompatible();
           if (isCompatible && this.state.aliceConfig.key === this.state.bobConfig.key) {
-            this.domManager.updateConnectionStatus("КОНФИГУРАЦИЯ СОВМЕСТИМА", "establishing");
+            this.domManager.updateConnectionStatus('connection.compatible', 'establishing');
             this.domManager.elements.establishBtn.classList.add('success');
             this.domManager.elements.startTrafficBtn.disabled = false;
           } else {
-            this.domManager.updateConnectionStatus("КОНФИГУРАЦИЯ НЕСОВМЕСТИМА", "disconnected");
+            this.domManager.updateConnectionStatus('connection.incompatible', 'disconnected');
             this.domManager.elements.establishBtn.classList.remove('success');
             this.domManager.elements.startTrafficBtn.disabled = true;
             this.domManager.elements.stopBtn.disabled = true;
@@ -2383,7 +3320,7 @@
         
         establishConnection(equipmentType) {
           // Показываем статус "устанавливается"
-          this.domManager.updateConnectionStatus("УСТАНАВЛИВАЕТСЯ...", "establishing");
+          this.domManager.updateConnectionStatus('connection.establishing', 'establishing');
           
           // Блокируем конфигурации
           this.domManager.blockConfigurations();
@@ -2403,86 +3340,87 @@
         }
         
         establishNetworkPSKConnection() {
-          this.addIKEv2LogEntry("Инициализация IKEv2 с сетевым PSK...");
-          this.addIKEv2LogEntry("PSK: общий для всех узлов сети (Алиса, Боб, Чарли...)");
+          this.addIKEv2LogEntry(t('ikev2.initPSK'));
+          this.addIKEv2LogEntry(t('ikev2.pskShared'));
           setTimeout(() => {
-            this.addIKEv2LogEntry("Фаза 1 IKEv2: Алиса → Боб: IKE_SA_INIT_REQUEST");
-            this.addIKEv2LogEntry("Фаза 1 IKEv2: Обмен параметрами Диффи-Хеллмана");
+            this.addIKEv2LogEntry(t('ikev2.phase1Init'));
+            this.addIKEv2LogEntry(t('ikev2.phase1DH'));
           }, 500);
           setTimeout(() => {
-            this.addIKEv2LogEntry("Фаза 2 IKEv2: Алиса → Боб: IKE_AUTH_REQUEST с хэшем сетевого PSK");
-            this.addIKEv2LogEntry("Боб: Вычисление хэша от своего сетевого PSK...");
+            this.addIKEv2LogEntry(t('ikev2.phase2Auth'));
+            this.addIKEv2LogEntry(t('ikev2.bobComputeHash'));
           }, 2000);
           setTimeout(() => {
-            this.addIKEv2LogEntry("Боб: Хэши совпали! → Алиса: IKE_AUTH_RESPONSE с подтверждением");
-            this.addIKEv2LogEntry("Алиса: Вычисление хэша от PSK Боба...");
+            this.addIKEv2LogEntry(t('ikev2.hashMatchBob'));
+            this.addIKEv2LogEntry(t('ikev2.aliceComputeHash'));
           }, 3500);
           setTimeout(() => {
-            this.addIKEv2LogEntry("Алиса: Хэши совпали! Взаимная аутентификация успешна");
-            this.addIKEv2LogEntry("IKE_SA установлен: создан защищенный канал управления");
+            this.addIKEv2LogEntry(t('ikev2.hashMatchAlice'));
+            this.addIKEv2LogEntry(t('ikev2.saEstablished'));
           }, 5000);
           setTimeout(() => {
-            this.addIKEv2LogEntry("Создание IPsec SA для данных...");
-            this.addIKEv2LogEntry("IPsec SA установлен: готов к передаче данных");
-            this.completeConnectionEstablishment("Международное оборудование (сетевой PSK)");
+            this.addIKEv2LogEntry(t('ikev2.ipsecCreating'));
+            this.addIKEv2LogEntry(t('ikev2.ipsecReady'));
+            this.completeConnectionEstablishment(t('equipment.international'));
           }, 6500);
         }
-        
+
         establishPairedKeyConnection(equipmentType) {
-          const centerName = equipmentType === 'russian' ? 'ЦУС' : 'Центр Управления';
-          this.addIKEv2LogEntry(`${centerName}: Инициализация парного ключа для тоннеля Алиса-Боб`);
-          this.addIKEv2LogEntry("Ключ уникален только для этой пары (Алиса-Боб)");
+          const centerName = t(equipmentType === 'russian' ? 'centerName.ru' : 'centerName.west');
+          this.addIKEv2LogEntry(t('ikev2.pairedInit', {center: centerName}));
+          this.addIKEv2LogEntry(t('ikev2.pairedUnique'));
           setTimeout(() => {
-            this.addIKEv2LogEntry(`${centerName}: Команда Алисе: инициировать IKEv2 с Бобом`);
-            this.addIKEv2LogEntry("Алиса → Боб: IKE_SA_INIT_REQUEST с использованием парного ключа");
+            this.addIKEv2LogEntry(t('ikev2.pairedCmdAlice', {center: centerName}));
+            this.addIKEv2LogEntry(t('ikev2.pairedInitReq'));
           }, 1000);
           setTimeout(() => {
-            this.addIKEv2LogEntry("Фаза 1 IKEv2: Обмен параметрами Диффи-Хеллмана");
-            this.addIKEv2LogEntry("Фаза 2 IKEv2: Аутентификация с использованием парного ключа");
+            this.addIKEv2LogEntry(t('ikev2.phase1DH'));
+            this.addIKEv2LogEntry(t('ikev2.phase2PairedAuth'));
           }, 3000);
           setTimeout(() => {
-            this.addIKEv2LogEntry("Боб: Проверка парного ключа... Ключ предназначен именно для Алисы");
-            this.addIKEv2LogEntry("Алиса: Проверка парного ключа... Ключ предназначен именно для Боба");
+            this.addIKEv2LogEntry(t('ikev2.bobVerify'));
+            this.addIKEv2LogEntry(t('ikev2.aliceVerify'));
           }, 5000);
           setTimeout(() => {
-            this.addIKEv2LogEntry("Парные ключи верифицированы: взаимная аутентификация успешна");
-            this.addIKEv2LogEntry("IPsec SA установлен: шифраторы готовы к передаче данных");
-            this.completeConnectionEstablishment(`${equipmentType === 'russian' ? 'Российские' : 'Западные'} шифраторы (парный ключ)`);
+            this.addIKEv2LogEntry(t('ikev2.pairedVerified'));
+            this.addIKEv2LogEntry(t('ikev2.ipsecPairedReady'));
+            const typeName = t(equipmentType === 'russian' ? 'equipment.russian' : 'equipment.western');
+            this.completeConnectionEstablishment(t('equipment.encryptorsPaired', {type: typeName}));
           }, 7000);
         }
-        
+
         completeConnectionEstablishment(equipmentTypeName) {
           this.state.connectionEstablished = true;
-          this.domManager.updateConnectionStatus("СОЕДИНЕНИЕ УСТАНОВЛЕНО", "connected");
+          this.domManager.updateConnectionStatus('connection.established', 'connected');
           this.domManager.elements.establishBtn.disabled = true;
           this.domManager.elements.startTrafficBtn.disabled = false;
           this.domManager.elements.stopBtn.disabled = true;
-          this.addIKEv2LogEntry(`${equipmentTypeName}: Защищенный канал успешно установлен`);
-          this.domManager.showSuccess("✅ Защищенный канал успешно установлен!");
+          this.addIKEv2LogEntry(t('ikev2.channelEstablished', {type: equipmentTypeName}));
+          this.domManager.showSuccess(t('success.channelEstablished'));
           // Добавляем финальную запись в лог
           const equipmentType = this.state.getEquipmentType();
-          const keyType = equipmentType === 'international' ? 'сетевой PSK (общий для всех узлов)' : 'парный ключ (уникальный для этой пары)';
-          this.domManager.addLogEntry("system", `Тип оборудования: ${equipmentTypeName}`);
-          this.domManager.addLogEntry("system", `Тип ключа: ${keyType}`);
-          this.domManager.addLogEntry("system", "Готов к передаче защищенных данных");
+          const keyType = t(equipmentType === 'international' ? 'key.typeNetwork' : 'key.typePaired');
+          this.domManager.addLogEntry("system", t('log.equipmentType', {type: equipmentTypeName}));
+          this.domManager.addLogEntry("system", t('log.keyType', {type: keyType}));
+          this.domManager.addLogEntry("system", t('log.readyToTransfer'));
           // Добавляем информацию о Чарли
           setTimeout(() => {
             this.addCharlieInfo();
           }, 2000);
         }
-        
+
         addCharlieInfo() {
           const equipmentType = this.state.getEquipmentType();
           if (equipmentType === 'international') {
-            this.domManager.addLogEntry("system", "ℹ️ Если в сеть добавить маршрутизатор Чарли, ему будет задан этот же сетевой PSK");
-            this.domManager.addLogEntry("system", "ℹ️ Чарли сможет общаться и с Алисой, и с Бобом, используя тот же PSK");
-            this.domManager.addLogEntry("system", "ℹ️ Это удобно для масштабирования, но повышает риски при компрометации PSK");
+            this.domManager.addLogEntry("system", t('log.charlieIntlSamePSK'));
+            this.domManager.addLogEntry("system", t('log.charlieIntlCommunicate'));
+            this.domManager.addLogEntry("system", t('log.charlieIntlScale'));
           } else if (equipmentType === 'russian' || equipmentType === 'western') {
-            const centerName = equipmentType === 'russian' ? 'ЦУС' : 'Центр Управления';
-            this.domManager.addLogEntry("system", `ℹ️ Если добавить шифратор Чарли, ${centerName} сгенерирует новые парные ключи:`);
-            this.domManager.addLogEntry("system", `ℹ️ Для Алиса-Чарли: уникальный ключ 1`);
-            this.domManager.addLogEntry("system", `ℹ️ Для Боб-Чарли: уникальный ключ 2`);
-            this.domManager.addLogEntry("system", `ℹ️ Ключ Алиса-Боб останется прежним и не будет работать для других пар`);
+            const centerName = t(equipmentType === 'russian' ? 'centerName.ru' : 'centerName.west');
+            this.domManager.addLogEntry("system", t('log.charlieNewKeys', {center: centerName}));
+            this.domManager.addLogEntry("system", t('log.charlieKeyAlice'));
+            this.domManager.addLogEntry("system", t('log.charlieKeyBob'));
+            this.domManager.addLogEntry("system", t('log.aliceBobKeyUnchanged'));
           }
         }
         
@@ -2522,9 +3460,9 @@
             
             // Добавляем соответствующие сообщения в лог
             if (equipmentType === 'international') {
-              this.domManager.addLogEntry("eve", "ПЕРЕХВАЧЕНО: сетевой PSK уязвим - ключ общий для всей сети", "warning");
+              this.domManager.addLogEntry("eve", t('eve.interceptPSKVulnerable'), "warning");
             } else {
-              this.domManager.addLogEntry("eve", "ПЕРЕХВАЧЕНО: парный ключ сложнее взломать", "warning");
+              this.domManager.addLogEntry("eve", t('eve.interceptPairedHarder'), "warning");
             }
           }
           
@@ -2546,43 +3484,43 @@
             if (shouldIntercept) {
               if (interceptSuccess) {
                 // Успешный перехват и расшифровка
-                this.domManager.addLogEntry("alice", `IPsec ESP: ${messageText}`);
-                this.domManager.addLogEntry("eve", `ПЕРЕХВАЧЕНО И РАСШИФРОВАНО: "${messageText.replace("Тестовое сообщение: ", "")}"`, "critical");
-                
+                this.domManager.addLogEntry("alice", t('log.aliceIPsecESP', {message: messageText}));
+                this.domManager.addLogEntry("eve", t('eve.interceptedDecrypted', {message: messageText.replace("Тестовое сообщение: ", "")}), "critical");
+
                 // Добавляем специфичное предупреждение в зависимости от типа ключа
                 if (equipmentType === 'international') {
                   setTimeout(() => {
-                    this.domManager.addLogEntry("system", "⚠️ КРИТИЧЕСКАЯ УГРОЗА: Сетевой PSK скомпрометирован! Все узлы сети под угрозой.", "critical");
+                    this.domManager.addLogEntry("system", t('log.criticalPSKCompromised'), "critical");
                   }, 500);
                 } else {
                   setTimeout(() => {
-                    this.domManager.addLogEntry("system", "⚠️ УГРОЗА: Парный ключ для тоннеля Алиса-Боб скомпрометирован.", "critical");
-                    this.domManager.addLogEntry("system", "⚠️ Но другие тоннели (Алиса-Чарли, Боб-Чарли) остаются защищёнными.", "warning");
+                    this.domManager.addLogEntry("system", t('log.pairedKeyCompromised'), "critical");
+                    this.domManager.addLogEntry("system", t('log.otherTunnelsSafe'), "warning");
                   }, 500);
                 }
               } else {
                 // Перехват, но расшифровка не удалась
-                this.domManager.addLogEntry("alice", `IPsec ESP: ${messageText}`);
-                this.domManager.addLogEntry("eve", "ПЕРЕХВАЧЕНО: не удалось расшифровать IPsec ESP пакет", "warning");
+                this.domManager.addLogEntry("alice", t('log.aliceIPsecESP', {message: messageText}));
+                this.domManager.addLogEntry("eve", t('eve.interceptFailedDecrypt'), "warning");
               }
             } else {
               // Нет перехвата
-              this.domManager.addLogEntry("alice", `IPsec ESP: ${messageText}`);
+              this.domManager.addLogEntry("alice", t('log.aliceIPsecESP', {message: messageText}));
             }
-            
+
             // Ответ от Боба (если не было перехвата или был неудачный перехват)
             setTimeout(() => {
               if (!shouldIntercept || !interceptSuccess) {
-                this.domManager.addLogEntry("bob", `IPsec ESP: Сообщение получено и расшифровано: ${messageText.replace("Тестовое сообщение: ", "")}`);
+                this.domManager.addLogEntry("bob", t('log.bobReceived', {message: messageText.replace("Тестовое сообщение: ", "")}));
                 // Добавляем информацию о типе ключа
                 if (equipmentType === 'international') {
-                  this.domManager.addLogEntry("bob", `Используется сетевой PSK: общий для всех узлов сети`);
+                  this.domManager.addLogEntry("bob", t('log.bobUsesNetworkPSK'));
                 } else {
-                  this.domManager.addLogEntry("bob", `Используется парный ключ: уникальный для тоннеля Алиса-Боб`);
+                  this.domManager.addLogEntry("bob", t('log.bobUsesPairedKey'));
                 }
               } else {
                 // Если был успешный перехват, Боб не получает сообщение
-                this.domManager.addLogEntry("system", "IPsec ESP: Сообщение не доставлено: канал скомпрометирован", "warning");
+                this.domManager.addLogEntry("system", t('log.messageNotDelivered'), "warning");
               }
             }, 1500);
           }, 3000);
@@ -2701,7 +3639,7 @@
               domManager.elements.continueContainer.classList.remove('disabled');
               domManager.elements.continueContainer.style.borderColor = '#00a2ff';
               // Добавляем запись в лог
-              domManager.addLogEntry("system", `Выбран тип данных: ${gameLogic.getDataTypeDescription(state.selectedDataType)}`);
+              domManager.addLogEntry("system", t('log.dataTypeSelected', {desc: gameLogic.getDataTypeDescription(state.selectedDataType)}));
             }
           });
           
@@ -2718,10 +3656,10 @@
             gameLogic.populateHardwareOptions(state.selectedDataType);
             // Добавляем запись в лог
             const dataTypeDesc = gameLogic.getDataTypeDescription(state.selectedDataType);
-            domManager.addLogEntry("system", `Инициализация протокола для защиты: ${dataTypeDesc}`);
-            domManager.addLogEntry("system", "Выберите оборудование для Алисы и Боба");
+            domManager.addLogEntry("system", t('log.protocolInit', {desc: dataTypeDesc}));
+            domManager.addLogEntry("system", t('log.chooseHardware'));
             // Показываем информационное сообщение
-            domManager.showInfo("ℹ️ Выберите оборудование для Алисы и Боба в соответствии с требованиями");
+            domManager.showInfo(t('info.chooseHardwareReqs'));
           });
           
           // Обработка кнопки возврата к выбору типа данных
@@ -2741,7 +3679,7 @@
             // Сбрасываем все настройки
             gameLogic.resetGameState();
             // Добавляем запись в лог
-            domManager.addLogEntry("system", "Возврат к выбору типа данных");
+            domManager.addLogEntry("system", t('log.returnToSelection'));
           });
           
           // Инициализация всех выпадающих списков
@@ -2760,16 +3698,16 @@
               
               // Обновляем отображение алгоритма
               if (protocolValue) {
-                algorithmElement.textContent = gameLogic.algorithmNames[protocolValue];
+                setDynamicText(algorithmElement, 'algorithm.' + protocolValue);
                 algorithmElement.className = 'algorithm-display ' + protocolValue;
               } else {
-                algorithmElement.textContent = 'Не выбран';
+                setDynamicText(algorithmElement, 'algorithm.notSelected');
                 algorithmElement.className = 'algorithm-display';
               }
-              
+
               // Показываем описание оборудования
-              if (hardwareValue && gameLogic.hardwareDescriptions[hardwareValue]) {
-                descElement.textContent = gameLogic.hardwareDescriptions[hardwareValue];
+              if (hardwareValue && gameLogic.hardwareDescriptionKeys.includes(hardwareValue)) {
+                setDynamicText(descElement, 'hardware.desc.' + hardwareValue);
                 descElement.classList.add('show');
               } else {
                 descElement.classList.remove('show');
@@ -2784,7 +3722,7 @@
                 domManager.elements.controlsContainer.style.display = 'block';
                 // Обновляем доступность методов получения ключа
                 gameLogic.updateKeyMethodsAvailability();
-                domManager.showInfo("✅ Оборудование выбрано. Теперь выберите метод получения ключа");
+                domManager.showInfo(t('info.hardwareSelectedChooseMethod'));
               }
               gameLogic.updateConnectionStatus();
             });
@@ -2828,7 +3766,7 @@
               // Проверяем, доступен ли метод для данного типа оборудования
               const availableMethods = gameLogic.getAvailableKeyMethods(equipmentType);
               if (!availableMethods.includes(methodType)) {
-                domManager.showWarning(`⚠️ Метод "${methodType}" не доступен для выбранного типа оборудования`);
+                domManager.showWarning(t('warning.methodNotAvailable', {method: methodType}));
                 return;
               }
               // Снимаем выделение с других методов
@@ -2838,14 +3776,12 @@
               // Сохраняем выбранный метод
               state.currentKeyMethod = methodType;
               // Обновляем описание метода с учётом типа оборудования
-              let description = '';
-              description = gameLogic.keyMethodDescriptions[methodType][equipmentType];
-              domManager.elements.keyMethodDescription.textContent = description;
+              setDynamicText(domManager.elements.keyMethodDescription, 'keyMethod.' + methodType + '.' + equipmentType);
               // Показываем/скрываем предупреждение
               domManager.elements.keyWarning.style.display = 'none';
               if ((methodType === 'manual' || methodType === 'rnd') && equipmentType === 'international') {
                 domManager.elements.keyWarning.style.display = 'block';
-                domManager.showWarning("⚠️ Ручной ввод PSK уязвим для атак! Рекомендуется использовать HSMs для безопасного хранения ключей.");
+                domManager.showWarning(t('warning.manualPSKUnsafe'));
               }
               // Обработка в зависимости от метода
               gameLogic.handleKeyMethodSelection(methodType, equipmentType);
@@ -2872,45 +3808,46 @@
             // Валидация ввода PSK
             if (state.currentKeyMethod === 'manual' && equipmentType === 'international') {
               if (!keyValue || keyValue.length < 20) {
-                domManager.showError("⚠️ Сетевой PSK должен быть не менее 20 символов");
+                domManager.showError(t('error.networkPSKTooShort'));
                 return;
               }
             }
-            
+
             // Обработка в зависимости от метода и типа оборудования
             switch(state.currentKeyMethod) {
               case 'manual':
                 if (equipmentType === 'international' && keyValue) {
                   gameLogic.applyPSKToBoth(keyValue);
-                  domManager.showSuccess("✅ Сетевой PSK установлен в конфигурации оборудования");
-                  domManager.addLogEntry("system", "Сетевой PSK настроен вручную в конфигах оборудования Cisco/Juniper/Huawei");
+                  domManager.showSuccess(t('success.networkPSKSetManual'));
+                  domManager.addLogEntry("system", t('log.networkPSKManualConfig'));
                 }
                 break;
               case 'cvk':
                 if ((equipmentType === 'russian' || equipmentType === 'western') && keyValue) {
                   gameLogic.applyPairedKeyToBoth(keyValue, equipmentType);
-                  domManager.showSuccess(`✅ Парные ключи загружены в ${equipmentType === 'russian' ? 'российские' : 'западные'} шифраторы`);
+                  domManager.showSuccess(t('success.pairedKeysLoaded', {type: equipmentType === 'russian' ? t('equipment.russian') : t('equipment.western')}));
                 }
                 break;
               case 'krk':
-                if (domManager.elements.applyKeyBtn.textContent === 'Открыть КРК') {
+                if (domManager.elements.applyKeyBtn.dataset.krkState === 'open') {
                   const gameUrl = gameLogic.keyGameUrls[state.currentKeyMethod];
                   if (gameUrl) {
                     window.open(gameUrl, '_blank');
-                    domManager.elements.applyKeyBtn.textContent = 'Применить квантовый ключ';
+                    setDynamicText(domManager.elements.applyKeyBtn, 'btn.applyQuantumKey');
+                    delete domManager.elements.applyKeyBtn.dataset.krkState;
                     domManager.elements.sharedKey.focus();
-                    domManager.showInfo("ℹ️ Открыта игра Квантовое распределение ключей. Получите ключ и введите его выше.");
+                    domManager.showInfo(t('info.krkOpened'));
                   }
                 } else if (keyValue) {
                   gameLogic.applyKeyToBoth(keyValue);
-                  domManager.showSuccess("✅ Квантовый ключ применен для Алисы и Боба");
+                  domManager.showSuccess(t('success.quantumKeyApplied'));
                 }
                 break;
               case 'rnd':
                 if (equipmentType === 'international' && keyValue) {
                   gameLogic.applyPSKToBoth(keyValue);
-                  domManager.showSuccess("✅ Случайный сетевой PSK установлен в конфигурации оборудования");
-                  domManager.addLogEntry("system", "Случайный сетевой PSK сгенерирован и установлен в оборудование");
+                  domManager.showSuccess(t('success.randomPSKSet'));
+                  domManager.addLogEntry("system", t('log.randomPSKGenerated'));
                 }
                 break;
             }
@@ -2922,71 +3859,71 @@
               // Проверяем, что все параметры установлены
               if (!state.aliceConfig.hardware || !state.aliceConfig.protocol || !state.aliceConfig.key ||
                   !state.bobConfig.hardware || !state.bobConfig.protocol || !state.bobConfig.key) {
-                domManager.showError("Не все параметры настроены. Пожалуйста, завершите настройку Алисы и Боба.");
+                domManager.showError(t('error.paramsNotSet'));
                 return;
               }
-              
+
               // Проверяем совместимость конфигураций
               if (!state.isCompatible()) {
-                let errorMessage = "Оборудование не совместимо! ";
+                let errorMessage = t('error.notCompatible');
                 if (state.aliceConfig.hardwareType === 'international' && state.bobConfig.hardwareType === 'international') {
-                  errorMessage += "Международное оборудование должно использовать протокол AES.";
+                  errorMessage += t('error.intlMustUseAES');
                 } else if (state.aliceConfig.hardwareType === 'russian' && state.bobConfig.hardwareType === 'russian') {
-                  errorMessage += `Российское оборудование должно быть одинаковым (${gameLogic.getHardwareName(state.aliceConfig.hardware)} ↔ ${gameLogic.getHardwareName(state.bobConfig.hardware)}) и использовать протокол "Кузнечик".`;
+                  errorMessage += t('error.russianMustMatch', {a: gameLogic.getHardwareName(state.aliceConfig.hardware), b: gameLogic.getHardwareName(state.bobConfig.hardware)});
                 } else if (state.aliceConfig.hardwareType === 'western' && state.bobConfig.hardwareType === 'western') {
-                  errorMessage += `Западное оборудование должно быть одинаковым (${gameLogic.getHardwareName(state.aliceConfig.hardware)} ↔ ${gameLogic.getHardwareName(state.bobConfig.hardware)}) и использовать протокол AES.`;
+                  errorMessage += t('error.westernMustMatch', {a: gameLogic.getHardwareName(state.aliceConfig.hardware), b: gameLogic.getHardwareName(state.bobConfig.hardware)});
                 } else {
-                  errorMessage += "Разные типы оборудования не совместимы между собой.";
+                  errorMessage += t('error.differentTypesIncompatible');
                 }
                 domManager.showError(errorMessage);
                 return;
               }
-              
+
               // Проверяем ключи
               if (state.aliceConfig.key !== state.bobConfig.key) {
-                domManager.showError("Ключи шифрования не совпадают! У Алисы и Боба должны быть одинаковые ключи.");
+                domManager.showError(t('error.keysDoNotMatch'));
                 return;
               }
-              
+
               // Проверяем метод получения ключа (предупреждение для небезопасных методов)
               if (state.currentKeyMethod === 'manual' || state.currentKeyMethod === 'rnd') {
-                domManager.showWarning("⚠️ Вы используете небезопасный метод получения ключа. В реальной системе это может привести к компрометации данных.");
+                domManager.showWarning(t('warning.unsafeMethodUsed'));
               }
-              
+
               // Устанавливаем соединение в зависимости от типа оборудования
               const equipmentType = state.getEquipmentType();
               gameLogic.establishConnection(equipmentType);
             } catch (error) {
               console.error("Ошибка при установке соединения:", error);
-              domManager.showError("Произошла ошибка при установке соединения. Пожалуйста, попробуйте еще раз.");
+              domManager.showError(t('error.connectionError'));
             }
           });
           
           // Запуск трафика в пользовательском канале
           domManager.elements.startTrafficBtn.addEventListener('click', function() {
             if (!state.connectionEstablished) {
-              domManager.showError("Сначала установите защищенное соединение!");
+              domManager.showError(t('error.connectFirst'));
               return;
             }
             gameLogic.startTraffic();
             domManager.elements.startTrafficBtn.disabled = true;
             domManager.elements.stopBtn.disabled = false;
-            domManager.showInfo("🚦 Трафик запущен в пользовательском канале через IPsec ESP");
+            domManager.showInfo(t('info.trafficStarted'));
           });
-          
+
           // Остановка трафика
           domManager.elements.stopBtn.addEventListener('click', function() {
             gameLogic.stopTraffic();
             domManager.elements.startTrafficBtn.disabled = false;
             domManager.elements.stopBtn.disabled = true;
-            domManager.showInfo("🛑 Трафик остановлен в пользовательском канале");
+            domManager.showInfo(t('info.trafficStopped'));
           });
-          
+
           // Сброс игры
           domManager.elements.resetBtn.addEventListener('click', function() {
             gameLogic.resetGameState();
             // Добавляем запись в лог
-            domManager.addLogEntry("system", "Настройки сброшены. Выберите оборудование для Алисы и Боба");
+            domManager.addLogEntry("system", t('log.settingsReset'));
           });
           
           // Переключение описания протокола
@@ -3016,14 +3953,14 @@
           
           // Показываем информационное сообщение при запуске
           setTimeout(() => {
-            domManager.showInfo("ℹ️ Выберите тип защищаемых данных для начала работы");
+            domManager.showInfo(t('info.chooseDataTypeStart'));
           }, 1000);
-          
+
           // Санитизация пользовательского ввода
           domManager.elements.sharedKey.addEventListener('input', function() {
             this.value = sanitizeInput(this.value);
           });
-          
+
         } catch (error) {
           console.error("Критическая ошибка инициализации игры:", error);
           // Показываем сообщение об ошибке пользователю
@@ -3031,15 +3968,16 @@
           errorContainer.className = 'error-container';
           errorContainer.innerHTML = `
             <div class="error-message">
-              <h2>Ошибка инициализации игры</h2>
-              <p>Произошла критическая ошибка. Пожалуйста, обновите страницу или обратитесь в техподдержку.</p>
-              <p class="error-code">Код ошибки: ${error.message || 'UNKNOWN_ERROR'}</p>
+              <h2>${t('error.initTitle')}</h2>
+              <p>${t('error.initMessage')}</p>
+              <p class="error-code">${t('error.codeLabel', {code: error.message || 'UNKNOWN_ERROR'})}</p>
             </div>
           `;
           document.body.appendChild(errorContainer);
         }
       }
-      
+
+      initLanguage();
       // Запуск игры
       initGame();
     });

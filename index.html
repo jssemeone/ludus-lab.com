@@ -3,829 +3,848 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ludus Lab - Всё сложное - просто</title>
+  <title id="pageTitle">Ludus Lab - Всё сложное - просто</title>
+
   <!-- Favicon -->
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
 
-    body {
-      background: linear-gradient(to bottom, #0a1a2a, #050d15);
-      color: #c5d5e0;
-      font-family: 'Roboto', sans-serif;
-      line-height: 1.8;
-      text-align: center;
-      padding: 40px 20px;
-      min-height: 100vh;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    /* Текстура для всего сайта - минималистичная */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        radial-gradient(circle at 25% 25%, rgba(30, 144, 255, 0.03) 0%, transparent 55%),
-        radial-gradient(circle at 75% 75%, rgba(0, 206, 209, 0.03) 0%, transparent 55%);
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-
-    header {
-      margin-bottom: 40px;
-      padding: 15px 20px;
-      position: relative;
-    }
-
-    /* Заголовок в стиле BioShock */
-    h1 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 4.5rem;
-      color: #d4af37;
-      text-shadow: 
-        0 0 10px rgba(212, 175, 55, 0.7),
-        0 0 20px rgba(212, 175, 55, 0.4);
-      letter-spacing: 4px;
-      margin-bottom: 5px;
-      position: relative;
-      text-transform: uppercase;
-      font-weight: 700;
-      animation: flicker 5s infinite;
-    }
-
-    h1::after {
-      content: "";
-      position: absolute;
-      bottom: -5px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #d4af37, transparent);
-      box-shadow: 0 0 8px #d4af37;
-    }
-
-    .tagline {
-      font-style: normal;
-      color: #8ab0c5;
-      margin: 5px 0 30px;
-      font-size: 1.6rem;
-      letter-spacing: 0.8px;
-      text-shadow: 0 0 5px rgba(138, 176, 197, 0.3);
-      font-weight: 500;
-      font-family: 'Oswald', sans-serif;
-    }
-
-    /* Навигация */
-    .nav-menu {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-    }
-
-    .nav-button {
-      background: rgba(5, 20, 30, 0.7);
-      color: #00a2ff;
-      border: 1px solid rgba(0, 162, 255, 0.4);
-      padding: 12px 25px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-family: 'Oswald', sans-serif;
-      font-size: 1.1rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .nav-button:hover {
-      background: rgba(0, 162, 255, 0.2);
-      border-color: #00a2ff;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 162, 255, 0.3);
-    }
-
-    .nav-button.active {
-      background: rgba(0, 162, 255, 0.3);
-      border-color: #00a2ff;
-      box-shadow: 0 0 10px rgba(0, 162, 255, 0.5);
-    }
-
-    /* Секции */
-    .section {
-      margin: 30px 0;
-      padding: 25px;
-      background: rgba(5, 20, 30, 0.6);
-      border: 1px solid rgba(0, 162, 255, 0.3);
-      border-radius: 8px;
-      box-shadow: 
-        0 0 20px rgba(0, 162, 255, 0.2),
-        inset 0 0 15px rgba(0, 100, 150, 0.1);
-      position: relative;
-      display: none;
-      animation: fadeIn 0.5s ease-out;
-    }
-
-    .section.active {
-      display: block;
-    }
-
-    h2 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 2.5rem;
-      color: #00a2ff;
-      margin-bottom: 20px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      text-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
-    }
-
-    .section-content {
-      text-align: left;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    p {
-      font-size: 1.1rem;
-      color: #a0c0d0;
-      margin: 15px 0;
-      line-height: 1.7;
-    }
-
-    /* Баннер переезда */
-    .migration-banner {
-      background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(0, 162, 255, 0.15));
-      border: 2px solid #d4af37;
-      border-radius: 10px;
-      padding: 25px;
-      margin: 30px 0;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
-    }
-
-    .migration-banner::before {
-      content: "🚀";
-      font-size: 3rem;
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      opacity: 0.3;
-    }
-
-    .migration-banner h3 {
-      color: #d4af37;
-      font-family: 'Oswald', sans-serif;
-      font-size: 1.8rem;
-      margin-bottom: 15px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
-    }
-
-    .migration-banner p {
-      color: #c5d5e0;
-      font-size: 1.1rem;
-      margin-bottom: 20px;
-      line-height: 1.6;
-      text-align: center;
-    }
-
-    .migration-button {
-      display: inline-block;
-      background: linear-gradient(135deg, #d4af37, #b8941f);
-      color: #0a1a2a;
-      padding: 14px 35px;
-      font-size: 1.2rem;
-      font-family: 'Oswald', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      text-decoration: none;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 700;
-      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
-      margin-top: 10px;
-    }
-
-    .migration-button:hover {
-      background: linear-gradient(135deg, #e6c158, #d4af37);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(212, 175, 55, 0.6);
-    }
-
-    .migration-button:active {
-      transform: translateY(-1px);
-    }
-
-    .new-address {
-      display: inline-block;
-      background: rgba(0, 162, 255, 0.15);
-      color: #00a2ff;
-      padding: 8px 15px;
-      border-radius: 4px;
-      font-family: 'Roboto Mono', monospace;
-      font-size: 1.1rem;
-      margin: 10px 0;
-      border: 1px solid rgba(0, 162, 255, 0.3);
-    }
-
-    /* ОБНОВЛЕННЫЙ выделенный текст - такой же как заголовок, но синий */
-    .highlight {
-      font-family: 'Oswald', sans-serif;
-      font-size: 1.1em;
-      color: #00a2ff;
-      text-shadow: 
-        0 0 8px rgba(0, 162, 255, 0.7),
-        0 0 15px rgba(0, 162, 255, 0.4);
-      letter-spacing: 1px;
-      font-weight: 700;
-      position: relative;
-      text-transform: uppercase;
-    }
-
-    .highlight::after {
-      content: "";
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, #00a2ff, transparent);
-      box-shadow: 0 0 4px #00a2ff;
-    }
-
-    /* УЛУЧШЕННЫЙ выделенный текст внутри примечаний (ярче!) */
-    .disclaimer .highlight {
-      color: #ffd700; /* Яркий золотой вместо бледного */
-      text-shadow: 
-        0 0 8px rgba(255, 215, 0, 0.9),
-        0 0 15px rgba(255, 215, 0, 0.6);
-      font-weight: 700;
-    }
-
-    .disclaimer .highlight::after {
-      background: linear-gradient(90deg, #ffd700, transparent);
-      box-shadow: 0 0 6px #ffd700;
-    }
-
-    /* Класс для предотвращения переноса текста */
-    .nowrap {
-      white-space: nowrap;
-    }
-
-    /* Раздел "О команде" */
-    .team-member {
-      background: rgba(10, 30, 45, 0.4);
-      border: 1px solid rgba(0, 162, 255, 0.2);
-      border-radius: 8px;
-      padding: 25px;
-      margin: 20px 0;
-      text-align: left;
-    }
-
-    .team-member h3 {
-      color: #d4af37;
-      font-size: 1.8rem;
-      margin-bottom: 15px;
-      font-family: 'Oswald', sans-serif;
-    }
-
-    .tools-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 20px 0;
-    }
-
-    .tool-tag {
-      background: rgba(0, 162, 255, 0.1);
-      border: 1px solid rgba(0, 162, 255, 0.3);
-      padding: 8px 15px;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      color: #8ab0c5;
-    }
-
-    /* Концепция */
-    .concept-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin: 30px 0;
-    }
-
-    .concept-item {
-      background: rgba(10, 30, 45, 0.4);
-      border: 1px solid rgba(0, 162, 255, 0.2);
-      border-radius: 8px;
-      padding: 20px;
-      text-align: left;
-    }
-
-    .concept-item h4 {
-      color: #00a2ff;
-      text-shadow: 0 0 5px rgba(0, 162, 255, 0.6);
-      margin-bottom: 10px;
-      font-size: 1.3rem;
-      font-family: 'Oswald', sans-serif;
-      font-weight: 700;
-    }
-
-    /* Переработанный блок "Путь проекта" с древовидной осью */
-    .project-timeline {
-      margin-top: 40px;
-      padding-top: 30px;
-      border-top: 1px solid rgba(0, 162, 255, 0.2);
-      position: relative;
-    }
-
-    .project-timeline h3 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 1.8rem;
-      color: #00a2ff;
-      text-shadow: 0 0 5px rgba(0, 162, 255, 0.5);
-      margin-bottom: 25px;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .timeline-items {
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-      max-width: 700px;
-      margin: 0 auto;
-      position: relative;
-    }
-
-    /* Вертикальная ось-дерево */
-    .timeline-items::before {
-      content: '';
-      position: absolute;
-      left: 50px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: linear-gradient(to bottom, 
-        rgba(0, 162, 255, 0) 0%, 
-        rgba(0, 162, 255, 0.6) 20%, 
-        rgba(0, 162, 255, 0.6) 80%, 
-        rgba(0, 162, 255, 0) 100%);
-      z-index: 1;
-    }
-
-    .timeline-item {
-      background: rgba(10, 30, 45, 0.5);
-      border: 1px solid rgba(0, 162, 255, 0.2);
-      border-radius: 6px;
-      padding: 20px;
-      text-align: left;
-      position: relative;
-      transition: all 0.3s ease;
-      margin-left: 100px;
-      box-shadow: 0 0 10px rgba(0, 162, 255, 0.1);
-    }
-
-    /* Горизонтальные ветви от оси к элементам */
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -50px;
-      top: 50%;
-      width: 40px;
-      height: 2px;
-      background: linear-gradient(to right, 
-        rgba(0, 162, 255, 0.6), 
-        rgba(0, 162, 255, 0.3));
-      transform: translateY(-50%);
-    }
-
-    /* Точки на оси */
-    .timeline-item::after {
-      content: '';
-      position: absolute;
-      left: -54px;
-      top: 50%;
-      width: 10px;
-      height: 10px;
-      background: #00a2ff;
-      border-radius: 50%;
-      transform: translateY(-50%);
-      box-shadow: 0 0 10px rgba(0, 162, 255, 0.8);
-      z-index: 2;
-    }
-
-    .timeline-item:hover {
-      background: rgba(10, 30, 45, 0.7);
-      border-color: rgba(0, 162, 255, 0.4);
-      transform: translateX(5px);
-      box-shadow: 0 0 15px rgba(0, 162, 255, 0.2);
-    }
-
-    .timeline-year {
-      display: inline-block;
-      background: rgba(0, 162, 255, 0.2);
-      color: #00a2ff;
-      padding: 5px 15px;
-      border-radius: 4px;
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-      text-shadow: 0 0 3px rgba(0, 162, 255, 0.5);
-      border: 1px solid rgba(0, 162, 255, 0.3);
-    }
-
-    .timeline-item h4 {
-      color: #a0c0d0;
-      margin-bottom: 8px;
-      font-size: 1.3rem;
-    }
-
-    .timeline-item p {
-      color: #8ab0c5;
-      margin: 0;
-      font-size: 1rem;
-    }
-
-    .disclaimer {
-      background: rgba(255, 165, 0, 0.12);
-      border-left: 3px solid #ffa500;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 0 4px 4px 0;
-      font-style: italic;
-      color: #ffcc80;
-      box-shadow: 0 0 10px rgba(255, 165, 0, 0.1);
-    }
-
-    footer {
-      margin-top: 60px;
-      font-size: 0.9rem;
-      color: #557585;
-      padding: 15px;
-      border-top: 1px solid rgba(0, 162, 255, 0.2);
-    }
-
-    /* Эффект мерцания */
-    @keyframes flicker {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-      20%, 22%, 24%, 55% { opacity: 0.8; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Адаптивность */
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 3rem;
-      }
-      
-      h2 {
-        font-size: 2rem;
-      }
-      
-      .tagline {
-        font-size: 1.3rem;
-      }
-      
-      .nav-menu {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .nav-button {
-        width: 200px;
-      }
-      
-      .migration-banner {
-        padding: 20px;
-      }
-      
-      .migration-banner h3 {
-        font-size: 1.5rem;
-      }
-      
-      .migration-button {
-        padding: 12px 25px;
-        font-size: 1.1rem;
-      }
-      
-      .timeline-items::before {
-        left: 20px;
-      }
-      
-      .timeline-item {
-        margin-left: 60px;
-      }
-      
-      .timeline-item::before {
-        left: -40px;
-        width: 30px;
-      }
-      
-      .timeline-item::after {
-        left: -44px;
-      }
-      
-      /* На маленьких экранах отключаем nowrap для длинных фраз */
-      .nowrap {
-        white-space: normal;
-      }
-    }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 2.2rem;
-      }
-      
-      .section {
-        padding: 15px;
-      }
-      
-      body {
-        padding: 20px 10px;
-      }
-      
-      .migration-banner {
-        padding: 15px;
-      }
-      
-      .migration-banner h3 {
-        font-size: 1.3rem;
-      }
-      
-      .migration-button {
-        padding: 10px 20px;
-        font-size: 1rem;
-        width: 100%;
-      }
-      
-      .project-timeline {
-        margin-top: 30px;
-        padding-top: 20px;
-      }
-      
-      .timeline-items::before {
-        left: 15px;
-      }
-      
-      .timeline-item {
-        margin-left: 40px;
-      }
-      
-      .timeline-item::before {
-        left: -25px;
-        width: 20px;
-      }
-      
-      .timeline-item::after {
-        left: -29px;
-        width: 8px;
-        height: 8px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <!-- Yandex.Metrika counter -->
+  <!-- Yandex.Metrika -->
   <script type="text/javascript">
     (function(m,e,t,r,i,k,a){
         m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
         m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r)return;}
         k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=103964404  ', 'ym');
-
-    ym(103964404, 'init', {ssr:true, webvisor:true, trackHash:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+    })(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471','ym');
+    ym(105707471,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",accurateTrackBounce:true,trackLinks:true});
   </script>
-  <noscript><div><img src="https://mc.yandex.ru/watch/103964404  " style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-  <!-- /Yandex.Metrika counter -->
-  
+  <noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute;left:-9999px;" alt="" /></div></noscript>
+
+  <style>
+    /* ===== BASE RESET ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ===== VARIABLES ===== */
+    :root {
+      --bg-dark: #0a1a2a; --bg-darker: #050d15;
+      --text-primary: #c5d5e0; --text-secondary: #8ab0c5; --text-muted: #557585;
+      --accent-gold: #d4af37; --accent-blue: #00a2ff; --accent-green: #48bb78; --accent-orange: #ffa500;
+      --card-bg: rgba(5, 20, 30, 0.6); --card-border: rgba(0, 162, 255, 0.3);
+      --glow-blue: 0 0 10px rgba(0, 162, 255, 0.7), 0 0 20px rgba(0, 162, 255, 0.4);
+      --glow-gold: 0 0 10px rgba(212, 175, 55, 0.7), 0 0 20px rgba(212, 175, 55, 0.4);
+    }
+
+    /* ===== BODY & BACKGROUND ===== */
+    body {
+      background: linear-gradient(to bottom, var(--bg-dark), var(--bg-darker));
+      color: var(--text-primary); font-family: 'Roboto', sans-serif; line-height: 1.8;
+      text-align: center; padding: 40px 20px; min-height: 100vh; position: relative; overflow-x: hidden;
+    }
+    body::before {
+      content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: radial-gradient(circle at 25% 25%, rgba(30, 144, 255, 0.03) 0%, transparent 55%),
+                        radial-gradient(circle at 75% 75%, rgba(0, 206, 209, 0.03) 0%, transparent 55%);
+      pointer-events: none; z-index: -1;
+    }
+    .container { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+
+    /* ===== LANGUAGE SWITCH ===== */
+    .lang-switch {
+      position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px;
+    }
+    .lang-btn {
+      background: rgba(5, 20, 30, 0.75); color: var(--text-secondary); border: 1px solid var(--card-border);
+      font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.5px;
+      padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease;
+    }
+    .lang-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+    .lang-btn.active {
+      background: rgba(212, 175, 55, 0.18); border-color: var(--accent-gold); color: var(--accent-gold);
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+
+    /* ===== HEADER ===== */
+    header { margin-bottom: 10px; padding: 15px 20px 0; }
+    h1 {
+      font-family: 'Oswald', sans-serif; font-size: 4.5rem; color: var(--accent-gold);
+      text-shadow: var(--glow-gold); letter-spacing: 4px; margin-bottom: 2px; position: relative;
+      text-transform: uppercase; font-weight: 700; animation: flicker 5s infinite;
+    }
+    h1::after {
+      content: ""; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+      width: 80%; height: 2px; background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+      box-shadow: 0 0 8px var(--accent-gold);
+    }
+    .tagline {
+      font-style: normal; color: var(--text-secondary); margin: 0 0 3px;
+      font-size: 1.6rem; letter-spacing: 0.8px; text-shadow: 0 0 5px rgba(138, 176, 197, 0.3);
+      font-weight: 500; font-family: 'Oswald', sans-serif;
+    }
+
+    /* ===== INFO LINKS (Elegant Hyperlinks) ===== */
+    .info-links {
+      display: flex; justify-content: center; gap: 20px; margin: 0 0 0;
+      flex-wrap: wrap;
+    }
+    .info-link {
+      color: var(--text-muted); text-decoration: none; font-family: 'Oswald', sans-serif;
+      font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px;
+      position: relative; padding: 3px 8px; transition: all 0.4s ease;
+      opacity: 0.7;
+    }
+    .info-link::before {
+      content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+      transition: width 0.4s ease;
+    }
+    .info-link:hover {
+      color: var(--accent-gold); opacity: 1;
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+    }
+    .info-link:hover::before { width: 100%; }
+    .info-link span { opacity: 0.8; margin-right: 6px; }
+
+    /* Divider between info links */
+    .info-divider {
+      color: var(--card-border); opacity: 0.4; user-select: none;
+    }
+
+    /* ===== CATEGORY LABEL ===== */
+    .category-label {
+      font-family: 'Oswald', sans-serif; font-size: 1rem; color: var(--accent-gold);
+      text-transform: uppercase; letter-spacing: 3px; margin: 0 0 5px;
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+      position: relative; display: inline-block;
+    }
+    .category-label::before, .category-label::after {
+      content: ''; position: absolute; top: 50%; width: 30px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-gold));
+    }
+    .category-label::before { left: -40px; }
+    .category-label::after { right: -40px; background: linear-gradient(90deg, var(--accent-gold), transparent); }
+
+    /* ===== TAB NAVIGATION ===== */
+    .tabs-nav {
+      display: flex; justify-content: center; gap: 4px; margin-bottom: 20px;
+      flex-wrap: wrap; position: relative; padding-bottom: 5px;
+    }
+    .tabs-nav::after {
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 98%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-blue), transparent); opacity: 0.5;
+    }
+    .tab-btn {
+      background: rgba(5, 20, 30, 0.7); color: var(--accent-blue); border: 1px solid var(--card-border);
+      padding: 9px 12px; border-radius: 6px 6px 0 0; text-decoration: none;
+      font-family: 'Oswald', sans-serif; font-size: 0.9rem; text-transform: uppercase;
+      letter-spacing: 1px; transition: all 0.3s ease; cursor: pointer; position: relative; min-width: 130px;
+    }
+    .tab-btn:hover {
+      background: rgba(0, 162, 255, 0.15); border-color: var(--accent-blue);
+      transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 162, 255, 0.2);
+    }
+    .tab-btn.active {
+      background: linear-gradient(to bottom, rgba(0, 162, 255, 0.25), rgba(0, 162, 255, 0.1));
+      border-color: var(--accent-blue); border-bottom: 2px solid var(--bg-darker);
+      color: #fff; box-shadow: 0 0 15px rgba(0, 162, 255, 0.4), inset 0 0 10px rgba(255,255,255,0.05); z-index: 2;
+    }
+    .tab-btn.active::before {
+      content: ''; position: absolute; top: -1px; left: -1px; right: -1px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+      box-shadow: 0 0 8px var(--accent-blue);
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      margin: 25px 0; padding: 25px; background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 8px; box-shadow: 0 0 20px rgba(0, 162, 255, 0.2), inset 0 0 15px rgba(0, 100, 150, 0.1);
+      position: relative; display: none; animation: fadeIn 0.5s ease-out;
+    }
+    .section.active { display: block; }
+    h2 {
+      font-family: 'Oswald', sans-serif; font-size: 2.2rem; color: var(--accent-blue);
+      margin-bottom: 18px; text-transform: uppercase; letter-spacing: 2px;
+      text-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
+    }
+    .section-content { text-align: left; max-width: 800px; margin: 0 auto; }
+    p { font-size: 1.1rem; color: var(--text-secondary); margin: 15px 0; line-height: 1.7; }
+
+    /* ===== HIGHLIGHTS ===== */
+    .highlight {
+      font-family: 'Oswald', sans-serif; font-size: 1.1em; color: var(--accent-blue);
+      text-shadow: 0 0 8px rgba(0, 162, 255, 0.7), 0 0 15px rgba(0, 162, 255, 0.4);
+      letter-spacing: 1px; font-weight: 700; position: relative; text-transform: uppercase;
+    }
+    .highlight::after {
+      content: ""; position: absolute; bottom: -2px; left: 0; width: 100%; height: 1px;
+      background: linear-gradient(90deg, var(--accent-blue), transparent); box-shadow: 0 0 4px var(--accent-blue);
+    }
+    .disclaimer .highlight { color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.9), 0 0 15px rgba(255, 215, 0, 0.6); }
+    .disclaimer .highlight::after { background: linear-gradient(90deg, #ffd700, transparent); box-shadow: 0 0 6px #ffd700; }
+    .nowrap { white-space: nowrap; }
+
+    /* ===== THEORY CARDS GRID ===== */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; margin: 30px 0; }
+    .theory-card {
+      background: rgba(10, 30, 45, 0.6); border: 1px solid var(--card-border); border-radius: 8px;
+      padding: 22px; text-align: left; transition: all 0.3s ease; position: relative; overflow: hidden;
+    }
+    .theory-card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+      background: linear-gradient(to bottom, var(--accent-blue), #006ba6); opacity: 0.7;
+    }
+    .theory-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 162, 255, 0.15); border-color: rgba(0, 162, 255, 0.6); }
+    .theory-card h3 {
+      color: var(--accent-blue); font-family: 'Oswald', sans-serif; font-size: 1.35rem;
+      margin-bottom: 8px; text-shadow: 0 0 5px rgba(0, 162, 255, 0.3);
+    }
+    .theory-excerpt { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 12px; line-height: 1.5; }
+    .theory-meta {
+      display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);
+      margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid rgba(0, 162, 255, 0.1);
+    }
+    .theory-time, .theory-level { background: rgba(0, 162, 255, 0.1); padding: 2px 7px; border-radius: 3px; }
+    .theory-level { background: rgba(212, 175, 55, 0.1); color: var(--accent-gold); }
+    .theory-actions { display: flex; flex-direction: column; gap: 8px; }
+    .btn-learn, .btn-play {
+      display: block; text-align: center; padding: 9px 12px; text-decoration: none; border-radius: 4px;
+      font-family: 'Oswald', sans-serif; font-size: 0.85rem; text-transform: uppercase;
+      letter-spacing: 1px; transition: all 0.3s ease; border: 1px solid;
+    }
+    .btn-learn { background: rgba(0, 162, 255, 0.15); color: var(--accent-blue); border-color: rgba(0, 162, 255, 0.4); }
+    .btn-learn:hover { background: rgba(0, 162, 255, 0.3); border-color: var(--accent-blue); }
+    .btn-play { background: rgba(72, 187, 120, 0.15); color: var(--accent-green); border-color: rgba(72, 187, 120, 0.4); }
+    .btn-play:hover { background: rgba(72, 187, 120, 0.3); border-color: var(--accent-green); }
+
+    /* ===== DISCLAIMER BOX ===== */
+    .disclaimer {
+      background: rgba(255, 165, 0, 0.12); border-left: 3px solid var(--accent-orange);
+      padding: 12px; margin: 18px 0; border-radius: 0 4px 4px 0; font-style: italic;
+      color: #ffcc80; box-shadow: 0 0 10px rgba(255, 165, 0, 0.1); font-size: 0.95rem;
+    }
+    .disclaimer.info { background: rgba(0, 162, 255, 0.1); border-left-color: var(--accent-blue); color: var(--text-secondary); }
+
+    /* ===== TEAM SECTION ===== */
+    .team-member {
+      background: rgba(10, 30, 45, 0.4); border: 1px solid var(--card-border);
+      border-radius: 8px; padding: 22px; margin: 18px 0; text-align: left;
+    }
+    .team-member h3 {
+      color: var(--accent-gold); font-size: 1.7rem; margin-bottom: 12px; font-family: 'Oswald', sans-serif;
+    }
+    .tools-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+    .tool-tag {
+      background: rgba(0, 162, 255, 0.1); border: 1px solid var(--card-border);
+      padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; color: var(--text-secondary);
+    }
+
+    /* ===== CONCEPT GRID ===== */
+    .concept-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin: 25px 0; }
+    .concept-item {
+      background: rgba(10, 30, 45, 0.4); border: 1px solid var(--card-border);
+      border-radius: 8px; padding: 18px; text-align: left;
+    }
+    .concept-item h4 {
+      color: var(--accent-blue); text-shadow: 0 0 5px rgba(0, 162, 255, 0.6);
+      margin-bottom: 8px; font-size: 1.2rem; font-family: 'Oswald', sans-serif; font-weight: 700;
+    }
+
+    /* ===== TIMELINE ===== */
+    .project-timeline { margin-top: 35px; padding-top: 25px; border-top: 1px solid var(--card-border); position: relative; }
+    .project-timeline h3 {
+      font-family: 'Oswald', sans-serif; font-size: 1.6rem; color: var(--accent-blue);
+      text-shadow: 0 0 5px rgba(0, 162, 255, 0.5); margin-bottom: 20px; text-align: center;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .timeline-items { display: flex; flex-direction: column; gap: 25px; max-width: 700px; margin: 0 auto; position: relative; }
+    .timeline-items::before {
+      content: ''; position: absolute; left: 45px; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom, rgba(0, 162, 255, 0) 0%, rgba(0, 162, 255, 0.6) 20%, rgba(0, 162, 255, 0.6) 80%, rgba(0, 162, 255, 0) 100%); z-index: 1;
+    }
+    .timeline-item {
+      background: rgba(10, 30, 45, 0.5); border: 1px solid var(--card-border); border-radius: 6px;
+      padding: 18px; text-align: left; position: relative; transition: all 0.3s ease;
+      margin-left: 90px; box-shadow: 0 0 10px rgba(0, 162, 255, 0.1);
+    }
+    .timeline-item::before {
+      content: ''; position: absolute; left: -45px; top: 50%; width: 35px; height: 2px;
+      background: linear-gradient(to right, rgba(0, 162, 255, 0.6), rgba(0, 162, 255, 0.3)); transform: translateY(-50%);
+    }
+    .timeline-item::after {
+      content: ''; position: absolute; left: -49px; top: 50%; width: 9px; height: 9px;
+      background: var(--accent-blue); border-radius: 50%; transform: translateY(-50%);
+      box-shadow: 0 0 10px rgba(0, 162, 255, 0.8); z-index: 2;
+    }
+    .timeline-item:hover { background: rgba(10, 30, 45, 0.7); border-color: rgba(0, 162, 255, 0.4); transform: translateX(5px); box-shadow: 0 0 15px rgba(0, 162, 255, 0.2); }
+    .timeline-year {
+      display: inline-block; background: rgba(0, 162, 255, 0.2); color: var(--accent-blue);
+      padding: 4px 12px; border-radius: 4px; font-size: 0.95rem; font-weight: 700;
+      margin-bottom: 8px; text-shadow: 0 0 3px rgba(0, 162, 255, 0.5); border: 1px solid var(--card-border);
+    }
+    .timeline-item h4 { color: var(--text-primary); margin-bottom: 6px; font-size: 1.2rem; }
+    .timeline-item p { color: var(--text-secondary); margin: 0; font-size: 0.95rem; }
+
+    /* ===== FOOTER ===== */
+    footer { margin-top: 40px; font-size: 0.9rem; color: var(--text-muted); padding: 15px; border-top: 1px solid var(--card-border); }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes flicker { 0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; } 20%, 22%, 24%, 55% { opacity: 0.8; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      h1 { font-size: 3rem; } h2 { font-size: 1.9rem; } .tagline { font-size: 1.3rem; }
+      .category-label::before, .category-label::after { width: 15px; }
+      .category-label::before { left: -25px; } .category-label::after { right: -25px; }
+      .info-links { gap: 15px; }
+      .info-link { font-size: 0.85rem; }
+      .tabs-nav { flex-direction: column; align-items: center; }
+      .tab-btn { width: 100%; max-width: 260px; border-radius: 6px; margin: 3px 0; font-size: 0.85rem; padding: 8px 10px; }
+      .tab-btn.active { border-bottom: none; border-right: 2px solid var(--bg-darker); }
+      .tab-btn.active::before { display: none; }
+      .timeline-items::before { left: 18px; } .timeline-item { margin-left: 55px; }
+      .timeline-item::before { left: -37px; width: 28px; } .timeline-item::after { left: -41px; }
+      .nowrap { white-space: normal; }
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: 2.2rem; } .section { padding: 18px; } body { padding: 20px 10px; }
+      .timeline-items::before { left: 14px; } .timeline-item { margin-left: 38px; }
+      .timeline-item::before { left: -24px; width: 18px; } .timeline-item::after { left: -28px; width: 7px; height: 7px; }
+      .theory-grid { grid-template-columns: 1fr; }
+      .info-divider { display: none; }
+      .info-links { flex-direction: column; gap: 8px; }
+      .lang-switch { top: 8px; right: 8px; }
+      .lang-btn { font-size: 0.65rem; padding: 3px 7px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="lang-switch" role="group" aria-label="Language">
+    <button class="lang-btn" data-lang-btn="ru">RU</button>
+    <button class="lang-btn" data-lang-btn="en">EN</button>
+    <button class="lang-btn" data-lang-btn="es">ES</button>
+  </div>
   <div class="container">
     <header>
       <h1>LUDUS LAB</h1>
-      <p class="tagline">Сложные вещи простыми играми</p>
-      
-      <div class="nav-menu">
-        <button class="nav-button active" onclick="showSection('theory')">📚 Как это устроено</button>
-        <button class="nav-button" onclick="showSection('about')">📖 О проекте</button>
-        <button class="nav-button" onclick="showSection('team')">🧔🏻 Команда</button>
+      <p class="tagline" data-i18n="header.tagline">Сложные вещи простыми играми</p>
+
+      <!-- ELEGANT INFO LINKS -->
+      <div class="info-links">
+        <a href="#project-section" class="info-link" onclick="showInfoSection('project'); return false;">
+          <span>ℹ️</span><span data-i18n="nav.about">О проекте</span>
+        </a>
+        <span class="info-divider">•</span>
+        <a href="#me-section" class="info-link" onclick="showInfoSection('me'); return false;">
+          <span>👤</span><span data-i18n="nav.aboutme">Обо мне</span>
+        </a>
       </div>
     </header>
 
-    <!-- Секция "Как это устроено" (АКТИВНА ПО УМОЛЧАНИЮ) -->
-    <section id="theory-section" class="section active">
-      <h2>📚 Как это устроено</h2>
-      <p>Разберитесь в основах, прежде чем погрузиться в эксперимент</p>
-      
+    <!-- ===== CRYPTOGRAPHY SECTION ===== -->
+    <div class="category-label" data-i18n="category.crypto">📚 Криптография</div>
+
+    <!-- GAME TABS (3 tabs only) -->
+    <nav class="tabs-nav" role="tablist">
+      <button class="tab-btn active" data-tab="basics" role="tab" aria-selected="true" data-i18n="tabs.basics">🔐 Основы</button>
+      <button class="tab-btn" data-tab="modern" role="tab" aria-selected="false" data-i18n="tabs.modern">⚙️ Современная</button>
+      <button class="tab-btn" data-tab="quantum" role="tab" aria-selected="false" data-i18n="tabs.quantum">⚛️ Квантовая</button>
+    </nav>
+
+    <!-- ===== TAB 1: ОСНОВЫ КРИПТОГРАФИИ ===== -->
+    <section id="tab-basics" class="section active" role="tabpanel">
+      <h2 data-i18n="basics.heading">🔐 Основы криптографии</h2>
+      <p data-i18n="basics.desc">Классические шифры, с которых начиналась наука о защите информации</p>
       <div class="section-content">
-        <!-- Баннер переезда -->
-        <div class="migration-banner">
-          <h3>Важное обновление: Ludus Lab переезжает!</h3>
-          <p>Мы плавно переходим на новый домен, чтобы обеспечить бесперебойный доступ к нашим играм и материалам.</p>
-          <p>Новый адрес: <span class="new-address">https://ludus-lab.ru</span></p>
-          <p>Это техническое обновление позволит избежать возможных ограничений доступа к ресурсам с доменом .com из РФ.</p>
-          <p>Все игры и теория уже доступны на новом сайте в полном объёме.</p>
-          <button class="migration-button" onclick="window.location.href='https://ludus-lab.ru'">Перейти на новый сайт →</button>
+        <div class="theory-grid">
+
+          <!-- 1. Polybius Square (~200 BCE) - OLDEST -->
+          <article class="theory-card">
+            <h3 data-i18n="card.polybius.title">Квадрат Полибия</h3>
+            <p class="theory-excerpt" data-i18n="card.polybius.excerpt">Квадрат Полибия: шифрование с помощью координатной сетки 5×5</p>
+            <div class="theory-meta">
+              <span class="theory-time" data-i18n="card.polybius.time">3 мин</span><span class="theory-level" data-i18n="card.polybius.level">~200 до н.э.</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/theory/polybius.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
+              <a href="games/polybius/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+            </div>
+          </article>
+
+          <!-- 2. Caesar Cipher (~58 BCE) -->
+          <article class="theory-card">
+            <h3 data-i18n="card.caesar.title">Шифр Цезаря</h3>
+            <p class="theory-excerpt" data-i18n="card.caesar.excerpt">Как сдвиг букв в Древнем Риме заложил основы криптографии?</p>
+            <div class="theory-meta">
+              <span class="theory-time" data-i18n="card.caesar.time">2 мин</span><span class="theory-level" data-i18n="card.caesar.level">~58 до н.э.</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/theory/caesarcipher.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
+              <a href="games/caesarcipher/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+            </div>
+          </article>
+
+          <!-- 3. Vigenère Cipher (1553 CE) -->
+          <article class="theory-card">
+            <h3 data-i18n="card.vigenere.title">Шифр Виженера</h3>
+            <p class="theory-excerpt" data-i18n="card.vigenere.excerpt">Шифр Виженера: le chiffre indéchiffrable </br>эпохи Ренессанса</p>
+            <div class="theory-meta">
+              <span class="theory-time" data-i18n="card.vigenere.time">3 мин</span><span class="theory-level" data-i18n="card.vigenere.level">1553 г.</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/theory/vigenerecipher.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
+              <a href="games/vigenerecipher/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+            </div>
+          </article>
+
+          <!-- 4. Vernam Cipher (1917 CE) - NOW AVAILABLE! -->
+          <article class="theory-card">
+            <h3 data-i18n="card.vernam.title">Шифр Вернама</h3>
+            <p class="theory-excerpt" data-i18n="card.vernam.excerpt">Шифр Вернама: победил криптоанализ </br>и проиграл реальности</p>
+            <div class="theory-meta">
+              <span class="theory-time" data-i18n="card.vernam.time">4 мин</span><span class="theory-level" data-i18n="card.vernam.level">1917 г.</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/theory/vernamcipher.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
+              <a href="games/vernamcipher/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+            </div>
+          </article>
+
         </div>
-        
-        <!-- Убраны все карточки теорий и другие элементы -->
+        <div class="disclaimer info" data-i18n="basics.tip">
+          💡 <strong>Совет:</strong> Проходите шифры по порядку — от Полибия к Вернаму, чтобы увидеть эволюцию криптографии!
+        </div>
       </div>
     </section>
 
-    <!-- Секция "О проекте" -->
-    <section id="about-section" class="section">
-      <h2>📖 О проекте</h2>
-      
+    <!-- ===== TAB 2: СОВРЕМЕННАЯ КРИПТОГРАФИЯ ===== -->
+    <section id="tab-modern" class="section" role="tabpanel">
+      <h2 data-i18n="modern.heading">⚙️ Современная криптография</h2>
+      <p data-i18n="modern.desc">Алгоритмы, которые защищают нас сегодня</p>
       <div class="section-content">
-        <p>Приветствую вас в <span class="highlight">Ludus Lab</span> — лаборатории, где абстрактные концепции становятся осязаемыми.</p>
-        
-        <div class="disclaimer">
-          ⚠️ Наши игры — это упрощённые модели, а не точные симуляции. Мы сознательно жертвуем точностью в пользу понятности, чтобы помочь сформировать <span class="highlight nowrap">интуитивное понимание принципов</span>, а не знание деталей протоколов.
+        <div class="theory-grid">
+          <!-- Key Generation Center -->
+          <article class="theory-card">
+            <h3 data-i18n="card.keygen.title">Энтропия и ключи</h3>
+            <p class="theory-excerpt" data-i18n="card.keygen.excerpt">Откуда берётся настоящая случайность и почему её нельзя подделать?</p>
+            <div class="theory-meta">
+              <span class="theory-time" data-i18n="card.keygen.time">4 мин</span><span class="theory-level" data-i18n="card.keygen.level">Криптография</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/theory/keygen.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
+              <a href="games/cvk/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+            </div>
+          </article>
+          <!-- Symmetric Crypto -->
+          <article class="theory-card">
+            <h3 data-i18n="card.symmetric.title">Симметричная криптография</h3>
+            <p class="theory-excerpt" data-i18n="card.symmetric.excerpt">Как один ключ может и шифровать, и расшифровывать сообщения?</p>
+            <div class="theory-meta">
+              <span class="theory-time" data-i18n="card.symmetric.time">6 мин</span><span class="theory-level" data-i18n="card.symmetric.level">Криптография</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/theory/symmetric.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
+              <a href="games/symmetric/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+            </div>
+          </article>
         </div>
-        
-        <p>Мы живём в мире, наполненном сложными технологиями: квантовая криптография, блокчейн, машинное обучение. Эти термины звучат впечатляюще, но зачастю остаются абстрактными понятиями, которые сложно представить.</p>
-        
-        <p><span class="highlight">Что если бы можно было "пощупать" квантовую запутанность?</span> Или увидеть, как на самом деле работает обмен криптографическими ключами?</p>
-        
-        <p>Именно для этого создан Ludus Lab. Мы верим, что лучший способ понять сложную тему — взаимодействовать с ней. Каждая наша игра — это интерактивная симуляция, которая:</p>
-        
+        <div class="disclaimer" data-i18n="modern.disclaimer">
+          ⚠️ Наши игры упрощают реальные алгоритмы. Мы фокусируемся на <span class="highlight">принципах работы</span>, а не на математических деталях.
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TAB 3: КВАНТОВЫЕ КОММУНИКАЦИИ ===== -->
+    <section id="tab-quantum" class="section" role="tabpanel">
+      <h2 data-i18n="quantum.heading">⚛️ Квантовые коммуникации</h2>
+      <p data-i18n="quantum.desc">Будущее защиты данных: законы физики вместо математики</p>
+      <div class="section-content">
+        <div class="theory-grid">
+          <!-- BB84 -->
+          <article class="theory-card">
+            <h3 data-i18n="card.bb84.title">Протокол BB84</h3>
+            <p class="theory-excerpt" data-i18n="card.bb84.excerpt">Как создать ключ, который невозможно подслушать, не изменив его?</p>
+            <div class="theory-meta">
+              <span class="theory-time" data-i18n="card.bb84.time">3 мин</span><span class="theory-level" data-i18n="card.bb84.level">Квантовая криптография</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/theory/bb84.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
+              <a href="games/bb84/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+            </div>
+          </article>
+          <!-- E91 -->
+          <article class="theory-card">
+            <h3 data-i18n="card.e91.title">Протокол E91</h3>
+            <p class="theory-excerpt" data-i18n="card.e91.excerpt">Как квантовая запутанность делает связь абсолютно защищённой?</p>
+            <div class="theory-meta">
+              <span class="theory-time" data-i18n="card.e91.time">5 мин</span><span class="theory-level" data-i18n="card.e91.level">Квантовая криптография</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/theory/e91.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
+              <a href="games/e91/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+            </div>
+          </article>
+        </div>
+        <div class="disclaimer info" data-i18n="quantum.fact">
+          🌌 <strong>Факт:</strong> В квантовой криптографии попытка подслушать <em>физически изменяет</em> данные — это не баг, это фича!
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== INFO SECTIONS (Hidden by default) ===== -->
+    <section id="project-section" class="section">
+      <h2 data-i18n="project.heading">ℹ️ О проекте</h2>
+      <div class="section-content">
+        <p data-i18n="project.p1">Приветствую вас в <span class="highlight">Ludus Lab</span> — лаборатории, где абстрактные концепции становятся осязаемыми.</p>
+        <div class="disclaimer" data-i18n="project.disclaimer">
+          ⚠️ Наши игры — упрощённые модели. Мы жертвуем точностью ради понятности, чтобы помочь сформировать <span class="highlight nowrap">интуитивное понимание</span>.
+        </div>
+        <p data-i18n="project.p2">Мы живём в мире сложных технологий: квантовая криптография, блокчейн, машинное обучение. Что если бы можно было "пощупать" квантовую запутанность?</p>
+        <p data-i18n="project.p3"><span class="highlight">Ludus Lab — это не курс лекций.</span> Это лаборатория экспериментов, где ошибки — часть процесса обучения, а понимание приходит через действие.</p>
+
         <div class="concept-grid">
-          <div class="concept-item">
-            <h4>Визуализирует невидимое</h4>
-            <p>Превращает абстрактные математические модели в наглядные взаимодействия</p>
-          </div>
-          
-          <div class="concept-item">
-            <h4>Даёт опыт через действие</h4>
-            <p>Вы не читаете о квантовых состояниях — вы управляете ими</p>
-          </div>
-          
-          <div class="concept-item">
-            <h4>Снимает барьеры сложности</h4>
-            <p>Сложные концепции разбиваются на простые механики, понятные каждому</p>
-          </div>
+          <div class="concept-item"><h4 data-i18n="project.concept1.title">Визуализирует невидимое</h4><p data-i18n="project.concept1.desc">Превращает абстрактные модели в наглядные взаимодействия</p></div>
+          <div class="concept-item"><h4 data-i18n="project.concept2.title">Даёт опыт через действие</h4><p data-i18n="project.concept2.desc">Вы не читаете о квантовых состояниях — вы управляете ими</p></div>
+          <div class="concept-item"><h4 data-i18n="project.concept3.title">Снимает барьеры</h4><p data-i18n="project.concept3.desc">Сложные концепции разбиваются на простые механики</p></div>
         </div>
-        
-        <p>Моя личная мотивация проста: я сталкиваюсь со сложными концепциями в своей работе и понимаю, что их проще показать, чем объяснить. Здесь я не претендую на роль всезнающего эксперта — я исследователь, который разбирается в сложных темах вместе с вами.</p>
-        
-        <p><span class="highlight">Ludus Lab — это не курс лекций и не учебник.</span> Это лаборатория экспериментов, где ошибки — часть процесса обучения, а понимание приходит через действие.</p>
-        
-        <p>Добро пожаловать в мир, где сложное становится простым.</p>
+
+        <div class="disclaimer info" style="margin-top:25px;" data-i18n="project.mission">
+          🎯 <strong>Миссия:</strong> Сделать передовые технологии доступными для понимания через интерактивный опыт, а не через сухие формулы.
+        </div>
       </div>
     </section>
 
-    <!-- Секция "Команда" -->
-    <section id="team-section" class="section">
-      <h2>🧔🏻 Команда</h2>
-      
+    <section id="me-section" class="section">
+      <h2 data-i18n="me.heading">👤 Обо мне</h2>
       <div class="section-content">
         <div class="team-member">
           <h3>JSSemeone</h3>
-          <p>Привет! Давайте знакомиться без формальностей.</p>
-          
-          <p>Меня зовут <span class="highlight">JSSemeone</span>, и я создаю Ludus Lab. Моя профессиональная жизнь в основном проходит в телекоммуникационной индустрии — мире оптоволокна, протоколов и сетевой инфраструктуры.</p>
-          
-          <p>В 2021 году моя карьера сделала интересный поворот — я начал работать в сфере <span class="highlight">квантовых коммуникаций</span>. Это был переход от привычных технологий к чему-то, что больше похоже на научную фантастику: запутанные фотоны, квантовые состояния, законы физики как основа безопасности.</p>
-          
-          <div class="disclaimer">
-            ⚠️ Наши игры сознательно упрощают реальные протоколы. Мы сосредоточены на передаче <span class="highlight">сути процесса</span>, а не на точном воспроизведении каждой детали. <span class="nowrap">Если вы хотите понять общий принцип — добро пожаловать!</span>
+          <p data-i18n="me.p1">Привет! Меня зовут <span class="highlight">JSSemeone</span>, и я создаю Ludus Lab. Моя профессиональная жизнь проходит в телекоммуникационной индустрии — мире оптоволокна, протоколов и сетевой инфраструктуры.</p>
+          <p data-i18n="me.p2">В 2021 году я начал работать в сфере квантовых коммуникаций. Это был переход к технологиям, которые больше похожи на научную фантастику: запутанные фотоны, квантовые состояния, законы физики как основа безопасности.</p>
+          <div class="disclaimer" data-i18n="me.disclaimer">
+            ⚠️ Наши игры сознательно упрощают реальные протоколы.<br>Мы сосредоточены на передаче <span class="highlight">сути процесса</span>, а не на точном воспроизведении каждой детали.
           </div>
-          
-          <p>И именно здесь я столкнулся с парадоксом: технологии, которые мы создаём, настолько сложны, что их почти невозможно объяснить словами. Я видел, как глаза коллег и партнёров стекленеют от попыток представить себе квантовое распределение ключей. И понял простую вещь: <span class="highlight nowrap">некоторые вещи нужно не рассказывать, а показывать.</span></p>
-          
-          <p>Так родилась идея Ludus Lab. Не из желания учить, а из потребности разобраться самому и помочь другим сделать то же самое. Здесь нет позёрства и попыток казаться умнее — есть искреннее желание разобраться в сложных вещах через простые игры.</p>
-          
-          <p>В этом мне помогают мои "коллеги" — инструменты для вайб-кодинга:</p>
-          
+          <p data-i18n="me.p3">Именно здесь я столкнулся с парадоксом: технологии, которые мы создаём, настолько сложны, что их почти невозможно объяснить словами. Я понял: <span class="highlight nowrap">некоторые вещи нужно не рассказывать, а показывать.</span></p>
+          <p data-i18n="me.p4">Так родилась идея Ludus Lab. Не из желания учить, а из потребности разобраться самому и помочь другим. Здесь нет позёрства — есть искреннее желание разобраться в сложных вещах через простые игры.</p>
+          <p data-i18n="me.p5">В этом мне помогают мои "коллеги" — инструменты для вайб-кодинга:</p>
           <div class="tools-list">
-            <div class="tool-tag">HTML/CSS/JavaScript</div>
-            <div class="tool-tag">Canvas API</div>
-            <div class="tool-tag">Терпение</div>
-            <div class="tool-tag">Любопытство</div>
-            <div class="tool-tag">Кофе ☕</div>
+            <span class="tool-tag">HTML/CSS/JavaScript</span><span class="tool-tag">Canvas API</span>
+            <span class="tool-tag" data-i18n="me.tools.patience">Терпение</span><span class="tool-tag" data-i18n="me.tools.curiosity">Любопытство</span><span class="tool-tag" data-i18n="me.tools.coffee">Кофе ☕</span>
           </div>
-          
-          <p>Если вы читаете это — значит, мы уже коллеги в этом исследовании. Добро пожаловать в лабораторию!</p>
         </div>
-        
-        <!-- Переработанный блок "Путь проекта" с древовидной осью -->
+
+        <!-- TIMELINE -->
         <div class="project-timeline">
-          <h3>Путь проекта</h3>
-          
+          <h3 data-i18n="me.timeline.heading">Мой путь</h3>
           <div class="timeline-items">
-            <div class="timeline-item">
-              <span class="timeline-year">2021</span>
-              <h4>Знакомство с квантовыми технологиями</h4>
-              <p>Переход в область квантовых коммуникаций. Первые попытки объяснить необъяснимое и осознание, что некоторые вещи нужно визуализировать, а не рассказывать.</p>
-            </div>
-            
-            <div class="timeline-item">
-              <span class="timeline-year">2023</span>
-              <h4>Задачи по коммерциализации квантовых технологий</h4>
-              <p>Работа над практическим внедрением квантовых решений. Ещё больше убеждаюсь в необходимости визуализации сложных концепций.</p>
-            </div>
-            
-            <div class="timeline-item">
-              <span class="timeline-year">2024</span>
-              <h4>Создание первых прототипов игр по криптографии</h4>
-              <p>Понимание, что игровая механика может быть мощным образовательным инструментом. Первые эксперименты с интерактивными объяснениями.</p>
-            </div>
-            
-            <div class="timeline-item">
-              <span class="timeline-year">2025</span>
-              <h4>Рождение Ludus Lab</h4>
-              <p>Формирование концепции платформы. Первые три игры публикуются онлайн. Начало работы над четвёртой игрой о симметричной криптографии.</p>
-            </div>
-            
-            <div class="timeline-item">
-              <span class="timeline-year">Сейчас</span>
-              <h4>Развитие и расширение</h4>
-              <p>Постепенное добавление новых игр и тем. Исследование новых способов объяснения сложного через простое.</p>
-            </div>
+            <div class="timeline-item"><span class="timeline-year">2021</span><h4 data-i18n="me.timeline.2021.title">Знакомство с квантовыми технологиями</h4><p data-i18n="me.timeline.2021.desc">Переход в область квантовых коммуникаций. Осознание, что некоторые вещи нужно визуализировать.</p></div>
+            <div class="timeline-item"><span class="timeline-year">2023</span><h4 data-i18n="me.timeline.2023.title">Коммерциализация квантовых технологий</h4><p data-i18n="me.timeline.2023.desc">Работа над практическим внедрением квантовых решений.</p></div>
+            <div class="timeline-item"><span class="timeline-year">2024</span><h4 data-i18n="me.timeline.2024.title">Первые прототипы игр</h4><p data-i18n="me.timeline.2024.desc">Понимание, что игровая механика может быть мощным образовательным инструментом.</p></div>
+            <div class="timeline-item"><span class="timeline-year">2025</span><h4 data-i18n="me.timeline.2025.title">Рождение Ludus Lab</h4><p data-i18n="me.timeline.2025.desc">Формирование концепции платформы. Первые игры публикуются онлайн.</p></div>
+            <div class="timeline-item"><span class="timeline-year" data-i18n="me.timeline.now.year">Сейчас</span><h4 data-i18n="me.timeline.now.title">Развитие и расширение</h4><p data-i18n="me.timeline.now.desc">Постепенное добавление новых игр и тем.</p></div>
           </div>
         </div>
       </div>
     </section>
 
     <footer>
-      <p>© 2025 Ludus Lab · Сделано с любопытством и желанием разобраться</p>
-      <p style="font-size: 0.8rem; margin-top: 10px;">Присоединяйтесь к исследованию сложного через простое</p>
-      <p style="font-size: 0.8rem; margin-top: 10px; color: #8ab0c5;">Ресурс переезжает на новый адрес: <a href="https://ludus-lab.ru" style="color: #00a2ff;">https://ludus-lab.ru</a></p>
+      <p data-i18n="footer.line1">© 2025 Ludus Lab · Сделано с любопытством и желанием разобраться</p>
+      <p style="font-size:0.8rem;margin-top:8px;" data-i18n="footer.line2">Присоединяйтесь к исследованию сложного через простое</p>
     </footer>
   </div>
 
   <script>
-    // Переключение между секциями
-    function showSection(sectionId) {
-      // Скрываем все секции
-      document.querySelectorAll('.section').forEach(section => {
-        section.classList.remove('active');
+    // ===== I18N =====
+    const I18N = {
+      ru: {
+        'meta.title': 'Ludus Lab - Всё сложное - просто',
+        'header.tagline': 'Сложные вещи простыми играми',
+        'nav.about': 'О проекте', 'nav.aboutme': 'Обо мне',
+        'category.crypto': '📚 Криптография',
+        'tabs.basics': '🔐 Основы', 'tabs.modern': '⚙️ Современная', 'tabs.quantum': '⚛️ Квантовая',
+        'basics.heading': '🔐 Основы криптографии',
+        'basics.desc': 'Классические шифры, с которых начиналась наука о защите информации',
+        'card.polybius.title': 'Квадрат Полибия',
+        'card.polybius.excerpt': 'Квадрат Полибия: шифрование с помощью координатной сетки 5×5',
+        'card.polybius.time': '3 мин', 'card.polybius.level': '~200 до н.э.',
+        'card.caesar.title': 'Шифр Цезаря',
+        'card.caesar.excerpt': 'Как сдвиг букв в Древнем Риме заложил основы криптографии?',
+        'card.caesar.time': '2 мин', 'card.caesar.level': '~58 до н.э.',
+        'card.vigenere.title': 'Шифр Виженера',
+        'card.vigenere.excerpt': 'Шифр Виженера: le chiffre indéchiffrable </br>эпохи Ренессанса',
+        'card.vigenere.time': '3 мин', 'card.vigenere.level': '1553 г.',
+        'card.vernam.title': 'Шифр Вернама',
+        'card.vernam.excerpt': 'Шифр Вернама: победил криптоанализ </br>и проиграл реальности',
+        'card.vernam.time': '4 мин', 'card.vernam.level': '1917 г.',
+        'basics.tip': '💡 <strong>Совет:</strong> Проходите шифры по порядку — от Полибия к Вернаму, чтобы увидеть эволюцию криптографии!',
+        'modern.heading': '⚙️ Современная криптография',
+        'modern.desc': 'Алгоритмы, которые защищают нас сегодня',
+        'card.keygen.title': 'Энтропия и ключи',
+        'card.keygen.excerpt': 'Откуда берётся настоящая случайность и почему её нельзя подделать?',
+        'card.keygen.time': '4 мин', 'card.keygen.level': 'Криптография',
+        'card.symmetric.title': 'Симметричная криптография',
+        'card.symmetric.excerpt': 'Как один ключ может и шифровать, и расшифровывать сообщения?',
+        'card.symmetric.time': '6 мин', 'card.symmetric.level': 'Криптография',
+        'modern.disclaimer': '⚠️ Наши игры упрощают реальные алгоритмы. Мы фокусируемся на <span class="highlight">принципах работы</span>, а не на математических деталях.',
+        'quantum.heading': '⚛️ Квантовые коммуникации',
+        'quantum.desc': 'Будущее защиты данных: законы физики вместо математики',
+        'card.bb84.title': 'Протокол BB84',
+        'card.bb84.excerpt': 'Как создать ключ, который невозможно подслушать, не изменив его?',
+        'card.bb84.time': '3 мин', 'card.bb84.level': 'Квантовая криптография',
+        'card.e91.title': 'Протокол E91',
+        'card.e91.excerpt': 'Как квантовая запутанность делает связь абсолютно защищённой?',
+        'card.e91.time': '5 мин', 'card.e91.level': 'Квантовая криптография',
+        'quantum.fact': '🌌 <strong>Факт:</strong> В квантовой криптографии попытка подслушать <em>физически изменяет</em> данные — это не баг, это фича!',
+        'project.heading': 'ℹ️ О проекте',
+        'project.p1': 'Приветствую вас в <span class="highlight">Ludus Lab</span> — лаборатории, где абстрактные концепции становятся осязаемыми.',
+        'project.disclaimer': '⚠️ Наши игры — упрощённые модели. Мы жертвуем точностью ради понятности, чтобы помочь сформировать <span class="highlight nowrap">интуитивное понимание</span>.',
+        'project.p2': 'Мы живём в мире сложных технологий: квантовая криптография, блокчейн, машинное обучение. Что если бы можно было "пощупать" квантовую запутанность?',
+        'project.p3': '<span class="highlight">Ludus Lab — это не курс лекций.</span> Это лаборатория экспериментов, где ошибки — часть процесса обучения, а понимание приходит через действие.',
+        'project.concept1.title': 'Визуализирует невидимое', 'project.concept1.desc': 'Превращает абстрактные модели в наглядные взаимодействия',
+        'project.concept2.title': 'Даёт опыт через действие', 'project.concept2.desc': 'Вы не читаете о квантовых состояниях — вы управляете ими',
+        'project.concept3.title': 'Снимает барьеры', 'project.concept3.desc': 'Сложные концепции разбиваются на простые механики',
+        'project.mission': '🎯 <strong>Миссия:</strong> Сделать передовые технологии доступными для понимания через интерактивный опыт, а не через сухие формулы.',
+        'me.heading': '👤 Обо мне',
+        'me.p1': 'Привет! Меня зовут <span class="highlight">JSSemeone</span>, и я создаю Ludus Lab. Моя профессиональная жизнь проходит в телекоммуникационной индустрии — мире оптоволокна, протоколов и сетевой инфраструктуры.',
+        'me.p2': 'В 2021 году я начал работать в сфере квантовых коммуникаций. Это был переход к технологиям, которые больше похожи на научную фантастику: запутанные фотоны, квантовые состояния, законы физики как основа безопасности.',
+        'me.disclaimer': '⚠️ Наши игры сознательно упрощают реальные протоколы.<br>Мы сосредоточены на передаче <span class="highlight">сути процесса</span>, а не на точном воспроизведении каждой детали.',
+        'me.p3': 'Именно здесь я столкнулся с парадоксом: технологии, которые мы создаём, настолько сложны, что их почти невозможно объяснить словами. Я понял: <span class="highlight nowrap">некоторые вещи нужно не рассказывать, а показывать.</span>',
+        'me.p4': 'Так родилась идея Ludus Lab. Не из желания учить, а из потребности разобраться самому и помочь другим. Здесь нет позёрства — есть искреннее желание разобраться в сложных вещах через простые игры.',
+        'me.p5': 'В этом мне помогают мои "коллеги" — инструменты для вайб-кодинга:',
+        'me.tools.patience': 'Терпение', 'me.tools.curiosity': 'Любопытство', 'me.tools.coffee': 'Кофе ☕',
+        'me.timeline.heading': 'Мой путь',
+        'me.timeline.2021.title': 'Знакомство с квантовыми технологиями', 'me.timeline.2021.desc': 'Переход в область квантовых коммуникаций. Осознание, что некоторые вещи нужно визуализировать.',
+        'me.timeline.2023.title': 'Коммерциализация квантовых технологий', 'me.timeline.2023.desc': 'Работа над практическим внедрением квантовых решений.',
+        'me.timeline.2024.title': 'Первые прототипы игр', 'me.timeline.2024.desc': 'Понимание, что игровая механика может быть мощным образовательным инструментом.',
+        'me.timeline.2025.title': 'Рождение Ludus Lab', 'me.timeline.2025.desc': 'Формирование концепции платформы. Первые игры публикуются онлайн.',
+        'me.timeline.now.year': 'Сейчас', 'me.timeline.now.title': 'Развитие и расширение', 'me.timeline.now.desc': 'Постепенное добавление новых игр и тем.',
+        'footer.line1': '© 2025 Ludus Lab · Сделано с любопытством и желанием разобраться',
+        'footer.line2': 'Присоединяйтесь к исследованию сложного через простое',
+        'btn.learn': 'Теория', 'btn.play': 'Играть',
+      },
+      en: {
+        'meta.title': 'Ludus Lab - Complex made simple',
+        'header.tagline': 'Complex things through simple games',
+        'nav.about': 'About', 'nav.aboutme': 'About me',
+        'category.crypto': '📚 Cryptography',
+        'tabs.basics': '🔐 Basics', 'tabs.modern': '⚙️ Modern', 'tabs.quantum': '⚛️ Quantum',
+        'basics.heading': '🔐 Cryptography Basics',
+        'basics.desc': 'Classical ciphers that started the science of protecting information',
+        'card.polybius.title': 'Polybius Square',
+        'card.polybius.excerpt': 'The Polybius square: encryption using a 5×5 coordinate grid',
+        'card.polybius.time': '3 min', 'card.polybius.level': '~200 BCE',
+        'card.caesar.title': 'Caesar Cipher',
+        'card.caesar.excerpt': 'How a letter shift in Ancient Rome laid the foundations of cryptography',
+        'card.caesar.time': '2 min', 'card.caesar.level': '~58 BCE',
+        'card.vigenere.title': 'Vigenère Cipher',
+        'card.vigenere.excerpt': 'The Vigenère cipher: le chiffre indéchiffrable </br>of the Renaissance',
+        'card.vigenere.time': '3 min', 'card.vigenere.level': '1553 CE',
+        'card.vernam.title': 'Vernam Cipher',
+        'card.vernam.excerpt': 'The Vernam cipher: it beat cryptanalysis </br>but lost to reality',
+        'card.vernam.time': '4 min', 'card.vernam.level': '1917 CE',
+        'basics.tip': '💡 <strong>Tip:</strong> Go through the ciphers in order — from Polybius to Vernam — to see cryptography evolve!',
+        'modern.heading': '⚙️ Modern Cryptography',
+        'modern.desc': 'The algorithms that protect us today',
+        'card.keygen.title': 'Entropy and Keys',
+        'card.keygen.excerpt': "Where does true randomness come from, and why can't it be faked?",
+        'card.keygen.time': '4 min', 'card.keygen.level': 'Cryptography',
+        'card.symmetric.title': 'Symmetric Cryptography',
+        'card.symmetric.excerpt': 'How can one key both encrypt and decrypt a message?',
+        'card.symmetric.time': '6 min', 'card.symmetric.level': 'Cryptography',
+        'modern.disclaimer': '⚠️ Our games simplify the real algorithms. We focus on <span class="highlight">how things work</span>, not the mathematical details.',
+        'quantum.heading': '⚛️ Quantum Communications',
+        'quantum.desc': 'The future of data protection: the laws of physics instead of math',
+        'card.bb84.title': 'BB84 Protocol',
+        'card.bb84.excerpt': "How do you create a key that can't be eavesdropped on without changing it?",
+        'card.bb84.time': '3 min', 'card.bb84.level': 'Quantum cryptography',
+        'card.e91.title': 'E91 Protocol',
+        'card.e91.excerpt': 'How does quantum entanglement make communication absolutely secure?',
+        'card.e91.time': '5 min', 'card.e91.level': 'Quantum cryptography',
+        'quantum.fact': "🌌 <strong>Fact:</strong> In quantum cryptography, trying to eavesdrop <em>physically changes</em> the data — that's not a bug, it's a feature!",
+        'project.heading': 'ℹ️ About the Project',
+        'project.p1': 'Welcome to <span class="highlight">Ludus Lab</span> — a laboratory where abstract concepts become tangible.',
+        'project.disclaimer': '⚠️ Our games are simplified models. We trade precision for clarity to help build <span class="highlight nowrap">intuitive understanding</span>.',
+        'project.p2': 'We live in a world of complex technologies: quantum cryptography, blockchain, machine learning. What if you could actually "touch" quantum entanglement?',
+        'project.p3': "<span class=\"highlight\">Ludus Lab isn't a lecture course.</span> It's a lab for experiments, where mistakes are part of learning and understanding comes through action.",
+        'project.concept1.title': 'Visualizes the invisible', 'project.concept1.desc': 'Turns abstract models into hands-on interactions',
+        'project.concept2.title': 'Teaches through action', 'project.concept2.desc': "You don't read about quantum states — you control them",
+        'project.concept3.title': 'Removes barriers', 'project.concept3.desc': 'Complex concepts are broken down into simple mechanics',
+        'project.mission': '🎯 <strong>Mission:</strong> Make cutting-edge technology understandable through interactive experience, not dry formulas.',
+        'me.heading': '👤 About Me',
+        'me.p1': "Hi! My name is <span class=\"highlight\">JSSemeone</span>, and I'm building Ludus Lab. My professional life is in the telecom industry — a world of fiber optics, protocols, and network infrastructure.",
+        'me.p2': 'In 2021, I started working in quantum communications. It was a shift toward technology that feels more like science fiction: entangled photons, quantum states, the laws of physics as the foundation of security.',
+        'me.disclaimer': '⚠️ Our games deliberately simplify the real protocols.<br>We focus on capturing <span class="highlight">the essence of the process</span>, not reproducing every detail exactly.',
+        'me.p3': "That's where I ran into a paradox: the technology we build is so complex it's almost impossible to explain in words. I realized: <span class=\"highlight nowrap\">some things shouldn't be told, but shown.</span>",
+        'me.p4': "That's how the idea for Ludus Lab was born. Not out of a desire to teach, but out of a need to understand it myself and help others do the same. There's no posturing here — just a genuine wish to make sense of complex things through simple games.",
+        'me.p5': 'Helping me along the way are my "colleagues" — my vibe-coding tools:',
+        'me.tools.patience': 'Patience', 'me.tools.curiosity': 'Curiosity', 'me.tools.coffee': 'Coffee ☕',
+        'me.timeline.heading': 'My Journey',
+        'me.timeline.2021.title': 'Discovering quantum technology', 'me.timeline.2021.desc': 'Moving into quantum communications. Realizing that some things need to be visualized.',
+        'me.timeline.2023.title': 'Commercializing quantum technology', 'me.timeline.2023.desc': 'Working on the practical deployment of quantum solutions.',
+        'me.timeline.2024.title': 'First game prototypes', 'me.timeline.2024.desc': 'Realizing that game mechanics can be a powerful teaching tool.',
+        'me.timeline.2025.title': 'Ludus Lab is born', 'me.timeline.2025.desc': 'Shaping the concept of the platform. The first games go live.',
+        'me.timeline.now.year': 'Now', 'me.timeline.now.title': 'Growing and expanding', 'me.timeline.now.desc': 'Gradually adding new games and topics.',
+        'footer.line1': '© 2025 Ludus Lab · Made with curiosity and a desire to understand',
+        'footer.line2': 'Join the exploration of the complex through the simple',
+        'btn.learn': 'Theory', 'btn.play': 'Play',
+      },
+      es: {
+        'meta.title': 'Ludus Lab - Lo complejo, simple',
+        'header.tagline': 'Cosas complejas a través de juegos simples',
+        'nav.about': 'Sobre el proyecto', 'nav.aboutme': 'Sobre mí',
+        'category.crypto': '📚 Criptografía',
+        'tabs.basics': '🔐 Fundamentos', 'tabs.modern': '⚙️ Moderna', 'tabs.quantum': '⚛️ Cuántica',
+        'basics.heading': '🔐 Fundamentos de criptografía',
+        'basics.desc': 'Cifrados clásicos con los que comenzó la ciencia de la protección de la información',
+        'card.polybius.title': 'Cuadrado de Polibio',
+        'card.polybius.excerpt': 'El cuadrado de Polibio: cifrado mediante una cuadrícula de coordenadas 5×5',
+        'card.polybius.time': '3 min', 'card.polybius.level': '~200 a.C.',
+        'card.caesar.title': 'Cifrado César',
+        'card.caesar.excerpt': '¿Cómo un desplazamiento de letras en la Antigua Roma sentó las bases de la criptografía?',
+        'card.caesar.time': '2 min', 'card.caesar.level': '~58 a.C.',
+        'card.vigenere.title': 'Cifrado Vigenère',
+        'card.vigenere.excerpt': 'El cifrado Vigenère: le chiffre indéchiffrable </br>del Renacimiento',
+        'card.vigenere.time': '3 min', 'card.vigenere.level': '1553',
+        'card.vernam.title': 'Cifrado Vernam',
+        'card.vernam.excerpt': 'El cifrado Vernam: venció al criptoanálisis </br>y perdió ante la realidad',
+        'card.vernam.time': '4 min', 'card.vernam.level': '1917',
+        'basics.tip': '💡 <strong>Consejo:</strong> Recorre los cifrados en orden — de Polibio a Vernam — ¡para ver la evolución de la criptografía!',
+        'modern.heading': '⚙️ Criptografía moderna',
+        'modern.desc': 'Los algoritmos que nos protegen hoy',
+        'card.keygen.title': 'Entropía y claves',
+        'card.keygen.excerpt': '¿De dónde viene la verdadera aleatoriedad y por qué no se puede falsificar?',
+        'card.keygen.time': '4 min', 'card.keygen.level': 'Criptografía',
+        'card.symmetric.title': 'Criptografía simétrica',
+        'card.symmetric.excerpt': '¿Cómo puede una sola clave cifrar y descifrar un mensaje?',
+        'card.symmetric.time': '6 min', 'card.symmetric.level': 'Criptografía',
+        'modern.disclaimer': '⚠️ Nuestros juegos simplifican los algoritmos reales. Nos centramos en <span class="highlight">cómo funcionan</span>, no en los detalles matemáticos.',
+        'quantum.heading': '⚛️ Comunicaciones cuánticas',
+        'quantum.desc': 'El futuro de la protección de datos: las leyes de la física en lugar de las matemáticas',
+        'card.bb84.title': 'Protocolo BB84',
+        'card.bb84.excerpt': '¿Cómo crear una clave que no se pueda interceptar sin alterarla?',
+        'card.bb84.time': '3 min', 'card.bb84.level': 'Criptografía cuántica',
+        'card.e91.title': 'Protocolo E91',
+        'card.e91.excerpt': '¿Cómo hace el entrelazamiento cuántico que la comunicación sea absolutamente segura?',
+        'card.e91.time': '5 min', 'card.e91.level': 'Criptografía cuántica',
+        'quantum.fact': '🌌 <strong>Dato curioso:</strong> En criptografía cuántica, intentar espiar <em>altera físicamente</em> los datos — ¡eso no es un error, es una virtud!',
+        'project.heading': 'ℹ️ Sobre el proyecto',
+        'project.p1': 'Bienvenido a <span class="highlight">Ludus Lab</span>, un laboratorio donde los conceptos abstractos se vuelven tangibles.',
+        'project.disclaimer': '⚠️ Nuestros juegos son modelos simplificados. Sacrificamos precisión por claridad para ayudar a construir una <span class="highlight nowrap">comprensión intuitiva</span>.',
+        'project.p2': 'Vivimos en un mundo de tecnologías complejas: criptografía cuántica, blockchain, aprendizaje automático. ¿Y si pudieras "tocar" el entrelazamiento cuántico?',
+        'project.p3': '<span class="highlight">Ludus Lab no es un curso de conferencias.</span> Es un laboratorio de experimentos, donde los errores son parte del aprendizaje y la comprensión llega a través de la acción.',
+        'project.concept1.title': 'Visualiza lo invisible', 'project.concept1.desc': 'Convierte modelos abstractos en interacciones tangibles',
+        'project.concept2.title': 'Enseña a través de la acción', 'project.concept2.desc': 'No lees sobre estados cuánticos: los controlas',
+        'project.concept3.title': 'Elimina barreras', 'project.concept3.desc': 'Los conceptos complejos se descomponen en mecánicas simples',
+        'project.mission': '🎯 <strong>Misión:</strong> Hacer que la tecnología de vanguardia sea comprensible a través de la experiencia interactiva, no de fórmulas áridas.',
+        'me.heading': '👤 Sobre mí',
+        'me.p1': '¡Hola! Me llamo <span class="highlight">JSSemeone</span> y estoy creando Ludus Lab. Mi vida profesional transcurre en la industria de las telecomunicaciones — un mundo de fibra óptica, protocolos e infraestructura de red.',
+        'me.p2': 'En 2021 empecé a trabajar en comunicaciones cuánticas. Fue un paso hacia tecnologías que parecen más ciencia ficción: fotones entrelazados, estados cuánticos, las leyes de la física como base de la seguridad.',
+        'me.disclaimer': '⚠️ Nuestros juegos simplifican deliberadamente los protocolos reales.<br>Nos centramos en transmitir <span class="highlight">la esencia del proceso</span>, no en reproducir cada detalle con exactitud.',
+        'me.p3': 'Ahí me encontré con una paradoja: la tecnología que creamos es tan compleja que casi no se puede explicar con palabras. Entendí que <span class="highlight nowrap">algunas cosas no hay que contarlas, sino mostrarlas.</span>',
+        'me.p4': 'Así nació la idea de Ludus Lab. No por deseo de enseñar, sino por la necesidad de entenderlo yo mismo y ayudar a otros. Aquí no hay pose — solo un deseo sincero de entender cosas complejas a través de juegos simples.',
+        'me.p5': 'En esto me ayudan mis "colegas" — mis herramientas de vibe-coding:',
+        'me.tools.patience': 'Paciencia', 'me.tools.curiosity': 'Curiosidad', 'me.tools.coffee': 'Café ☕',
+        'me.timeline.heading': 'Mi camino',
+        'me.timeline.2021.title': 'Descubriendo la tecnología cuántica', 'me.timeline.2021.desc': 'Paso al campo de las comunicaciones cuánticas. Comprendí que algunas cosas hay que visualizarlas.',
+        'me.timeline.2023.title': 'Comercialización de la tecnología cuántica', 'me.timeline.2023.desc': 'Trabajo en la implementación práctica de soluciones cuánticas.',
+        'me.timeline.2024.title': 'Primeros prototipos de juegos', 'me.timeline.2024.desc': 'Comprendí que la mecánica de juego puede ser una poderosa herramienta educativa.',
+        'me.timeline.2025.title': 'Nace Ludus Lab', 'me.timeline.2025.desc': 'Se define el concepto de la plataforma. Los primeros juegos se publican en línea.',
+        'me.timeline.now.year': 'Ahora', 'me.timeline.now.title': 'Crecimiento y expansión', 'me.timeline.now.desc': 'Incorporación gradual de nuevos juegos y temas.',
+        'footer.line1': '© 2025 Ludus Lab · Hecho con curiosidad y ganas de entender',
+        'footer.line2': 'Únete a explorar lo complejo a través de lo simple',
+        'btn.learn': 'Teoría', 'btn.play': 'Jugar',
+      },
+    };
+
+    function applyLanguage(lang) {
+      if (!I18N[lang]) lang = 'ru';
+      const dict = I18N[lang];
+      document.documentElement.lang = lang;
+      document.title = dict['meta.title'];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
       });
-      
-      // Убираем активный класс со всех кнопок
-      document.querySelectorAll('.nav-button').forEach(button => {
-        button.classList.remove('active');
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.langBtn === lang);
       });
-      
-      // Показываем выбранную секцию
-      document.getElementById(sectionId + '-section').classList.add('active');
-      
-      // Активируем соответствующую кнопку
-      event.target.classList.add('active');
-      
-      // Плавный скролл к началу секции
-      document.getElementById(sectionId + '-section').scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
+      try { localStorage.setItem('ludusLang', lang); } catch (e) {}
     }
 
-    // Обработка клавиатуры для навигации
-    document.addEventListener('keydown', function(e) {
-      const sections = ['theory', 'about', 'team'];
-      const currentSection = document.querySelector('.section.active').id.replace('-section', '');
-      const currentIndex = sections.indexOf(currentSection);
-      
-      if (e.key === 'ArrowLeft') {
-        const prevIndex = (currentIndex - 1 + sections.length) % sections.length;
-        document.querySelector(`[onclick="showSection('${sections[prevIndex]}')"]`).click();
-      } else if (e.key === 'ArrowRight') {
-        const nextIndex = (currentIndex + 1) % sections.length;
-        document.querySelector(`[onclick="showSection('${sections[nextIndex]}')"]`).click();
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn));
+    });
+
+    (function initLanguage() {
+      let saved = null;
+      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      if (!saved) {
+        const browserLang = (navigator.language || 'ru').slice(0, 2);
+        saved = I18N[browserLang] ? browserLang : 'ru';
       }
+      applyLanguage(saved);
+    })();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // ===== CRYPTOGRAPHY TABS =====
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const tabPanels = document.querySelectorAll('.section[id^="tab-"]');
+      const infoSections = document.querySelectorAll('#project-section, #me-section');
+
+      function activateTab(tabId) {
+        tabButtons.forEach(btn => { btn.classList.remove('active'); btn.setAttribute('aria-selected', 'false'); });
+        tabPanels.forEach(panel => panel.classList.remove('active'));
+        infoSections.forEach(section => section.classList.remove('active'));
+
+        const targetBtn = document.querySelector(`[data-tab="${tabId}"]`);
+        const targetPanel = document.getElementById(`tab-${tabId}`);
+        if (targetBtn && targetPanel) {
+          targetBtn.classList.add('active'); targetBtn.setAttribute('aria-selected', 'true');
+          targetPanel.classList.add('active');
+          targetPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      tabButtons.forEach(btn => btn.addEventListener('click', e => activateTab(e.currentTarget.dataset.tab)));
+
+      // ===== INFO SECTIONS (FIXED NAVIGATION) =====
+      window.showInfoSection = function(sectionId) {
+        tabButtons.forEach(btn => { btn.classList.remove('active'); btn.setAttribute('aria-selected', 'false'); });
+        tabPanels.forEach(panel => panel.classList.remove('active'));
+        infoSections.forEach(section => section.classList.remove('active'));
+
+        const targetSection = document.getElementById(`${sectionId}-section`);
+        if (targetSection) {
+          targetSection.classList.add('active');
+          setTimeout(() => {
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 50);
+        }
+      };
+
+      // Keyboard navigation for crypto tabs
+      document.addEventListener('keydown', e => {
+        if (!['ArrowLeft','ArrowRight'].includes(e.key)) return;
+        const activeBtn = document.querySelector('.tab-btn.active');
+        if (!activeBtn) return;
+        const tabs = ['basics','modern','quantum'];
+        const idx = tabs.indexOf(activeBtn.dataset.tab);
+        if (idx === -1) return;
+        const dir = e.key === 'ArrowLeft' ? -1 : 1;
+        activateTab(tabs[(idx + dir + tabs.length) % tabs.length]);
+      });
+
+      // Card hover effects (all cards now active)
+      document.querySelectorAll('.theory-card').forEach(card => {
+        card.addEventListener('mouseenter', function() { this.style.transform = 'translateY(-5px)'; });
+        card.addEventListener('mouseleave', function() { this.style.transform = 'translateY(0)'; });
+      });
     });
   </script>
 </body>

@@ -1,215 +1,3839 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Квантовый ключ: BB84 - Ludus Lab</title>
-  <!-- Шрифты -->
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Segoe+UI:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">Квантовый ключ: BB84 - Ludus Lab</title>
+<!-- Favicon -->
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function(m,e,t,r,i,k,a){
+m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+m[i].l=1*new Date();
+for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<!-- Шрифты -->
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Segoe+UI:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+.lang-btn { background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3); font-size: 0.7rem; letter-spacing: 0.5px; padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+.lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+.lang-btn.active { background: rgba(255, 215, 0, 0.18); border-color: #ffd700; color: #ffd700; box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+@media (max-width: 600px) { .lang-switch { top: 8px; right: 8px; } .lang-btn { font-size: 0.6rem; padding: 3px 7px; } }
+body {
+background: linear-gradient(to bottom, #0a1a2a, #050d15);
+color: #c5d5e0;
+line-height: 1.6;
+min-height: 100vh;
+padding: 15px;
+overflow-x: hidden;
+position: relative;
+}
+::-webkit-scrollbar {
+width: 10px;
+height: 10px;
+}
+::-webkit-scrollbar-track {
+background: rgba(0, 10, 20, 0.8);
+border-radius: 5px;
+}
+::-webkit-scrollbar-thumb {
+background: #00a2ff;
+border-radius: 5px;
+border: 2px solid rgba(0, 10, 20, 0.8);
+}
+::-webkit-scrollbar-thumb:hover {
+background: #00c2ff;
+}
+.container {
+max-width: 1000px;
+margin: 0 auto;
+}
+header {
+text-align: center;
+margin-bottom: 15px;
+position: relative;
+}
+.header-decoration {
+height: 2px;
+background: linear-gradient(90deg, transparent 0%, #ffd700 50%, transparent 100%);
+margin: 6px auto 10px;
+max-width: 500px;
+}
+h1 {
+font-size: 1.9rem;
+color: #00a2ff;
+margin-bottom: 8px;
+text-shadow: 0 0 10px rgba(0, 162, 255, 0.3);
+letter-spacing: 1px;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+animation: flicker 5s infinite;
+}
+.subtitle {
+font-size: 0.95rem;
+color: #8ab0c5;
+max-width: 600px;
+margin: 0 auto;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+}
+.game-area {
+background: rgba(5, 20, 30, 0.85);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 8px;
+padding: 18px;
+box-shadow:
+0 0 20px rgba(0, 162, 255, 0.3),
+inset 0 0 15px rgba(0, 100, 150, 0.2);
+margin-bottom: 15px;
+overflow-x: hidden;
+overflow-y: visible;
+position: relative;
+}
+.quantum-setup {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 25px;
+position: relative;
+width: 100%;
+min-height: 130px;
+overflow: visible;
+}
+.character {
+text-align: center;
+width: 150px;
+position: relative;
+z-index: 35;
+}
+.character-icon {
+width: 70px;
+height: 70px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 0 auto 10px;
+font-size: 1.8rem;
+border: 2px solid;
+background: rgba(5, 20, 30, 0.8);
+font-weight: bold;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+text-transform: uppercase;
+letter-spacing: 1px;
+animation: flicker 8s infinite;
+position: relative;
+z-index: 35;
+}
+.alice .character-icon {
+border-color: #00a2ff;
+color: #00a2ff;
+text-shadow: 0 0 10px rgba(0, 162, 255, 0.7);
+}
+.bob .character-icon {
+border-color: #00a2ff;
+color: #00a2ff;
+text-shadow: 0 0 10px rgba(0, 162, 255, 0.7);
+}
+.character-name {
+font-weight: bold;
+margin-bottom: 6px;
+color: #c5d5e0;
+font-size: 0.95rem;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+animation: flicker 8s infinite;
+position: relative;
+z-index: 35;
+}
+.character-status {
+font-size: 0.8rem;
+color: #c5d5e0;
+height: 35px;
+line-height: 1.3;
+overflow: hidden;
+text-align: center;
+margin: 0 auto;
+padding: 3px 8px;
+box-sizing: border-box;
+width: 240px;
+white-space: nowrap;
+text-overflow: ellipsis;
+position: absolute;
+bottom: -40px;
+left: -45px;
+right: -45px;
+z-index: 40;
+text-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
+background: rgba(5, 20, 30, 0.95);
+border-radius: 4px;
+font-weight: 500;
+pointer-events: none;
+font-style: italic;
+}
+.channels-container {
+flex: 1;
+min-width: 250px;
+max-width: 100%;
+margin: 0 12px;
+position: relative;
+height: 100px;
+overflow: visible;
+display: flex;
+flex-direction: column;
+justify-content: center;
+gap: 15px;
+z-index: 50;
+}
+.quantum-channel {
+height: 45px;
+background: rgba(5, 15, 25, 0.7);
+border-radius: 6px;
+position: relative;
+overflow: visible;
+display: flex;
+align-items: center;
+justify-content: center;
+border: 1px solid rgba(0, 162, 255, 0.2);
+z-index: 60;
+box-shadow: 0 0 5px rgba(0, 162, 255, 0.2) inset;
+transition: all 0.5s ease;
+}
+.quantum-channel.active {
+border-color: #00a2ff;
+box-shadow:
+0 0 15px rgba(0, 162, 255, 0.5),
+inset 0 0 10px rgba(0, 162, 255, 0.2);
+}
+.quantum-channel.inactive {
+border-color: rgba(0, 162, 255, 0.1);
+box-shadow:
+0 0 5px rgba(0, 162, 255, 0.1),
+inset 0 0 5px rgba(0, 162, 255, 0.05);
+}
+.classical-channel {
+height: 3px;
+background: rgba(100, 100, 100, 0.3);
+border-radius: 2px;
+position: relative;
+overflow: visible;
+border: 1px solid rgba(100, 100, 100, 0.2);
+transition: all 0.5s ease;
+z-index: 55;
+}
+.classical-channel.active {
+background: rgba(0, 100, 255, 0.3);
+border-color: #0064ff;
+box-shadow: 0 0 10px rgba(0, 100, 255, 0.5);
+}
+.classical-channel.inactive {
+background: rgba(100, 100, 100, 0.2);
+border-color: rgba(100, 100, 100, 0.1);
+}
+.data-packet {
+position: absolute;
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background: #0064ff;
+top: -3px;
+opacity: 0;
+box-shadow: 0 0 8px rgba(0, 100, 255, 0.8);
+z-index: 61;
+}
+.data-packet.to-bob {
+animation: travelToBob 2s linear infinite;
+}
+.data-packet.to-alice {
+animation: travelToAlice 2s linear infinite;
+}
+.photon {
+position: absolute;
+width: 25px;
+height: 25px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.95rem;
+z-index: 62;
+font-weight: bold;
+top: 50%;
+transform: translateY(-50%);
+}
+.eve-icon {
+position: absolute;
+width: 40px;
+height: 40px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.4rem;
+background: rgba(5, 20, 30, 0.95);
+border: 2px solid #ff4444;
+color: #ff4444;
+z-index: 85;
+opacity: 0;
+transition: opacity 0.3s;
+font-weight: bold;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+text-transform: uppercase;
+pointer-events: none;
+left: 50%;
+top: 50%;
+transform: translate(-50%, -50%);
+box-shadow: 0 0 15px rgba(255, 68, 68, 0.8);
+}
+.basis-indicator {
+position: absolute;
+width: 45px;
+height: 18px;
+background: rgba(0, 162, 255, 0.2);
+border: 1px solid #00a2ff;
+border-radius: 4px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.75rem;
+opacity: 0;
+transition: opacity 0.3s;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+text-transform: uppercase;
+animation: flicker 8s infinite;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+font-weight: bold;
+padding: 0 2px;
+z-index: 63;
+top: 50%;
+transform: translateY(-50%);
+}
+#aliceBasis {
+left: 5%;
+}
+#bobBasis {
+right: 5%;
+}
+.controls {
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 8px;
+padding: 15px;
+margin-bottom: 20px;
+margin-top: 30px;
+}
+.section-title {
+color: #00a2ff;
+font-size: 1.1rem;
+margin-bottom: 12px;
+display: flex;
+align-items: center;
+gap: 6px;
+text-shadow: 0 0 5px rgba(0, 162, 255, 0.3);
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+text-transform: uppercase;
+}
+.polarization-controls {
+display: flex;
+gap: 8px;
+margin-bottom: 15px;
+}
+.polarization-option {
+flex: 1;
+padding: 6px 4px;
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 5px;
+text-align: center;
+cursor: pointer;
+transition: all 0.2s;
+position: relative;
+box-shadow: 0 0 5px rgba(0, 162, 255, 0);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 2px;
+}
+.polarization-option:hover {
+background: rgba(0, 20, 35, 0.7);
+box-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
+}
+.polarization-option.selected {
+border-color: #00a2ff;
+box-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
+}
+.basis-symbol {
+font-size: 1.2rem;
+font-weight: bold;
+line-height: 1;
+font-family: monospace;
+}
+.basis-label {
+font-weight: bold;
+color: #c5d5e0;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+font-size: 0.8rem;
+}
+.polarization-option[data-basis="rectilinear"] .basis-symbol {
+color: #00ff80;
+}
+.polarization-option[data-basis="rectilinear"] .basis-label {
+color: #00ff80;
+}
+.polarization-option[data-basis="diagonal"] .basis-symbol {
+color: #e6d000;
+}
+.polarization-option[data-basis="diagonal"] .basis-label {
+color: #e6d000;
+}
+.polarization-option[data-basis="rectilinear"]:hover,
+.polarization-option[data-basis="rectilinear"].selected {
+border-color: #00ff80;
+box-shadow: 0 0 8px rgba(0, 255, 128, 0.5);
+}
+.polarization-option[data-basis="diagonal"]:hover,
+.polarization-option[data-basis="diagonal"].selected {
+border-color: #e6d000;
+box-shadow: 0 0 8px rgba(230, 208, 0, 0.5);
+}
+.action-buttons {
+display: flex;
+flex-direction: column;
+gap: 8px;
+margin-bottom: 12px;
+}
+.button-row {
+display: flex;
+gap: 8px;
+}
+.button-row.mode-buttons {
+flex-wrap: wrap;
+}
+.action-button {
+background: linear-gradient(to bottom, #001a2d, #000c1a);
+color: #00a2ff;
+border: 1px solid rgba(0, 162, 255, 0.4);
+padding: 10px 8px;
+border-radius: 6px;
+cursor: pointer;
+font-weight: 600;
+width: 100%;
+font-size: 0.85rem;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 5px;
+text-shadow: 0 0 3px rgba(0, 162, 255, 0.3);
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+animation: flicker 5s infinite;
+position: relative;
+}
+.action-button:hover:not(:disabled) {
+background: linear-gradient(to bottom, #002540, #001225);
+transform: translateY(-2px);
+box-shadow: 0 4px 12px rgba(0, 162, 255, 0.4);
+}
+.action-button:disabled {
+background: rgba(0, 10, 20, 0.7);
+border-color: rgba(0, 50, 80, 0.4);
+color: rgba(0, 162, 255, 0.5);
+cursor: not-allowed;
+transform: none;
+box-shadow: none;
+animation: none;
+}
+.action-button.active-mode {
+background: linear-gradient(to bottom, #000c1a, #00060d);
+transform: translateY(1px);
+box-shadow: inset 0 3px 6px rgba(0,0,0,0.6);
+border-color: #ff4444 !important;
+box-shadow: 0 0 8px rgba(255, 68, 68, 0.8) !important;
+}
+.action-button.sift-active:not(:disabled) {
+border-color: #00ff80 !important;
+box-shadow: 0 0 8px rgba(0, 255, 128, 0.8) !important;
+}
+.action-button .mode-description {
+font-size: 0.7rem;
+font-weight: normal;
+text-transform: none;
+letter-spacing: 0;
+margin-top: 3px;
+opacity: 0.8;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.key-section {
+margin-top: 20px;
+}
+.key-scroll-container {
+overflow-x: auto;
+padding-bottom: 8px;
+position: relative;
+}
+.key-scroll-container::-webkit-scrollbar {
+height: 6px;
+}
+.key-scroll-container::-webkit-scrollbar-track {
+background: rgba(0, 10, 20, 0.5);
+border-radius: 4px;
+}
+.key-scroll-container::-webkit-scrollbar-thumb {
+background: rgba(0, 162, 255, 0.4);
+border-radius: 4px;
+border: 2px solid rgba(5, 20, 30, 0.85);
+}
+.key-scroll-container::-webkit-scrollbar-thumb:hover {
+background: rgba(0, 162, 255, 0.6);
+}
+.key-scroll-container {
+scrollbar-width: thin;
+scrollbar-color: rgba(0, 162, 255, 0.4) rgba(0, 10, 20, 0.5);
+}
+.key-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, 28px);
+grid-auto-rows: 28px;
+gap: 4px;
+margin-bottom: 12px;
+}
+.final-key-grid {
+grid-template-columns: repeat(8, 38px);
+gap: 3px;
+justify-content: center;
+}
+.key-bit {
+width: 28px;
+height: 28px;
+border-radius: 4px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: bold;
+font-size: 0.8rem;
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(0, 50, 80, 0.4);
+transition: background 0.3s ease, border-color 0.3s ease;
+position: relative;
+cursor: pointer;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+text-transform: uppercase;
+animation: bioshockGlowKey 4s infinite;
+flex-shrink: 0;
+}
+.key-bit.active {
+background: #006ba6;
+border-color: #0088cc;
+}
+.key-bit.source {
+background: rgba(0, 136, 204, 0.5);
+border-color: #00a2ff;
+box-shadow: 0 0 5px rgba(0, 162, 255, 0.5);
+}
+.key-bit.highlight {
+background: rgba(0, 162, 255, 0.3);
+border-color: #00a2ff;
+box-shadow: 0 0 10px rgba(0, 162, 255, 0.8);
+}
+.key-bit.intercept {
+position: relative;
+}
+.key-bit.intercept::before {
+content: "E";
+position: absolute;
+top: -4px;
+right: -4px;
+font-size: 0.7rem;
+color: #ff4444;
+font-weight: bold;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+background: rgba(5, 20, 30, 0.95);
+border-radius: 3px;
+width: 16px;
+height: 16px;
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 10;
+box-shadow: 0 0 5px rgba(255, 68, 68, 0.8);
+}
+.key-bit.intercept::after {
+content: "";
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+border: 1px solid #ff4444;
+border-radius: 5px;
+pointer-events: none;
+}
+.explanation {
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 8px;
+padding: 15px;
+margin-top: 15px;
+border-left: 4px solid #00a2ff;
+font-size: 0.9rem;
+}
+.explanation p {
+margin-bottom: 6px;
+}
+.highlight {
+color: #00a2ff;
+font-weight: 600;
+}
+.alert-container {
+position: relative;
+min-height: 76px;
+margin-bottom: 8px;
+}
+.eve-alert, .sift-notification {
+background: rgba(200, 50, 50, 0.2);
+color: #ff4444;
+padding: 10px;
+border-radius: 6px;
+text-align: center;
+display: none;
+animation: fadeInOut 2s forwards;
+border: 1px solid rgba(255, 68, 68, 0.3);
+position: absolute;
+width: 100%;
+left: 0;
+top: 0;
+}
+.sift-notification {
+background: rgba(0, 100, 0, 0.2);
+color: #4ade80;
+border: 1px solid rgba(74, 222, 128, 0.3);
+}
+.notification {
+background: rgba(0, 100, 0, 0.2);
+color: #4ade80;
+padding: 10px;
+border-radius: 6px;
+text-align: center;
+margin: 12px 0;
+animation: fadeIn 0.5s ease;
+border: 1px solid rgba(74, 222, 128, 0.3);
+display: none;
+}
+.bit-history-info {
+background: rgba(0, 100, 200, 0.2);
+color: #00a2ff;
+padding: 6px;
+border-radius: 4px;
+text-align: center;
+margin-top: 5px;
+font-size: 0.8rem;
+opacity: 0;
+transition: opacity 0.3s;
+display: none;
+}
+.protocol-container {
+margin-bottom: 20px;
+}
+.protocol-header {
+cursor: pointer;
+padding: 12px;
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 6px;
+transition: all 0.3s;
+}
+.protocol-header:hover {
+background: rgba(10, 30, 45, 0.8);
+}
+.protocol-header h2 {
+color: #00a2ff;
+display: flex;
+align-items: center;
+gap: 8px;
+margin: 0;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+font-size: 1.2rem;
+}
+.toggle-icon {
+font-size: 1.4rem;
+width: 18px;
+text-align: center;
+}
+.protocol-description {
+background: rgba(5, 20, 30, 0.6);
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-top: none;
+border-radius: 0 0 6px 6px;
+padding: 15px;
+font-size: 0.9rem;
+display: none;
+}
+.protocol-step {
+margin-bottom: 15px;
+padding-bottom: 12px;
+border-bottom: 1px solid rgba(0, 162, 255, 0.2);
+}
+.protocol-step:last-child {
+border-bottom: none;
+}
+.protocol-step-title {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-bottom: 8px;
+font-weight: bold;
+color: #00a2ff;
+}
+.protocol-step-number {
+background: #00a2ff;
+color: #050d15;
+width: 22px;
+height: 22px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.8rem;
+font-weight: bold;
+}
+.protocol-description ul {
+padding-left: 18px;
+margin: 8px 0;
+}
+.protocol-description li {
+margin-bottom: 4px;
+}
+.game-stats {
+display: flex;
+gap: 12px;
+margin: 12px 0;
+}
+.stat-box {
+flex: 1;
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 6px;
+padding: 8px;
+text-align: center;
+}
+.stat-label {
+font-size: 0.75rem;
+color: #8ab0c5;
+margin-bottom: 4px;
+}
+.stat-value {
+font-size: 1.3rem;
+font-weight: bold;
+color: #00a2ff;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+}
+.stat-value.qber-ok   { color: #4ade80; }
+.stat-value.qber-warn { color: #e6d000; }
+.stat-value.qber-bad  { color: #ff4444; }
+.stat-sub {
+font-size: 0.65rem;
+color: #8ab0c5;
+margin-top: 2px;
+opacity: 0.8;
+}
+.eave-qber-row {
+display: flex;
+gap: 16px;
+justify-content: center;
+margin: 16px 0 8px;
+flex-wrap: wrap;
+}
+.eave-qber-box {
+flex: 1;
+min-width: 130px;
+background: rgba(0,10,20,0.5);
+border: 1px solid rgba(0,162,255,0.25);
+border-radius: 8px;
+padding: 12px;
+text-align: center;
+}
+.eave-qber-box .qber-label {
+font-size: 0.72rem;
+color: #8ab0c5;
+margin-bottom: 6px;
+}
+.eave-qber-box .qber-num {
+font-size: 1.8rem;
+font-weight: bold;
+font-family: 'Bebas Neue','Arial Narrow',Arial,sans-serif;
+}
+.eave-threshold {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+font-size: 0.8rem;
+color: #8ab0c5;
+margin-bottom: 12px;
+}
+.eave-threshold-line {
+flex: 1;
+height: 1px;
+max-width: 60px;
+background: rgba(230,208,0,0.5);
+}
+.eave-threshold-badge {
+background: rgba(230,208,0,0.15);
+border: 1px solid rgba(230,208,0,0.4);
+color: #e6d000;
+border-radius: 4px;
+padding: 2px 8px;
+font-size: 0.75rem;
+}
+.bit-history {
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 6px;
+padding: 12px;
+margin-top: 8px;
+display: none;
+}
+.history-title {
+font-weight: bold;
+color: #00a2ff;
+margin-bottom: 8px;
+font-size: 0.95rem;
+}
+.history-item {
+margin-bottom: 6px;
+padding-left: 12px;
+position: relative;
+}
+.history-item::before {
+content: "•";
+color: #00a2ff;
+position: absolute;
+left: 0;
+}
+.rectilinear-basis {
+color: #00ff80;
+font-weight: bold;
+}
+.diagonal-basis {
+color: #e6d000;
+font-weight: bold;
+}
+.intercepted {
+color: #ff4444;
+font-weight: bold;
+}
+.matched {
+color: #4ade80;
+font-weight: bold;
+}
+.status-intercepted {
+color: #ff4444;
+}
+.status-used {
+color: #4ade80;
+}
+.status-excess {
+color: #e6d000;
+}
+.status-not-matched {
+color: #8ab0c5;
+}
+.history-status {
+margin-top: 8px;
+padding-top: 8px;
+border-top: 1px solid rgba(0, 162, 255, 0.2);
+}
+.history-sim {
+font-size: 0.82em;
+color: #8ab0c5;
+margin-top: 4px;
+opacity: 0.85;
+}
+.eave-check-section {
+background: rgba(0, 10, 25, 0.6);
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 8px;
+padding: 20px;
+margin: 20px 0;
+}
+.eave-check-grid {
+display: flex;
+gap: 10px;
+flex-wrap: wrap;
+justify-content: center;
+margin: 16px 0;
+}
+.eave-check-bit {
+width: 80px;
+padding: 10px 6px;
+border-radius: 6px;
+text-align: center;
+font-size: 0.85em;
+border: 2px solid;
+cursor: pointer;
+transition: transform 0.15s ease;
+}
+.eave-check-bit:hover { transform: translateY(-2px); }
+.eave-check-bit.match {
+background: rgba(74, 222, 128, 0.1);
+border-color: rgba(74, 222, 128, 0.5);
+}
+.eave-check-bit.mismatch {
+background: rgba(255, 68, 68, 0.15);
+border-color: rgba(255, 68, 68, 0.6);
+animation: pulseRed 1s ease-in-out;
+}
+@keyframes pulseRed {
+0% { box-shadow: 0 0 0 0 rgba(255,68,68,0.4); }
+70% { box-shadow: 0 0 0 8px rgba(255,68,68,0); }
+100% { box-shadow: 0 0 0 0 rgba(255,68,68,0); }
+}
+.eave-check-bit .eave-row {
+margin: 3px 0;
+font-size: 0.9em;
+color: #8ab0c5;
+}
+.eave-check-bit .eave-result {
+font-size: 1.3em;
+margin-top: 6px;
+}
+.eave-check-bit.match .eave-result { color: #4ade80; }
+.eave-check-bit.mismatch .eave-result { color: #ff4444; }
+.eave-verdict {
+margin: 12px 0 16px;
+padding: 12px 16px;
+border-radius: 6px;
+font-size: 1em;
+font-weight: bold;
+text-align: center;
+}
+.eave-verdict.clean {
+background: rgba(74, 222, 128, 0.1);
+border: 1px solid rgba(74, 222, 128, 0.4);
+color: #4ade80;
+}
+.eave-verdict.compromised {
+background: rgba(255, 68, 68, 0.1);
+border: 1px solid rgba(255, 68, 68, 0.4);
+color: #ff4444;
+}
+.eave-qber {
+font-size: 0.85em;
+font-weight: normal;
+margin-top: 4px;
+color: inherit;
+opacity: 0.85;
+}
+#eaveConfirmBtn {
+display: block;
+margin: 0 auto;
+}
+.key-bit.sacrifice {
+outline: 2px dashed rgba(0, 162, 255, 0.5);
+outline-offset: 2px;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(-10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInOut {
+0% { opacity: 0; }
+20% { opacity: 1; }
+80% { opacity: 1; }
+100% { opacity: 0; }
+}
+@keyframes photonTravel {
+0% { left: 5%; opacity: 1; }
+100% { left: 90%; opacity: 1; }
+}
+@keyframes travelToBob {
+0% { left: 0%; opacity: 1; }
+90% { opacity: 1; }
+100% { left: calc(100% - 10px); opacity: 0; }
+}
+@keyframes travelToAlice {
+0% { left: calc(100% - 10px); opacity: 1; }
+90% { opacity: 1; }
+100% { left: 0%; opacity: 0; }
+}
+@keyframes flicker {
+0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+20%, 22%, 24%, 55% { opacity: 0.8; }
+}
+@keyframes popIn {
+0% { transform: scale(0.7); opacity: 0; }
+70% { transform: scale(1.1); opacity: 1; }
+100% { transform: scale(1); opacity: 1; }
+}
+.key-bit.new {
+animation: popIn 0.5s ease forwards;
+}
+@keyframes bioshockGlowKey {
+0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { box-shadow: 0 0 5px rgba(0, 162, 255, 0.3); }
+20%, 22%, 24%, 55% { box-shadow: 0 0 10px rgba(0, 162, 255, 0.5); }
+}
+.lab-return-container {
+display: flex;
+justify-content: center;
+margin-top: 25px;
+margin-bottom: 15px;
+}
+.lab-return-button {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+background: rgba(0, 30, 60, 0.7);
+color: #00a2ff;
+text-decoration: none;
+padding: 8px 12px;
+border-radius: 6px;
+border: 1px solid rgba(0, 162, 255, 0.4);
+font-weight: 600;
+font-size: 0.85rem;
+transition: all 0.3s ease;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.lab-return-button:hover {
+background: rgba(0, 40, 80, 0.8);
+border-color: #00a2ff;
+box-shadow: 0 0 10px rgba(0, 162, 255, 0.4);
+transform: translateY(-2px);
+}
+.lab-return-button::before {
+content: "←";
+font-weight: bold;
+}
+.game-header {
+margin-bottom: 15px;
+padding-bottom: 12px;
+border-bottom: 1px solid rgba(0, 162, 255, 0.3);
+}
+footer {
+text-align: center;
+margin-top: 25px;
+padding-top: 15px;
+border-top: 1px solid rgba(0, 162, 255, 0.2);
+color: #8ab0c5;
+font-size: 0.85rem;
+display: none;
+}
+.disclaimer {
+background: rgba(212, 175, 55, 0.1);
+border: 1px solid rgba(212, 175, 55, 0.3);
+border-radius: 6px;
+padding: 12px;
+margin-top: 15px;
+font-size: 0.85rem;
+color: #d4af37;
+border-left: 4px solid #d4af37;
+}
+.disclaimer strong {
+color: #ffd700;
+}
+.navigation-links {
+display: flex;
+justify-content: center;
+gap: 15px;
+margin: 25px auto 15px;
+flex-wrap: wrap;
+}
+.nav-link {
+display: inline-flex;
+align-items: center;
+padding: 8px 15px;
+background: rgba(0, 10, 20, 0.7);
+color: #8ab0c5;
+text-decoration: none;
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 6px;
+font-size: 0.9rem;
+transition: all 0.2s;
+gap: 6px;
+}
+.nav-link:hover {
+color: #00a2ff;
+border-color: #00a2ff;
+background: rgba(0, 20, 35, 0.7);
+transform: translateY(-2px);
+box-shadow: 0 4px 12px rgba(0, 162, 255, 0.2);
+}
+.nav-link.primary {
+background: rgba(0, 40, 80, 0.7);
+color: #00a2ff;
+border-color: rgba(0, 162, 255, 0.5);
+}
+.nav-link.secondary {
+background: rgba(212, 175, 55, 0.1);
+color: #d4af37;
+border-color: rgba(212, 175, 55, 0.3);
+}
+.nav-link.secondary:hover {
+color: #ffd700;
+border-color: #d4af37;
+}
+#keyCopiedNotification {
+background: rgba(0, 100, 0, 0.2);
+color: #4ade80;
+padding: 8px;
+border-radius: 6px;
+text-align: center;
+margin-top: 8px;
+border: 1px solid rgba(74, 222, 128, 0.3);
+display: none;
+}
+.key-display {
+display: none;
+margin-top: 24px;
+}
+/* Финальный ключ — презентабельный блок */
+#finalKeySection {
+background: linear-gradient(135deg, rgba(0,30,60,0.85) 0%, rgba(0,10,25,0.95) 100%);
+border: 1px solid rgba(0,162,255,0.45);
+border-radius: 12px;
+padding: 24px 20px 20px;
+text-align: center;
+box-shadow: 0 0 24px rgba(0,162,255,0.12), inset 0 1px 0 rgba(0,162,255,0.15);
+}
+#finalKeySection .section-title {
+font-size: 1.1rem;
+letter-spacing: 0.08em;
+margin-bottom: 4px;
+color: #00a2ff;
+}
+#finalKeySection p {
+font-size: 0.78rem;
+color: #8ab0c5;
+margin-bottom: 16px;
+}
+.final-key-grid {
+justify-content: center;
+margin-bottom: 14px;
+}
+.final-key-grid .key-bit.active {
+width: 38px;
+height: 38px;
+font-size: 1.1rem;
+background: linear-gradient(135deg, #004e7c, #006ba6);
+border-color: #00b8ff;
+box-shadow: 0 0 10px rgba(0,184,255,0.35);
+animation: finalBitGlow 3s ease-in-out infinite;
+}
+@keyframes finalBitGlow {
+0%, 100% { box-shadow: 0 0 8px rgba(0,184,255,0.3); }
+50% { box-shadow: 0 0 18px rgba(0,184,255,0.65); }
+}
+.final-key-string {
+font-family: 'Bebas Neue', 'Courier New', monospace;
+font-size: 1.05rem;
+letter-spacing: 0.25em;
+color: #4ade80;
+background: rgba(0,10,5,0.6);
+border: 1px solid rgba(74,222,128,0.3);
+border-radius: 6px;
+padding: 8px 16px;
+display: inline-block;
+margin-bottom: 16px;
+text-shadow: 0 0 8px rgba(74,222,128,0.5);
+}
+.final-key-badge {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+font-size: 0.72rem;
+color: #4ade80;
+background: rgba(74,222,128,0.08);
+border: 1px solid rgba(74,222,128,0.25);
+border-radius: 20px;
+padding: 4px 12px;
+margin-bottom: 16px;
+}
+.key-actions {
+display: flex;
+gap: 10px;
+justify-content: center;
+flex-wrap: wrap;
+}
+.key-actions .action-button {
+width: 220px;
+max-width: 90%;
+}
+#copyKeyBtn {
+width: 220px;
+max-width: 90%;
+}
+#newKeyBtn {
+width: 220px;
+max-width: 90%;
+}
+@media (max-width: 768px) {
+body {
+padding: 12px;
+}
+.game-area {
+padding: 15px 12px;
+}
+h1 {
+font-size: 1.7rem;
+margin-bottom: 6px;
+}
+.subtitle {
+font-size: 0.9rem;
+}
+.header-decoration {
+margin: 5px auto 8px;
+}
+.quantum-setup {
+flex-direction: column;
+min-height: 180px;
+margin-bottom: 20px;
+gap: 8px;
+}
+.character {
+width: 100%;
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 8px;
+}
+.character-icon {
+width: 55px;
+height: 55px;
+font-size: 1.4rem;
+margin-bottom: 0;
+margin-right: 12px;
+}
+.character-name {
+font-size: 0.85rem;
+margin-bottom: 0;
+flex: 1;
+text-align: left;
+}
+.character-status {
+position: static;
+width: 100%;
+font-size: 0.7rem;
+height: auto;
+margin-top: 4px;
+padding: 3px;
+text-align: center;
+order: 3;
+}
+.channels-container {
+min-width: 100%;
+height: 85px;
+margin: 8px 0;
+gap: 12px;
+order: 2;
+z-index: 70;
+}
+.quantum-channel {
+height: 40px;
+z-index: 75;
+}
+.classical-channel {
+z-index: 74;
+}
+.eve-icon {
+width: 35px;
+height: 35px;
+font-size: 1.2rem;
+z-index: 85;
+}
+.basis-indicator {
+width: 35px;
+height: 16px;
+font-size: 0.65rem;
+z-index: 76;
+}
+#aliceBasis {
+left: 10%;
+}
+#bobBasis {
+right: 10%;
+}
+.polarization-controls {
+flex-wrap: wrap;
+gap: 6px;
+}
+.polarization-option {
+flex: 1 1 calc(50% - 6px);
+min-width: 110px;
+padding: 6px 4px;
+}
+.basis-symbol {
+font-size: 1.1rem;
+}
+.basis-label {
+font-size: 0.7rem;
+}
+.action-buttons {
+gap: 6px;
+}
+.button-row {
+flex-direction: row;
+gap: 6px;
+}
+.action-button {
+padding: 8px 6px;
+font-size: 0.8rem;
+}
+.action-button .mode-description {
+font-size: 0.6rem;
+}
+.key-grid {
+grid-template-columns: repeat(auto-fill, 26px);
+grid-auto-rows: 26px;
+gap: 4px;
+}
+.final-key-grid {
+grid-template-columns: repeat(8, 1fr);
+grid-auto-rows: unset;
+gap: 5px;
+}
+.key-bit {
+width: 26px;
+height: 26px;
+font-size: 0.8rem;
+}
+.key-bit.intercept::before {
+top: -3px;
+right: -3px;
+font-size: 0.6rem;
+width: 14px;
+height: 14px;
+}
+.game-stats {
+gap: 8px;
+}
+.stat-box {
+padding: 6px;
+}
+.stat-value {
+font-size: 1.2rem;
+}
+.protocol-header h2 {
+font-size: 1.1rem;
+}
+.protocol-description {
+padding: 12px;
+font-size: 0.85rem;
+}
+.explanation {
+font-size: 0.85rem;
+padding: 12px;
+}
+.disclaimer {
+padding: 10px;
+font-size: 0.8rem;
+}
+.lab-return-button {
+padding: 6px 10px;
+font-size: 0.8rem;
+}
+.navigation-links {
+gap: 10px;
+margin: 20px auto 12px;
+}
+.nav-link {
+padding: 6px 12px;
+font-size: 0.85rem;
+}
+#copyKeyBtn, #newKeyBtn {
+width: 220px;
+}
+}
+@media (max-width: 480px) {
+h1 {
+font-size: 1.5rem;
+}
+.quantum-setup {
+min-height: 160px;
+}
+.character {
+width: 100%;
+}
+.character-icon {
+width: 45px;
+height: 45px;
+font-size: 1.2rem;
+}
+.character-name {
+font-size: 0.8rem;
+}
+.channels-container {
+min-width: 100%;
+margin: 5px 0;
+}
+.polarization-option {
+flex: 1 1 100%;
+}
+.button-row {
+flex-direction: column;
+}
+.key-grid {
+grid-template-columns: repeat(auto-fill, 24px);
+grid-auto-rows: 24px;
+gap: 3px;
+}
+.navigation-links {
+flex-direction: column;
+align-items: center;
+}
+}
+/* ========== WELCOME SCREEN ========== */
+.hidden { display: none !important; }
+.welcome-screen {
+background: rgba(5, 20, 30, 0.85);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 8px;
+padding: 28px 24px;
+margin-bottom: 15px;
+box-shadow: 0 0 20px rgba(0, 162, 255, 0.3), inset 0 0 15px rgba(0, 100, 150, 0.2);
+text-align: center;
+}
+.welcome-screen h2 {
+color: #00a2ff;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+font-size: 1.4rem;
+letter-spacing: 0.5px;
+margin-bottom: 14px;
+text-shadow: 0 0 10px rgba(0, 162, 255, 0.3);
+}
+.welcome-screen p { font-size: 0.92rem; margin-bottom: 12px; max-width: 640px; margin-left: auto; margin-right: auto; }
+.welcome-stages-list {
+list-style: none;
+max-width: 560px;
+margin: 0 auto 20px;
+text-align: left;
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+.welcome-stages-list li {
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(0, 162, 255, 0.25);
+border-left: 3px solid #00a2ff;
+border-radius: 6px;
+padding: 8px 12px;
+font-size: 0.85rem;
+}
+.welcome-stages-list li strong { color: #00a2ff; }
+#startGameBtn { max-width: 320px; margin: 0 auto; }
+/* ========== ПОСТУПЕННЫЕ INTRO-КАРТОЧКИ ========== */
+.stage-intro {
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 8px;
+padding: 18px;
+margin-bottom: 18px;
+border-left: 4px solid #00a2ff;
+text-align: center;
+}
+.stage-intro h3 {
+color: #00a2ff;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+font-size: 1.15rem;
+letter-spacing: 0.4px;
+margin-bottom: 10px;
+text-transform: uppercase;
+}
+.stage-intro p { font-size: 0.9rem; margin-bottom: 14px; max-width: 640px; margin-left: auto; margin-right: auto; }
+.stage-intro .action-button { max-width: 320px; margin: 0 auto; }
+/* ========== STAGE SYSTEM ========== */
+.stage-indicator {
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 18px;
+margin-bottom: 24px;
+padding-bottom: 18px;
+border-bottom: 1px solid rgba(0, 162, 255, 0.15);
+}
+.stage-dot {
+width: 10px; height: 10px;
+border-radius: 50%;
+background: rgba(0, 50, 80, 0.6);
+border: 1px solid rgba(0, 162, 255, 0.3);
+transition: all 0.3s;
+position: relative;
+cursor: default;
+flex-shrink: 0;
+}
+.stage-dot.active {
+background: #00a2ff;
+box-shadow: 0 0 8px rgba(0, 162, 255, 0.6);
+border-color: #00a2ff;
+transform: scale(1.35);
+}
+.stage-dot.completed {
+background: #4ade80;
+border-color: #4ade80;
+}
+/* labels via separate element, not ::after - no overlap risk */
+.stage-name {
+text-align: center;
+font-size: 0.7rem;
+color: #8ab0c5;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+text-transform: uppercase;
+letter-spacing: 0.6px;
+margin-top: -10px;
+margin-bottom: 18px;
+}
+.stage-content { display: flex; flex-direction: column; }
+.stage-content.hidden { display: none !important; }
+/* Two-column layout for Stage 1 */
+.stage1-layout {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 18px;
+align-items: stretch;
+margin-top: 35px;
+}
+.left-panel { display: flex; flex-direction: column; gap: 10px; }
+.right-panel { display: flex; flex-direction: column; gap: 10px; }
+.left-panel .controls { margin-top: 0; margin-bottom: 0; flex: 1; }
+/* Stack mode buttons vertically in narrow left panel */
+.left-panel .button-row.mode-buttons { flex-direction: column; }
+/* Таблица измерений Боба должна выглядеть как парная карточка к панели управления —
+   тот же фон/рамка/паддинг, что и .controls, а не "голая" таблица без обвязки */
+.right-panel .key-section {
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 8px;
+padding: 15px;
+margin: 0;
+display: flex;
+flex-direction: column;
+flex: 1;
+min-height: 0;
+}
+.right-panel .char-table-container { flex: 1; min-height: 260px; max-height: 480px; }
+/* Bottom stage buttons */
+.bottom-buttons {
+display: flex;
+justify-content: center;
+gap: 12px;
+margin-top: 18px;
+flex-wrap: wrap;
+}
+.bottom-buttons .action-button { width: auto; min-width: 180px; max-width: 380px; }
+/* ====== SIFTING SUMMARY BAR (inside QBER stage) ====== */
+.sift-summary-bar {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+justify-content: center;
+margin-bottom: 16px;
+padding: 8px 12px;
+background: rgba(0, 10, 20, 0.4);
+border: 1px solid rgba(0, 162, 255, 0.15);
+border-radius: 8px;
+}
+.sift-pill {
+display: flex;
+align-items: center;
+gap: 5px;
+background: rgba(0, 10, 20, 0.6);
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 20px;
+padding: 4px 12px;
+font-size: 0.78rem;
+color: #8ab0c5;
+}
+.sift-pill-num {
+font-weight: bold;
+color: #00a2ff;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+font-size: 1rem;
+}
+.sift-pill.s-green { border-color: rgba(74, 222, 128, 0.35); }
+.sift-pill.s-green .sift-pill-num { color: #4ade80; }
+.sift-pill.s-gold  { border-color: rgba(230, 208, 0, 0.35); }
+.sift-pill.s-gold  .sift-pill-num { color: #e6d000; }
+.sift-pill.s-cyan  { border-color: rgba(0, 220, 255, 0.4); }
+.sift-pill.s-cyan  .sift-pill-num { color: #00dcff; }
+/* ====== STAGE 2: SIFTING TABLES (Alice / Bob / Sifted key) ====== */
+.char-table-container {
+width: 100%;
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 8px;
+background: rgba(0, 10, 20, 0.6);
+overflow-y: auto;
+max-height: 340px;
+}
+.char-table {
+width: 100%;
+border-collapse: collapse;
+font-family: monospace;
+font-size: 0.82rem;
+}
+.char-table th, .char-table td {
+padding: 6px 8px;
+text-align: center;
+border: 1px solid rgba(0, 162, 255, 0.15);
+}
+.char-table th {
+background: rgba(0, 20, 35, 0.9);
+color: #00a2ff;
+position: sticky;
+top: 0;
+z-index: 5;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+text-transform: uppercase;
+font-size: 0.72rem;
+letter-spacing: 0.4px;
+}
+.char-table tbody tr:hover { background: rgba(0, 162, 255, 0.08); }
+.char-table .empty-state-row td { color: #8ab0c5; font-style: italic; padding: 40px 12px; border: none; }
+/* Таблица Боба на этапе 1 — крупнее строки, чтобы не оставалось пустоты снизу панели */
+.right-panel .char-table th, .right-panel .char-table td { padding: 11px 10px; font-size: 0.9rem; }
+.char-table tr.row-pending { opacity: 0.35; }
+.char-table tr.row-match { background: rgba(74, 222, 128, 0.12); }
+.char-table tr.row-match td.sift-match, .char-table tr.row-match td.sift-bit { color: #4ade80; font-weight: bold; }
+.char-table tr.row-mismatch { background: rgba(255, 68, 68, 0.10); opacity: 0.65; }
+.char-table tr.row-mismatch td.sift-match { color: #ff4444; }
+.char-table tr.highlight { background: rgba(0, 162, 255, 0.25); box-shadow: inset 0 0 8px rgba(0, 162, 255, 0.5); }
+/* Биты просеянного ключа, отобранные на публичную проверку QBER */
+.char-table tr.sacrifice-marked { background: rgba(230, 208, 0, 0.14); border-left: 3px solid #e6d000; }
+.char-table tr.sacrifice-marked td.check-mark { color: #e6d000; font-weight: bold; }
+.char-table tr.new-row { animation: rowFadeIn 0.3s ease; }
+@keyframes rowFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.table-caption { font-size: 0.85rem; color: #8ab0c5; margin-bottom: 4px; font-weight: 600; }
+.table-subcaption { font-size: 0.78rem; color: #8ab0c5; margin-bottom: 8px; opacity: 0.85; }
+/* Строка "Сравнение базисов" — пульс в момент раскрытия */
+.char-table tr.row-revealing { animation: siftRowPulse 0.5s ease; }
+@keyframes siftRowPulse {
+0% { box-shadow: inset 0 0 0 0 rgba(0, 162, 255, 0.7); }
+50% { box-shadow: inset 0 0 18px 2px rgba(0, 162, 255, 0.6); }
+100% { box-shadow: inset 0 0 0 0 rgba(0, 162, 255, 0); }
+}
+.result-symbol { display: inline-block; font-size: 1.1rem; }
+.result-symbol.result-flash { animation: resultFlash 0.4s ease; }
+@keyframes resultFlash {
+0% { transform: scale(0.4); opacity: 0; }
+60% { transform: scale(1.4); opacity: 1; }
+100% { transform: scale(1); opacity: 1; }
+}
+.sifting-layout {
+display: flex;
+flex-direction: column;
+gap: 14px;
+margin-top: 20px;
+}
+.sifting-mode-buttons { margin-bottom: 16px; }
+/* Визуализация обмена по открытому (классическому) каналу на этапе просеивания */
+.public-channel-viz {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 18px;
+margin-bottom: 20px;
+}
+.public-channel-viz .mini-avatar {
+width: 44px;
+height: 44px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: bold;
+font-size: 1.05rem;
+border: 2px solid #0064ff;
+color: #0064ff;
+background: rgba(5, 20, 30, 0.8);
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+flex-shrink: 0;
+box-shadow: 0 0 8px rgba(0, 100, 255, 0.4);
+}
+.public-channel-viz .channel-mid { flex: 1; max-width: 420px; text-align: center; }
+.public-channel-viz .channel-label {
+font-size: 0.72rem;
+color: #8ab0c5;
+text-transform: uppercase;
+letter-spacing: 0.4px;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+margin-bottom: 6px;
+}
+.public-channel-viz .channel-bar {
+height: 3px;
+background: rgba(0, 100, 255, 0.3);
+border: 1px solid #0064ff;
+border-radius: 2px;
+box-shadow: 0 0 10px rgba(0, 100, 255, 0.5);
+position: relative;
+overflow: visible;
+}
+/* ====== STAGE 4: FINAL KEY ====== */
+.key-stage-inner { max-width: 560px; margin: 0 auto; text-align: center; }
+.success-explanation {
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 8px; padding: 15px; margin-top: 15px;
+border-left: 4px solid #00a2ff; font-size: 0.9rem; text-align: left;
+}
+.success-explanation p { margin-bottom: 6px; }
+.stage-nav {
+display: flex; justify-content: center; gap: 12px;
+margin-top: 20px; flex-wrap: wrap;
+}
+/* Responsive for stages */
+@media (max-width: 768px) {
+.stage1-layout { grid-template-columns: 1fr; margin-top: 45px; }
+.sifting-stats { grid-template-columns: repeat(2, 1fr); }
+.char-table-container { max-height: 260px; }
+.sifting-mode-buttons .button-row.mode-buttons { flex-direction: column; }
+}
+@media (max-width: 480px) {
+.sifting-stats { grid-template-columns: 1fr 1fr; }
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <header class="game-header">
-      <h1>КВАНТОВЫЙ КЛЮЧ: BB84</h1>
-      <div class="header-decoration"></div>
-      <p class="subtitle">Ludus Lab · Сложные вещи — простыми играми</p>
-    </header>
-    
-    <div class="protocol-container">
-      <div class="protocol-header" id="protocolHeader">
-        <h2>Описание протокола BB84 <span class="toggle-icon">+</span></h2>
-      </div>
-      <div class="protocol-description" id="protocolContent">
-        <p>Протокол BB84 — это первый в мире алгоритм квантового распределения ключей, предложенный Чарльзом Беннетом и Жилем Брассаром в 1984 году.</p>
-        <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">1</span> Подготовка кубитов</div>
-          <p>Алиса генерирует случайную последовательность битов (0 и 1) и для каждого бита случайным образом выбирает базис измерения:</p>
-          <ul>
-            <li><strong>Прямой базис (Rectilinear):</strong> 0° (вертикальная поляризация) для 0, 90° (горизонтальная) для 1</li>
-            <li><strong>Диагональный базис (Diagonal):</strong> 45° для 0, 135° для 1</li>
-          </ul>
-          <p>В игре: Вы выбираете поляризацию вручную или используете автоматическую отправку.</p>
-        </div>
-        <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">2</span> Передача по квантовому каналу</div>
-          <p>Алиса отправляет каждый фотон (кубит) Бобу через квантовый канал. Квантовые состояния нельзя копировать (теорема о запрете клонирования).</p>
-          <p>В игре: Фотон движется по квантовому каналу от Алисы к Бобу.</p>
-        </div>
-        <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">3</span> Измерение кубитов</div>
-          <p>Боб для каждого приходящего фотона случайно выбирает базис измерения (прямой или диагональный) и измеряет фотон в этом базисе.</p>
-          <p>В игре: Боб автоматически выбирает случайный базис и показывает результат измерения.</p>
-        </div>
-        <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">4</span> Обмен базисами по классическому каналу</div>
-          <p>После передачи всех фотонов Алиса и Боб по классическому (обычному) каналу сообщают друг другу, какие базисы они использовали для каждого бита, но не значения битов.</p>
-          <p>В игре: При нажатии "Просеять ключ" активируется классический канал для обмена информацией о базисах.</p>
-        </div>
-        <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">5</span> Просеивание ключа</div>
-          <p>Алиса и Боб сохраняют только те биты, для которых базисы совпали (примерно 50% от всех отправленных). Остальные биты отбрасываются.</p>
-          <p>В игре: Создается сырой ключ из совпадающих измерений.</p>
-        </div>
-        <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">6</span> Обнаружение подслушивания</div>
-          <p>В реальном протоколе Алиса и Боб сравнивают часть оставшихся битов (которые затем отбрасываются). Если Ева подслушивала, она вносила ошибки, которые обнаруживаются при сравнении.</p>
-          <p>В игре: Перехваченные Евой биты отмечаются и исключаются из финального ключа.</p>
-        </div>
-        <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">7</span> Формирование секретного ключа</div>
-          <p>Если уровень ошибок ниже определенного порога, оставшиеся биты образуют секретный ключ. В противном случае ключ отбрасывается и процесс повторяется.</p>
-          <p>В игре: Формируется финальный 8-битный ключ из неперехваченных совпадающих битов.</p>
-        </div>
-        <p><strong>Безопасность протокола:</strong> Безопасность BB84 основана на фундаментальных принципах квантовой механики — любые попытки измерить квантовое состояние изменяют его, что позволяет обнаружить подслушивание.</p>
-      </div>
+<div class="lang-switch" role="group" aria-label="Language">
+  <button class="lang-btn" data-lang-btn="ru">RU</button>
+  <button class="lang-btn" data-lang-btn="en">EN</button>
+  <button class="lang-btn" data-lang-btn="es">ES</button>
+</div>
+<div class="container">
+<header class="game-header">
+<h1 data-i18n="game.title">КВАНТОВЫЙ КЛЮЧ: BB84</h1>
+<div class="header-decoration"></div>
+<p class="subtitle" data-i18n="game.subtitle">Ludus Lab · Сложные вещи — простыми играми</p>
+</header>
+
+<!-- ══════════════════════════════════════════════════════
+     ЗАСТАВКА — показывается один раз перед началом игры
+     ══════════════════════════════════════════════════════ -->
+<div class="welcome-screen" id="welcomeScreen">
+  <h2 data-i18n="welcome.heading">Добро пожаловать в игру «Квантовый ключ: BB84»</h2>
+  <p data-i18n="welcome.p1">Эта игра поможет на практике понять, как Алиса и Боб договариваются об общем секретном ключе с помощью квантовой физики — и почему любая попытка подслушивания будет обнаружена.</p>
+  <p data-i18n="welcome.p2">Игра состоит из 4 этапов, которые открываются по очереди:</p>
+  <ul class="welcome-stages-list">
+    <li><strong data-i18n="welcome.stage1.title">1. Квантовый канал</strong> — <span data-i18n="welcome.stage1.desc">Алиса отправляет кубиты Бобу</span></li>
+    <li><strong data-i18n="welcome.stage2.title">2. Просеивание</strong> — <span data-i18n="welcome.stage2.desc">сравнение базисов и сборка сырого ключа</span></li>
+    <li><strong data-i18n="welcome.stage3.title">3. Проверка QBER</strong> — <span data-i18n="welcome.stage3.desc">поиск следов подслушивания</span></li>
+    <li><strong data-i18n="welcome.stage4.title">4. Секретный ключ</strong> — <span data-i18n="welcome.stage4.desc">итоговый общий ключ Алисы и Боба</span></li>
+  </ul>
+  <button class="action-button" id="startGameBtn">
+    <span data-i18n="welcome.start">Начать игру</span>
+  </button>
+</div>
+
+<div id="mainGameArea" class="hidden">
+
+<div class="protocol-container">
+<div class="protocol-header" id="protocolHeader">
+<h2><span data-i18n="protocol.toggle">Описание протокола BB84</span> <span class="toggle-icon">+</span></h2>
+</div>
+<div class="protocol-description" id="protocolContent">
+<p data-i18n="protocol.intro">Протокол BB84 — это первый в мире алгоритм квантового распределения ключей, предложенный Чарльзом Беннетом и Жилем Брассаром в 1984 году.</p>
+<div class="protocol-step">
+<div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">Подготовка кубит</span></div>
+<p data-i18n="protocol.step1.p1">Алиса генерирует случайную последовательность бит (0 и 1) и для каждого бита случайным образом выбирает базис измерения:</p>
+<ul data-i18n="protocol.step1.list">
+<li><strong>Прямой базис (Rectilinear):</strong> 0° (вертикальная поляризация) для 0, 90° (горизонтальная) для 1</li>
+<li><strong>Диагональный базис (Diagonal):</strong> 45° для 0, 135° для 1</li>
+</ul>
+<p data-i18n="protocol.step1.p2">В игре: Вы выбираете поляризацию вручную или используете автоматическую отправку.</p>
+</div>
+<div class="protocol-step">
+<div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">Передача по квантовому каналу</span></div>
+<p data-i18n="protocol.step2.p1">Алиса отправляет каждый фотон (кубит) Бобу через квантовый канал. Квантовые состояния нельзя копировать (теорема о запрете клонирования).</p>
+<p data-i18n="protocol.step2.p2">В игре: Фотон движется по квантовому каналу от Алисы к Бобу.</p>
+</div>
+<div class="protocol-step">
+<div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">Измерение кубит</span></div>
+<p data-i18n="protocol.step3.p1">Боб для каждого приходящего фотона случайно выбирает базис измерения (прямой или диагональный) и измеряет фотон в этом базисе.</p>
+<p data-i18n="protocol.step3.p2">В игре: Боб автоматически выбирает случайный базис и показывает результат измерения.</p>
+</div>
+<div class="protocol-step">
+<div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">Обмен базисами по классическому каналу</span></div>
+<p data-i18n="protocol.step4.p1">После передачи всех фотонов Алиса и Боб по классическому (обычному) каналу сообщают друг другу, какие базисы они использовали для каждого бита, но не значения бит.</p>
+<p data-i18n="protocol.step4.p2">В игре: При нажатии "Просеять ключ" активируется классический канал для обмена информацией о базисах.</p>
+</div>
+<div class="protocol-step">
+<div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">Просеивание ключа</span></div>
+<p data-i18n="protocol.step5.p1">Алиса и Боб сохраняют только те биты, для которых базисы совпали (примерно 50% от всех отправленных). Остальные биты отбрасываются.</p>
+<p data-i18n="protocol.step5.p2">В игре: Создается сырой ключ из совпадающих измерений.</p>
+</div>
+<div class="protocol-step">
+<div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">Обнаружение подслушивания</span></div>
+<p data-i18n="protocol.step6.p1">В реальном протоколе Алиса и Боб сравнивают часть оставшихся бит (которые затем отбрасываются). Если Ева подслушивала, она вносила ошибки, которые обнаруживаются при сравнении.</p>
+<p data-i18n="protocol.step6.p2">В игре: Перехваченные Евой биты отмечаются и исключаются из финального ключа.</p>
+</div>
+<div class="protocol-step">
+<div class="protocol-step-title"><span class="protocol-step-number">7</span> <span data-i18n="protocol.step7.title">Формирование секретного ключа</span></div>
+<p data-i18n="protocol.step7.p1">Если уровень ошибок ниже определенного порога, оставшиеся биты образуют секретный ключ. В противном случае ключ отбрасывается и процесс повторяется.</p>
+<p data-i18n="protocol.step7.p2">В игре: Формируется финальный 8-битный ключ из неперехваченных совпадающих бит.</p>
+</div>
+<p data-i18n="protocol.security"><strong>Безопасность протокола:</strong> Безопасность BB84 основана на фундаментальных принципах квантовой механики — любые попытки измерить квантовое состояние изменяют его, что позволяет обнаружить подслушивание.</p>
+</div>
+</div>
+<div class="game-area">
+
+<!-- ── STAGE INDICATOR ── -->
+<div class="stage-indicator">
+  <div class="stage-dot active" id="stageDot1"></div>
+  <div class="stage-dot" id="stageDot2"></div>
+  <div class="stage-dot" id="stageDot3"></div>
+  <div class="stage-dot" id="stageDot4"></div>
+</div>
+<p class="stage-name" id="stageNameText">1 / 4 — Квантовый канал</p>
+
+<!-- ══════════════════════════════════════════════════════
+     ЭТАП 1 — КВАНТОВЫЙ КАНАЛ
+     ══════════════════════════════════════════════════════ -->
+<div id="quantum-stage" class="stage-content">
+
+  <div class="stage-intro" id="stageIntro1">
+    <h3 data-i18n="stageintro.1.title">Этап 1: Квантовый канал</h3>
+    <p data-i18n="stageintro.1.desc">Алиса выбирает случайную поляризацию для каждого кубита и отправляет их Бобу. Боб для каждого кубита независимо выбирает случайный базис измерения. Вы управляете отправкой Алисы через панель управления.</p>
+    <button class="action-button" id="stageIntro1Btn">
+      <span data-i18n="stageintro.1.btn">Начать отправку кубит</span>
+    </button>
+  </div>
+
+  <div class="stage-body hidden" id="stageBody1">
+
+  <!-- Канал (во всю ширину) -->
+  <div class="quantum-setup">
+    <div class="character alice">
+      <div class="character-icon">A</div>
+      <div class="character-name" data-i18n="char.alice">Алиса</div>
+      <div class="character-status" id="aliceStatus" data-i18n="status.aliceReady">Готова отправить кубит</div>
     </div>
-    
-    <div class="game-area">
-      <div class="quantum-setup">
-        <div class="character alice">
-          <div class="character-icon">A</div>
-          <div class="character-name">Алиса</div>
-          <div class="character-status" id="aliceStatus">Готова отправить кубит</div>
-        </div>
-        <div class="channels-container">
-          <div class="quantum-channel active" id="quantumChannel">
-            <div class="basis-indicator" id="aliceBasis">Алиса</div>
-            <div class="basis-indicator" id="bobBasis">Боб</div>
-            <div class="eve-icon" id="eveIcon">👁️‍🗨️</div>
-          </div>
-          <div class="classical-channel inactive" id="classicalChannel">
-            <!-- Пакеты данных будут добавляться динамически -->
-          </div>
-        </div>
-        <div class="character bob">
-          <div class="character-icon">B</div>
-          <div class="character-name">Боб</div>
-          <div class="character-status" id="bobStatus">Ожидает кубит</div>
-        </div>
+    <div class="channels-container">
+      <div class="quantum-channel active" id="quantumChannel">
+        <div class="basis-indicator" id="aliceBasis">|</div>
+        <div class="basis-indicator" id="bobBasis">+</div>
+        <div class="eve-icon" id="eveIcon">👁️‍🗨️</div>
       </div>
-      
+      <div class="classical-channel inactive" id="classicalChannel"></div>
+    </div>
+    <div class="character bob">
+      <div class="character-icon">B</div>
+      <div class="character-name" data-i18n="char.bob">Боб</div>
+      <div class="character-status" id="bobStatus" data-i18n="status.bobWaiting">Ожидает кубит</div>
+    </div>
+  </div>
+
+  <!-- Две колонки: управление | сырой ключ -->
+  <div class="stage1-layout">
+
+    <!-- Левая панель: управление -->
+    <div class="left-panel">
       <div class="controls">
-        <h2 class="section-title">Панель управления</h2>
+        <h2 class="section-title" data-i18n="controls.heading">Панель управления</h2>
         <div class="polarization-controls">
           <div class="polarization-option selected" data-basis="rectilinear" data-value="0">
             <div class="basis-symbol">|</div>
-            <div class="basis-label">Прямой</div>
-            <div class="polarization-value">0° = 0</div>
+            <div class="basis-label" data-i18n="basis.rectilinear">Прямой</div>
+            <div class="polarization-value" style="font-size:0.65rem;">0° = 0</div>
           </div>
           <div class="polarization-option" data-basis="rectilinear" data-value="1">
             <div class="basis-symbol">—</div>
-            <div class="basis-label">Прямой</div>
-            <div class="polarization-value">90° = 1</div>
+            <div class="basis-label" data-i18n="basis.rectilinear">Прямой</div>
+            <div class="polarization-value" style="font-size:0.65rem;">90° = 1</div>
           </div>
           <div class="polarization-option" data-basis="diagonal" data-value="0">
             <div class="basis-symbol">/</div>
-            <div class="basis-label">Диагональный</div>
-            <div class="polarization-value">45° = 0</div>
+            <div class="basis-label" data-i18n="basis.diagonal">Диагональный</div>
+            <div class="polarization-value" style="font-size:0.65rem;">45° = 0</div>
           </div>
           <div class="polarization-option" data-basis="diagonal" data-value="1">
             <div class="basis-symbol">\</div>
-            <div class="basis-label">Диагональный</div>
-            <div class="polarization-value">135° = 1</div>
+            <div class="basis-label" data-i18n="basis.diagonal">Диагональный</div>
+            <div class="polarization-value" style="font-size:0.65rem;">135° = 1</div>
           </div>
         </div>
-        
         <div class="action-buttons">
-          <div class="button-row">
-            <button class="action-button" id="manualModeBtn">
+          <div class="button-row mode-buttons">
+            <button class="action-button" id="manualModeBtn" style="flex:1;">
               <div>
-                <div>Ручной режим</div>
-                <div class="mode-description">Отправит один фотон</div>
+                <div data-i18n="mode.manual.title">Ручной режим</div>
+                <div class="mode-description" data-i18n="mode.manual.desc">Отправит один фотон</div>
               </div>
             </button>
-            <button class="action-button" id="semiAutoBtn">
+            <button class="action-button" id="semiAutoBtn" style="flex:1;">
               <div>
-                <div>Полуавтоматический режим</div>
-                <div class="mode-description">Фотоны отправляются автоматически, базисы выбираются вручную</div>
+                <div data-i18n="mode.semi.title">Полуавтоматический режим</div>
+                <div class="mode-description" data-i18n="mode.semi.desc">Фотоны автоматически, базисы вручную</div>
               </div>
             </button>
-          </div>
-          <div class="button-row">
-            <button class="action-button" id="autoModeBtn">
+            <button class="action-button" id="autoModeBtn" style="flex:1;">
               <div>
-                <div>Автоматический режим</div>
-                <div class="mode-description">Фотоны отправляются автоматически, базисы выбираются автоматически</div>
+                <div data-i18n="mode.auto.title">Автоматический режим</div>
+                <div class="mode-description" data-i18n="mode.auto.desc">Всё автоматически</div>
               </div>
-            </button>
-            <button class="action-button" id="siftKey" disabled>
-              Просеять ключ
             </button>
           </div>
         </div>
-        
         <div class="alert-container">
-          <div class="eve-alert" id="eveAlert">
-            ⚠️ Ева перехватила кубит! Это может повлиять на конечный ключ.
-          </div>
-          <div class="sift-notification" id="siftNotification">
-            ✅ Достаточно данных для просеивания ключа!
-          </div>
+          <div class="eve-alert" id="eveAlert" data-i18n="alert.eve">⚠️ Ева перехватила кубит!</div>
+          <div class="sift-notification" id="siftNotification" data-i18n="notif.siftReady">✅ Достаточно данных для просеивания!</div>
         </div>
-      </div>
-      
-      <div class="key-section">
-        <h2 class="section-title">Сырой ключ</h2>
-        <p>Собрано <span id="rawKeyCount">0</span> кубитов</p>
-        <div class="key-scroll-container">
-          <div class="key-grid" id="rawKeyGrid">
-            <!-- Сырой ключ будет здесь -->
-          </div>
-        </div>
-        <div class="bit-history-info" id="bitHistoryInfo">
-          Нажмите на любой кубит в сыром ключе, чтобы посмотреть его историю
-        </div>
-        
         <div class="game-stats">
           <div class="stat-box">
-            <div class="stat-label">Совпадений</div>
+            <div class="stat-label" data-i18n="stat.matches">Совпадений базисов</div>
             <div class="stat-value" id="matchCount">0</div>
+            <div class="stat-sub" data-i18n="stat.matches.sub">из всех отправленных</div>
           </div>
           <div class="stat-box">
-            <div class="stat-label">Перехватов</div>
-            <div class="stat-value" id="interceptCount">0</div>
+            <div class="stat-label" data-i18n="stat.qber">QBER (режим Бога)</div>
+            <div class="stat-value qber-ok" id="qberDisplay">—</div>
+            <div class="stat-sub" data-i18n="stat.qber.sub">0–5% норма · 5–11% подозрит. · >11% опасно</div>
           </div>
         </div>
-        
-        <div class="bit-history" id="bitHistory"></div>
-      </div>
-      
-      <div class="key-section">
-        <div id="siftKeyNotification" class="notification">
-          <p>✅ Достаточно данных для просеивания ключа!</p>
-        </div>
-        <div id="finalKeySection">
-          <h2 class="section-title">Квантовый ключ</h2>
-          <p>Секретный ключ сформирован из совпадающих измерений</p>
-          <div class="key-grid final-key-grid" id="finalKeyGrid">
-            <!-- Финальный ключ будет здесь -->
-          </div>
-        </div>
-        <button class="action-button" id="newKeyBtn">
-          Сгенерировать новый ключ
-        </button>
-      </div>
-      
-      <div class="explanation" id="explanation">
-        <p>Выберите один из четырех вариантов поляризации кубита и отправьте его Бобу. Боб будет случайным образом выбирать базис для измерения.</p>
-        <p>Когда вы отправите достаточно кубитов, нажмите "Просеять ключ", чтобы создать секретный ключ из совпадающих измерений.</p>
       </div>
     </div>
-    
-    <!-- Кнопка возврата в лабораторию -->
-    <div class="lab-return-container">
-      <a href="https://ludus-lab.com/" class="lab-return-button">Вернуться в лабораторию</a>
+
+    <!-- Правая панель: таблица измерений Боба -->
+    <div class="right-panel">
+      <div class="key-section" style="margin-top:0;">
+        <h2 class="section-title" data-i18n="bobtable.heading">Таблица измерений Боба</h2>
+        <div class="char-table-container">
+          <table class="char-table" id="bobTable">
+            <thead>
+              <tr>
+                <th data-i18n="table.num">#</th>
+                <th data-i18n="table.bobBasis">Базис Боба</th>
+                <th data-i18n="table.bobValue">Значение Боба</th>
+              </tr>
+            </thead>
+            <tbody id="bobTableBody"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    
-    <footer>
-      <!-- Надпись удалена -->
-    </footer>
+
+  </div><!-- /stage1-layout -->
+
+  <!-- Объяснение -->
+  <div class="explanation" id="explanation">
+    <p data-i18n="explanation.initial.p1">Выберите один из четырех вариантов поляризации кубита и отправьте его Бобу.</p>
+    <p data-i18n="explanation.initial.p2">Когда отправите достаточно кубит, нажмите «Просеять ключ».</p>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Кнопка внизу -->
+  <div class="bottom-buttons">
+    <button class="action-button" id="siftKey" disabled>
+      <span data-i18n="btn.sift">Просеять ключ</span>
+    </button>
+  </div>
+
+  </div><!-- /stageBody1 -->
+
+</div><!-- /quantum-stage -->
+
+
+<!-- ══════════════════════════════════════════════════════
+     ЭТАП 2 — ПРОСЕИВАНИЕ
+     ══════════════════════════════════════════════════════ -->
+<div id="sifting-stage" class="stage-content hidden">
+
+  <div class="stage-intro" id="stageIntro2">
+    <h3 data-i18n="stageintro.2.title">Этап 2: Просеивание</h3>
+    <p data-i18n="sifting.stage.desc">Алиса и Боб публично сравнивают базисы (не значения!) каждого кубита. Совпадающие базисы — бит остаётся в ключе; разные — отбрасывается.</p>
+    <button class="action-button" id="stageIntro2Btn">
+      <span data-i18n="stageintro.2.btn">Начать просеивание</span>
+    </button>
+  </div>
+
+  <div class="stage-body hidden" id="stageBody2">
+
+  <!-- Визуализация обмена по открытому (классическому) каналу -->
+  <div class="public-channel-viz">
+    <div class="mini-avatar">A</div>
+    <div class="channel-mid">
+      <div class="channel-label" data-i18n="sifting.channel.label">Обмен базисами по открытому каналу</div>
+      <div class="channel-bar" id="siftChannelBar"></div>
+    </div>
+    <div class="mini-avatar">B</div>
+  </div>
+
+  <div class="sifting-mode-buttons action-buttons">
+    <div class="button-row mode-buttons">
+      <button class="action-button" id="siftManualBtn">
+        <div>
+          <div data-i18n="siftmode.manual.title">Ручное сравнение</div>
+          <div class="mode-description" data-i18n="siftmode.manual.desc">Раскрывать биты по одному</div>
+        </div>
+      </button>
+      <button class="action-button" id="siftAutoBtn">
+        <div>
+          <div data-i18n="siftmode.auto.title">Автоматическое сравнение</div>
+          <div class="mode-description" data-i18n="siftmode.auto.desc">Сравнить все биты сразу</div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <div class="sift-summary-bar" id="siftProgressBar">
+    <div class="sift-pill">
+      <span class="sift-pill-num" id="siftProgress-revealed">0</span>
+      <span data-i18n="sifting.stat.revealed">раскрыто</span>
+    </div>
+    <div class="sift-pill s-green">
+      <span class="sift-pill-num" id="siftProgress-matches">0</span>
+      <span data-i18n="sifting.stat.matches">совпадений</span>
+    </div>
+  </div>
+
+  <div class="sifting-layout">
+    <div>
+      <div class="table-caption" data-i18n="sifting.compare.heading">Сравнение базисов</div>
+      <div class="char-table-container">
+        <table class="char-table" id="compareTable">
+          <thead><tr><th data-i18n="table.num">#</th><th data-i18n="char.alice">Алиса</th><th data-i18n="char.bob">Боб</th><th data-i18n="table.result">Результат</th></tr></thead>
+          <tbody id="compareTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="table-caption" data-i18n="sifting.result.heading">Просеянный ключ</div>
+      <p class="table-subcaption" data-i18n="sifting.result.desc">Это общий ключ Алисы и Боба: при совпавших базисах их значения должны быть одинаковыми. Расхождения (шум или Ева) покажет проверка QBER на следующем этапе.</p>
+      <div class="char-table-container sifted-table-container">
+        <table class="char-table" id="siftedTable">
+          <thead><tr><th data-i18n="table.num">#</th><th data-i18n="table.match">Совпадение</th><th data-i18n="table.siftedBit">Бит ключа</th></tr></thead>
+          <tbody id="siftedTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-buttons">
+    <button class="action-button" id="continueToQberBtn" disabled>
+      <span data-i18n="btn.continueToQber">Перейти к проверке QBER</span>
+    </button>
+  </div>
+
+  </div><!-- /stageBody2 -->
+
+</div><!-- /sifting-stage -->
+
+
+<!-- ══════════════════════════════════════════════════════
+     ЭТАП 3 — ПРОВЕРКА НА ПРОСЛУШИВАНИЕ (QBER)
+     ══════════════════════════════════════════════════════ -->
+<div id="qber-stage" class="stage-content hidden">
+
+  <div class="stage-intro" id="stageIntro3">
+    <h3 data-i18n="stageintro.3.title">Этап 3: Проверка QBER</h3>
+    <p data-i18n="stageintro.3.desc">Алиса и Боб публично сравнивают часть просеянного ключа, чтобы оценить долю ошибок (QBER). Если ошибок слишком много — в канале была Ева, и ключ придётся отбросить.</p>
+    <button class="action-button" id="stageIntro3Btn">
+      <span data-i18n="stageintro.3.btn">Начать проверку QBER</span>
+    </button>
+  </div>
+
+  <div class="stage-body hidden" id="stageBody3">
+
+  <!-- Компактная сводка просеивания -->
+  <div class="sift-summary-bar">
+    <div class="sift-pill">
+      <span class="sift-pill-num" id="siftStat-total">0</span>
+      <span data-i18n="sifting.stat.sent">кубит</span>
+    </div>
+    <div class="sift-pill s-green">
+      <span class="sift-pill-num" id="siftStat-matches">0</span>
+      <span data-i18n="sifting.stat.matches">совпадений</span>
+    </div>
+    <div class="sift-pill s-gold">
+      <span class="sift-pill-num" id="siftStat-sacrifice">30</span>
+      <span data-i18n="sifting.stat.sacrifice">на QBER</span>
+    </div>
+    <div class="sift-pill s-cyan">
+      <span class="sift-pill-num" id="siftStat-forkey">8</span>
+      <span data-i18n="sifting.stat.forkey">в ключ</span>
+    </div>
+  </div>
+  <div class="table-caption" data-i18n="sifting.result.heading">Просеянный ключ</div>
+  <div class="char-table-container">
+    <table class="char-table" id="fullSiftedKeyTable">
+      <thead><tr><th data-i18n="table.num">#</th><th data-i18n="table.siftedBit">Бит ключа</th><th data-i18n="table.checkMark">Публичная проверка</th></tr></thead>
+      <tbody id="fullSiftedKeyBody"></tbody>
+    </table>
+  </div>
+
+  <div id="eaveCheckSection" class="eave-check-section">
+    <h2 class="section-title" data-i18n="eaveCheck.heading">Проверка на прослушивание</h2>
+    <p id="eaveCheckDescDynamic" data-i18n="eaveCheck.desc">Алиса и Боб публично сравнивают 30 случайных просеянных бит.</p>
+    <div id="eaveCheckGrid" class="eave-check-grid"></div>
+    <div id="eaveVerdict" class="eave-verdict"></div>
+  </div>
+  <div class="bottom-buttons">
+    <button id="eaveConfirmBtn" class="action-button" style="display:none;">
+      <span data-i18n="eaveCheck.confirm">✅ Сформировать ключ из оставшихся бит</span>
+    </button>
+    <button id="eaveResetBtn" class="action-button" style="display:none;">
+      <span data-i18n="eaveCheck.reset">🔄 Начать заново</span>
+    </button>
+  </div>
+
+  </div><!-- /stageBody3 -->
+
+</div><!-- /qber-stage -->
+
+
+<!-- ══════════════════════════════════════════════════════
+     ЭТАП 4 — СЕКРЕТНЫЙ КЛЮЧ
+     ══════════════════════════════════════════════════════ -->
+<div id="key-stage" class="stage-content hidden">
+
+  <div class="stage-intro" id="stageIntro4">
+    <h3 data-i18n="stageintro.4.title">Этап 4: Секретный ключ</h3>
+    <p data-i18n="stageintro.4.desc">Проверка прошла успешно — из оставшихся чистых бит собран общий секретный ключ Алисы и Боба.</p>
+    <button class="action-button" id="stageIntro4Btn">
+      <span data-i18n="stageintro.4.btn">Показать ключ</span>
+    </button>
+  </div>
+
+  <div class="stage-body hidden" id="stageBody4">
+  <div class="key-stage-inner">
+    <div id="finalKeySection">
+      <h2 class="section-title" data-i18n="finalkey.heading">🔐 Квантовый ключ</h2>
+      <p data-i18n="finalkey.desc">Секретный ключ сформирован из совпадающих измерений</p>
+      <div class="key-grid final-key-grid" id="finalKeyGrid"></div>
+      <div class="key-display" id="keyDisplay">
+        <div class="key-actions">
+          <button class="action-button" id="copyKeyBtn">
+            <span data-i18n="btn.copy">Скопировать ключ</span>
+          </button>
+          <button class="action-button" id="newKeyBtn">
+            <span data-i18n="btn.newkey">Новый ключ</span>
+          </button>
+        </div>
+        <div id="keyCopiedNotification" data-i18n="notif.copied">Ключ успешно скопирован!</div>
+      </div>
+    </div>
+    <div class="success-explanation" id="successExplanation" style="display:none;"></div>
+    <div class="bit-history-info" id="bitHistoryInfo" data-i18n="rawkey.hint" style="display:none; opacity:0;">
+      Нажмите на любой бит финального ключа, чтобы посмотреть его историю
+    </div>
+  </div>
+
+  </div><!-- /stageBody4 -->
+
+</div><!-- /key-stage -->
+
+<!-- История бита — общая для всех этапов -->
+<div class="bit-history" id="bitHistory" style="margin-top:12px;"></div>
+
+<!-- Общий дисклеймер -->
+<div class="disclaimer" style="margin-top:18px;">
+  <p data-i18n="disclaimer.text"><strong>Примечание:</strong> В данной симуляции реализован полноценный механизм обнаружения Евы: из просеянных бит случайно выбираются 30 для публичного сравнения (жертвенные биты). Если QBER (доля ошибок) ≤ 11% — ключ считается безопасным; если QBER > 11% — сессия сбрасывается.</p>
+</div>
+
+<!-- Навигация — видна на всех этапах -->
+<div class="stage-nav">
+  <a href="https://ludus-lab.ru/theory/bb84.html" class="nav-link secondary">
+    <svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 6.2C10.2 4.8 7.8 4 5 4v13c2.8 0 5.2.8 7 2.2 1.8-1.4 4.2-2.2 7-2.2V4c-2.8 0-5.2.8-7 2.2z"/></svg> <span data-i18n="nav.theory">Прочитать теорию</span>
+  </a>
+  <a href="https://ludus-lab.ru/" class="nav-link primary">
+    <svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 3.2 3 11h3v9h5v-6h2v6h5v-9h3z"/></svg> <span data-i18n="nav.home">Вернуться в лабораторию</span>
+  </a>
+</div>
+
+</div><!-- /game-area -->
+
+</div><!-- /mainGameArea -->
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+console.log("Игра BB84: Загрузка скрипта");
+
+// Элементы DOM
+const polarizationOptions = document.querySelectorAll('.polarization-option');
+const manualModeBtn = document.getElementById('manualModeBtn');
+const semiAutoBtn = document.getElementById('semiAutoBtn');
+const autoModeBtn = document.getElementById('autoModeBtn');
+const siftKeyBtn = document.getElementById('siftKey');
+const newKeyBtn = document.getElementById('newKeyBtn');
+const finalKeySection = document.getElementById('finalKeySection');
+const bobTableBody = document.getElementById('bobTableBody');
+const compareTableBody = document.getElementById('compareTableBody');
+const siftedTableBody = document.getElementById('siftedTableBody');
+const siftManualBtn = document.getElementById('siftManualBtn');
+const siftAutoBtn = document.getElementById('siftAutoBtn');
+const continueToQberBtn = document.getElementById('continueToQberBtn');
+const welcomeScreen = document.getElementById('welcomeScreen');
+const mainGameArea = document.getElementById('mainGameArea');
+const startGameBtn = document.getElementById('startGameBtn');
+const finalKeyGrid = document.getElementById('finalKeyGrid');
+const rawKeyCount = document.getElementById('rawKeyCount');
+const matchCount = document.getElementById('matchCount');
+const interceptCount = document.getElementById('interceptCount');
+const qberDisplay = document.getElementById('qberDisplay');
+const explanation = document.getElementById('explanation');
+const aliceStatus = document.getElementById('aliceStatus');
+const bobStatus = document.getElementById('bobStatus');
+const eveAlert = document.getElementById('eveAlert');
+const eveIcon = document.getElementById('eveIcon');
+const aliceBasis = document.getElementById('aliceBasis');
+const bobBasisElement = document.getElementById('bobBasis');
+const quantumChannel = document.getElementById('quantumChannel');
+const classicalChannel = document.getElementById('classicalChannel');
+const protocolHeader = document.getElementById('protocolHeader');
+const protocolContent = document.getElementById('protocolContent');
+const bitHistory = document.getElementById('bitHistory');
+const bitHistoryInfo = document.getElementById('bitHistoryInfo');
+const siftNotification = document.getElementById('siftNotification');
+const siftKeyNotification = document.getElementById('siftKeyNotification');
+const keyDisplay = document.getElementById('keyDisplay');
+const keyCopiedNotification = document.getElementById('keyCopiedNotification');
+
+// ===== I18N =====
+const I18N = {
+  ru: {
+    'meta.title': 'Квантовый ключ: BB84 - Ludus Lab',
+    'game.title': 'КВАНТОВЫЙ КЛЮЧ: BB84', 'game.subtitle': 'Ludus Lab · Сложные вещи — простыми играми',
+    'protocol.toggle': 'Описание протокола BB84',
+    'protocol.intro': 'Протокол BB84 — это первый в мире алгоритм квантового распределения ключей, предложенный Чарльзом Беннетом и Жилем Брассаром в 1984 году.',
+    'protocol.step1.title': 'Подготовка кубит',
+    'protocol.step1.p1': 'Алиса генерирует случайную последовательность бит (0 и 1) и для каждого бита случайным образом выбирает базис измерения:',
+    'protocol.step1.list': '<li><strong>Прямой базис (Rectilinear):</strong> 0° (вертикальная поляризация) для 0, 90° (горизонтальная) для 1</li><li><strong>Диагональный базис (Diagonal):</strong> 45° для 0, 135° для 1</li>',
+    'protocol.step1.p2': 'В игре: Вы выбираете поляризацию вручную или используете автоматическую отправку.',
+    'protocol.step2.title': 'Передача по квантовому каналу',
+    'protocol.step2.p1': 'Алиса отправляет каждый фотон (кубит) Бобу через квантовый канал. Квантовые состояния нельзя копировать (теорема о запрете клонирования).',
+    'protocol.step2.p2': 'В игре: Фотон движется по квантовому каналу от Алисы к Бобу.',
+    'protocol.step3.title': 'Измерение кубит',
+    'protocol.step3.p1': 'Боб для каждого приходящего фотона случайно выбирает базис измерения (прямой или диагональный) и измеряет фотон в этом базисе.',
+    'protocol.step3.p2': 'В игре: Боб автоматически выбирает случайный базис и показывает результат измерения.',
+    'protocol.step4.title': 'Обмен базисами по классическому каналу',
+    'protocol.step4.p1': 'После передачи всех фотонов Алиса и Боб по классическому (обычному) каналу сообщают друг другу, какие базисы они использовали для каждого бита, но не значения бит.',
+    'protocol.step4.p2': 'В игре: При нажатии "Просеять ключ" активируется классический канал для обмена информацией о базисах.',
+    'protocol.step5.title': 'Просеивание ключа',
+    'protocol.step5.p1': 'Алиса и Боб сохраняют только те биты, для которых базисы совпали (примерно 50% от всех отправленных). Остальные биты отбрасываются.',
+    'protocol.step5.p2': 'В игре: Создается сырой ключ из совпадающих измерений.',
+    'protocol.step6.title': 'Обнаружение подслушивания',
+    'protocol.step6.p1': 'В реальном протоколе Алиса и Боб сравнивают часть оставшихся бит (которые затем отбрасываются). Если Ева подслушивала, она вносила ошибки, которые обнаруживаются при сравнении.',
+    'protocol.step6.p2': 'В игре: Перехваченные Евой биты отмечаются и исключаются из финального ключа.',
+    'protocol.step7.title': 'Формирование секретного ключа',
+    'protocol.step7.p1': 'Если уровень ошибок ниже определенного порога, оставшиеся биты образуют секретный ключ. В противном случае ключ отбрасывается и процесс повторяется.',
+    'protocol.step7.p2': 'В игре: Формируется финальный 8-битный ключ из неперехваченных совпадающих бит.',
+    'protocol.security': '<strong>Безопасность протокола:</strong> Безопасность BB84 основана на фундаментальных принципах квантовой механики — любые попытки измерить квантовое состояние изменяют его, что позволяет обнаружить подслушивание.',
+    'char.alice': 'Алиса', 'char.bob': 'Боб',
+    'status.aliceReady': 'Готова отправить кубит', 'status.aliceSending': 'Отправляет кубит...',
+    'status.bobWaiting': 'Ожидает кубит', 'status.bobReceived': 'Получен бит: {value}',
+    'status.bobMeasuring.rect': 'Измеряет в прямом базисе...', 'status.bobMeasuring.diag': 'Измеряет в диагональном базисе...',
+    'controls.heading': 'Панель управления',
+    'basis.rectilinear': 'Прямой', 'basis.diagonal': 'Диагональный',
+    'mode.manual.title': 'Ручной режим', 'mode.manual.desc': 'Отправит один фотон',
+    'mode.semi.title': 'Полуавтоматический режим', 'mode.semi.desc': 'Фотоны отправляются автоматически, базисы выбираются вручную',
+    'mode.auto.title': 'Автоматический режим', 'mode.auto.desc': 'Фотоны отправляются автоматически, базисы выбираются автоматически',
+    'btn.sift': 'Просеять ключ', 'btn.copy': 'Скопировать ключ', 'btn.newkey': 'Новый ключ',
+    'alert.eve': '⚠️ Ева перехватила кубит! Это может повлиять на конечный ключ.',
+    'notif.siftReady': '✅ Достаточно данных для просеивания ключа!', 'notif.copied': 'Ключ успешно скопирован в буфер обмена!',
+    'rawkey.collected': 'Собрано кубит:', 'rawkey.hint': 'Нажмите на любой бит финального ключа, чтобы посмотреть его историю',
+    'stat.matches': 'Совпадений базисов', 'stat.matches.sub': 'из всех отправленных', 'stat.intercepts': 'Перехватов', 'stat.qber': 'QBER (режим Бога)', 'stat.qber.sub': '0-5% норма · 5-11% подозрительно · ≥11% опасно',
+    'finalkey.heading': 'Квантовый ключ', 'finalkey.desc': 'Секретный ключ сформирован из совпадающих измерений', 'finalkey.bits': '8 бит · квантовое распределение',
+    'disclaimer.text': '<strong>Примечание:</strong> В данной симуляции реализован полноценный механизм обнаружения Евы: из просеянных бит случайно выбираются 30 для публичного сравнения (жертвенные биты). Если QBER (доля ошибок) < 11% — ключ формируется (до 5% — норма, 5–11% — жёлтая зона); если QBER ≥ 11% — сессия сбрасывается.',
+    'explanation.initial.p1': 'Выберите один из четырех вариантов поляризации кубита и отправьте его Бобу. Боб будет случайным образом выбирать базис для измерения.',
+    'explanation.initial.p2': 'Когда вы отправите достаточно кубит, нажмите "Просеять ключ", чтобы перейти к сравнению базисов.',
+    'explanation.enoughBits.p1': 'Вы отправили достаточно кубит! Нажмите "Просеять ключ", чтобы перейти к просеиванию.',
+    'explanation.enoughBits.p2': 'Только совпадающие базисы без перехвата ({matches}) будут использованы для формирования финального ключа.',
+    'explanation.insufficient.p1': '⚠️ Недостаточно данных для формирования 8-битного ключа!',
+    'explanation.insufficient.p2': 'Вам нужно отправить еще кубит, чтобы после исключения перехваченных осталось как минимум 8 совпадающих.',
+    'explanation.insufficient.p3': 'Сейчас у вас {count} подходящих кубит.',
+    'explanation.success.p1': '<strong>Поздравляем! Вы создали секретный 8-битный квантовый ключ:</strong> {key}',
+    'explanation.success.p2': 'Этот ключ можно использовать для безопасного шифрования сообщений с Бобом.',
+    'explanation.success.p3': 'Проверка QBER: {intercepts} {errorsWord} в выборке из 30 бит. Ева повысила QBER — именно так её обнаруживают в протоколе BB84.',
+    'history.title': 'История кубита #{index}:', 'history.aliceSent': 'Алиса отправила:', 'history.bobMeasured': 'Боб измерил:',
+    'history.intercept.label': 'Перехват:', 'history.basisMatch.label': 'Совпадение базисов:', 'history.status.label': 'Статус:',
+    'history.yes': 'Да', 'history.no': 'Нет',
+    'history.status.intercepted': 'Исключен из ключа (скомпрометирован Евой)', 'history.status.excess': 'Подходит для формирования ключа, но является избыточным', 'history.status.used': 'Используется в финальном ключе', 'history.status.notMatched': 'Базисы не совпали', 'history.status.pending': 'Подходит для ключа — ожидает просейва',
+    'history.eveDetected.label': 'Обнаружен подлог:', 'history.eveDetected.yes': 'ДА — базисы совпали, биты разные!',
+    'history.eve.basis': 'Ева измерила базисом:', 'history.eve.guessedRight': 'угадала базис Алисы — ошибки нет', 'history.eve.guessedWrong': 'не угадала — бит искажён',
+    
+    'eaveCheck.heading': 'Проверка на прослушивание',
+    'eaveCheck.desc': 'Алиса и Боб публично сравнивают ~50% просеянных бит. Больше бит — точнее QBER.',
+    'eaveCheck.bitLabel': 'Бит #{n}', 'eaveCheck.alice': 'Алиса', 'eaveCheck.bob': 'Боб',
+    'eaveCheck.confirm': '✅ Сформировать ключ из оставшихся бит',
+    'eaveCheck.reset': '🔄 Начать заново',
+    'eaveCheck.verdict.clean': '✅ Линия чиста — ошибок нет из {total} проверенных бит. Ева не обнаружена.',
+    'eaveCheck.verdict.compromised': '🚨 Обнаружен перехват! QBER = {qber}% — достиг порога 11% или выше. Ключ небезопасен.', 'eaveCheck.verdict.warning': '⚠️ QBER = {qber}% ({errors}/{total}) — жёлтая зона (5–11%). Стоит обратить внимание, но ключ всё равно формируется из этого материала.',
+    'eaveCheck.verdict.normal': '✅ QBER = {qber}% ({errors}/{total}) — обычная неидеальность среды (до 5%), не повод для тревоги. Ключ сформирован.',
+    'eaveCheck.verdict.risk': '⚠️ Ошибок нет в выборке, но статистика не гарантирует отсутствие Евы. Ключ сформирован с риском.',
+    'eaveCheck.sampleQber': 'QBER по выборке', 'eaveCheck.sampleQberSub': '({total} бит — что видят Алиса и Боб)',
+    'eaveCheck.trueQber': 'Реальный QBER', 'eaveCheck.trueQberSub': '(режим Бога)',
+    'history.status.sacrifice': 'Использован для проверки на прослушивание (публично раскрыт)',
+    'nav.theory': 'Прочитать теорию', 'nav.home': 'Вернуться в лабораторию',
+    'stage.label.1': 'Квантовый канал', 'stage.label.2': 'Просеивание', 'stage.label.3': 'Проверка QBER', 'stage.label.4': 'Секретный ключ',
+    'welcome.heading': 'Добро пожаловать в игру «Квантовый ключ: BB84»',
+    'welcome.p1': 'Эта игра поможет на практике понять, как Алиса и Боб договариваются об общем секретном ключе с помощью квантовой физики — и почему любая попытка подслушивания будет обнаружена.',
+    'welcome.p2': 'Игра состоит из 4 этапов, которые открываются по очереди:',
+    'welcome.stage1.title': '1. Квантовый канал', 'welcome.stage1.desc': 'Алиса отправляет кубиты Бобу',
+    'welcome.stage2.title': '2. Просеивание', 'welcome.stage2.desc': 'сравнение базисов и сборка сырого ключа',
+    'welcome.stage3.title': '3. Проверка QBER', 'welcome.stage3.desc': 'поиск следов подслушивания',
+    'welcome.stage4.title': '4. Секретный ключ', 'welcome.stage4.desc': 'итоговый общий ключ Алисы и Боба',
+    'welcome.start': 'Начать игру',
+    'stageintro.1.title': 'Этап 1: Квантовый канал',
+    'stageintro.1.desc': 'Алиса выбирает случайную поляризацию для каждого кубита и отправляет их Бобу. Боб для каждого кубита независимо выбирает случайный базис измерения. Вы управляете отправкой Алисы через панель управления.',
+    'stageintro.1.btn': 'Начать отправку кубит',
+    'stageintro.2.title': 'Этап 2: Просеивание', 'stageintro.2.btn': 'Начать просеивание',
+    'stageintro.3.title': 'Этап 3: Проверка QBER',
+    'stageintro.3.desc': 'Алиса и Боб публично сравнивают часть просеянного ключа, чтобы оценить долю ошибок (QBER). Если ошибок слишком много — в канале была Ева, и ключ придётся отбросить.',
+    'stageintro.3.btn': 'Начать проверку QBER',
+    'stageintro.4.title': 'Этап 4: Секретный ключ',
+    'stageintro.4.desc': 'Проверка прошла успешно — из оставшихся чистых бит собран общий секретный ключ Алисы и Боба.',
+    'stageintro.4.btn': 'Показать ключ',
+    'sifting.stat.sent': 'кубит', 'sifting.stat.matches': 'совпадений', 'sifting.stat.sacrifice': 'на QBER', 'sifting.stat.forkey': 'в ключ', 'sifting.stat.revealed': 'раскрыто',
+    'bobtable.heading': 'Таблица измерений Боба', 'bobtable.empty': 'Кубиты появятся здесь по мере отправки',
+    'table.num': '#', 'table.bobBasis': 'Базис Боба', 'table.bobValue': 'Значение Боба', 'table.match': 'Совпадение', 'table.siftedBit': 'Бит ключа', 'table.result': 'Результат',
+    'table.checkMark': 'Публичная проверка', 'table.checkMark.yes': '🔍 Выбран',
+    'sifting.stage.desc': 'Алиса и Боб публично сравнивают только базисы (не значения!) каждого кубита — совпадающие базисы означают, что оба получили один и тот же бит, и вместе он идёт в общий ключ; разные базисы отбрасываются. Значения показаны в таблице сразу для наглядности (режим Бога) — в реальности стороны их друг другу не пересылают.',
+    'sifting.compare.heading': 'Сравнение базисов',
+    'sifting.result.heading': 'Просеянный ключ',
+    'sifting.result.desc': 'Это общий ключ Алисы и Боба: при совпавших базисах их значения должны быть одинаковыми. Расхождения (шум или Ева) покажет проверка QBER на следующем этапе.',
+    'siftmode.manual.title': 'Ручное сравнение', 'siftmode.manual.desc': 'Раскрывать биты по одному',
+    'siftmode.auto.title': 'Автоматическое сравнение', 'siftmode.auto.desc': 'Сравнить все биты сразу',
+    'btn.continueToQber': 'Перейти к проверке QBER',
+    'sifting.channel.label': 'Обмен базисами по открытому каналу',
+  },
+  en: {
+    'meta.title': 'Quantum Key: BB84 - Ludus Lab',
+    'game.title': 'QUANTUM KEY: BB84', 'game.subtitle': 'Ludus Lab · Complex things made simple through games',
+    'protocol.toggle': 'BB84 Protocol Overview',
+    'protocol.intro': 'BB84 is the world\'s first quantum key distribution algorithm, proposed by Charles Bennett and Gilles Brassard in 1984.',
+    'protocol.step1.title': 'Qubit preparation',
+    'protocol.step1.p1': 'Alice generates a random sequence of bits (0 and 1) and randomly chooses a measurement basis for each bit:',
+    'protocol.step1.list': '<li><strong>Rectilinear basis:</strong> 0° (vertical polarization) for 0, 90° (horizontal) for 1</li><li><strong>Diagonal basis:</strong> 45° for 0, 135° for 1</li>',
+    'protocol.step1.p2': 'In the game: you choose the polarization manually or use automatic sending.',
+    'protocol.step2.title': 'Transmission over the quantum channel',
+    'protocol.step2.p1': 'Alice sends each photon (qubit) to Bob over the quantum channel. Quantum states cannot be copied (the no-cloning theorem).',
+    'protocol.step2.p2': 'In the game: the photon travels over the quantum channel from Alice to Bob.',
+    'protocol.step3.title': 'Measuring the qubits',
+    'protocol.step3.p1': 'For each incoming photon, Bob randomly chooses a measurement basis (rectilinear or diagonal) and measures the photon in that basis.',
+    'protocol.step3.p2': 'In the game: Bob automatically picks a random basis and shows the measurement result.',
+    'protocol.step4.title': 'Exchanging bases over the classical channel',
+    'protocol.step4.p1': 'After sending all the photons, Alice and Bob use the classical (ordinary) channel to tell each other which basis they used for each bit — but not the bit values.',
+    'protocol.step4.p2': 'In the game: clicking "Sift key" activates the classical channel to exchange basis information.',
+    'protocol.step5.title': 'Key sifting',
+    'protocol.step5.p1': 'Alice and Bob keep only the bits for which the bases matched (about 50% of everything sent). The rest are discarded.',
+    'protocol.step5.p2': 'In the game: a raw key is built from the matching measurements.',
+    'protocol.step6.title': 'Eavesdropping detection',
+    'protocol.step6.p1': 'In the real protocol, Alice and Bob compare part of the remaining bits (which are then discarded). If Eve was eavesdropping, she introduced errors that are detected during the comparison.',
+    'protocol.step6.p2': 'In the game: bits intercepted by Eve are flagged and excluded from the final key.',
+    'protocol.step7.title': 'Building the secret key',
+    'protocol.step7.p1': 'If the error rate is below a certain threshold, the remaining bits form the secret key. Otherwise the key is discarded and the process repeats.',
+    'protocol.step7.p2': 'In the game: a final 8-bit key is built from the matching, non-intercepted bits.',
+    'protocol.security': '<strong>Protocol security:</strong> BB84\'s security rests on fundamental principles of quantum mechanics — any attempt to measure a quantum state disturbs it, which makes eavesdropping detectable.',
+    'char.alice': 'Alice', 'char.bob': 'Bob',
+    'status.aliceReady': 'Ready to send a qubit', 'status.aliceSending': 'Sending a qubit...',
+    'status.bobWaiting': 'Waiting for a qubit', 'status.bobReceived': 'Bit received: {value}',
+    'status.bobMeasuring.rect': 'Measuring in the rectilinear basis...', 'status.bobMeasuring.diag': 'Measuring in the diagonal basis...',
+    'controls.heading': 'Control panel',
+    'basis.rectilinear': 'Rectilinear', 'basis.diagonal': 'Diagonal',
+    'mode.manual.title': 'Manual mode', 'mode.manual.desc': 'Sends a single photon',
+    'mode.semi.title': 'Semi-automatic mode', 'mode.semi.desc': 'Photons are sent automatically, bases are chosen manually',
+    'mode.auto.title': 'Automatic mode', 'mode.auto.desc': 'Photons are sent automatically, bases are chosen automatically',
+    'btn.sift': 'Sift key', 'btn.copy': 'Copy key', 'btn.newkey': 'New key',
+    'alert.eve': '⚠️ Eve intercepted the qubit! This may affect the final key.',
+    'notif.siftReady': '✅ Enough data to sift the key!', 'notif.copied': 'Key successfully copied to clipboard!',
+    'rawkey.collected': 'Qubits collected:', 'rawkey.hint': 'Click any bit of the final key to see its history',
+    'stat.matches': 'Basis matches', 'stat.matches.sub': 'of all sent', 'stat.intercepts': 'Intercepts', 'stat.qber': 'QBER (God mode)', 'stat.qber.sub': '0-5% ok · 5-11% suspicious · ≥11% danger',
+    'finalkey.heading': 'Quantum key', 'finalkey.desc': 'The secret key is built from the matching measurements', 'finalkey.bits': '8 bits · quantum distribution',
+    'disclaimer.text': '<strong>Note:</strong> This simulation implements the full eavesdropping detection mechanism: 30 random bits from the sifted key are publicly compared (sacrifice bits). If QBER (error rate) is under 11%, the key is formed (under 5% is normal, 5–11% is a yellow zone); if QBER reaches 11% or more, the session is discarded.',
+    'explanation.initial.p1': 'Choose one of the four qubit polarization options and send it to Bob. Bob will randomly choose a basis to measure it.',
+    'explanation.initial.p2': 'Once you\'ve sent enough qubits, click "Sift key" to compare bases.',
+    'explanation.enoughBits.p1': 'You\'ve sent enough qubits! Click "Sift key" to start sifting.',
+    'explanation.enoughBits.p2': 'Only the matching bases without interception ({matches}) will be used to build the final key.',
+    'explanation.insufficient.p1': '⚠️ Not enough data to build an 8-bit key!',
+    'explanation.insufficient.p2': 'You need to send more qubits so that at least 8 matching ones remain after excluding intercepted ones.',
+    'explanation.insufficient.p3': 'You currently have {count} suitable qubits.',
+    'explanation.success.p1': '<strong>Congratulations! You created a secret 8-bit quantum key:</strong> {key}',
+    'explanation.success.p2': 'This key can be used to securely encrypt messages with Bob.',
+    'explanation.success.p3': 'QBER check: {intercepts} {errorsWord} found in the 30-bit sample. Eve raised the QBER — that is how she is detected in the BB84 protocol.',
+    'history.title': 'Qubit #{index} history:', 'history.aliceSent': 'Alice sent:', 'history.bobMeasured': 'Bob measured:',
+    'history.intercept.label': 'Intercepted:', 'history.basisMatch.label': 'Bases matched:', 'history.status.label': 'Status:',
+    'history.yes': 'Yes', 'history.no': 'No',
+    'history.status.intercepted': 'Excluded from the key (compromised by Eve)', 'history.status.excess': 'Suitable for the key, but redundant', 'history.status.used': 'Used in the final key', 'history.status.notMatched': 'Bases did not match', 'history.status.pending': 'Eligible for key — pending sifting',
+    'history.eveDetected.label': 'Forgery detected:', 'history.eveDetected.yes': 'YES — bases matched, bits differ!',
+    'history.eve.basis': 'Eve measured with basis:', 'history.eve.guessedRight': 'guessed Alice\'s basis — no error', 'history.eve.guessedWrong': 'wrong basis — bit corrupted',
+    
+    'eaveCheck.heading': 'Eavesdropping check',
+    'eaveCheck.desc': 'Alice and Bob publicly compare ~50% of the sifted bits. More bits = more accurate QBER.',
+    'eaveCheck.bitLabel': 'Bit #{n}', 'eaveCheck.alice': 'Alice', 'eaveCheck.bob': 'Bob',
+    'eaveCheck.confirm': '✅ Build key from remaining bits',
+    'eaveCheck.reset': '🔄 Start over',
+    'eaveCheck.verdict.clean': '✅ Channel is clean — no errors in {total} checked bits. Eve not detected.',
+    'eaveCheck.verdict.compromised': '🚨 Interception detected! QBER = {qber}% — reached the 11% threshold or above. Key is unsafe.', 'eaveCheck.verdict.warning': '⚠️ QBER = {qber}% ({errors}/{total}) — yellow zone (5–11%). Worth paying attention to, but the key is still built from this material.',
+    'eaveCheck.verdict.normal': '✅ QBER = {qber}% ({errors}/{total}) — normal environmental imperfection (under 5%), nothing to worry about. Key formed.',
+    'eaveCheck.verdict.risk': '⚠️ No errors in the sample, but statistics cannot guarantee Eve\'s absence. Key formed with residual risk.',
+    'eaveCheck.sampleQber': 'Sample QBER', 'eaveCheck.sampleQberSub': '({total} bits — what Alice and Bob see)',
+    'eaveCheck.trueQber': 'True QBER', 'eaveCheck.trueQberSub': '(God mode)',
+    'history.status.sacrifice': 'Used for eavesdropping check (publicly revealed)',
+    'nav.theory': 'Read the theory', 'nav.home': 'Back to the lab',
+    'stage.label.1': 'Quantum channel', 'stage.label.2': 'Sifting', 'stage.label.3': 'QBER check', 'stage.label.4': 'Secret key',
+    'welcome.heading': 'Welcome to the "Quantum Key: BB84" game',
+    'welcome.p1': 'This game will help you understand hands-on how Alice and Bob agree on a shared secret key using quantum physics — and why any eavesdropping attempt gets detected.',
+    'welcome.p2': 'The game has 4 stages, unlocked one after another:',
+    'welcome.stage1.title': '1. Quantum channel', 'welcome.stage1.desc': 'Alice sends qubits to Bob',
+    'welcome.stage2.title': '2. Sifting', 'welcome.stage2.desc': 'comparing bases and building the raw key',
+    'welcome.stage3.title': '3. QBER check', 'welcome.stage3.desc': 'looking for signs of eavesdropping',
+    'welcome.stage4.title': '4. Secret key', 'welcome.stage4.desc': "Alice and Bob's final shared key",
+    'welcome.start': 'Start the game',
+    'stageintro.1.title': 'Stage 1: Quantum channel',
+    'stageintro.1.desc': 'Alice chooses a random polarization for each qubit and sends it to Bob. Bob independently picks a random measurement basis for each qubit. You control Alice\'s sending through the control panel.',
+    'stageintro.1.btn': 'Start sending qubits',
+    'stageintro.2.title': 'Stage 2: Sifting', 'stageintro.2.btn': 'Start sifting',
+    'stageintro.3.title': 'Stage 3: QBER check',
+    'stageintro.3.desc': 'Alice and Bob publicly compare part of the sifted key to estimate the error rate (QBER). If there are too many errors, Eve was on the channel and the key must be discarded.',
+    'stageintro.3.btn': 'Start the QBER check',
+    'stageintro.4.title': 'Stage 4: Secret key',
+    'stageintro.4.desc': "The check passed — Alice and Bob's shared secret key is built from the remaining clean bits.",
+    'stageintro.4.btn': 'Show the key',
+    'sifting.stat.sent': 'qubits', 'sifting.stat.matches': 'matches', 'sifting.stat.sacrifice': 'for QBER', 'sifting.stat.forkey': 'into key', 'sifting.stat.revealed': 'revealed',
+    'bobtable.heading': "Bob's measurement table", 'bobtable.empty': 'Qubits will appear here as they are sent',
+    'table.num': '#', 'table.bobBasis': "Bob's basis", 'table.bobValue': "Bob's value", 'table.match': 'Match', 'table.siftedBit': 'Key bit', 'table.result': 'Result',
+    'table.checkMark': 'Public check', 'table.checkMark.yes': '🔍 Selected',
+    'sifting.stage.desc': 'Alice and Bob publicly compare only the bases (not the values!) of each qubit — matching bases mean both ended up with the same bit, which joins the shared key; mismatched bases are discarded. Values are shown in the table right away for clarity (God mode) — in reality the two sides never send each other the values.',
+    'sifting.compare.heading': 'Basis comparison',
+    'sifting.result.heading': 'Sifted key',
+    'sifting.result.desc': "This is Alice and Bob's shared key: when bases matched, their values should be identical. Discrepancies (noise or Eve) will show up in the QBER check on the next stage.",
+    'siftmode.manual.title': 'Manual comparison', 'siftmode.manual.desc': 'Reveal bits one at a time',
+    'siftmode.auto.title': 'Automatic comparison', 'siftmode.auto.desc': 'Compare all bits at once',
+    'btn.continueToQber': 'Continue to QBER check',
+    'sifting.channel.label': 'Exchanging bases over the public channel',
+  },
+  es: {
+    'meta.title': 'Clave cuántica: BB84 - Ludus Lab',
+    'game.title': 'CLAVE CUÁNTICA: BB84', 'game.subtitle': 'Ludus Lab · Cosas complejas explicadas con juegos simples',
+    'protocol.toggle': 'Descripción del protocolo BB84',
+    'protocol.intro': 'BB84 es el primer algoritmo del mundo de distribución cuántica de claves, propuesto por Charles Bennett y Gilles Brassard en 1984.',
+    'protocol.step1.title': 'Preparación de los cúbits',
+    'protocol.step1.p1': 'Alicia genera una secuencia aleatoria de bits (0 y 1) y elige aleatoriamente una base de medición para cada bit:',
+    'protocol.step1.list': '<li><strong>Base rectilínea:</strong> 0° (polarización vertical) para 0, 90° (horizontal) para 1</li><li><strong>Base diagonal:</strong> 45° para 0, 135° para 1</li>',
+    'protocol.step1.p2': 'En el juego: eliges la polarización manualmente o usas el envío automático.',
+    'protocol.step2.title': 'Transmisión por el canal cuántico',
+    'protocol.step2.p1': 'Alicia envía cada fotón (cúbit) a Bob a través del canal cuántico. Los estados cuánticos no se pueden copiar (teorema de no clonación).',
+    'protocol.step2.p2': 'En el juego: el fotón viaja por el canal cuántico desde Alicia hasta Bob.',
+    'protocol.step3.title': 'Medición de los cúbits',
+    'protocol.step3.p1': 'Para cada fotón que llega, Bob elige aleatoriamente una base de medición (rectilínea o diagonal) y mide el fotón en esa base.',
+    'protocol.step3.p2': 'En el juego: Bob elige automáticamente una base aleatoria y muestra el resultado de la medición.',
+    'protocol.step4.title': 'Intercambio de bases por el canal clásico',
+    'protocol.step4.p1': 'Tras enviar todos los fotones, Alicia y Bob usan el canal clásico (normal) para comunicarse qué base usaron para cada bit, pero no los valores de los bits.',
+    'protocol.step4.p2': 'En el juego: al pulsar "Filtrar clave" se activa el canal clásico para intercambiar la información de las bases.',
+    'protocol.step5.title': 'Filtrado de la clave',
+    'protocol.step5.p1': 'Alicia y Bob conservan solo los bits cuyas bases coincidieron (alrededor del 50% de los enviados). El resto se descarta.',
+    'protocol.step5.p2': 'En el juego: se construye una clave en bruto a partir de las mediciones coincidentes.',
+    'protocol.step6.title': 'Detección de espionaje',
+    'protocol.step6.p1': 'En el protocolo real, Alicia y Bob comparan parte de los bits restantes (que luego se descartan). Si Eva estaba espiando, introdujo errores que se detectan al comparar.',
+    'protocol.step6.p2': 'En el juego: los bits interceptados por Eva se marcan y se excluyen de la clave final.',
+    'protocol.step7.title': 'Formación de la clave secreta',
+    'protocol.step7.p1': 'Si la tasa de error está por debajo de un umbral determinado, los bits restantes forman la clave secreta. En caso contrario, la clave se descarta y el proceso se repite.',
+    'protocol.step7.p2': 'En el juego: se forma una clave final de 8 bits a partir de los bits coincidentes no interceptados.',
+    'protocol.security': '<strong>Seguridad del protocolo:</strong> La seguridad de BB84 se basa en principios fundamentales de la mecánica cuántica — cualquier intento de medir un estado cuántico lo altera, lo que permite detectar el espionaje.',
+    'char.alice': 'Alicia', 'char.bob': 'Bob',
+    'status.aliceReady': 'Lista para enviar un cúbit', 'status.aliceSending': 'Enviando un cúbit...',
+    'status.bobWaiting': 'Esperando un cúbit', 'status.bobReceived': 'Bit recibido: {value}',
+    'status.bobMeasuring.rect': 'Midiendo en la base rectilínea...', 'status.bobMeasuring.diag': 'Midiendo en la base diagonal...',
+    'controls.heading': 'Panel de control',
+    'basis.rectilinear': 'Rectilínea', 'basis.diagonal': 'Diagonal',
+    'mode.manual.title': 'Modo manual', 'mode.manual.desc': 'Envía un solo fotón',
+    'mode.semi.title': 'Modo semiautomático', 'mode.semi.desc': 'Los fotones se envían automáticamente, las bases se eligen manualmente',
+    'mode.auto.title': 'Modo automático', 'mode.auto.desc': 'Los fotones se envían automáticamente, las bases se eligen automáticamente',
+    'btn.sift': 'Filtrar clave', 'btn.copy': 'Copiar clave', 'btn.newkey': 'Nueva clave',
+    'alert.eve': '⚠️ ¡Eva interceptó el cúbit! Esto puede afectar a la clave final.',
+    'notif.siftReady': '✅ ¡Datos suficientes para filtrar la clave!', 'notif.copied': '¡Clave copiada correctamente al portapapeles!',
+    'rawkey.collected': 'Cúbits recopilados:', 'rawkey.hint': 'Haz clic en cualquier bit de la clave final para ver su historial',
+    'stat.matches': 'Coincidencias de base', 'stat.matches.sub': 'de todos los enviados', 'stat.intercepts': 'Intercepciones', 'stat.qber': 'QBER (modo Dios)', 'stat.qber.sub': '0-5% ok · 5-11% sospechoso · ≥11% peligro',
+    'finalkey.heading': 'Clave cuántica', 'finalkey.desc': 'La clave secreta se forma a partir de las mediciones coincidentes', 'finalkey.bits': '8 bits · distribución cuántica',
+    'disclaimer.text': '<strong>Nota:</strong> Esta simulación implementa el mecanismo completo de detección de espionaje: se comparan públicamente 30 bits aleatorios de la clave filtrada (bits de sacrificio). Si el QBER (tasa de errores) es menor al 11%, la clave se forma (menos del 5% es normal, 5–11% es zona amarilla); si el QBER llega al 11% o más, la sesión se descarta.',
+    'explanation.initial.p1': 'Elige una de las cuatro opciones de polarización del cúbit y envíaselo a Bob. Bob elegirá aleatoriamente una base para medirlo.',
+    'explanation.initial.p2': 'Cuando hayas enviado suficientes cúbits, pulsa "Filtrar clave" para comparar las bases.',
+    'explanation.enoughBits.p1': '¡Has enviado suficientes cúbits! Pulsa "Filtrar clave" para empezar a filtrar.',
+    'explanation.enoughBits.p2': 'Solo las bases coincidentes sin interceptación ({matches}) se usarán para formar la clave final.',
+    'explanation.insufficient.p1': '⚠️ ¡Datos insuficientes para formar una clave de 8 bits!',
+    'explanation.insufficient.p2': 'Necesitas enviar más cúbits para que, tras excluir los interceptados, queden al menos 8 coincidentes.',
+    'explanation.insufficient.p3': 'Ahora mismo tienes {count} cúbits adecuados.',
+    'explanation.success.p1': '<strong>¡Felicidades! Has creado una clave cuántica secreta de 8 bits:</strong> {key}',
+    'explanation.success.p2': 'Esta clave se puede usar para cifrar mensajes de forma segura con Bob.',
+    'explanation.success.p3': 'Comprobación QBER: {intercepts} {errorsWord} en la muestra de 30 bits. Eva elevó el QBER — así es como se detecta en el protocolo BB84.',
+    'history.title': 'Historial del cúbit #{index}:', 'history.aliceSent': 'Alicia envió:', 'history.bobMeasured': 'Bob midió:',
+    'history.intercept.label': 'Interceptado:', 'history.basisMatch.label': 'Bases coincidentes:', 'history.status.label': 'Estado:',
+    'history.yes': 'Sí', 'history.no': 'No',
+    'history.status.intercepted': 'Excluido de la clave (comprometido por Eva)', 'history.status.excess': 'Apto para la clave, pero redundante', 'history.status.used': 'Usado en la clave final', 'history.status.notMatched': 'Las bases no coincidieron', 'history.status.pending': 'Apto para la clave — pendiente de filtrado',
+    'history.eveDetected.label': 'Suplantación detectada:', 'history.eveDetected.yes': 'SÍ — bases coinciden, bits difieren!',
+    'history.eve.basis': 'Eva midió con base:', 'history.eve.guessedRight': 'adivinó la base de Alicia — sin error', 'history.eve.guessedWrong': 'base errónea — bit corrompido',
+    
+    'eaveCheck.heading': 'Comprobación de espionaje',
+    'eaveCheck.desc': 'Alicia y Bob comparan públicamente ~50% de los bits filtrados. Más bits = QBER más preciso.',
+    'eaveCheck.bitLabel': 'Bit #{n}', 'eaveCheck.alice': 'Alicia', 'eaveCheck.bob': 'Bob',
+    'eaveCheck.confirm': '✅ Formar clave con los bits restantes',
+    'eaveCheck.reset': '🔄 Empezar de nuevo',
+    'eaveCheck.verdict.clean': '✅ Canal limpio — sin errores en {total} bits comprobados. Eva no detectada.',
+    'eaveCheck.verdict.compromised': '🚨 ¡Interceptación detectada! QBER = {qber}% — alcanzó el umbral del 11% o más. Clave insegura.', 'eaveCheck.verdict.warning': '⚠️ QBER = {qber}% ({errors}/{total}) — zona amarilla (5–11%). Merece atención, pero la clave se forma igualmente con este material.',
+    'eaveCheck.verdict.normal': '✅ QBER = {qber}% ({errors}/{total}) — imperfección normal del entorno (menos del 5%), sin motivo de preocupación. Clave formada.',
+    'eaveCheck.verdict.risk': '⚠️ Sin errores en la muestra, pero la estadística no garantiza la ausencia de Eva. Clave formada con riesgo residual.',
+    'eaveCheck.sampleQber': 'QBER de la muestra', 'eaveCheck.sampleQberSub': '({total} bits — lo que ven Alicia y Bob)',
+    'eaveCheck.trueQber': 'QBER real', 'eaveCheck.trueQberSub': '(modo Dios)',
+    'history.status.sacrifice': 'Usado para la comprobación de espionaje (revelado públicamente)',
+    'nav.theory': 'Leer la teoría', 'nav.home': 'Volver al laboratorio',
+    'stage.label.1': 'Canal cuántico', 'stage.label.2': 'Filtrado', 'stage.label.3': 'QBER', 'stage.label.4': 'Clave secreta',
+    'welcome.heading': 'Bienvenido al juego "Clave cuántica: BB84"',
+    'welcome.p1': 'Este juego te ayudará a entender de forma práctica cómo Alicia y Bob acuerdan una clave secreta compartida usando física cuántica — y por qué cualquier intento de espionaje queda detectado.',
+    'welcome.p2': 'El juego tiene 4 etapas, que se desbloquean una a una:',
+    'welcome.stage1.title': '1. Canal cuántico', 'welcome.stage1.desc': 'Alicia envía cúbits a Bob',
+    'welcome.stage2.title': '2. Filtrado', 'welcome.stage2.desc': 'comparación de bases y formación de la clave en bruto',
+    'welcome.stage3.title': '3. Verificación QBER', 'welcome.stage3.desc': 'búsqueda de señales de espionaje',
+    'welcome.stage4.title': '4. Clave secreta', 'welcome.stage4.desc': 'la clave final compartida por Alicia y Bob',
+    'welcome.start': 'Empezar el juego',
+    'stageintro.1.title': 'Etapa 1: Canal cuántico',
+    'stageintro.1.desc': 'Alicia elige una polarización aleatoria para cada cúbit y se lo envía a Bob. Bob elige de forma independiente una base de medición aleatoria para cada cúbit. Tú controlas el envío de Alicia mediante el panel de control.',
+    'stageintro.1.btn': 'Empezar a enviar cúbits',
+    'stageintro.2.title': 'Etapa 2: Filtrado', 'stageintro.2.btn': 'Empezar el filtrado',
+    'stageintro.3.title': 'Etapa 3: Verificación QBER',
+    'stageintro.3.desc': 'Alicia y Bob comparan públicamente parte de la clave filtrada para estimar la tasa de errores (QBER). Si hay demasiados errores, Eva estaba en el canal y la clave debe descartarse.',
+    'stageintro.3.btn': 'Empezar la verificación QBER',
+    'stageintro.4.title': 'Etapa 4: Clave secreta',
+    'stageintro.4.desc': 'La verificación fue exitosa — con los bits limpios restantes se ha formado la clave secreta compartida de Alicia y Bob.',
+    'stageintro.4.btn': 'Mostrar la clave',
+    'sifting.stat.sent': 'cúbits', 'sifting.stat.matches': 'coincid.', 'sifting.stat.sacrifice': 'para QBER', 'sifting.stat.forkey': 'en clave', 'sifting.stat.revealed': 'revelados',
+    'bobtable.heading': 'Tabla de mediciones de Bob', 'bobtable.empty': 'Los cúbits aparecerán aquí a medida que se envíen',
+    'table.num': '#', 'table.bobBasis': 'Base de Bob', 'table.bobValue': 'Valor de Bob', 'table.match': 'Coincidencia', 'table.siftedBit': 'Bit de clave', 'table.result': 'Resultado',
+    'table.checkMark': 'Verificación pública', 'table.checkMark.yes': '🔍 Seleccionado',
+    'sifting.stage.desc': 'Alicia y Bob comparan públicamente solo las bases (¡no los valores!) de cada cúbit — si las bases coinciden, ambos obtuvieron el mismo bit, que pasa a la clave compartida; si no coinciden, se descarta. Los valores se muestran en la tabla de inmediato solo para mayor claridad (modo Dios) — en la realidad las partes nunca se envían los valores entre sí.',
+    'sifting.compare.heading': 'Comparación de bases',
+    'sifting.result.heading': 'Clave filtrada',
+    'sifting.result.desc': 'Esta es la clave compartida de Alicia y Bob: cuando las bases coinciden, sus valores deberían ser idénticos. Las discrepancias (ruido o Eva) se detectarán en la verificación QBER del siguiente paso.',
+    'siftmode.manual.title': 'Comparación manual', 'siftmode.manual.desc': 'Revelar los bits uno por uno',
+    'siftmode.auto.title': 'Comparación automática', 'siftmode.auto.desc': 'Comparar todos los bits a la vez',
+    'btn.continueToQber': 'Continuar a la verificación QBER',
+    'sifting.channel.label': 'Intercambio de bases por el canal público',
+  },
+};
+
+let currentLang = 'ru';
+function plur(n, one, few, many) {
+  const abs = Math.abs(n) % 100;
+  const n1 = abs % 10;
+  if (abs > 10 && abs < 20) return many;
+  if (n1 === 1) return one;
+  if (n1 >= 2 && n1 <= 4) return few;
+  return many;
+}
+function t(key, vars) {
+  const dict = I18N[currentLang] || I18N.ru;
+  let str = dict[key] !== undefined ? dict[key] : (I18N.ru[key] !== undefined ? I18N.ru[key] : key);
+  if (vars) for (const k in vars) str = str.replace(new RegExp('\\{' + k + '\\}', 'g'), vars[k]);
+  return str;
+}
+
+function applyLanguage(lang) {
+  if (!I18N[lang]) lang = 'ru';
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.title = t('meta.title');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('.lang-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.langBtn === lang); });
+  const nameEl = document.getElementById('stageNameText');
+  if (nameEl) nameEl.textContent = currentStage + ' / 4 — ' + t('stage.label.' + currentStage);
+  try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+  refreshDynamicUI();
+}
+
+function initLanguage() {
+  let saved = null;
+  try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+  if (!saved) { const browserLang = (navigator.language || 'ru').slice(0, 2); saved = I18N[browserLang] ? browserLang : 'ru'; }
+  applyLanguage(saved);
+}
+
+function refreshDynamicUI() {
+  renderAliceStatus();
+  renderBobStatus();
+  renderExplanation();
+  renderSuccessExplanation();
+  renderSiftingDesc();
+  if (savedCheckBits) {
+    showEavesdroppingCheck(savedCheckBits, savedErrorCount);
+  }
+  if (lastHistoryIndex !== null && bitHistory && bitHistory.style.display === 'block') {
+    showBitHistory(lastHistoryIndex);
+  }
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn)));
+
+// Состояние динамических переводимых текстов
+let aliceStatusState = 'aliceReady';
+let bobStatusState = { key: 'bobWaiting', vars: null };
+let explanationState = { key: 'initial', vars: null };
+let lastHistoryIndex = null;
+
+function renderAliceStatus() {
+  if (!aliceStatus) return;
+  aliceStatus.textContent = aliceStatusState === 'aliceReady' ? t('status.aliceReady') : t('status.aliceSending');
+}
+function setAliceStatus(state) { aliceStatusState = state; renderAliceStatus(); }
+
+function renderBobStatus() {
+  if (!bobStatus) return;
+  bobStatus.textContent = t('status.' + bobStatusState.key, bobStatusState.vars);
+}
+function setBobStatus(key, vars) { bobStatusState = { key, vars }; renderBobStatus(); }
+
+function renderExplanation() {
+  if (!explanation) return;
+  const s = explanationState;
+  if (s.key === 'initial') {
+    explanation.innerHTML = `<p>${t('explanation.initial.p1')}</p><p>${t('explanation.initial.p2')}</p>`;
+  } else if (s.key === 'enoughBits') {
+    explanation.innerHTML = `<p>${t('explanation.enoughBits.p1')}</p><p>${t('explanation.enoughBits.p2', s.vars)}</p>`;
+  } else if (s.key === 'insufficient') {
+    explanation.innerHTML = `<p>${t('explanation.insufficient.p1')}</p><p>${t('explanation.insufficient.p2')}</p><p>${t('explanation.insufficient.p3', s.vars)}</p>`;
+  }
+  // 'success' рендерится отдельно в Stage 4 через renderSuccessExplanation()
+}
+function renderSuccessExplanation() {
+  const el = document.getElementById('successExplanation');
+  if (!el || explanationState.key !== 'success') return;
+  const s = explanationState;
+  el.style.display = 'block';
+  el.innerHTML = `<p>${t('explanation.success.p1', s.vars)}</p><p>${t('explanation.success.p2')}</p><p>${t('explanation.success.p3', s.vars)}</p>`;
+}
+function renderSiftingDesc() {
+  const el = document.getElementById('siftingDescBox');
+  if (!el || !siftingVars) return;
+  el.textContent = t('sifting.desc', siftingVars);
+}
+function setExplanation(key, vars) { explanationState = { key, vars }; renderExplanation(); renderSuccessExplanation(); }
+
+// Переменные для управления анимацией классического канала
+let classicalChannelInterval = null;
+
+// Состояние игры
+let selectedBasis = 'rectilinear';
+let selectedValue = '0';
+let rawKey = [];
+const FINAL_KEY_LENGTH = 8;
+// Жертвуем 50% matching-бит на проверку QBER — как в реальном протоколе.
+// Минимум matching-бит: нужно чтобы в оставшихся 50% было ≥ FINAL_KEY_LENGTH чистых.
+// При P(Ева)=0.5 → ~25% matching грязные, значит чистые ≈ 75%.
+// Нужно: (N/2) × 0.75 ≥ 8  →  N ≥ 21.3, с запасом → 32
+const SACRIFICE_COUNT = 30;        // фиксированные 30 бит на проверку QBER
+// 30 sacrifice + нужно ≥ 8 чистых из оставшихся. При ~25% грязных: (N-30)×0.75 ≥ 8 → N ≥ 41, с запасом → 45
+const MIN_MATCHES_FOR_SIFTING = 45;
+let eveIntercepts = 0;
+let matchingIndices = [];
+let sacrificeIndices = [];           // rawKey-индексы бит, пошедших на проверку
+let semiAutoInterval = null;
+let autoInterval = null;
+let isSemiAutoActive = false;
+let isAutoActive = false;
+let siftKeyPressed = false;
+let finalKey = '';
+let currentStage = 1;
+let savedCheckBits = null;
+let savedErrorCount = 0;
+let siftingVars = null;
+let siftRevealIndex = -1;   // -1 = не начато, 0..rawKey.length-1 = в процессе, rawKey.length = готово
+let siftedIndices = [];     // rawKey-индексы, где базисы совпали (заполняется по мере раскрытия)
+let channelChatterInterval = null; // фоновая "болтовня" по каналу на этапе 2
+
+// Новые переменные для управления уведомлениями
+let lastSiftNotificationCount = -1;
+
+// Переменные для управления анимацией
+let interceptTimeout = null;
+let interceptHideTimeout = null;
+
+// ====== УПРАВЛЕНИЕ ЭТАПАМИ ======
+
+function goToStage(n) {
+    const ids = ['quantum-stage', 'sifting-stage', 'qber-stage', 'key-stage'];
+    ids.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('hidden', i + 1 !== n);
+    });
+    [1,2,3,4].forEach(i => {
+        const dot = document.getElementById('stageDot' + i);
+        if (!dot) return;
+        dot.classList.remove('active', 'completed');
+        if (i < n) dot.classList.add('completed');
+        else if (i === n) dot.classList.add('active');
+    });
+    currentStage = n;
+    const nameEl = document.getElementById('stageNameText');
+    if (nameEl) nameEl.textContent = n + ' / 4 — ' + t('stage.label.' + n);
+    showStageIntro(n);
+    stopChannelChatter();
+}
+
+// Каждый раз при входе на этап сначала показываем короткое описание —
+// интерактивная часть (stage-body) открывается по кнопке в intro-карточке.
+function showStageIntro(n) {
+    const intro = document.getElementById('stageIntro' + n);
+    const body = document.getElementById('stageBody' + n);
+    if (intro) intro.classList.remove('hidden');
+    if (body) body.classList.add('hidden');
+}
+
+function showStageBody(n) {
+    const intro = document.getElementById('stageIntro' + n);
+    const body = document.getElementById('stageBody' + n);
+    if (intro) intro.classList.add('hidden');
+    if (body) body.classList.remove('hidden');
+    if (n === 2) startChannelChatter();
+}
+
+function showSiftingStage(total, matches, forKey, checkBits, errorCount) {
+    siftingVars = { total, matches, sacrifice: SACRIFICE_COUNT, forkey: forKey };
+    const elTotal = document.getElementById('siftStat-total');
+    const elMatches = document.getElementById('siftStat-matches');
+    const elSacrifice = document.getElementById('siftStat-sacrifice');
+    const elForkey = document.getElementById('siftStat-forkey');
+    if (elTotal) elTotal.textContent = total;
+    if (elMatches) elMatches.textContent = matches;
+    if (elSacrifice) elSacrifice.textContent = SACRIFICE_COUNT;
+    if (elForkey) elForkey.textContent = forKey;
+    clearEaveCheck();
+    savedCheckBits = checkBits;
+    savedErrorCount = errorCount;
+    showEavesdroppingCheck(checkBits, errorCount);
+    goToStage(3);
+}
+
+function clearEaveCheck() {
+    const grid = document.getElementById('eaveCheckGrid');
+    if (grid) grid.innerHTML = '';
+    document.querySelectorAll('.eave-threshold, .eave-qber-row').forEach(el => el.remove());
+    const verdict = document.getElementById('eaveVerdict');
+    if (verdict) { verdict.innerHTML = ''; verdict.className = 'eave-verdict'; verdict.style.cssText = ''; }
+    const confirmBtn = document.getElementById('eaveConfirmBtn');
+    const resetBtn = document.getElementById('eaveResetBtn');
+    if (confirmBtn) confirmBtn.style.display = 'none';
+    if (resetBtn) resetBtn.style.display = 'none';
+}
+
+// Инициализация
+initGame();
+
+function initGame() {
+    console.log("Игра BB84: Инициализация");
+
+    // Очищаем таблицу измерений Боба
+    showBobTableEmptyState();
+
+    // Создаем сетку для финального ключа
+    createKeyGrid(finalKeyGrid, FINAL_KEY_LENGTH);
+    
+    // Обработчики выбора поляризации
+    polarizationOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            polarizationOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            selectedBasis = this.getAttribute('data-basis');
+            selectedValue = this.getAttribute('data-value');
+        });
+    });
+    
+    // Обработчик ручного режима
+    manualModeBtn.addEventListener('click', function() {
+        if (siftKeyPressed) return;
+        sendPhoton();
+    });
+    
+    // Обработчик полуавтоматического режима
+    semiAutoBtn.addEventListener('click', function() {
+        if (siftKeyPressed) return;
+        if (isSemiAutoActive) {
+            stopSemiAuto();
+        } else {
+            stopAuto();
+            startSemiAuto();
+        }
+    });
+    
+    // Обработчик автоматического режима
+    autoModeBtn.addEventListener('click', function() {
+        if (siftKeyPressed) return;
+        if (isAutoActive) {
+            stopAuto();
+        } else {
+            stopSemiAuto();
+            startAuto();
+        }
+    });
+    
+    // Обработчик перехода к просеиванию (этап 1 → этап 2)
+    siftKeyBtn.addEventListener('click', function() {
+        enterSiftingStage();
+    });
+
+    // Обработчики режимов просеивания (этап 2): "Ручное сравнение" раскрывает
+    // ровно один бит за клик, "Автоматически" добивает всё оставшееся сразу
+    if (siftManualBtn) siftManualBtn.addEventListener('click', nextSiftRow);
+    if (siftAutoBtn) siftAutoBtn.addEventListener('click', chooseAutoSift);
+    if (continueToQberBtn) continueToQberBtn.addEventListener('click', enterQberStage);
+
+    // Обработчик новой игры
+    newKeyBtn.addEventListener('click', function() {
+        resetGame();
+    });
+
+    // Кнопки проверки на прослушивание и переходов между этапами
+    const eaveConfirmBtn = document.getElementById('eaveConfirmBtn');
+    const eaveResetBtn = document.getElementById('eaveResetBtn');
+    if (eaveConfirmBtn) eaveConfirmBtn.addEventListener('click', revealFinalKey);
+    if (eaveResetBtn) eaveResetBtn.addEventListener('click', resetGame);
+    
+    // Обработчик сворачивания/разворачивания описания протокола
+    protocolHeader.addEventListener('click', function() {
+        toggleProtocol();
+    });
+    
+    // Обработчик кнопки копирования ключа
+    document.getElementById('copyKeyBtn').addEventListener('click', function() {
+        copyFinalKey();
+    });
+
+    // Заставка перед игрой
+    if (startGameBtn) startGameBtn.addEventListener('click', function() {
+        if (welcomeScreen) welcomeScreen.classList.add('hidden');
+        if (mainGameArea) mainGameArea.classList.remove('hidden');
+    });
+
+    // Intro-карточки этапов — раскрывают интерактивную часть по кнопке
+    [1, 2, 3, 4].forEach(n => {
+        const btn = document.getElementById('stageIntro' + n + 'Btn');
+        if (btn) btn.addEventListener('click', () => showStageBody(n));
+    });
+
+    // Инициализируем игру
+    initLanguage();
+    resetGame();
+}
+
+function startSemiAuto() {
+    isSemiAutoActive = true;
+    semiAutoBtn.classList.add('active-mode');
+    semiAutoInterval = setInterval(() => {
+        if (rawKey.length < 150 && !siftKeyPressed) {
+            sendPhoton();
+        }
+    }, 1500);
+}
+
+function stopSemiAuto() {
+    isSemiAutoActive = false;
+    semiAutoBtn.classList.remove('active-mode');
+    if (semiAutoInterval) {
+        clearInterval(semiAutoInterval);
+        semiAutoInterval = null;
+    }
+}
+
+function startAuto() {
+    isAutoActive = true;
+    autoModeBtn.classList.add('active-mode');
+    autoInterval = setInterval(() => {
+        if (rawKey.length < 150 && !siftKeyPressed) {
+            const randomBasis = Math.random() < 0.5 ? 'rectilinear' : 'diagonal';
+            const randomValue = Math.random() < 0.5 ? '0' : '1';
+            
+            polarizationOptions.forEach(opt => {
+                if (opt.getAttribute('data-basis') === randomBasis &&
+                    opt.getAttribute('data-value') === randomValue) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+            
+            selectedBasis = randomBasis;
+            selectedValue = randomValue;
+            sendPhoton();
+        }
+    }, 280);
+}
+
+function stopAuto() {
+    isAutoActive = false;
+    autoModeBtn.classList.remove('active-mode');
+    if (autoInterval) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+    }
+}
+
+function toggleProtocol() {
+    const isExpanded = protocolContent.style.display === 'block';
+    const toggleIcon = protocolHeader.querySelector('.toggle-icon');
+    if (isExpanded) {
+        protocolContent.style.display = 'none';
+        toggleIcon.textContent = '+';
+    } else {
+        protocolContent.style.display = 'block';
+        toggleIcon.textContent = '-';
+    }
+}
+
+function createKeyGrid(gridElement, size) {
+    gridElement.innerHTML = '';
+    for (let i = 0; i < size; i++) {
+        const keyBit = document.createElement('div');
+        keyBit.className = 'key-bit';
+        keyBit.dataset.index = i;
+        keyBit.addEventListener('click', function() {
+            const index = parseInt(this.dataset.index);
+            showBitHistory(index);
+        });
+        gridElement.appendChild(keyBit);
+    }
+}
+
+function basisSymbolHTML(basis) {
+    return basis === 'rectilinear'
+        ? '<span class="rectilinear-basis">+</span>'
+        : '<span class="diagonal-basis">×</span>';
+}
+
+// Строка таблицы "участник + базис + значение", используется и для таблицы Боба
+// на этапе 1, и для таблиц Алисы/Боба на этапе 2 просеивания.
+// Заглушка "ждём кубиты" — чтобы таблица Боба не выглядела как пустой/сломанный блок
+function showBobTableEmptyState() {
+    if (!bobTableBody) return;
+    bobTableBody.innerHTML = '<tr class="empty-state-row"><td colspan="3" data-i18n="bobtable.empty">Кубиты появятся здесь по мере отправки</td></tr>';
+}
+
+function appendPartyRow(tbody, index, basis, value) {
+    if (tbody === bobTableBody) {
+        const emptyRow = tbody.querySelector('.empty-state-row');
+        if (emptyRow) emptyRow.remove();
+    }
+    const tr = document.createElement('tr');
+    tr.dataset.index = index;
+    tr.classList.add('new-row');
+    tr.innerHTML = `<td>${index + 1}</td><td>${basisSymbolHTML(basis)}</td><td>${value}</td>`;
+    tbody.appendChild(tr);
+    return tr;
+}
+
+function showBitHistory(index) {
+    if (index >= rawKey.length) return;
+
+    lastHistoryIndex = index;
+    const bit = rawKey[index];
+
+    let historyHTML = `<div class="history-title">${t('history.title', { index })}</div>`;
+
+    // Базис Алисы
+    let aliceBasisSymbol = '';
+    if (bit.aliceBasis === 'rectilinear') {
+        aliceBasisSymbol = bit.aliceValue === '0' ? '|' : '—';
+        historyHTML += `<div class="history-item">${t('history.aliceSent')} <span class="rectilinear-basis">${aliceBasisSymbol} (${bit.aliceValue})</span></div>`;
+    } else {
+        aliceBasisSymbol = bit.aliceValue === '0' ? '/' : '\\';
+        historyHTML += `<div class="history-item">${t('history.aliceSent')} <span class="diagonal-basis">${aliceBasisSymbol} (${bit.aliceValue})</span></div>`;
+    }
+
+    // Базис Боба — показываем фильтр измерения (+/×) как в живой игре, а не поляризацию
+    if (bit.bobBasis === 'rectilinear') {
+        historyHTML += `<div class="history-item">${t('history.bobMeasured')} <span class="rectilinear-basis">+ (${bit.bobValue})</span></div>`;
+    } else {
+        historyHTML += `<div class="history-item">${t('history.bobMeasured')} <span class="diagonal-basis">× (${bit.bobValue})</span></div>`;
+    }
+
+    // Совпадение базисов
+    if (bit.matches) {
+        historyHTML += `<div class="history-item">✓ ${t('history.basisMatch.label')} <span class="matched">${t('history.yes')}</span></div>`;
+    } else {
+        historyHTML += `<div class="history-item">✗ ${t('history.basisMatch.label')} ${t('history.no')}</div>`;
+    }
+
+    // Обнаружение подлога: базисы совпали, но биты не совпали → Ева
+    const eveDetected = bit.matches && bit.aliceValue !== bit.bobValue;
+    if (eveDetected) {
+        historyHTML += `<div class="history-item">🚨 ${t('history.eveDetected.label')} <span class="intercepted">${t('history.eveDetected.yes')}</span></div>`;
+    }
+
+    // Детали симуляции: что именно сделала Ева (образовательный блок)
+    if (bit.wasIntercepted && bit.eveBasis !== null) {
+        const eveBasisLabel = bit.eveBasis === 'rectilinear' ? '+' : '×';
+        const sameAsAlice = bit.eveBasis === bit.aliceBasis;
+        historyHTML += `<div class="history-item history-sim">🕵️ ${t('history.eve.basis')} <span class="${bit.eveBasis === 'rectilinear' ? 'rectilinear-basis' : 'diagonal-basis'}">${eveBasisLabel}</span>${sameAsAlice ? ' ✓' : ' ✗'} — ${t(sameAsAlice ? 'history.eve.guessedRight' : 'history.eve.guessedWrong')}</div>`;
+    }
+
+    // Статус использования
+    if (eveDetected) {
+        // Базисы совпали, но бит искажён — детектированный подлог, из ключа исключается
+        historyHTML += `<div class="history-item history-status">${t('history.status.label')} <span class="status-intercepted">${t('history.status.intercepted')}</span></div>`;
+    } else if (!bit.matches) {
+        // Базисы не совпали — кубит не попадает в ключ в принципе
+        historyHTML += `<div class="history-item history-status">${t('history.status.label')} <span class="status-not-matched">${t('history.status.notMatched')}</span></div>`;
+    } else {
+        // Базисы совпали, биты совпали — потенциально пригоден для ключа
+        if (sacrificeIndices.includes(index)) {
+            // Бит был публично раскрыт при проверке на прослушивание
+            historyHTML += `<div class="history-item history-status">${t('history.status.label')} <span class="status-excess">${t('history.status.sacrifice')}</span></div>`;
+        } else {
+            const indexInMatching = matchingIndices.indexOf(index);
+            if (indexInMatching >= 0 && indexInMatching >= FINAL_KEY_LENGTH) {
+                historyHTML += `<div class="history-item history-status">${t('history.status.label')} <span class="status-excess">${t('history.status.excess')}</span></div>`;
+            } else if (indexInMatching >= 0) {
+                historyHTML += `<div class="history-item history-status">${t('history.status.label')} <span class="status-used">${t('history.status.used')}</span></div>`;
+            } else {
+                historyHTML += `<div class="history-item history-status">${t('history.status.label')} <span class="status-excess">${t('history.status.pending')}</span></div>`;
+            }
+        }
+    }
+
+    bitHistory.innerHTML = historyHTML;
+    bitHistory.style.display = 'block';
+
+    if (bitHistoryInfo && bitHistoryInfo.style.display !== 'none') {
+        bitHistoryInfo.style.opacity = '0';
+        setTimeout(() => {
+            bitHistoryInfo.style.display = 'none';
+        }, 300);
+    }
+}
+
+function activateQuantumChannel() {
+    quantumChannel.classList.remove('inactive');
+    quantumChannel.classList.add('active');
+    classicalChannel.classList.remove('active');
+    classicalChannel.classList.add('inactive');
+    stopClassicalChannelAnimation();
+}
+
+function activateClassicalChannel() {
+    quantumChannel.classList.remove('active');
+    quantumChannel.classList.add('inactive');
+    classicalChannel.classList.remove('inactive');
+    classicalChannel.classList.add('active');
+    startClassicalChannelAnimation();
+}
+
+function startClassicalChannelAnimation() {
+    if (classicalChannelInterval) return;
+    classicalChannelInterval = setInterval(() => {
+        const packetToBob = document.createElement('div');
+        packetToBob.className = 'data-packet to-bob';
+        classicalChannel.appendChild(packetToBob);
+        
+        setTimeout(() => {
+            const packetToAlice = document.createElement('div');
+            packetToAlice.className = 'data-packet to-alice';
+            classicalChannel.appendChild(packetToAlice);
+            
+            setTimeout(() => {
+                if (packetToBob.parentNode) {
+                    packetToBob.parentNode.removeChild(packetToBob);
+                }
+            }, 2000);
+            setTimeout(() => {
+                if (packetToAlice.parentNode) {
+                    packetToAlice.parentNode.removeChild(packetToAlice);
+                }
+            }, 2000);
+        }, 1000);
+    }, 1500);
+}
+
+function stopClassicalChannelAnimation() {
+    if (classicalChannelInterval) {
+        clearInterval(classicalChannelInterval);
+        classicalChannelInterval = null;
+    }
+    const packets = classicalChannel.querySelectorAll('.data-packet');
+    packets.forEach(packet => {
+        if (packet.parentNode) {
+            packet.parentNode.removeChild(packet);
+        }
+    });
+}
+
+function sendPhoton() {
+    if (siftKeyPressed) return;
+
+    setAliceStatus('aliceSending');
+
+    const currentBasis = selectedBasis;
+    const currentValue = selectedValue;
+    
+    const photon = document.createElement('div');
+    photon.className = 'photon';
+    photon.textContent = currentValue;
+    
+    if (currentBasis === 'rectilinear') {
+        photon.style.background = 'linear-gradient(45deg, #00ff80, #006b40)';
+        photon.style.color = '#001a08';
+    } else {
+        photon.style.background = 'linear-gradient(45deg, #e6d000, #8b7100)';
+        photon.style.color = '#0a0800';
+    }
+    
+    photon.style.left = '5%';
+    photon.style.top = '50%';
+    photon.style.transform = 'translateY(-50%)';
+    
+    quantumChannel.appendChild(photon);
+    
+    if (aliceBasis) {
+        aliceBasis.style.opacity = '1';
+        if (currentBasis === 'rectilinear') {
+            if (currentValue === '0') {
+                aliceBasis.textContent = '|';
+            } else {
+                aliceBasis.textContent = '—';
+            }
+            aliceBasis.style.background = 'rgba(0, 255, 128, 0.2)';
+            aliceBasis.style.borderColor = '#00ff80';
+        } else {
+            if (currentValue === '0') {
+                aliceBasis.textContent = '/';
+            } else {
+                aliceBasis.textContent = '\\';
+            }
+            aliceBasis.style.background = 'rgba(230, 208, 0, 0.2)';
+            aliceBasis.style.borderColor = '#e6d000';
+        }
+    }
+    
+    const shouldIntercept = Math.random() < 0.15;
+    const fast = isAutoActive;  // автоматический режим — ускоренные тайминги
+
+    // В обычном режиме показываем иконку Евы, в авто — пропускаем анимацию
+    if (shouldIntercept && !fast) {
+        interceptTimeout = setTimeout(() => {
+            if (eveIcon) eveIcon.style.opacity = '1';
+            if (eveAlert) {
+                eveAlert.style.display = 'block';
+                setTimeout(() => { eveAlert.style.display = 'none'; }, 800);
+            }
+        }, 300);
+        interceptHideTimeout = setTimeout(() => {
+            if (eveIcon) eveIcon.style.opacity = '0';
+        }, 1200);
+    }
+
+    // Генерируем базис Боба один раз — тот же, что пойдёт в статистику
+    const bobBasisForThisPhoton = Math.random() < 0.5 ? 'rectilinear' : 'diagonal';
+
+    const photonMs = fast ? 180 : 2000;   // длительность анимации фотона
+    const measureMs = fast ? 40 : 1000;   // задержка до фиксации измерения
+    const basisHideMs = fast ? 160 : 1500; // через сколько убрать базис Боба
+
+    setTimeout(() => {
+        photon.style.animation = `photonTravel ${fast ? '0.18s' : '2s'} linear forwards`;
+
+        // Базис Боба показываем в начале полёта; в авторежиме — без анимации
+        if (bobBasisElement && !fast) {
+            bobBasisElement.style.opacity = '1';
+            if (bobBasisForThisPhoton === 'rectilinear') {
+                bobBasisElement.textContent = '+';
+                bobBasisElement.style.background = 'rgba(0, 255, 128, 0.2)';
+                bobBasisElement.style.borderColor = '#00ff80';
+            } else {
+                bobBasisElement.textContent = '×';
+                bobBasisElement.style.background = 'rgba(230, 208, 0, 0.2)';
+                bobBasisElement.style.borderColor = '#e6d000';
+            }
+        }
+
+        setTimeout(() => {
+            if (photon.parentNode) photon.parentNode.removeChild(photon);
+            if (aliceBasis) aliceBasis.style.opacity = '0';
+            measurePhoton(shouldIntercept, currentBasis, currentValue, bobBasisForThisPhoton);
+            setAliceStatus('aliceReady');
+            setTimeout(() => {
+                if (bobBasisElement) bobBasisElement.style.opacity = '0';
+            }, basisHideMs);
+            if (interceptTimeout) { clearTimeout(interceptTimeout); interceptTimeout = null; }
+        }, photonMs);
+    }, 10);
+}
+
+function setButtonsDisabled(disabled) {
+    manualModeBtn.disabled = disabled || siftKeyPressed;
+    semiAutoBtn.disabled = disabled || siftKeyPressed;
+    autoModeBtn.disabled = disabled || siftKeyPressed;
+    siftKeyBtn.disabled = disabled || !isSiftingAvailable() || siftKeyPressed;
+    
+    if (!siftKeyBtn.disabled) {
+        siftKeyBtn.classList.add('sift-active');
+    } else {
+        siftKeyBtn.classList.remove('sift-active');
+    }
+}
+
+function isSiftingAvailable() {
+    const basisMatches = rawKey.filter(item => item.matches).length;
+    return basisMatches >= MIN_MATCHES_FOR_SIFTING;
+}
+
+function measurePhoton(wasIntercepted, aliceBasis, aliceValue, bobBasis) {
+
+    if (bobStatus) {
+        setBobStatus(bobBasis === 'rectilinear' ? 'bobMeasuring.rect' : 'bobMeasuring.diag');
+    }
+
+    let bobValue;
+    let eveBasis = null;
+    let eveValue = null;
+
+    if (wasIntercepted) {
+        // Ева перехватывает фотон Алисы, измеряет своим случайным базисом,
+        // затем посылает Бобу ПОДМЕННЫЙ фотон в том базисе, которым измерила
+        eveBasis = Math.random() < 0.5 ? 'rectilinear' : 'diagonal';
+        if (eveBasis === aliceBasis) {
+            eveValue = aliceValue;          // угадала базис — получила правильный бит
+        } else {
+            eveValue = Math.round(Math.random()).toString();  // не угадала — случайный бит
+        }
+        // Боб измеряет ПОДМЕННЫЙ фотон Евы (в базисе eveBasis, со значением eveValue)
+        if (bobBasis === eveBasis) {
+            bobValue = eveValue;
+        } else {
+            bobValue = Math.round(Math.random()).toString();
+        }
+        eveIntercepts++;
+        if (interceptCount) {
+            interceptCount.textContent = eveIntercepts;
+        }
+    } else {
+        // Чистый канал: если базисы совпали — бит тот же, иначе случайный
+        if (bobBasis === aliceBasis) {
+            bobValue = aliceValue;
+        } else {
+            bobValue = Math.round(Math.random()).toString();
+        }
+    }
+
+    setTimeout(() => {
+        if (bobStatus) {
+            setBobStatus('bobReceived', { value: bobValue });
+        }
+        addToRawKey(aliceValue, aliceBasis, bobValue, bobBasis, wasIntercepted, eveBasis, eveValue);
+    }, isAutoActive ? 40 : 1000);
+}
+
+function addToRawKey(aliceValue, aliceBasis, bobValue, bobBasis, wasIntercepted, eveBasis = null, eveValue = null) {
+    const index = rawKey.length;
+
+    rawKey.push({
+        aliceValue,
+        aliceBasis,
+        bobValue,
+        bobBasis,
+        wasIntercepted,
+        eveBasis,
+        eveValue,
+        matches: aliceBasis === bobBasis
+    });
+
+    if (bobTableBody) appendPartyRow(bobTableBody, index, bobBasis, bobValue);
+
+    const basisMatches = rawKey.filter(item => item.matches).length;
+    checkSiftingAvailability(basisMatches);
+
+    if (rawKeyCount) {
+        rawKeyCount.textContent = rawKey.length;
+    }
+
+    if (matchCount) {
+        matchCount.textContent = basisMatches;
+    }
+
+    updateQberDisplay();
+
+    siftKeyBtn.disabled = !isSiftingAvailable() || siftKeyPressed;
+    
+    if (!siftKeyBtn.disabled) {
+        siftKeyBtn.classList.add('sift-active');
+    } else {
+        siftKeyBtn.classList.remove('sift-active');
+    }
+}
+
+// Возвращает реальный QBER по всем matching-битам (данные симуляции)
+function calcTrueQber() {
+    const matching = rawKey.filter(item => item.matches);
+    if (matching.length === 0) return null;
+    const errors = matching.filter(item => item.aliceValue !== item.bobValue).length;
+    return { errors, total: matching.length, pct: Math.round(errors / matching.length * 100) };
+}
+
+function updateQberDisplay() {
+    if (!qberDisplay) return;
+    const q = calcTrueQber();
+    if (!q || q.total === 0) {
+        qberDisplay.textContent = '—';
+        qberDisplay.className = 'stat-value qber-ok';
+        return;
+    }
+    qberDisplay.textContent = q.pct + '%';
+    if (q.pct <= 5)        qberDisplay.className = 'stat-value qber-ok';
+    else if (q.pct <= 11)  qberDisplay.className = 'stat-value qber-warn';
+    else                   qberDisplay.className = 'stat-value qber-bad';
+}
+
+function checkSiftingAvailability(matches) {
+    if (matches >= MIN_MATCHES_FOR_SIFTING) {
+        if (lastSiftNotificationCount === -1 || matches - lastSiftNotificationCount >= 4) {
+            lastSiftNotificationCount = matches;
+            if (siftNotification) {
+                siftNotification.style.display = 'block';
+                setTimeout(() => {
+                    siftNotification.style.display = 'none';
+                }, 3000);
+            }
+            if (explanation) {
+                setExplanation('enoughBits', { matches });
+            }
+        }
+    }
+}
+
+// ====== ЭТАП 1 → ЭТАП 2: вход в просеивание ======
+
+function enterSiftingStage() {
+    const allMatching = rawKey.filter(item => item.matches);
+    if (allMatching.length < MIN_MATCHES_FOR_SIFTING) {
+        setExplanation('insufficient', { count: allMatching.length });
+        return;
+    }
+
+    siftKeyPressed = true;
+    stopSemiAuto();
+    stopAuto();
+    setButtonsDisabled(true);
+    quantumChannel.classList.remove('active');
+    quantumChannel.classList.add('inactive');
+    activateClassicalChannel();
+
+    matchingIndices = [];
+    sacrificeIndices = [];
+    siftRevealIndex = -1;
+    siftedIndices = [];
+
+    renderSiftTablesInitial();
+
+    if (siftManualBtn) siftManualBtn.disabled = false;
+    if (siftAutoBtn) siftAutoBtn.disabled = false;
+    if (continueToQberBtn) continueToQberBtn.disabled = true;
+
+    goToStage(2);
+}
+
+// Заполняет таблицы Алисы/Боба/просеянного ключа всеми отправленными кубитами
+// в состоянии "ещё не раскрыто" (row-pending).
+function renderSiftTablesInitial() {
+    if (!compareTableBody || !siftedTableBody) return;
+    compareTableBody.innerHTML = '';
+    siftedTableBody.innerHTML = '';
+
+    rawKey.forEach((bit, i) => {
+        const compareRow = document.createElement('tr');
+        compareRow.dataset.index = i;
+        compareRow.classList.add('row-pending');
+        compareRow.innerHTML =
+            `<td>${i + 1}</td>` +
+            `<td>${basisSymbolHTML(bit.aliceBasis)} <strong>${bit.aliceValue}</strong></td>` +
+            `<td>${basisSymbolHTML(bit.bobBasis)} <strong>${bit.bobValue}</strong></td>` +
+            `<td class="sift-match"><span class="result-symbol">—</span></td>`;
+        compareTableBody.appendChild(compareRow);
+
+        const siftRow = document.createElement('tr');
+        siftRow.dataset.index = i;
+        siftRow.classList.add('row-pending');
+        siftRow.innerHTML = `<td>${i + 1}</td><td class="sift-match">—</td><td class="sift-bit">—</td>`;
+        siftedTableBody.appendChild(siftRow);
+    });
+
+    updateSiftProgress();
+}
+
+// Раскрывает сравнение базисов для одной строки — общий примитив
+// и для ручного, и для автоматического режима просеивания.
+// Короткий "пакет", пролетающий по бару открытого канала — визуально
+// подчёркивает, что раскрытие строки это обмен данными Алиса ⇄ Боб.
+function pulseChannelPacket() {
+    const bar = document.getElementById('siftChannelBar');
+    if (!bar) return;
+    const packet = document.createElement('div');
+    packet.className = 'data-packet ' + (Math.random() < 0.5 ? 'to-bob' : 'to-alice');
+    bar.appendChild(packet);
+    setTimeout(() => { if (packet.parentNode) packet.parentNode.removeChild(packet); }, 2000);
+}
+
+// Непрерывный фоновый "разговор" по открытому каналу, пока виден этап 2 —
+// случайные импульсы то к Бобу, то к Алисе, как будто стороны постоянно общаются.
+function startChannelChatter() {
+    if (channelChatterInterval) return;
+    pulseChannelPacket();
+    channelChatterInterval = setInterval(pulseChannelPacket, 500);
+}
+function stopChannelChatter() {
+    if (channelChatterInterval) {
+        clearInterval(channelChatterInterval);
+        channelChatterInterval = null;
+    }
+}
+
+function revealSiftRow(i) {
+    const bit = rawKey[i];
+    if (!bit) return;
+    pulseChannelPacket();
+    const compareRow = compareTableBody.querySelector(`tr[data-index="${i}"]`);
+    const siftRow = siftedTableBody.querySelector(`tr[data-index="${i}"]`);
+    const cls = bit.matches ? 'row-match' : 'row-mismatch';
+
+    [compareRow, siftRow].forEach(row => {
+        if (!row) return;
+        row.classList.remove('row-pending');
+        row.classList.add(cls, 'row-revealing');
+        setTimeout(() => row.classList.remove('row-revealing'), 500);
+    });
+
+    if (compareRow) {
+        const resultSymbol = compareRow.querySelector('.result-symbol');
+        if (resultSymbol) {
+            resultSymbol.textContent = bit.matches ? '✓' : '✗';
+            resultSymbol.classList.remove('result-flash');
+            void resultSymbol.offsetWidth; // перезапуск CSS-анимации
+            resultSymbol.classList.add('result-flash');
+        }
+    }
+
+    if (siftRow) {
+        const matchCell = siftRow.querySelector('.sift-match');
+        const bitCell = siftRow.querySelector('.sift-bit');
+        if (matchCell) matchCell.textContent = bit.matches ? '✓' : '✗';
+        if (bit.matches) {
+            if (bitCell) bitCell.textContent = bit.aliceValue;
+            siftedIndices.push(i);
+            siftRow.style.cursor = 'pointer';
+            siftRow.addEventListener('click', () => showBitHistory(i));
+        } else if (bitCell) {
+            bitCell.textContent = '—';
+        }
+    }
+
+    updateSiftProgress();
+}
+
+function updateSiftProgress() {
+    const revealedEl = document.getElementById('siftProgress-revealed');
+    const matchesEl = document.getElementById('siftProgress-matches');
+    if (!siftedTableBody) return;
+    const revealedCount = Array.from(siftedTableBody.children).filter(tr => !tr.classList.contains('row-pending')).length;
+    if (revealedEl) revealedEl.textContent = revealedCount;
+    if (matchesEl) matchesEl.textContent = siftedIndices.length;
+}
+
+// "Ручное сравнение" и "Автоматическое сравнение" не эксклюзивны: каждый клик
+// по ручной кнопке раскрывает ровно один следующий бит, а "Автоматически"
+// в любой момент "добивает" все оставшиеся нераскрытые строки до конца.
+function nextSiftRow() {
+    if (siftRevealIndex === -1) siftRevealIndex = 0;
+    if (siftRevealIndex >= rawKey.length) { finishSifting(); return; }
+    revealSiftRow(siftRevealIndex);
+    siftRevealIndex++;
+    if (siftRevealIndex >= rawKey.length) finishSifting();
+}
+
+function chooseAutoSift() {
+    instantSift();
+}
+
+// Раскрывает все ОСТАВШИЕСЯ нераскрытые строки — если часть уже раскрыта
+// вручную, продолжает именно с этого места, а не с начала.
+function instantSift() {
+    const start = siftRevealIndex === -1 ? 0 : siftRevealIndex;
+    for (let i = start; i < rawKey.length; i++) revealSiftRow(i);
+    siftRevealIndex = rawKey.length;
+    finishSifting();
+}
+
+function finishSifting() {
+    if (continueToQberBtn) continueToQberBtn.disabled = false;
+    if (siftManualBtn) siftManualBtn.disabled = true;
+    if (siftAutoBtn) siftAutoBtn.disabled = true;
+}
+
+// ====== ЭТАП 2 → ЭТАП 3: выборка для проверки QBER ======
+
+function enterQberStage() {
+    if (!continueToQberBtn || continueToQberBtn.disabled) return;
+
+    matchingIndices = [];
+    sacrificeIndices = [];
+
+    // Все раскрытые biты, где базисы совпали (собраны на этапе 2).
+    // siftIndex — позиция бита в полном просеянном ключе (для подписи "Bit #N"
+    // и подсветки нужной строки в таблице просеянного ключа при клике).
+    const allMatching = siftedIndices.map((rawIndex, siftIndex) => ({ ...rawKey[rawIndex], rawIndex, siftIndex }));
+
+    // Жертвуем 50% matching-бит на проверку QBER.
+    // Выборка случайная — Ева не знает, какие биты будут публично раскрыты.
+    const sacrificeCount = SACRIFICE_COUNT;
+    const shuffled = [...allMatching];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const checkBits = shuffled.slice(0, sacrificeCount);
+    const remaining = shuffled.slice(sacrificeCount);
+
+    sacrificeIndices = checkBits.map(b => b.rawIndex);
+
+    let errorCount = 0;
+    checkBits.forEach(bit => {
+        if (bit.aliceValue !== bit.bobValue) errorCount++;
+    });
+
+    const cleanRemaining = remaining.filter(b => b.aliceValue === b.bobValue);
+
+    if (cleanRemaining.length < FINAL_KEY_LENGTH) {
+        // Раскрытых чистых бит не хватает — возвращаемся на этап 1 отправить ещё
+        setExplanation('insufficient', { count: cleanRemaining.length });
+        matchingIndices = [];
+        sacrificeIndices = [];
+        siftKeyPressed = false;
+        setButtonsDisabled(false);
+        activateQuantumChannel();
+        goToStage(1);
+        return;
+    }
+
+    matchingIndices = cleanRemaining.slice(0, FINAL_KEY_LENGTH).map(b => b.rawIndex);
+    finalKey = cleanRemaining.slice(0, FINAL_KEY_LENGTH).map(b => b.aliceValue);
+
+    renderFullSiftedKeyTable(allMatching, new Set(sacrificeIndices));
+
+    // Переходим к Этапу 3 (проверка QBER)
+    showSiftingStage(rawKey.length, allMatching.length, cleanRemaining.length, checkBits, errorCount);
+}
+
+// Красивая таблица всего просеянного ключа (стиль как у Алисы/Боба) с подсветкой
+// бит, случайно отобранных на публичное сравнение (проверка QBER).
+// Подсвечивает строку в таблице "Просеянный ключ" (этап 3), соответствующую
+// кликнутому биту в выборке публичной проверки, и прокручивает к ней.
+function highlightSiftedKeyRow(siftIndex) {
+    const row = document.querySelector(`#fullSiftedKeyBody tr[data-sift-index="${siftIndex}"]`);
+    if (!row) return;
+    document.querySelectorAll('#fullSiftedKeyBody tr.highlight').forEach(el => el.classList.remove('highlight'));
+    row.classList.add('highlight');
+    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => row.classList.remove('highlight'), 1600);
+}
+
+function renderFullSiftedKeyTable(allMatching, sacrificeSet) {
+    const tbody = document.getElementById('fullSiftedKeyBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    allMatching.forEach((bit, i) => {
+        const isSacrifice = sacrificeSet.has(bit.rawIndex);
+        const tr = document.createElement('tr');
+        tr.dataset.siftIndex = i;
+        if (isSacrifice) tr.classList.add('sacrifice-marked');
+        tr.innerHTML = `<td>${i + 1}</td><td><strong>${bit.aliceValue}</strong></td><td class="check-mark">${isSacrifice ? t('table.checkMark.yes') : '—'}</td>`;
+        tbody.appendChild(tr);
+    });
+}
+
+function showEavesdroppingCheck(checkBits, errorCount) {
+    const grid = document.getElementById('eaveCheckGrid');
+    const verdict = document.getElementById('eaveVerdict');
+    const confirmBtn = document.getElementById('eaveConfirmBtn');
+    const resetBtn = document.getElementById('eaveResetBtn');
+    if (!grid) return;
+
+    // Убираем прежний бейдж порога и QBER-блок перед перерисовкой (иначе задублируются)
+    document.querySelectorAll('.eave-threshold, .eave-qber-row').forEach(el => el.remove());
+
+    // Биты сравнения — подписаны номером строки из полного просеянного ключа
+    // (не порядковым номером в выборке), клик подсвечивает эту строку выше.
+    grid.innerHTML = '';
+    checkBits.forEach((bit) => {
+        const isMatch = bit.aliceValue === bit.bobValue;
+        const rowNum = (bit.siftIndex !== undefined ? bit.siftIndex : 0) + 1;
+        const cell = document.createElement('div');
+        cell.className = 'eave-check-bit ' + (isMatch ? 'match' : 'mismatch');
+        cell.innerHTML =
+            `<div class="eave-row">${t('eaveCheck.bitLabel', { n: rowNum })}</div>` +
+            `<div class="eave-row">${t('eaveCheck.alice')}: <strong>${bit.aliceValue}</strong></div>` +
+            `<div class="eave-row">${t('eaveCheck.bob')}: <strong>${bit.bobValue}</strong></div>` +
+            `<div class="eave-result">${isMatch ? '✓' : '✗'}</div>`;
+        if (bit.siftIndex !== undefined) {
+            cell.addEventListener('click', () => highlightSiftedKeyRow(bit.siftIndex));
+        }
+        grid.appendChild(cell);
+    });
+
+    const total = checkBits.length;
+    const sampleQber = Math.round((errorCount / total) * 100);
+    const trueQ = calcTrueQber();
+    const trueQber = trueQ ? trueQ.pct : 0;
+
+    // QBER-блок: выборка vs реальный
+    const qberColor = (pct) => pct <= 5 ? '#4ade80' : pct <= 11 ? '#e6d000' : '#ff4444';
+
+    grid.insertAdjacentHTML('afterend',
+        `<div class="eave-threshold">
+           <div class="eave-threshold-line"></div>
+           <span class="eave-threshold-badge">${t('stat.qber.sub')}</span>
+           <div class="eave-threshold-line"></div>
+         </div>
+         <div class="eave-qber-row">
+           <div class="eave-qber-box">
+             <div class="qber-label">${t('eaveCheck.sampleQber')}<br>${t('eaveCheck.sampleQberSub', { total })}</div>
+             <div class="qber-num" style="color:${qberColor(sampleQber)}">${sampleQber}%</div>
+           </div>
+           <div class="eave-qber-box">
+             <div class="qber-label">${t('eaveCheck.trueQber')}<br>${t('eaveCheck.trueQberSub')}</div>
+             <div class="qber-num" style="color:${qberColor(trueQber)}">${trueQber}%</div>
+           </div>
+         </div>`
+    );
+
+    // Три зоны: <5% — обычный шум среды (норма), 5–11% — жёлтая зона (внимание,
+    // но ключ всё равно формируется), ≥11% — компрометация (ключ отбрасывается).
+    const QBER_WARN_THRESHOLD = 5;
+    const QBER_DANGER_THRESHOLD = 11;
+
+    if (sampleQber >= QBER_DANGER_THRESHOLD) {
+        // QBER достиг порога или выше — канал скомпрометирован, ключ небезопасен
+        verdict.className = 'eave-verdict compromised';
+        verdict.textContent = t('eaveCheck.verdict.compromised', { errors: errorCount, total, qber: sampleQber });
+        confirmBtn.style.display = 'none';
+        resetBtn.style.display = 'block';
+    } else if (sampleQber >= QBER_WARN_THRESHOLD) {
+        // Жёлтая зона 5–11% — стоит насторожиться, но ключ всё равно формируется
+        verdict.className = 'eave-verdict';
+        verdict.style.cssText = 'border-color:rgba(230,208,0,0.5);background:rgba(230,208,0,0.08);color:#e6d000;';
+        verdict.textContent = t('eaveCheck.verdict.warning', { errors: errorCount, total, qber: sampleQber });
+        confirmBtn.style.display = 'block';
+        resetBtn.style.display = 'block';
+    } else if (errorCount > 0) {
+        // <5% — обычная неидеальность среды, не повод для тревоги
+        verdict.className = 'eave-verdict clean';
+        verdict.style.cssText = '';
+        verdict.textContent = t('eaveCheck.verdict.normal', { errors: errorCount, total, qber: sampleQber });
+        confirmBtn.style.display = 'block';
+        resetBtn.style.display = 'none';
+    } else if (trueQber > 0) {
+        // Выборка чистая, но режим Бога показывает что ошибки были — Ева проскочила
+        verdict.className = 'eave-verdict';
+        verdict.style.cssText = 'border-color:rgba(230,208,0,0.5);background:rgba(230,208,0,0.08);color:#e6d000;';
+        verdict.textContent = t('eaveCheck.verdict.risk');
+        confirmBtn.style.display = 'block';
+        resetBtn.style.display = 'block';
+    } else {
+        // Полностью чисто
+        verdict.className = 'eave-verdict clean';
+        verdict.style.cssText = '';
+        verdict.textContent = t('eaveCheck.verdict.clean', { total });
+        confirmBtn.style.display = 'block';
+        resetBtn.style.display = 'none';
+    }
+}
+
+function revealFinalKey() {
+    goToStage(4);
+    if (keyDisplay) keyDisplay.style.display = 'block';
+
+    const finalKeyCells = finalKeyGrid.querySelectorAll('.key-bit');
+    for (let i = 0; i < FINAL_KEY_LENGTH; i++) {
+        if (i < finalKey.length && finalKeyCells[i]) {
+            finalKeyCells[i].textContent = finalKey[i];
+            finalKeyCells[i].classList.add('active');
+            if (i < matchingIndices.length) {
+                finalKeyCells[i].dataset.sourceIndex = matchingIndices[i];
+            }
+            finalKeyCells[i].addEventListener('click', function() {
+                const idx = parseInt(this.dataset.sourceIndex);
+                if (!isNaN(idx)) showBitHistory(idx);
+            });
+            finalKeyCells[i].addEventListener('mouseenter', function() {
+                highlightSourceBit(this.dataset.sourceIndex);
+            });
+            finalKeyCells[i].addEventListener('mouseleave', function() {
+                unhighlightSourceBit(this.dataset.sourceIndex);
+            });
+        }
+    }
+
+    const eveDetectedInCheck = sacrificeIndices
+        .filter(ri => rawKey[ri] && rawKey[ri].aliceValue !== rawKey[ri].bobValue).length;
+
+    const errorsWord = currentLang === 'ru'
+        ? plur(eveDetectedInCheck, 'ошибка', 'ошибки', 'ошибок')
+        : currentLang === 'es'
+            ? (eveDetectedInCheck === 1 ? 'error' : 'errores')
+            : (eveDetectedInCheck === 1 ? 'error' : 'errors');
+    setExplanation('success', { key: finalKey.join(''), intercepts: eveDetectedInCheck, errorsWord });
+
+    if (bitHistoryInfo) {
+        bitHistoryInfo.style.display = 'block';
+        setTimeout(() => { bitHistoryInfo.style.opacity = '1'; }, 50);
+    }
+}
+
+function copyFinalKey() {
+    const keyText = finalKey.join('');
+    navigator.clipboard.writeText(keyText).then(() => {
+        keyCopiedNotification.style.display = 'block';
+        setTimeout(() => {
+            keyCopiedNotification.style.display = 'none';
+        }, 3000);
+    }, (err) => {
+        console.error('Не удалось скопировать ключ: ', err);
+    });
+}
+
+function highlightSourceBit(sourceIndex) {
+    if (sourceIndex === undefined || sourceIndex === null || !siftedTableBody) return;
+    const row = siftedTableBody.querySelector(`tr[data-index="${sourceIndex}"]`);
+    if (row) row.classList.add('highlight');
+}
+
+function unhighlightSourceBit(sourceIndex) {
+    if (sourceIndex === undefined || sourceIndex === null || !siftedTableBody) return;
+    const row = siftedTableBody.querySelector(`tr[data-index="${sourceIndex}"]`);
+    if (row) {
+        row.classList.remove('highlight');
+    }
+}
+
+function resetGame() {
+    siftKeyPressed = false;
+    activateQuantumChannel();
+
+    rawKey = [];
+    matchingIndices = [];
+    sacrificeIndices = [];
+    eveIntercepts = 0;
+    finalKey = '';
+    savedCheckBits = null;
+    savedErrorCount = 0;
+    siftingVars = null;
+    explanationState = { key: 'initial', vars: null };
+    
+    stopSemiAuto();
+    stopAuto();
+    
+    lastSiftNotificationCount = -1;
+    
+    if (rawKeyCount) {
+        rawKeyCount.textContent = '0';
+    }
+    if (matchCount) {
+        matchCount.textContent = '0';
+    }
+    if (interceptCount) {
+        interceptCount.textContent = '0';
+    }
+    if (qberDisplay) {
+        qberDisplay.textContent = '—';
+        qberDisplay.className = 'stat-value qber-ok';
+    }
+    // Сброс панели QBER и этапов
+    clearEaveCheck();
+    goToStage(1);
+
+    if (bitHistory) {
+        bitHistory.style.display = 'none';
+    }
+    
+    if (bitHistoryInfo) {
+        bitHistoryInfo.style.display = 'none';
+        bitHistoryInfo.style.opacity = '0';
+    }
+    
+    if (keyDisplay) keyDisplay.style.display = 'none';
+    if (keyCopiedNotification) keyCopiedNotification.style.display = 'none';
+    const successEl = document.getElementById('successExplanation');
+    if (successEl) { successEl.style.display = 'none'; successEl.innerHTML = ''; }
+
+    showBobTableEmptyState();
+    if (compareTableBody) compareTableBody.innerHTML = '';
+    if (siftedTableBody) siftedTableBody.innerHTML = '';
+    const fullSiftedKeyBody = document.getElementById('fullSiftedKeyBody');
+    if (fullSiftedKeyBody) fullSiftedKeyBody.innerHTML = '';
+
+    siftRevealIndex = -1;
+    siftedIndices = [];
+    if (siftManualBtn) siftManualBtn.disabled = false;
+    if (siftAutoBtn) siftAutoBtn.disabled = false;
+    if (continueToQberBtn) continueToQberBtn.disabled = true;
+    const siftRevealedEl = document.getElementById('siftProgress-revealed');
+    const siftMatchesEl = document.getElementById('siftProgress-matches');
+    if (siftRevealedEl) siftRevealedEl.textContent = '0';
+    if (siftMatchesEl) siftMatchesEl.textContent = '0';
+
+    const finalKeyCells = finalKeyGrid.querySelectorAll('.key-bit');
+    finalKeyCells.forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('active', 'highlight');
+        // Удаляем старые обработчики событий
+        const newCell = cell.cloneNode(true);
+        cell.parentNode.replaceChild(newCell, cell);
+    });
+    
+    if (aliceStatus) {
+        setAliceStatus('aliceReady');
+    }
+    if (bobStatus) {
+        setBobStatus('bobWaiting');
+    }
+
+    lastHistoryIndex = null;
+    setButtonsDisabled(false);
+    renderExplanation();
+    
+    if (eveIcon) {
+        eveIcon.style.opacity = '0';
+    }
+    if (eveAlert) {
+        eveAlert.style.display = 'none';
+    }
+    
+    if (aliceBasis) {
+        aliceBasis.style.opacity = '0';
+    }
+    if (bobBasisElement) {
+        bobBasisElement.style.opacity = '0';
+    }
+    
+    if (interceptTimeout) {
+        clearTimeout(interceptTimeout);
+        interceptTimeout = null;
+    }
+    if (interceptHideTimeout) {
+        clearTimeout(interceptHideTimeout);
+        interceptHideTimeout = null;
+    }
+}
+});
+</script>
 </body>
 </html>

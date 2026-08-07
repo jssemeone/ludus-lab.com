@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title id="pageTitle">Квадрат Полибия: теория | Ludus Lab</title>
+  <meta id="pageDescription" name="description" content="Объяснение древнего шифра Полибия — координатного метода шифрования. Как работает таблица, почему она надёжна и как применялась в истории.">
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+
+    ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { height: 100%; }
+    body {
+      background: #0a1a2a;
+      color: #c5d5e0;
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.8;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Language switch */
+    .lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+    .lang-btn {
+      background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3);
+      font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.5px;
+      padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease;
+    }
+    .lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+    .lang-btn.active {
+      background: rgba(212, 175, 55, 0.18); border-color: #d4af37; color: #d4af37;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+
+    /* Навигация */
+    .theory-nav {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 162, 255, 0.3);
+      flex-shrink: 0;
+    }
+    .nav-logo {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.8rem;
+      color: #d4af37;
+      text-decoration: none;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+    }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-link {
+      color: #8ab0c5;
+      text-decoration: none;
+      font-family: 'Oswald', sans-serif;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+      padding: 8px 15px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .nav-link:hover {
+      color: #00a2ff;
+      border-color: rgba(0, 162, 255, 0.3);
+      background: rgba(0, 162, 255, 0.1);
+    }
+
+    /* Основной контент */
+    .theory-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      flex: 1 0 auto;
+    }
+
+    /* Заголовок статьи */
+    .article-header {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .article-category {
+      display: inline-block;
+      background: rgba(0, 162, 255, 0.2);
+      color: #00a2ff;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      border: 1px solid rgba(0, 162, 255, 0.3);
+    }
+    .article-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 3rem;
+      color: #d4af37;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .article-subtitle {
+      font-size: 1.3rem;
+      color: #8ab0c5;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    .article-meta {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #557585;
+    }
+    .meta-item { display: flex; align-items: center; gap: 8px; }
+
+    /* Контентные блоки */
+    .content-block {
+      margin: 60px 0;
+      padding: 30px;
+      background: rgba(10, 30, 45, 0.6);
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 162, 255, 0.1);
+    }
+    .content-block h2 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2rem;
+      color: #00a2ff;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(0, 162, 255, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .content-block p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #a0c0d0;
+    }
+    .highlight {
+      color: #00a2ff;
+      font-weight: 500;
+      text-shadow: 0 0 5px rgba(0, 162, 255, 0.3);
+    }
+    .gold-highlight {
+      color: #d4af37;
+      font-weight: 500;
+    }
+
+    /* Шаги объяснения */
+    .explanation-steps { margin: 30px 0; }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      margin: 25px 0;
+      padding: 20px;
+      background: rgba(5, 20, 30, 0.8);
+      border-left: 4px solid #00a2ff;
+      border-radius: 0 8px 8px 0;
+    }
+    .step-number {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      background: #00a2ff;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.2rem;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0, 162, 255, 0.5);
+    }
+    .step-content h3 {
+      color: #d4af37;
+      margin-bottom: 10px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.3rem;
+    }
+
+    /* Ключевая идея */
+    .key-insight {
+      background: rgba(212, 175, 55, 0.1);
+      border-left: 4px solid #d4af37;
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .key-insight strong {
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      display: block;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    /* Список действий */
+    .action-list {
+      list-style: none;
+      margin: 30px 0;
+    }
+    .action-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin: 15px 0;
+      padding: 15px;
+      background: rgba(0, 162, 255, 0.05);
+      border-radius: 6px;
+      border-left: 3px solid #00a2ff;
+    }
+    .action-icon {
+      font-size: 1.5rem;
+      width: 40px;
+      text-align: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .action-text { flex: 1; }
+    .action-text strong { color: #00a2ff; font-family: 'Oswald', sans-serif; }
+
+    /* ДИАГРАММА ПОЛИБИЯ */
+    .polybius-diagram {
+      margin: 40px auto;
+      padding: 30px;
+      background: rgba(5, 20, 30, 0.85);
+      border: 1px solid rgba(0, 162, 255, 0.25);
+      border-radius: 10px;
+      max-width: 800px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .diagram-title {
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .diagram-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+    @media (max-width: 600px) {
+      .diagram-grid { grid-template-columns: 1fr; }
+    }
+    .diagram-card {
+      background: rgba(10, 30, 45, 0.9);
+      border: 1px solid rgba(0, 162, 255, 0.2);
+      border-radius: 8px;
+      padding: 20px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .diagram-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      border-color: rgba(0, 162, 255, 0.4);
+    }
+    .diagram-card-title {
+      color: #00a2ff;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .polybius-square-preview {
+      background: rgba(0, 20, 40, 0.6);
+      padding: 15px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      text-align: center;
+      margin: 10px 0;
+      color: #00ff80;
+      border: 1px solid rgba(0, 255, 128, 0.2);
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+    }
+    .preview-cell {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    .diagram-example {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.95rem;
+      color: #a0c0d0;
+    }
+    .diagram-example code {
+      background: rgba(0, 162, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: #00a2ff;
+    }
+
+    /* Финальный блок */
+    .final-key {
+      margin-top: 30px;
+      padding: 25px;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 10px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .final-key:before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(to right, #00a2ff, #d4af37, #00a2ff);
+    }
+    .final-key-title {
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .final-key-description {
+      color: #a0c0d0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    .key-parameter {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.15);
+      color: #d4af37;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .diagram-note {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #557585;
+      font-size: 0.85rem;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* Кнопки действий */
+    .article-actions {
+      text-align: center;
+      margin: 60px 0;
+      padding: 30px;
+      background: rgba(10, 30, 45, 0.4);
+      border-radius: 8px;
+      border: 1px solid rgba(0, 162, 255, 0.2);
+    }
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    .btn-primary, .btn-secondary {
+      padding: 15px 30px;
+      font-family: 'Oswald', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      border: 1px solid;
+      text-align: center;
+      min-width: 180px;
+    }
+    .btn-primary {
+      background: linear-gradient(to bottom, #006ba6, #004d7a);
+      color: #e6f0ff;
+      border-color: #00a2ff;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(to bottom, #0088cc, #006ba6);
+      box-shadow: 0 0 20px rgba(0, 162, 255, 0.4);
+      transform: translateY(-3px);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: #8ab0c5;
+      border-color: rgba(138, 176, 197, 0.4);
+    }
+    .btn-secondary:hover {
+      border-color: #8ab0c5;
+      color: #a0c0d0;
+    }
+
+    /* Дополнительный материал */
+    .advanced-section {
+      margin: 40px 0;
+      padding: 20px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 8px;
+      background: rgba(212, 175, 55, 0.05);
+    }
+    .advanced-section summary {
+      cursor: pointer;
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      list-style: none;
+      padding: 10px;
+    }
+    .advanced-section summary::before {
+      content: '▶';
+      margin-right: 10px;
+      display: inline-block;
+      transition: transform 0.3s;
+    }
+    .advanced-section[open] summary::before { transform: rotate(90deg); }
+    .advanced-content {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .advanced-content h3 {
+      color: #d4af37;
+      margin: 15px 0 10px;
+      font-family: 'Oswald', sans-serif;
+    }
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .topic-card {
+      background: rgba(5, 20, 30, 0.6);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 6px;
+      padding: 15px;
+      text-align: left;
+    }
+    .topic-card h4 {
+      color: #d4af37;
+      margin-bottom: 8px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+    }
+    .topic-card p {
+      font-size: 0.9rem;
+      color: #8ab0c5;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Футер */
+    .theory-footer {
+      text-align: center;
+      margin-top: auto;
+      padding: 30px 20px;
+      border-top: 1px solid rgba(0, 162, 255, 0.2);
+      color: #557585;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      background: #0a1a2a;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+      .theory-container { padding: 20px 15px; margin-bottom: 40px; }
+      .article-title { font-size: 2.2rem; }
+      .content-block { padding: 20px; margin: 40px 0; }
+      .step { flex-direction: column; gap: 15px; }
+      .action-buttons { flex-direction: column; align-items: center; gap: 15px; }
+      .btn-primary, .btn-secondary { width: 100%; max-width: 300px; padding: 12px 20px; }
+      .nav-links { flex-direction: row; gap: 15px; flex-wrap: wrap; justify-content: center; }
+      .article-actions { margin: 40px 0 20px; padding: 20px 15px; }
+      .article-meta { flex-direction: column; gap: 10px; }
+      .topics-grid { grid-template-columns: 1fr; }
+      .theory-nav { flex-direction: column; gap: 15px; padding: 15px; }
+      .polybius-diagram { padding: 20px; margin: 30px auto; }
+      .diagram-grid { gap: 15px; }
+      .final-key { padding: 20px 15px; }
+    }
+    @media (max-width: 480px) {
+      .article-title { font-size: 1.8rem; }
+      .article-subtitle { font-size: 1.1rem; }
+      .content-block h2 { font-size: 1.5rem; }
+      .nav-logo { font-size: 1.5rem; }
+      .nav-link { padding: 6px 10px; font-size: 0.8rem; flex: 1; text-align: center; }
+      .btn-primary, .btn-secondary { min-width: auto; padding: 12px 15px; font-size: 0.9rem; }
+      .theory-footer { padding: 20px 15px; font-size: 0.8rem; }
+      .lang-switch { top: 8px; right: 8px; }
+      .lang-btn { font-size: 0.65rem; padding: 3px 7px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="lang-switch" role="group" aria-label="Language">
+    <button class="lang-btn" data-lang-btn="ru">RU</button>
+    <button class="lang-btn" data-lang-btn="en">EN</button>
+    <button class="lang-btn" data-lang-btn="es">ES</button>
+  </div>
+
+  <!-- Навигация -->
+  <nav class="theory-nav">
+    <a href="https://ludus-lab.ru/" class="nav-logo">LUDUS LAB</a>
+    <div class="nav-links">
+      <a href="https://ludus-lab.ru/" class="nav-link" data-i18n="nav.home">Главная</a>
+      <a href="https://ludus-lab.ru/games/polybius/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+    </div>
+  </nav>
+
+  <!-- Основной контент -->
+  <div class="theory-container">
+    <!-- Заголовок статьи -->
+    <header class="article-header">
+      <div class="article-category" data-i18n="article.category">Античная криптография</div>
+      <h1 class="article-title" data-i18n="article.title">Квадрат Полибия</h1>
+      <p class="article-subtitle" data-i18n="article.subtitle">
+        Древнейший координатный шифр, который превращает буквы в числа и до сих пор вдохновляет создателей кодов
+      </p>
+      <div class="article-meta">
+        <div class="meta-item" data-i18n="meta.readtime">⏱️ 5 мин чтения</div>
+        <div class="meta-item" data-i18n="meta.level">📊 Базовый уровень</div>
+        <div class="meta-item" data-i18n="meta.era">🗝️ II век до н.э.</div>
+      </div>
+    </header>
+
+    <!-- Блок "Зачем это нужно?" -->
+    <section class="content-block">
+      <h2 data-i18n="block1.heading">Зачем это нужно?</h2>
+      <p data-i18n="block1.p1">Представьте: вы — <span class="highlight">Полибий</span>, греческий историк и стратег. Вам нужно передать сигналы между отрядами на большие расстояния — факелами или флагами. Как закодировать все буквы алфавита простыми и надёжными сигналами?</p>
+
+      <p data-i18n="block1.p2">Полибий предложил гениальное решение: <span class="highlight">квадратную таблицу</span>, где каждая буква получает пару чисел — номер строки и номер столбца. Достаточно передать два числа, и получатель восстановит букву. Так родился один из первых в истории шифров, который до сих пор используется в учебных и развлекательных целях.</p>
+
+      <p data-i18n="block1.p3">В отличие от шифра Цезаря (простая замена), квадрат Полибия <span class="highlight">превращает буквы в пары чисел</span>. Это не только скрывает смысл, но и удобно для передачи любыми средствами: дымом, светом, звуком. А если менять порядок букв в таблице, стойкость шифра возрастает многократно.</p>
+    </section>
+
+    <!-- Блок "Как это работает?" -->
+    <section class="content-block">
+      <h2 data-i18n="block2.heading">Как это работает?</h2>
+
+      <p data-i18n="block2.intro">Основа шифра — <span class="highlight">квадратная таблица</span>, заполненная буквами алфавита. Для русского языка обычно используют таблицу <span class="highlight">6×6</span> (33 буквы + Ё), для английского — <span class="highlight">5×5</span> (буквы I и J объединяют). Строки и столбцы нумеруются от 1.</p>
+
+      <div class="explanation-steps">
+        <!-- Шаг 1 -->
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3 data-i18n="step1.title">Построение квадрата</h3>
+            <p data-i18n="step1.text">Буквы алфавита записываются построчно. Например, русский вариант (6×6):</p>
+            <div style="background:rgba(0,20,40,0.6); padding:10px; border-radius:4px; font-family:monospace; font-size:0.9rem; margin:10px 0; display:grid; grid-template-columns:repeat(6,1fr); gap:4px; text-align:center;">
+              <span>А(1,1)</span><span>Б(1,2)</span><span>В(1,3)</span><span>Г(1,4)</span><span>Д(1,5)</span><span>Е(1,6)</span>
+              <span>Ё(2,1)</span><span>Ж(2,2)</span><span>З(2,3)</span><span>И(2,4)</span><span>Й(2,5)</span><span>К(2,6)</span>
+              <span>Л(3,1)</span><span>М(3,2)</span><span>Н(3,3)</span><span>О(3,4)</span><span>П(3,5)</span><span>Р(3,6)</span>
+              <span>С(4,1)</span><span>Т(4,2)</span><span>У(4,3)</span><span>Ф(4,4)</span><span>Х(4,5)</span><span>Ц(4,6)</span>
+              <span>Ч(5,1)</span><span>Ш(5,2)</span><span>Щ(5,3)</span><span>Ъ(5,4)</span><span>Ы(5,5)</span><span>Ь(5,6)</span>
+              <span>Э(6,1)</span><span>Ю(6,2)</span><span>Я(6,3)</span><span>·</span><span>·</span><span>·</span>
+            </div>
+            <p style="font-size:0.85rem; font-style:italic; color:#557585; margin-top:8px;" data-i18n="step1.note">Пример показан для русского алфавита — в самой игре можно выбрать и английский.</p>
+          </div>
+        </div>
+
+        <!-- Шаг 2 -->
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3 data-i18n="step2.title">Шифрование буквы → координаты</h3>
+            <p data-i18n="step2.text">Каждая буква заменяется парой чисел: номер строки и номер столбца. Например, буква «С» находится в строке 4, столбце 1 → шифр «41».</p>
+            <div style="background:rgba(0,20,40,0.6); padding:10px; border-radius:4px; font-family:monospace; margin:10px 0; text-align:center;">
+              <span>ПРИВЕТ → 35 32 11 23 15 42</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Шаг 3 -->
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3 data-i18n="step3.title">Передача и расшифровка</h3>
+            <p data-i18n="step3.text">Получатель, зная ту же таблицу, разбивает шифротекст на пары чисел. Для каждой пары находит строку и столбец, читает букву на пересечении. Так восстанавливается исходное сообщение.</p>
+            <p data-i18n="step3.example"><strong>Пример:</strong> «35» → строка 3, столбец 5 → буква «П».</p>
+          </div>
+        </div>
+
+        <!-- Шаг 4 -->
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3 data-i18n="step4.title">Секретная таблица</h3>
+            <p data-i18n="step4.text">Стойкость шифра можно увеличить, <span class="highlight">перемешав буквы</span> в таблице. Если противник не знает расположения букв, даже имея шифротекст, он не сможет восстановить сообщение. Так появляется дополнительный ключ — порядок заполнения квадрата.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ДИАГРАММА ПОЛИБИЯ -->
+      <div class="polybius-diagram">
+        <div class="diagram-title" data-i18n="diagram.title">Схема работы квадрата Полибия</div>
+
+        <div class="diagram-grid">
+          <!-- Карточка шифрования -->
+          <div class="diagram-card">
+            <div class="diagram-card-title" data-i18n="diagram.encrypt.title">
+              🔐 Шифрование (буква → числа)
+            </div>
+            <div class="diagram-example" data-i18n="diagram.encrypt.example">
+              <strong>Пример:</strong><br>
+              Буква <code>М</code> (русский алфавит)<br>
+              Находим в таблице: строка 3, столбец 2<br>
+              <span class="gold-highlight">Шифр: 32</span>
+            </div>
+            <div class="diagram-example" style="margin-top:10px;" data-i18n="diagram.encrypt.formula">
+              <strong>Формула:</strong><br>
+              <code>C = (row, col)</code>, где row, col — координаты буквы в таблице.
+            </div>
+          </div>
+
+          <!-- Карточка расшифровки -->
+          <div class="diagram-card">
+            <div class="diagram-card-title" data-i18n="diagram.decrypt.title">
+              🔓 Расшифровка (числа → буква)
+            </div>
+            <div class="diagram-example" data-i18n="diagram.decrypt.example">
+              <strong>Пример:</strong><br>
+              Шифр <code>54</code><br>
+              Находим в таблице: строка 5, столбец 4<br>
+              <span class="gold-highlight">Буква: ъ</span>
+            </div>
+            <div class="diagram-example" style="margin-top:10px;" data-i18n="diagram.decrypt.formula">
+              <strong>Формула:</strong><br>
+              <code>P = table[row][col]</code>, идём от обратного, от координат к букве.
+            </div>
+          </div>
+        </div>
+
+        <!-- Финальный блок -->
+        <div class="final-key">
+          <div class="final-key-title" data-i18n="diagram.final.title">Почему это гениально?</div>
+          <div class="final-key-description" data-i18n="diagram.final.desc">
+            Квадрат Полибия — первая в истории <strong>система координатного шифрования</strong>. Она позволяет передавать любые буквы через простые сигналы (два числа), не требует сложных вычислений и легко масштабируется. Даже сейчас этот принцип используется в QR-кодах и клеточных координатах.
+          </div>
+          <div class="key-parameter" data-i18n="diagram.final.param">Простота + надёжность = классика криптографии</div>
+        </div>
+
+        <div class="diagram-note" data-i18n="diagram.note">
+          * В нашей игре вы сможете пошагово увидеть, как каждая буква превращается в координаты, а таблица подсвечивается зелёным и синим цветами.
+        </div>
+      </div>
+      <!-- КОНЕЦ ДИАГРАММЫ -->
+
+      <div class="key-insight">
+        <strong data-i18n="insight.label">Ключевая мысль:</strong>
+        <span data-i18n="insight.text"><span class="highlight">Квадрат Полибия превращает буквы в числа, а числа — обратно в буквы</span>. Это открыло путь к созданию всех последующих шифров замены и матричных систем. Его легко реализовать вручную, но при этом он даёт защиту от случайного прочтения.</span>
+      </div>
+    </section>
+
+    <!-- Блок "А теперь — главная магия" -->
+    <section class="content-block">
+      <h2 data-i18n="block3.heading">А теперь — главная магия</h2>
+      <p data-i18n="block3.intro">Что вы <span class="highlight">сделаете</span> в интерактивной симуляции?</p>
+
+      <ul class="action-list">
+        <li>
+          <span class="action-icon">⌨️</span>
+          <div class="action-text" data-i18n="action1">
+            <span>Вы <strong>введёте своё сообщение</strong> на русском или английском — игра автоматически проверит допустимые символы</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">🔠</span>
+          <div class="action-text" data-i18n="action2">
+            <span>Вы <strong>выберете алфавит</strong> (русский 6×6 или английский 5×5) и увидите соответствующую таблицу</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">📊</span>
+          <div class="action-text" data-i18n="action3">
+            <span>Вы <strong>запустите пошаговое шифрование</strong> — для каждой буквы подсветится её ячейка (зелёным), а затем строка и столбец (синим)</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">📡</span>
+          <div class="action-text" data-i18n="action4">
+            <span>Вы <strong>отправите шифротекст Бобу</strong> через визуализированный канал связи — координаты передаются по открытому каналу</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">🔍</span>
+          <div class="action-text" data-i18n="action5">
+            <span>Вы <strong>расшифруете сообщение</strong> в обратном порядке: каждая пара чисел снова подсветит строку, столбец и итоговую букву</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">✅</span>
+          <div class="action-text" data-i18n="action6">
+            <span>Вы <strong>убедитесь в успешной передаче</strong> — система сравнит исходное и расшифрованное сообщения</span>
+          </div>
+        </li>
+      </ul>
+
+      <p data-i18n="block3.outro">В игре вы не просто читаете о квадрате Полибия — вы <span class="highlight">проживаете весь процесс шифрования и дешифровки</span>. Визуальная анимация таблицы поможет навсегда запомнить этот древний, но гениальный метод.</p>
+    </section>
+
+    <!-- Дополнительный материал -->
+    <details class="advanced-section">
+      <summary data-i18n="advanced.summary">Для любознательных</summary>
+      <div class="advanced-content">
+        <h3 data-i18n="advanced.history.heading">Историческая справка</h3>
+        <p data-i18n="advanced.history.text">Греческий историк <strong>Полибий</strong> (ок. 200–118 гг. до н.э.) описал этот метод в труде «Всеобщая история». Он использовал квадрат для передачи сигналов факелами: 5×5 таблица греческого алфавита, где строки и столбцы обозначались количеством факелов. Так можно было передать любую букву на расстояние до нескольких километров.</p>
+
+        <h3 data-i18n="advanced.relevance.heading">Почему шифр до сих пор актуален?</h3>
+        <p data-i18n="advanced.relevance.text">Квадрат Полибия — основа для многих более сложных шифров. Например, в Первой мировой войне использовался <strong>шифр ADFGVX</strong>, основанный на 6×6 таблице с буквами A,D,F,G,V,X. Также этот метод используется в <strong>криптографических головоломках</strong>, QR-кодах (как способ кодирования данных) и даже в обучении детей основам шифрования.</p>
+
+        <h3 data-i18n="advanced.topics.heading">Темы для углублённого изучения</h3>
+        <div class="topics-grid">
+          <div class="topic-card">
+            <h4 data-i18n="topic1.title">Шифр ADFGVX</h4>
+            <p data-i18n="topic1.desc">Немецкий полевой шифр Первой мировой войны, использующий квадрат Полибия и последующую транспозицию.</p>
+          </div>
+          <div class="topic-card">
+            <h4 data-i18n="topic2.title">Координатное кодирование</h4>
+            <p data-i18n="topic2.desc">Как принцип координат применяется в современной цифровой связи: от GPS до QR-кодов.</p>
+          </div>
+          <div class="topic-card">
+            <h4 data-i18n="topic3.title">Модификации таблицы</h4>
+            <p data-i18n="topic3.desc">Перестановка букв, использование ключевых слов для заполнения квадрата — усиление стойкости шифра.</p>
+          </div>
+          <div class="topic-card">
+            <h4 data-i18n="topic4.title">Криптоанализ квадрата Полибия</h4>
+            <p data-i18n="topic4.desc">Как взломать шифр, если известна частота появления координат, и как этого избежать.</p>
+          </div>
+          <div class="topic-card">
+            <h4 data-i18n="topic5.title">От Полибия до RSA</h4>
+            <p data-i18n="topic5.desc">Эволюция шифров: от простых замен до асимметричной криптографии.</p>
+          </div>
+        </div>
+
+        <h3 data-i18n="advanced.practical.heading">Практическое применение сегодня</h3>
+        <ul style="margin-left: 20px; color: #a0c0d0;">
+          <li data-i18n="practical1">Обучение основам криптографии в школах и на курсах</li>
+          <li data-i18n="practical2">Элемент CTF-соревнований (Capture The Flag)</li>
+          <li data-i18n="practical3">Создание настольных криптографических квестов и головоломок</li>
+          <li data-i18n="practical4">Демонстрация принципа «кодирование информации через координаты»</li>
+        </ul>
+      </div>
+    </details>
+
+    <!-- Кнопки действий -->
+    <div class="article-actions" id="article-actions">
+      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">
+        Теперь, когда вы поняли принцип координатного шифрования, самое время опробовать его в деле!
+      </p>
+
+      <div class="action-buttons">
+        <a href="https://ludus-lab.ru/games/polybius/index.html" class="btn-primary" data-i18n="actions.play">▶ Перейти к игре</a>
+        <a href="https://ludus-lab.ru/#theory-section" class="btn-secondary" data-i18n="actions.back">← Вернуться к списку тем</a>
+      </div>
+
+      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">
+        В интерактивной симуляции вы сможете зашифровать своё сообщение, наблюдая за анимацией таблицы в реальном времени.
+      </p>
+    </div>
+  </div>
+
+  <!-- Футер -->
+  <footer class="theory-footer">
+    <p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
+    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Эта статья — упрощённое объяснение для понимания принципов. Реальные криптографические системы используют более сложные алгоритмы.</p>
+  </footer>
+
+  <script>
+    const I18N = {
+      ru: {
+        'meta.title': 'Квадрат Полибия: теория | Ludus Lab',
+        'meta.description': 'Объяснение древнего шифра Полибия — координатного метода шифрования. Как работает таблица, почему она надёжна и как применялась в истории.',
+        'nav.home': 'Главная', 'nav.play': 'Играть',
+        'article.category': 'Античная криптография',
+        'article.title': 'Квадрат Полибия',
+        'article.subtitle': 'Древнейший координатный шифр, который превращает буквы в числа и до сих пор вдохновляет создателей кодов',
+        'meta.readtime': '⏱️ 5 мин чтения', 'meta.level': '📊 Базовый уровень', 'meta.era': '🗝️ II век до н.э.',
+        'block1.heading': 'Зачем это нужно?',
+        'block1.p1': 'Представьте: вы — <span class="highlight">Полибий</span>, греческий историк и стратег. Вам нужно передать сигналы между отрядами на большие расстояния — факелами или флагами. Как закодировать все буквы алфавита простыми и надёжными сигналами?',
+        'block1.p2': 'Полибий предложил гениальное решение: <span class="highlight">квадратную таблицу</span>, где каждая буква получает пару чисел — номер строки и номер столбца. Достаточно передать два числа, и получатель восстановит букву. Так родился один из первых в истории шифров, который до сих пор используется в учебных и развлекательных целях.',
+        'block1.p3': 'В отличие от шифра Цезаря (простая замена), квадрат Полибия <span class="highlight">превращает буквы в пары чисел</span>. Это не только скрывает смысл, но и удобно для передачи любыми средствами: дымом, светом, звуком. А если менять порядок букв в таблице, стойкость шифра возрастает многократно.',
+        'block2.heading': 'Как это работает?',
+        'block2.intro': 'Основа шифра — <span class="highlight">квадратная таблица</span>, заполненная буквами алфавита. Для русского языка обычно используют таблицу <span class="highlight">6×6</span> (33 буквы + Ё), для английского — <span class="highlight">5×5</span> (буквы I и J объединяют). Строки и столбцы нумеруются от 1.',
+        'step1.title': 'Построение квадрата',
+        'step1.text': 'Буквы алфавита записываются построчно. Например, русский вариант (6×6):',
+        'step1.note': 'Пример показан для русского алфавита — в самой игре можно выбрать и английский.',
+        'step2.title': 'Шифрование буквы → координаты',
+        'step2.text': 'Каждая буква заменяется парой чисел: номер строки и номер столбца. Например, буква «С» находится в строке 4, столбце 1 → шифр «41».',
+        'step3.title': 'Передача и расшифровка',
+        'step3.text': 'Получатель, зная ту же таблицу, разбивает шифротекст на пары чисел. Для каждой пары находит строку и столбец, читает букву на пересечении. Так восстанавливается исходное сообщение.',
+        'step3.example': '<strong>Пример:</strong> «35» → строка 3, столбец 5 → буква «П».',
+        'step4.title': 'Секретная таблица',
+        'step4.text': 'Стойкость шифра можно увеличить, <span class="highlight">перемешав буквы</span> в таблице. Если противник не знает расположения букв, даже имея шифротекст, он не сможет восстановить сообщение. Так появляется дополнительный ключ — порядок заполнения квадрата.',
+        'diagram.title': 'Схема работы квадрата Полибия',
+        'diagram.encrypt.title': '🔐 Шифрование (буква → числа)',
+        'diagram.encrypt.example': '<strong>Пример:</strong><br>Буква <code>М</code> (русский алфавит)<br>Находим в таблице: строка 3, столбец 2<br><span class="gold-highlight">Шифр: 32</span>',
+        'diagram.encrypt.formula': '<strong>Формула:</strong><br><code>C = (row, col)</code>, где row, col — координаты буквы в таблице.',
+        'diagram.decrypt.title': '🔓 Расшифровка (числа → буква)',
+        'diagram.decrypt.example': '<strong>Пример:</strong><br>Шифр <code>54</code><br>Находим в таблице: строка 5, столбец 4<br><span class="gold-highlight">Буква: ъ</span>',
+        'diagram.decrypt.formula': '<strong>Формула:</strong><br><code>P = table[row][col]</code>, идём от обратного, от координат к букве.',
+        'diagram.final.title': 'Почему это гениально?',
+        'diagram.final.desc': 'Квадрат Полибия — первая в истории <strong>система координатного шифрования</strong>. Она позволяет передавать любые буквы через простые сигналы (два числа), не требует сложных вычислений и легко масштабируется. Даже сейчас этот принцип используется в QR-кодах и клеточных координатах.',
+        'diagram.final.param': 'Простота + надёжность = классика криптографии',
+        'diagram.note': '* В нашей игре вы сможете пошагово увидеть, как каждая буква превращается в координаты, а таблица подсвечивается зелёным и синим цветами.',
+        'insight.label': 'Ключевая мысль:',
+        'insight.text': '<span class="highlight">Квадрат Полибия превращает буквы в числа, а числа — обратно в буквы</span>. Это открыло путь к созданию всех последующих шифров замены и матричных систем. Его легко реализовать вручную, но при этом он даёт защиту от случайного прочтения.',
+        'block3.heading': 'А теперь — главная магия',
+        'block3.intro': 'Что вы <span class="highlight">сделаете</span> в интерактивной симуляции?',
+        'action1': 'Вы <strong>введёте своё сообщение</strong> на русском или английском — игра автоматически проверит допустимые символы',
+        'action2': 'Вы <strong>выберете алфавит</strong> (русский 6×6 или английский 5×5) и увидите соответствующую таблицу',
+        'action3': 'Вы <strong>запустите пошаговое шифрование</strong> — для каждой буквы подсветится её ячейка (зелёным), а затем строка и столбец (синим)',
+        'action4': 'Вы <strong>отправите шифротекст Бобу</strong> через визуализированный канал связи — координаты передаются по открытому каналу',
+        'action5': 'Вы <strong>расшифруете сообщение</strong> в обратном порядке: каждая пара чисел снова подсветит строку, столбец и итоговую букву',
+        'action6': 'Вы <strong>убедитесь в успешной передаче</strong> — система сравнит исходное и расшифрованное сообщения',
+        'block3.outro': 'В игре вы не просто читаете о квадрате Полибия — вы <span class="highlight">проживаете весь процесс шифрования и дешифровки</span>. Визуальная анимация таблицы поможет навсегда запомнить этот древний, но гениальный метод.',
+        'advanced.summary': 'Для любознательных',
+        'advanced.history.heading': 'Историческая справка',
+        'advanced.history.text': 'Греческий историк <strong>Полибий</strong> (ок. 200–118 гг. до н.э.) описал этот метод в труде «Всеобщая история». Он использовал квадрат для передачи сигналов факелами: 5×5 таблица греческого алфавита, где строки и столбцы обозначались количеством факелов. Так можно было передать любую букву на расстояние до нескольких километров.',
+        'advanced.relevance.heading': 'Почему шифр до сих пор актуален?',
+        'advanced.relevance.text': 'Квадрат Полибия — основа для многих более сложных шифров. Например, в Первой мировой войне использовался <strong>шифр ADFGVX</strong>, основанный на 6×6 таблице с буквами A,D,F,G,V,X. Также этот метод используется в <strong>криптографических головоломках</strong>, QR-кодах (как способ кодирования данных) и даже в обучении детей основам шифрования.',
+        'advanced.topics.heading': 'Темы для углублённого изучения',
+        'topic1.title': 'Шифр ADFGVX', 'topic1.desc': 'Немецкий полевой шифр Первой мировой войны, использующий квадрат Полибия и последующую транспозицию.',
+        'topic2.title': 'Координатное кодирование', 'topic2.desc': 'Как принцип координат применяется в современной цифровой связи: от GPS до QR-кодов.',
+        'topic3.title': 'Модификации таблицы', 'topic3.desc': 'Перестановка букв, использование ключевых слов для заполнения квадрата — усиление стойкости шифра.',
+        'topic4.title': 'Криптоанализ квадрата Полибия', 'topic4.desc': 'Как взломать шифр, если известна частота появления координат, и как этого избежать.',
+        'topic5.title': 'От Полибия до RSA', 'topic5.desc': 'Эволюция шифров: от простых замен до асимметричной криптографии.',
+        'advanced.practical.heading': 'Практическое применение сегодня',
+        'practical1': 'Обучение основам криптографии в школах и на курсах',
+        'practical2': 'Элемент CTF-соревнований (Capture The Flag)',
+        'practical3': 'Создание настольных криптографических квестов и головоломок',
+        'practical4': 'Демонстрация принципа «кодирование информации через координаты»',
+        'actions.intro': 'Теперь, когда вы поняли принцип координатного шифрования, самое время опробовать его в деле!',
+        'actions.play': '▶ Перейти к игре', 'actions.back': '← Вернуться к списку тем',
+        'actions.outro': 'В интерактивной симуляции вы сможете зашифровать своё сообщение, наблюдая за анимацией таблицы в реальном времени.',
+        'footer.line1': '© 2025 Ludus Lab · Сложные вещи простыми играми',
+        'footer.line2': 'Эта статья — упрощённое объяснение для понимания принципов. Реальные криптографические системы используют более сложные алгоритмы.',
+      },
+      en: {
+        'meta.title': 'Polybius Square: Theory | Ludus Lab',
+        'meta.description': 'An explanation of the ancient Polybius cipher — a coordinate-based encryption method. How the table works, why it is secure, and how it was used historically.',
+        'nav.home': 'Home', 'nav.play': 'Play',
+        'article.category': 'Ancient cryptography',
+        'article.title': 'Polybius Square',
+        'article.subtitle': 'The oldest coordinate cipher, turning letters into numbers — still inspiring code designers today',
+        'meta.readtime': '⏱️ 5 min read', 'meta.level': '📊 Basic level', 'meta.era': '🗝️ 2nd century BCE',
+        'block1.heading': 'Why do we need this?',
+        'block1.p1': 'Imagine you are <span class="highlight">Polybius</span>, a Greek historian and strategist. You need to send signals between troops over long distances — using torches or flags. How do you encode every letter of the alphabet with simple, reliable signals?',
+        'block1.p2': 'Polybius came up with a brilliant solution: a <span class="highlight">square table</span> where every letter gets a pair of numbers — a row number and a column number. Just send two numbers, and the receiver can reconstruct the letter. That is how one of the earliest ciphers in history was born — one still used today for teaching and for fun.',
+        'block1.p3': 'Unlike the Caesar cipher (a simple substitution), the Polybius square <span class="highlight">turns letters into pairs of numbers</span>. This not only hides the meaning but is also convenient to transmit by any means: smoke, light, sound. And if you shuffle the order of letters in the table, the cipher\'s strength increases dramatically.',
+        'block2.heading': 'How does it work?',
+        'block2.intro': 'The basis of the cipher is a <span class="highlight">square table</span> filled with the letters of an alphabet. For Russian, a <span class="highlight">6×6</span> table is typically used (33 letters + Ё); for English, a <span class="highlight">5×5</span> table (letters I and J are merged). Rows and columns are numbered starting from 1.',
+        'step1.title': 'Building the square',
+        'step1.text': 'The letters of the alphabet are written row by row. For example, the Russian version (6×6):',
+        'step1.note': 'The example below uses the Russian alphabet — the game itself also lets you pick an English layout.',
+        'step2.title': 'Encrypting a letter → coordinates',
+        'step2.text': 'Every letter is replaced with a pair of numbers: a row number and a column number. For example, the letter "С" sits at row 4, column 1 → cipher "41".',
+        'step3.title': 'Transmission and decryption',
+        'step3.text': 'Knowing the same table, the receiver splits the ciphertext into pairs of numbers. For each pair, they find the row and column and read the letter at the intersection. That is how the original message is recovered.',
+        'step3.example': '<strong>Example:</strong> "35" → row 3, column 5 → letter "П".',
+        'step4.title': 'A secret table',
+        'step4.text': 'The cipher\'s strength can be increased by <span class="highlight">shuffling the letters</span> in the table. If an attacker doesn\'t know the layout, even with the ciphertext in hand they can\'t recover the message. This gives you an extra key — the order in which the square is filled.',
+        'diagram.title': 'How the Polybius square works',
+        'diagram.encrypt.title': '🔐 Encryption (letter → numbers)',
+        'diagram.encrypt.example': '<strong>Example:</strong><br>Letter <code>М</code> (Russian alphabet)<br>Found in the table: row 3, column 2<br><span class="gold-highlight">Cipher: 32</span>',
+        'diagram.encrypt.formula': '<strong>Formula:</strong><br><code>C = (row, col)</code>, where row, col are the letter\'s coordinates in the table.',
+        'diagram.decrypt.title': '🔓 Decryption (numbers → letter)',
+        'diagram.decrypt.example': '<strong>Example:</strong><br>Cipher <code>54</code><br>Found in the table: row 5, column 4<br><span class="gold-highlight">Letter: ъ</span>',
+        'diagram.decrypt.formula': '<strong>Formula:</strong><br><code>P = table[row][col]</code>, working backwards from coordinates to a letter.',
+        'diagram.final.title': 'Why is this brilliant?',
+        'diagram.final.desc': 'The Polybius square is history\'s first <strong>coordinate-based encryption system</strong>. It lets you transmit any letter through simple signals (two numbers), requires no complex computation, and scales easily. Even today, this principle is used in QR codes and grid coordinates.',
+        'diagram.final.param': 'Simplicity + reliability = a cryptography classic',
+        'diagram.note': '* In our game you can watch step by step as each letter turns into coordinates, with the table highlighted in green and blue.',
+        'insight.label': 'Key takeaway:',
+        'insight.text': '<span class="highlight">The Polybius square turns letters into numbers, and numbers back into letters</span>. This opened the way to every later substitution cipher and matrix-based system. It\'s easy to do by hand, yet it protects against casual reading.',
+        'block3.heading': 'Now for the real magic',
+        'block3.intro': 'What will you <span class="highlight">actually do</span> in the interactive simulation?',
+        'action1': 'You\'ll <strong>type your own message</strong> in Russian or English — the game automatically checks for valid characters',
+        'action2': 'You\'ll <strong>choose an alphabet</strong> (Russian 6×6 or English 5×5) and see the matching table',
+        'action3': 'You\'ll <strong>run step-by-step encryption</strong> — each letter\'s cell lights up in green, then its row and column in blue',
+        'action4': 'You\'ll <strong>send the ciphertext to Bob</strong> over a visualized channel — the coordinates travel over an open channel',
+        'action5': 'You\'ll <strong>decrypt the message</strong> in reverse: each pair of numbers again lights up a row, a column, and the resulting letter',
+        'action6': 'You\'ll <strong>confirm a successful transfer</strong> — the system compares the original and decrypted messages',
+        'block3.outro': 'In the game you don\'t just read about the Polybius square — you <span class="highlight">live through the whole encryption and decryption process</span>. The table\'s visual animation will help this ancient but brilliant method stick with you for good.',
+        'advanced.summary': 'For the curious',
+        'advanced.history.heading': 'Historical background',
+        'advanced.history.text': 'The Greek historian <strong>Polybius</strong> (c. 200–118 BCE) described this method in his work "The Histories." He used the square to send signals with torches: a 5×5 table of the Greek alphabet, where the number of torches indicated row and column. This let you transmit any letter over a distance of several kilometers.',
+        'advanced.relevance.heading': 'Why is the cipher still relevant?',
+        'advanced.relevance.text': 'The Polybius square is the foundation for many more complex ciphers. For example, World War I saw the use of the <strong>ADFGVX cipher</strong>, based on a 6×6 table with the letters A, D, F, G, V, X. The method is also used in <strong>cryptography puzzles</strong>, in QR codes (as a way to encode data), and even in teaching children the basics of encryption.',
+        'advanced.topics.heading': 'Topics for further study',
+        'topic1.title': 'The ADFGVX cipher', 'topic1.desc': 'A German WWI field cipher that used the Polybius square followed by a transposition step.',
+        'topic2.title': 'Coordinate encoding', 'topic2.desc': 'How the coordinate principle shows up in modern digital communication: from GPS to QR codes.',
+        'topic3.title': 'Table modifications', 'topic3.desc': 'Shuffling letters, using keywords to fill the square — ways to strengthen the cipher.',
+        'topic4.title': 'Cryptanalysis of the Polybius square', 'topic4.desc': 'How to break the cipher if you know the frequency of coordinate pairs, and how to avoid that.',
+        'topic5.title': 'From Polybius to RSA', 'topic5.desc': 'The evolution of ciphers: from simple substitution to asymmetric cryptography.',
+        'advanced.practical.heading': 'Practical uses today',
+        'practical1': 'Teaching the basics of cryptography in schools and courses',
+        'practical2': 'An element of CTF (Capture The Flag) competitions',
+        'practical3': 'Creating tabletop cryptography quests and puzzles',
+        'practical4': 'Demonstrating the principle of "encoding information through coordinates"',
+        'actions.intro': 'Now that you understand the principle of coordinate encryption, it\'s the perfect time to try it for yourself!',
+        'actions.play': '▶ Go to the game', 'actions.back': '← Back to the topic list',
+        'actions.outro': 'In the interactive simulation you can encrypt your own message while watching the table animate in real time.',
+        'footer.line1': '© 2025 Ludus Lab · Complex things through simple games',
+        'footer.line2': 'This article is a simplified explanation meant to convey the principles. Real cryptographic systems use far more complex algorithms.',
+      },
+      es: {
+        'meta.title': 'Cuadrado de Polibio: teoría | Ludus Lab',
+        'meta.description': 'Explicación del antiguo cifrado de Polibio, un método de cifrado por coordenadas. Cómo funciona la tabla, por qué es segura y cómo se usó históricamente.',
+        'nav.home': 'Inicio', 'nav.play': 'Jugar',
+        'article.category': 'Criptografía antigua',
+        'article.title': 'Cuadrado de Polibio',
+        'article.subtitle': 'El cifrado de coordenadas más antiguo, que convierte letras en números y sigue inspirando a los creadores de códigos',
+        'meta.readtime': '⏱️ 5 min de lectura', 'meta.level': '📊 Nivel básico', 'meta.era': '🗝️ Siglo II a.C.',
+        'block1.heading': '¿Para qué sirve esto?',
+        'block1.p1': 'Imagina que eres <span class="highlight">Polibio</span>, un historiador y estratega griego. Necesitas enviar señales entre tropas a grandes distancias, con antorchas o banderas. ¿Cómo codificar todas las letras del alfabeto con señales simples y fiables?',
+        'block1.p2': 'Polibio propuso una solución genial: una <span class="highlight">tabla cuadrada</span> donde cada letra recibe un par de números — el número de fila y el de columna. Basta transmitir dos números para que el receptor reconstruya la letra. Así nació uno de los primeros cifrados de la historia, que aún hoy se usa con fines didácticos y de entretenimiento.',
+        'block1.p3': 'A diferencia del cifrado César (una simple sustitución), el cuadrado de Polibio <span class="highlight">convierte las letras en pares de números</span>. Esto no solo oculta el significado, sino que resulta cómodo para transmitirlo por cualquier medio: humo, luz, sonido. Y si se cambia el orden de las letras en la tabla, la fortaleza del cifrado aumenta enormemente.',
+        'block2.heading': '¿Cómo funciona?',
+        'block2.intro': 'La base del cifrado es una <span class="highlight">tabla cuadrada</span> rellena con las letras de un alfabeto. Para el ruso se suele usar una tabla de <span class="highlight">6×6</span> (33 letras + Ё); para el inglés, una de <span class="highlight">5×5</span> (las letras I y J se combinan). Las filas y columnas se numeran desde 1.',
+        'step1.title': 'Construcción del cuadrado',
+        'step1.text': 'Las letras del alfabeto se escriben fila por fila. Por ejemplo, la versión rusa (6×6):',
+        'step1.note': 'El ejemplo se muestra con el alfabeto ruso — en el propio juego también puedes elegir el alfabeto inglés.',
+        'step2.title': 'Cifrar una letra → coordenadas',
+        'step2.text': 'Cada letra se sustituye por un par de números: el número de fila y el de columna. Por ejemplo, la letra «С» está en la fila 4, columna 1 → cifrado «41».',
+        'step3.title': 'Transmisión y descifrado',
+        'step3.text': 'El receptor, conociendo la misma tabla, divide el texto cifrado en pares de números. Para cada par busca la fila y la columna y lee la letra en la intersección. Así se recupera el mensaje original.',
+        'step3.example': '<strong>Ejemplo:</strong> «35» → fila 3, columna 5 → letra «П».',
+        'step4.title': 'Una tabla secreta',
+        'step4.text': 'La fortaleza del cifrado puede aumentarse <span class="highlight">mezclando las letras</span> en la tabla. Si el atacante no conoce la disposición, aunque tenga el texto cifrado no podrá recuperar el mensaje. Así surge una clave adicional: el orden en que se rellena el cuadrado.',
+        'diagram.title': 'Cómo funciona el cuadrado de Polibio',
+        'diagram.encrypt.title': '🔐 Cifrado (letra → números)',
+        'diagram.encrypt.example': '<strong>Ejemplo:</strong><br>Letra <code>М</code> (alfabeto ruso)<br>Se encuentra en la tabla: fila 3, columna 2<br><span class="gold-highlight">Cifrado: 32</span>',
+        'diagram.encrypt.formula': '<strong>Fórmula:</strong><br><code>C = (row, col)</code>, donde row y col son las coordenadas de la letra en la tabla.',
+        'diagram.decrypt.title': '🔓 Descifrado (números → letra)',
+        'diagram.decrypt.example': '<strong>Ejemplo:</strong><br>Cifrado <code>54</code><br>Se encuentra en la tabla: fila 5, columna 4<br><span class="gold-highlight">Letra: ъ</span>',
+        'diagram.decrypt.formula': '<strong>Fórmula:</strong><br><code>P = table[row][col]</code>, yendo a la inversa, de las coordenadas a la letra.',
+        'diagram.final.title': '¿Por qué es genial?',
+        'diagram.final.desc': 'El cuadrado de Polibio es el primer <strong>sistema de cifrado por coordenadas</strong> de la historia. Permite transmitir cualquier letra mediante señales simples (dos números), no requiere cálculos complejos y escala con facilidad. Incluso hoy este principio se usa en los códigos QR y en coordenadas de cuadrícula.',
+        'diagram.final.param': 'Simplicidad + fiabilidad = un clásico de la criptografía',
+        'diagram.note': '* En nuestro juego podrás ver paso a paso cómo cada letra se convierte en coordenadas, mientras la tabla se ilumina en verde y azul.',
+        'insight.label': 'Idea clave:',
+        'insight.text': '<span class="highlight">El cuadrado de Polibio convierte letras en números, y los números de vuelta en letras</span>. Esto abrió camino a todos los cifrados de sustitución y sistemas matriciales posteriores. Es fácil de hacer a mano, pero protege contra una lectura casual.',
+        'block3.heading': 'Y ahora, la verdadera magia',
+        'block3.intro': '¿Qué <span class="highlight">harás</span> en la simulación interactiva?',
+        'action1': '<strong>Escribirás tu propio mensaje</strong> en ruso o inglés — el juego comprueba automáticamente los caracteres válidos',
+        'action2': '<strong>Elegirás un alfabeto</strong> (ruso 6×6 o inglés 5×5) y verás la tabla correspondiente',
+        'action3': '<strong>Ejecutarás el cifrado paso a paso</strong> — la celda de cada letra se iluminará en verde, y luego su fila y columna en azul',
+        'action4': '<strong>Enviarás el texto cifrado a Bob</strong> por un canal visualizado — las coordenadas viajan por un canal abierto',
+        'action5': '<strong>Descifrarás el mensaje</strong> en orden inverso: cada par de números vuelve a iluminar una fila, una columna y la letra resultante',
+        'action6': '<strong>Confirmarás una transmisión exitosa</strong> — el sistema compara el mensaje original con el descifrado',
+        'block3.outro': 'En el juego no solo lees sobre el cuadrado de Polibio: <span class="highlight">vives todo el proceso de cifrado y descifrado</span>. La animación visual de la tabla te ayudará a recordar para siempre este método antiguo pero genial.',
+        'advanced.summary': 'Para los curiosos',
+        'advanced.history.heading': 'Contexto histórico',
+        'advanced.history.text': 'El historiador griego <strong>Polibio</strong> (c. 200–118 a.C.) describió este método en su obra «Historias». Usaba el cuadrado para enviar señales con antorchas: una tabla 5×5 del alfabeto griego, donde el número de antorchas indicaba fila y columna. Así se podía transmitir cualquier letra a varios kilómetros de distancia.',
+        'advanced.relevance.heading': '¿Por qué sigue siendo relevante este cifrado?',
+        'advanced.relevance.text': 'El cuadrado de Polibio es la base de muchos cifrados más complejos. Por ejemplo, en la Primera Guerra Mundial se usó el <strong>cifrado ADFGVX</strong>, basado en una tabla 6×6 con las letras A, D, F, G, V, X. Este método también se usa en <strong>acertijos criptográficos</strong>, en códigos QR (como forma de codificar datos) e incluso para enseñar a los niños los fundamentos del cifrado.',
+        'advanced.topics.heading': 'Temas para profundizar',
+        'topic1.title': 'El cifrado ADFGVX', 'topic1.desc': 'Un cifrado de campo alemán de la Primera Guerra Mundial que usaba el cuadrado de Polibio seguido de una transposición.',
+        'topic2.title': 'Codificación por coordenadas', 'topic2.desc': 'Cómo se aplica el principio de coordenadas en las comunicaciones digitales modernas: del GPS a los códigos QR.',
+        'topic3.title': 'Modificaciones de la tabla', 'topic3.desc': 'Permutar las letras, usar palabras clave para rellenar el cuadrado — formas de reforzar el cifrado.',
+        'topic4.title': 'Criptoanálisis del cuadrado de Polibio', 'topic4.desc': 'Cómo romper el cifrado si se conoce la frecuencia de las coordenadas, y cómo evitarlo.',
+        'topic5.title': 'De Polibio a RSA', 'topic5.desc': 'La evolución de los cifrados: de las sustituciones simples a la criptografía asimétrica.',
+        'advanced.practical.heading': 'Aplicaciones prácticas hoy',
+        'practical1': 'Enseñanza de los fundamentos de la criptografía en escuelas y cursos',
+        'practical2': 'Un elemento de las competiciones CTF (Capture The Flag)',
+        'practical3': 'Creación de juegos de mesa y acertijos criptográficos',
+        'practical4': 'Demostración del principio de «codificar información mediante coordenadas»',
+        'actions.intro': 'Ahora que entiendes el principio del cifrado por coordenadas, ¡es el momento perfecto para probarlo tú mismo!',
+        'actions.play': '▶ Ir al juego', 'actions.back': '← Volver a la lista de temas',
+        'actions.outro': 'En la simulación interactiva podrás cifrar tu propio mensaje mientras observas la tabla animarse en tiempo real.',
+        'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
+        'footer.line2': 'Este artículo es una explicación simplificada para transmitir los principios. Los sistemas criptográficos reales usan algoritmos mucho más complejos.',
+      },
+    };
+
+    function applyLanguage(lang) {
+      if (!I18N[lang]) lang = 'ru';
+      const dict = I18N[lang];
+      document.documentElement.lang = lang;
+      document.title = dict['meta.title'];
+      const descTag = document.getElementById('pageDescription');
+      if (descTag) descTag.setAttribute('content', dict['meta.description']);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.langBtn === lang);
+      });
+      try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn));
+    });
+
+    (function initLanguage() {
+      let saved = null;
+      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      if (!saved) {
+        const browserLang = (navigator.language || 'ru').slice(0, 2);
+        saved = I18N[browserLang] ? browserLang : 'ru';
+      }
+      applyLanguage(saved);
+    })();
+
+    // Плавная прокрутка для якорных ссылок
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 20,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Адаптация для раскрытия details (сохраняем плавность)
+    const detailsElement = document.querySelector('.advanced-section');
+    const articleActions = document.getElementById('article-actions');
+    if (detailsElement && articleActions) {
+      detailsElement.addEventListener('toggle', function() {
+        setTimeout(() => {
+          articleActions.style.marginTop = '40px';
+        }, 10);
+      });
+    }
+  </script>
+</body>
+</html>

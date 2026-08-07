@@ -1,0 +1,2655 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Асимметричная криптография: Цифровые подписи и безопасный обмен</title>
+  <style>
+    /* Шрифты */
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Segoe+UI:wght@400;500&display=swap');
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: linear-gradient(to bottom, #0a1a2a, #050d15);
+      color: #c5d5e0;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 10, 20, 0.8);
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #00a2ff;
+      border-radius: 5px;
+      border: 2px solid rgba(0, 10, 20, 0.8);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00c2ff;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+      position: relative;
+    }
+    .header-decoration {
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, #ffd700 50%, transparent 100%);
+      margin: 8px auto 15px;
+      max-width: 600px;
+    }
+    h1 {
+      font-size: 2.2rem;
+      color: #00a2ff;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(0, 162, 255, 0.3);
+      letter-spacing: 1px;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      animation: flicker 5s infinite;
+    }
+    .subtitle {
+      font-size: 1.1rem;
+      color: #8ab0c5;
+      max-width: 700px;
+      margin: 0 auto;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+    }
+    /* Стили для описания протокола */
+    .protocol-container {
+      background: rgba(5, 20, 30, 0.85);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 
+        0 0 20px rgba(0, 162, 255, 0.3),
+        inset 0 0 15px rgba(0, 100, 150, 0.2);
+      margin-bottom: 25px;
+      overflow: hidden;
+      position: relative;
+    }
+    .protocol-header {
+      cursor: pointer;
+      padding: 15px;
+      background: rgba(5, 20, 30, 0.8);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    .protocol-header:hover {
+      background: rgba(10, 30, 45, 0.8);
+    }
+    .protocol-header h2 {
+      color: #00a2ff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      font-size: 1.4rem;
+    }
+    .toggle-icon {
+      font-size: 1.6rem;
+      width: 20px;
+      text-align: center;
+    }
+    .protocol-description {
+      background: rgba(5, 20, 30, 0.6);
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 20px;
+      font-size: 0.95rem;
+      display: none;
+    }
+    .protocol-step {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(0, 162, 255, 0.2);
+    }
+    .protocol-step:last-child {
+      border-bottom: none;
+    }
+    .protocol-step-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #00a2ff;
+    }
+    .protocol-step-number {
+      background: #00a2ff;
+      color: #050d15;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    /* Стили для выбора типа данных */
+    .data-type-selection {
+      background: rgba(5, 20, 30, 0.85);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 
+        0 0 20px rgba(0, 162, 255, 0.3),
+        inset 0 0 15px rgba(0, 100, 150, 0.2);
+      margin-bottom: 25px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .data-type-title {
+      text-align: center;
+      color: #00a2ff;
+      margin-bottom: 25px;
+      font-size: 1.5rem;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+    }
+    .data-type-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .data-type-option {
+      background: rgba(0, 10, 20, 0.7);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 25px 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      min-height: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+    .data-type-option::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 162, 255, 0.1) 0%, transparent 70%);
+      transform: rotate(30deg);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .data-type-option:hover::before {
+      opacity: 1;
+    }
+    .data-type-option:hover {
+      transform: translateY(-5px);
+      border-color: #00a2ff;
+      box-shadow: 0 5px 15px rgba(0, 162, 255, 0.2);
+    }
+    .data-type-option.selected {
+      border-color: #00ff80;
+      background: rgba(0, 20, 40, 0.8);
+      box-shadow: 0 0 20px rgba(0, 255, 128, 0.3);
+    }
+    .data-type-option.selected::before {
+      opacity: 0.2;
+    }
+    .data-type-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      height: 70px;
+      width: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(0, 20, 40, 0.5);
+    }
+    .data-type-option:nth-child(1) .data-type-icon {
+      color: #00a2ff;
+      border: 2px solid #00a2ff;
+    }
+    .data-type-option:nth-child(2) .data-type-icon {
+      color: #ff4444;
+      border: 2px solid #ff4444;
+    }
+    .data-type-option:nth-child(3) .data-type-icon {
+      color: #ffcc00;
+      border: 2px solid #ffcc00;
+    }
+    .data-type-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #c5d5e0;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+    }
+    .data-type-description {
+      font-size: 0.9rem;
+      color: #8ab0c5;
+      margin-bottom: 15px;
+      flex-grow: 1;
+    }
+    .data-type-recommendation {
+      font-size: 0.8rem;
+      padding: 8px 12px;
+      border-radius: 4px;
+      background: rgba(0, 162, 255, 0.1);
+      border-left: 3px solid #00a2ff;
+      text-align: left;
+      width: 100%;
+      line-height: 1.4;
+    }
+    .recommendation-line {
+      display: block;
+    }
+    /* Контейнер для кнопки продолжения */
+    .continue-container {
+      background: rgba(0, 10, 20, 0.7);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 25px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .continue-container:hover:not(.disabled) {
+      border-color: #00a2ff;
+      background: rgba(0, 20, 35, 0.7);
+    }
+    .continue-container.disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    .continue-description {
+      font-size: 0.8rem;
+      color: #8ab0c5;
+      margin-top: 10px;
+      font-style: italic;
+      max-width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .continue-button {
+      display: inline-block;
+      margin: 0 auto;
+      padding: 15px 40px;
+      background: linear-gradient(to bottom, #001a2d, #000c1a);
+      color: #00a2ff;
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      width: 100%;
+      max-width: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+    .continue-button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 20px;
+      height: 200%;
+      background: rgba(0, 162, 255, 0.3);
+      transform: rotate(30deg);
+      transition: all 0.6s;
+      opacity: 0;
+    }
+    .continue-button:hover:not(:disabled)::after {
+      left: 120%;
+      opacity: 1;
+    }
+    .continue-button:hover:not(:disabled) {
+      background: linear-gradient(to bottom, #002540, #001225);
+      border-color: #00a2ff;
+      box-shadow: 0 0 15px rgba(0, 162, 255, 0.4);
+      transform: translateY(-2px);
+    }
+    .continue-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: rgba(0, 10, 20, 0.7);
+      border-color: rgba(0, 50, 80, 0.4);
+    }
+    .game-area {
+      background: rgba(5, 20, 30, 0.85);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 
+        0 0 20px rgba(0, 162, 255, 0.3),
+        inset 0 0 15px rgba(0, 100, 150, 0.2);
+      margin-bottom: 25px;
+      overflow: hidden;
+      position: relative;
+      display: none; /* Скрыто по умолчанию */
+    }
+    .connection-status {
+      text-align: center;
+      padding: 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+    .connection-status.connected {
+      background: rgba(0, 100, 0, 0.3);
+      color: #00ff80;
+      border: 1px solid rgba(0, 255, 128, 0.4);
+    }
+    .connection-status.disconnected {
+      background: rgba(100, 0, 0, 0.3);
+      color: #ff4444;
+      border: 1px solid rgba(255, 68, 68, 0.4);
+    }
+    .connection-status.establishing {
+      background: rgba(100, 100, 0, 0.3);
+      color: #ffcc00;
+      border: 1px solid rgba(255, 204, 0, 0.4);
+    }
+    .quantum-setup {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      position: relative;
+      width: 100%;
+      min-height: 200px;
+      overflow: visible;
+    }
+    .character {
+      text-align: center;
+      width: 200px;
+      position: relative;
+      z-index: 35;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .character-icon {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 2.2rem;
+      border: 2px solid;
+      background: rgba(5, 20, 30, 0.8);
+      font-weight: bold;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: flicker 8s infinite;
+    }
+    .alice .character-icon {
+      border-color: #00a2ff;
+      color: #00a2ff;
+      text-shadow: 0 0 10px rgba(0, 162, 255, 0.7);
+    }
+    .bob .character-icon {
+      border-color: #00a2ff;
+      color: #00a2ff;
+      text-shadow: 0 0 10px rgba(0, 162, 255, 0.7);
+    }
+    .ca .character-icon {
+      border-color: #ffcc00;
+      color: #ffcc00;
+      text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
+    }
+    .character-name {
+      font-weight: bold;
+      color: #00a2ff;
+      margin-bottom: 8px;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      font-size: 1.1rem;
+    }
+    .config-section {
+      margin-bottom: 15px;
+      text-align: center;
+      width: 100%;
+    }
+    .config-section h3 {
+      color: #00a2ff;
+      margin-bottom: 8px;
+      font-size: 1rem;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+    }
+    .select-container {
+      position: relative;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .custom-select {
+      width: 100%;
+      max-width: 180px;
+      padding: 10px 12px;
+      background: rgba(0, 10, 20, 0.7);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 6px;
+      color: #c5d5e0;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300a2ff'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 35px;
+      position: relative;
+    }
+    .custom-select:hover:not(:disabled) {
+      border-color: #00a2ff;
+      background-color: rgba(0, 20, 35, 0.7);
+    }
+    .custom-select:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .custom-select:focus:not(:disabled) {
+      outline: none;
+      border-color: #00a2ff;
+      box-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
+    }
+    .option-description {
+      font-size: 0.75rem;
+      color: #8ab0c5;
+      margin-top: 5px;
+      padding: 8px;
+      background: rgba(0, 15, 25, 0.5);
+      border-radius: 4px;
+      border-left: 2px solid rgba(0, 162, 255, 0.5);
+      display: none;
+      text-align: left;
+      width: 100%;
+    }
+    .option-description.show {
+      display: block;
+    }
+    .algorithm-display {
+      width: 100%;
+      max-width: 180px;
+      padding: 10px 12px;
+      background: rgba(0, 10, 20, 0.7);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 6px;
+      color: #c5d5e0;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .algorithm-display.rsa {
+      border-color: #00a2ff;
+      color: #00a2ff;
+      background: rgba(0, 100, 200, 0.2);
+    }
+    .algorithm-display.ecc {
+      border-color: #ffcc00;
+      color: #ffcc00;
+      background: rgba(200, 150, 0, 0.2);
+    }
+    .channels-log-container {
+      flex: 1;
+      min-width: 300px;
+      max-width: 100%;
+      margin: 0 15px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      z-index: 50;
+    }
+    .channels-container {
+      height: 170px;
+      overflow: visible;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 15px;
+      z-index: 60;
+      margin-bottom: 15px;
+    }
+    .channel-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .channel-label {
+      font-size: 0.8rem;
+      color: #8ab0c5;
+      text-align: center;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .channel {
+      height: 60px;
+      background: rgba(5, 15, 25, 0.7);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(0, 162, 255, 0.2);
+      z-index: 60;
+      box-shadow: 0 0 5px rgba(0, 162, 255, 0.2) inset;
+      transition: all 0.5s ease;
+    }
+    .channel.active {
+      border-color: #00a2ff;
+      box-shadow: 
+        0 0 15px rgba(0, 162, 255, 0.5),
+        inset 0 0 10px rgba(0, 162, 255, 0.2);
+    }
+    .channel.inactive {
+      border-color: rgba(0, 162, 255, 0.1);
+      box-shadow: 
+        0 0 5px rgba(0, 162, 255, 0.1),
+        inset 0 0 5px rgba(0, 162, 255, 0.05);
+    }
+    .data-packet {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #0064ff;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      box-shadow: 0 0 8px rgba(0, 100, 255, 0.8);
+    }
+    .data-packet.to-bob {
+      animation: travelToBob 2s linear forwards;
+    }
+    .data-packet.to-alice {
+      animation: travelToAlice 2s linear forwards;
+    }
+    .data-packet.to-ca {
+      animation: travelToCA 2s linear forwards;
+    }
+    .encrypted-message {
+      position: absolute;
+      width: 60px;
+      height: 30px;
+      background: linear-gradient(45deg, #ff00ff, #800080);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 0 15px rgba(255, 0, 255, 0.7);
+      opacity: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .encrypted-message.to-bob {
+      animation: messageToBob 3s linear forwards;
+    }
+    .encrypted-message.to-alice {
+      animation: messageToAlice 3s linear forwards;
+    }
+    .digital-signature {
+      position: absolute;
+      width: 50px;
+      height: 25px;
+      background: linear-gradient(45deg, #ffcc00, #ff8800);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+      opacity: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .digital-signature.to-bob {
+      animation: signatureToBob 4s linear forwards;
+    }
+    .digital-signature.to-alice {
+      animation: signatureToAlice 4s linear forwards;
+    }
+    .public-key {
+      position: absolute;
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(45deg, #00a2ff, #0066cc);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 0 15px rgba(0, 162, 255, 0.7);
+      opacity: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .public-key.to-alice {
+      animation: keyToAlice 4s linear forwards;
+    }
+    .public-key.to-bob {
+      animation: keyToBob 4s linear forwards;
+    }
+    .certificate {
+      position: absolute;
+      width: 60px;
+      height: 40px;
+      background: linear-gradient(45deg, #ffcc00, #ff9900);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+      color: white;
+      box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+      opacity: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .certificate.to-alice {
+      animation: certToAlice 4s linear forwards;
+    }
+    .certificate.to-bob {
+      animation: certToBob 4s linear forwards;
+    }
+    .certificate.from-ca {
+      animation: certFromCA 4s linear forwards;
+    }
+    .eve-icon {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      background: rgba(5, 20, 30, 0.95);
+      border: 2px solid #ff4444;
+      color: #ff4444;
+      z-index: 85;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-weight: bold;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      text-transform: uppercase;
+      pointer-events: none;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 15px rgba(255, 68, 68, 0.8);
+    }
+    /* Блок установки ключа */
+    .key-setup-container {
+      background: rgba(5, 20, 30, 0.8);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      display: none; /* Скрыто по умолчанию */
+    }
+    .key-methods {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .key-method {
+      flex: 1;
+      min-width: 150px;
+      padding: 12px 15px;
+      background: rgba(0, 10, 20, 0.7);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .key-method::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(0,162,255,0.1) 0%, rgba(0,162,255,0.2) 100%);
+      transform: translateX(-100%);
+      transition: transform 0.5s;
+      z-index: 0;
+    }
+    .key-method:hover:not(.disabled)::before {
+      transform: translateX(0);
+    }
+    .key-method span {
+      position: relative;
+      z-index: 1;
+    }
+    .key-method:hover:not(.disabled) {
+      background: rgba(0, 20, 35, 0.7);
+      border-color: #00a2ff;
+      transform: translateY(-2px);
+    }
+    .key-method.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .key-method.selected {
+      border-color: #00a2ff;
+      background: rgba(0, 20, 35, 0.9);
+      box-shadow: 0 0 10px rgba(0, 162, 255, 0.3);
+    }
+    .key-method-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #c5d5e0;
+      position: relative;
+      z-index: 1;
+    }
+    .key-method-description {
+      font-size: 0.75rem;
+      color: #8ab0c5;
+      position: relative;
+      z-index: 1;
+    }
+    .key-input-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      align-items: center;
+    }
+    .key-input {
+      flex: 1;
+      padding: 12px 15px;
+      background: rgba(0, 10, 20, 0.7);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 6px;
+      color: #c5d5e0;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .key-input:focus {
+      outline: none;
+      border-color: #00a2ff;
+      box-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
+    }
+    .key-input:read-only {
+      background: rgba(0, 10, 20, 0.5);
+      color: #8ab0c5;
+      cursor: not-allowed;
+    }
+    .key-input:disabled {
+      background: rgba(0, 10, 20, 0.5);
+      color: #8ab0c5;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    .key-action-button {
+      padding: 12px 20px;
+      background: linear-gradient(to bottom, #001a2d, #000c1a);
+      color: #00a2ff;
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .key-action-button:hover:not(:disabled) {
+      background: linear-gradient(to bottom, #002540, #001225);
+      border-color: #00a2ff;
+      box-shadow: 0 0 8px rgba(0, 162, 255, 0.4);
+    }
+    .key-action-button:disabled {
+      background: rgba(0, 10, 20, 0.5);
+      border-color: rgba(0, 50, 80, 0.4);
+      color: rgba(0, 162, 255, 0.5);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    .controls {
+      background: rgba(5, 20, 30, 0.8);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 25px;
+      display: none; /* Скрыто по умолчанию */
+    }
+    .section-title {
+      color: #00a2ff;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-shadow: 0 0 5px rgba(0, 162, 255, 0.3);
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      text-transform: uppercase;
+    }
+    .log-area {
+      background: rgba(5, 20, 30, 0.8);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 15px;
+      height: 250px;
+      display: flex;
+      flex-direction: column;
+      z-index: 40;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+    }
+    .log-box {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      background: rgba(0, 5, 10, 0.7);
+      border-radius: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: #00a2ff rgba(0, 10, 20, 0.5);
+      font-family: 'Courier New', monospace;
+      color: #c5d5e0;
+    }
+    .log-box::-webkit-scrollbar {
+      width: 8px;
+    }
+    .log-box::-webkit-scrollbar-track {
+      background: rgba(0, 10, 20, 0.5);
+      border-radius: 4px;
+    }
+    .log-box::-webkit-scrollbar-thumb {
+      background: #00a2ff;
+      border-radius: 4px;
+    }
+    .log-entry {
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      border-left: 3px solid #00a2ff;
+      background: rgba(0, 20, 40, 0.3);
+      border-radius: 0 4px 4px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      position: relative;
+      animation: fadeIn 0.3s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .log-entry.alice {
+      border-left-color: #00a2ff;
+      background: rgba(0, 50, 100, 0.2);
+    }
+    .log-entry.bob {
+      border-left-color: #00ff80;
+      background: rgba(0, 100, 50, 0.2);
+    }
+    .log-entry.system {
+      border-left-color: #ffcc00;
+      background: rgba(100, 100, 0, 0.2);
+    }
+    .log-entry.eve {
+      border-left-color: #ff4444;
+      background: rgba(100, 0, 0, 0.2);
+    }
+    .log-entry.ca {
+      border-left-color: #ffcc00;
+      background: rgba(100, 75, 0, 0.2);
+    }
+    .log-entry.security {
+      border-left-color: #00ff80;
+      background: rgba(0, 100, 0, 0.2);
+    }
+    .log-entry.warning {
+      border-left-color: #ff8800;
+      background: rgba(150, 75, 0, 0.2);
+    }
+    .log-entry.critical {
+      border-left-color: #ff4444;
+      background: rgba(150, 0, 0, 0.2);
+      animation: pulse 2s infinite;
+    }
+    .log-entry.protocol {
+      border-left-color: #00a2ff;
+      background: rgba(0, 50, 100, 0.2);
+      font-family: 'Courier New', monospace;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 5px rgba(255, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
+    }
+    .log-timestamp {
+      color: #8ab0c5;
+      font-size: 0.7rem;
+      margin-right: 8px;
+      font-family: 'Courier New', monospace;
+    }
+    .log-sender {
+      color: #00a2ff;
+      font-weight: bold;
+      margin-right: 5px;
+      font-family: 'Courier New', monospace;
+    }
+    .log-sender.alice {
+      color: #00a2ff;
+    }
+    .log-sender.bob {
+      color: #00ff80;
+    }
+    .log-sender.ca {
+      color: #ffcc00;
+    }
+    .log-sender.system {
+      color: #ffcc00;
+    }
+    .log-sender.eve {
+      color: #ff4444;
+    }
+    .log-sender.protocol {
+      color: #00a2ff;
+    }
+    .log-content {
+      margin-top: 3px;
+      color: #c5d5e0;
+      font-family: 'Courier New', monospace;
+    }
+    .log-icon {
+      margin-right: 5px;
+      font-size: 0.9rem;
+    }
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .button-row {
+      display: flex;
+      gap: 10px;
+    }
+    .action-button {
+      background: linear-gradient(to bottom, #001a2d, #000c1a);
+      color: #00a2ff;
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      padding: 14px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      width: 100%;
+      font-size: 1.1rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-shadow: 0 0 3px rgba(0, 162, 255, 0.3);
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: flicker 5s infinite;
+      position: relative;
+      overflow: hidden;
+    }
+    .action-button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 20px;
+      height: 200%;
+      background: rgba(0, 162, 255, 0.3);
+      transform: rotate(30deg);
+      transition: all 0.6s;
+      opacity: 0;
+    }
+    .action-button:hover:not(:disabled)::after {
+      left: 120%;
+      opacity: 1;
+    }
+    .action-button:hover:not(:disabled) {
+      background: linear-gradient(to bottom, #002540, #001225);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 162, 255, 0.4);
+    }
+    .action-button:disabled {
+      background: rgba(0, 10, 20, 0.7);
+      border-color: rgba(0, 50, 80, 0.4);
+      color: rgba(0, 162, 255, 0.5);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      animation: none;
+      opacity: 0.6;
+    }
+    .action-button.success {
+      border-color: #00ff80;
+      box-shadow: 0 0 8px rgba(0, 255, 128, 0.8);
+    }
+    .action-button .mode-description {
+      font-size: 0.75rem;
+      font-weight: normal;
+      text-transform: none;
+      letter-spacing: 0;
+      margin-top: 4px;
+      opacity: 0.8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .action-button.danger {
+      border-color: #ff4444;
+      color: #ff4444;
+      background: linear-gradient(to bottom, #2d0000, #1a0000);
+    }
+    .action-button.danger:hover:not(:disabled) {
+      background: linear-gradient(to bottom, #400000, #250000);
+      border-color: #ff4444;
+      box-shadow: 0 4px 12px rgba(255, 68, 68, 0.4);
+    }
+    .action-button.danger:disabled {
+      background: rgba(20, 0, 0, 0.7);
+      border-color: rgba(80, 0, 0, 0.4);
+      color: rgba(255, 68, 68, 0.5);
+    }
+    .alert-container {
+      position: relative;
+      height: 60px;
+      margin-bottom: 15px;
+    }
+    .eve-alert, .success-alert, .info-alert, .warning-alert {
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      position: absolute;
+      width: 100%;
+      left: 0;
+      top: 0;
+      font-weight: 500;
+      transition: opacity 0.3s, transform 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .eve-alert {
+      background: rgba(200, 50, 50, 0.2);
+      color: #ff4444;
+      border: 1px solid rgba(255, 68, 68, 0.3);
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    .success-alert {
+      background: rgba(0, 100, 0, 0.2);
+      color: #4ade80;
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    .info-alert {
+      background: rgba(0, 100, 200, 0.2);
+      color: #00a2ff;
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    .warning-alert {
+      background: rgba(200, 150, 0, 0.2);
+      color: #ffcc00;
+      border: 1px solid rgba(255, 204, 0, 0.3);
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    .alert-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .lab-return-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      margin-bottom: 20px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .lab-return-button, .return-to-selection-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 30, 60, 0.7);
+      color: #00a2ff;
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .lab-return-button:hover, .return-to-selection-button:hover {
+      background: rgba(0, 40, 80, 0.8);
+      border-color: #00a2ff;
+      box-shadow: 0 0 10px rgba(0, 162, 255, 0.4);
+      transform: translateY(-2px);
+    }
+    .lab-return-button::before {
+      content: "←";
+      font-weight: bold;
+    }
+    .return-to-selection-button {
+      display: none; /* Скрыта по умолчанию */
+    }
+    .return-to-selection-button::before {
+      content: "↶";
+      font-weight: bold;
+    }
+    /* Стиль для совместимых устройств */
+    .compatibility-info {
+      font-size: 0.75rem;
+      color: #ffcc00;
+      margin-top: 5px;
+      padding: 8px;
+      background: rgba(100, 100, 0, 0.1);
+      border-radius: 4px;
+      border-left: 2px solid rgba(255, 204, 0, 0.5);
+      display: none;
+      text-align: left;
+      width: 100%;
+    }
+    .compatibility-info.show {
+      display: block;
+    }
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 22%, 24%, 55% { opacity: 0.8; }
+    }
+    @keyframes travelToBob {
+      0% { left: 0%; opacity: 1; }
+      90% { opacity: 1; }
+      100% { left: calc(100% - 12px); opacity: 0; }
+    }
+    @keyframes travelToAlice {
+      0% { left: calc(100% - 12px); opacity: 1; }
+      90% { opacity: 1; }
+      100% { left: 0%; opacity: 0; }
+    }
+    @keyframes travelToCA {
+      0% { bottom: 0%; opacity: 1; }
+      90% { opacity: 1; }
+      100% { bottom: calc(100% - 12px); opacity: 0; }
+    }
+    @keyframes messageToBob {
+      0% { left: 10%; opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { left: 90%; opacity: 0; }
+    }
+    @keyframes messageToAlice {
+      0% { left: 90%; opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { left: 10%; opacity: 0; }
+    }
+    @keyframes signatureToBob {
+      0% { left: 10%; opacity: 0; bottom: 10%; }
+      20% { opacity: 1; }
+      70% { opacity: 1; }
+      100% { left: 90%; opacity: 0; bottom: 10%; }
+    }
+    @keyframes signatureToAlice {
+      0% { left: 90%; opacity: 0; bottom: 10%; }
+      20% { opacity: 1; }
+      70% { opacity: 1; }
+      100% { left: 10%; opacity: 0; bottom: 10%; }
+    }
+    @keyframes keyToAlice {
+      0% { right: 10%; opacity: 0; top: 20%; }
+      20% { opacity: 1; }
+      60% { opacity: 1; }
+      100% { right: 90%; opacity: 0; top: 20%; }
+    }
+    @keyframes keyToBob {
+      0% { left: 10%; opacity: 0; top: 20%; }
+      20% { opacity: 1; }
+      60% { opacity: 1; }
+      100% { left: 90%; opacity: 0; top: 20%; }
+    }
+    @keyframes certToAlice {
+      0% { left: 50%; opacity: 0; bottom: 20%; }
+      20% { opacity: 1; }
+      60% { opacity: 1; }
+      100% { left: 10%; opacity: 0; bottom: 20%; }
+    }
+    @keyframes certToBob {
+      0% { left: 50%; opacity: 0; bottom: 20%; }
+      20% { opacity: 1; }
+      60% { opacity: 1; }
+      100% { left: 90%; opacity: 0; bottom: 20%; }
+    }
+    @keyframes certFromCA {
+      0% { top: 10%; opacity: 0; }
+      20% { opacity: 1; }
+      60% { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .navigation-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 40px auto 20px;
+      flex-wrap: wrap;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      background: rgba(0, 10, 20, 0.7);
+      color: #8ab0c5;
+      text-decoration: none;
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      gap: 8px;
+    }
+    .nav-link:hover {
+      color: #00a2ff;
+      border-color: #00a2ff;
+      background: rgba(0, 20, 35, 0.7);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 162, 255, 0.2);
+    }
+    .nav-link.primary {
+      background: rgba(0, 40, 80, 0.7);
+      color: #00a2ff;
+      border-color: rgba(0, 162, 255, 0.5);
+    }
+    .nav-link.secondary {
+      background: rgba(212, 175, 55, 0.1);
+      color: #d4af37;
+      border-color: rgba(212, 175, 55, 0.3);
+    }
+    .nav-link.secondary:hover {
+      color: #ffd700;
+      border-color: #d4af37;
+    }
+    @media (max-width: 768px) {
+      .data-type-grid {
+        grid-template-columns: 1fr;
+      }
+      .quantum-setup {
+        flex-direction: column;
+        min-height: auto;
+        margin-bottom: 20px;
+        gap: 10px;
+      }
+      .character {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .character-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.6rem;
+        margin-bottom: 0;
+        margin-right: 15px;
+      }
+      .character-name {
+        font-size: 0.9rem;
+        margin-bottom: 0;
+        flex: 1;
+        text-align: left;
+        align-self: center;
+      }
+      .config-section {
+        width: 100%;
+        order: 3;
+        margin-top: 10px;
+        text-align: center;
+      }
+      .channels-log-container {
+        min-width: 100%;
+        margin: 10px 0;
+        order: 2;
+        z-index: 70;
+      }
+      .log-area {
+        height: 200px;
+      }
+      .key-methods {
+        flex-direction: column;
+      }
+      .key-method {
+        min-width: 100%;
+      }
+      .navigation-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+    }
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      .subtitle {
+        font-size: 0.9rem;
+      }
+      .data-type-selection {
+        padding: 15px;
+      }
+      .data-type-option {
+        min-height: 240px;
+        padding: 15px;
+      }
+      .continue-button {
+        padding: 12px 25px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <header class="game-header">
+      <h1>АСИММЕТРИЧНАЯ КРИПТОГРАФИЯ: ЦИФРОВЫЕ ПОДПИСИ И БЕЗОПАСНЫЙ ОБМЕН</h1>
+      <div class="header-decoration"></div>
+      <p class="subtitle">Ludus Lab · Сложные вещи — простыми играми</p>
+    </header>
+    <!-- Описание протокола над выбором типа данных -->
+    <div class="protocol-container">
+      <div class="protocol-header" id="protocolHeader" tabindex="0" role="button" aria-expanded="false" aria-controls="protocolContent">
+        <h2>Описание асимметричной криптографии <span class="toggle-icon">+</span></h2>
+      </div>
+      <div class="protocol-description" id="protocolContent" aria-hidden="true">
+        <p>Асимметричная криптография использует пару ключей: открытый (public) для шифрования данных и закрытый (private) для расшифрования. Эта технология позволяет решить две главные задачи безопасности: обеспечение конфиденциальности и аутентификации данных.</p>
+        <div class="protocol-step">
+          <div class="protocol-step-title"><span class="protocol-step-number">1</span> Генерация ключевой пары</div>
+          <p>Каждый участник (Алиса, Боб) генерирует свою пару ключей: открытый и закрытый. Закрытый ключ никогда не передается и хранится в секрете, а открытый можно свободно распространять.</p>
+        </div>
+        <div class="protocol-step">
+          <div class="protocol-step-title"><span class="protocol-step-number">2</span> Выбор алгоритма асимметричного шифрования</div>
+          <p>Основные алгоритмы: RSA (широко используется, основан на факторизации больших чисел) и ECC (Эллиптические кривые, более эффективен при меньшей длине ключа).</p>
+        </div>
+        <div class="protocol-step">
+          <div class="protocol-step-title"><span class="protocol-step-number">3</span> Обмен открытыми ключами через доверенный центр</div>
+          <p>Для предотвращения атак "man-in-the-middle" открытые ключи должны распространяться через доверенные источники. Обычно используются Удостоверяющие центры (CA), которые подписывают сертификаты, подтверждающие принадлежность открытого ключа определенному лицу.</p>
+        </div>
+        <div class="protocol-step">
+          <div class="protocol-step-title"><span class="protocol-step-number">4</span> Шифрование и расшифрование</div>
+          <p>Для обеспечения конфиденциальности: Алиса шифрует сообщение открытым ключом Боба, и только Боб может расшифровать его своим закрытым ключом. Для аутентификации: Алиса подписывает сообщение своим закрытым ключом, и любой может проверить подпись открытым ключом Алисы.</p>
+        </div>
+        <div class="protocol-step">
+          <div class="protocol-step-title"><span class="protocol-step-number">5</span> Цифровая подпись</div>
+          <p>Для создания цифровой подписи Алиса вычисляет хеш сообщения и шифрует его своим закрытым ключом. Боб проверяет подпись, расшифровывая её открытым ключом Алисы и сравнивая с хешем полученного сообщения.</p>
+        </div>
+        <div class="protocol-step">
+          <div class="protocol-step-title"><span class="protocol-step-number">6</span> Протокол Диффи-Хеллмана для обмена ключами</div>
+          <p>Для гибридных систем (как TLS/SSL) используется протокол Диффи-Хеллмана для безопасного обмена симметричным ключом сессии с помощью асимметричной криптографии.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Этап 1: Выбор сценария использования -->
+    <div class="data-type-selection" id="dataTypeSelection" aria-live="polite">
+      <h2 class="data-type-title">Выберите сценарий использования асимметричной криптографии</h2>
+      <div class="data-type-grid">
+        <div class="data-type-option" data-type="web-security" tabindex="0" role="button" aria-label="Выбрать защиту веб-сайта с помощью SSL/TLS сертификатов">
+          <div class="data-type-icon">🌐</div>
+          <div class="data-type-name">SSL/TLS сертификаты для веб-безопасности</div>
+          <div class="data-type-description">
+            Защита веб-трафика с помощью SSL/TLS сертификатов для шифрования данных между браузером и сервером.
+          </div>
+          <div class="data-type-recommendation">
+            <span class="recommendation-line">Рекомендуется: ECC 256-bit (современный стандарт)</span>
+            <span class="recommendation-line">или RSA 2048-bit (широкая поддержка)</span>
+          </div>
+        </div>
+        <div class="data-type-option" data-type="email-security" tabindex="0" role="button" aria-label="Выбрать защиту электронной почты с помощью PGP/GPG">
+          <div class="data-type-icon">📧</div>
+          <div class="data-type-name">PGP/GPG для электронной почты</div>
+          <div class="data-type-description">
+            Обеспечение конфиденциальности и аутентификации электронных писем с помощью шифрования и цифровых подписей.
+          </div>
+          <div class="data-type-recommendation">
+            <span class="recommendation-line">Рекомендуется: RSA 3072-bit или ECC 384-bit</span>
+            <span class="recommendation-line">для баланса безопасности и производительности</span>
+          </div>
+        </div>
+        <div class="data-type-option" data-type="code-signing" tabindex="0" role="button" aria-label="Выбрать кодовую подпись для программного обеспечения">
+          <div class="data-type-icon">💻</div>
+          <div class="data-type-name">Подпись программного обеспечения</div>
+          <div class="data-type-description">
+            Цифровая подпись программного кода для подтверждения его подлинности и целостности при распространении.
+          </div>
+          <div class="data-type-recommendation">
+            <span class="recommendation-line">Рекомендуется: RSA 4096-bit</span>
+            <span class="recommendation-line">(максимальная надежность для критически важного ПО)</span>
+          </div>
+        </div>
+        <div class="data-type-option" data-type="document-signing" tabindex="0" role="button" aria-label="Выбрать электронную подпись для документов">
+          <div class="data-type-icon">📄</div>
+          <div class="data-type-name">Электронная подпись документов</div>
+          <div class="data-type-description">
+            Юридически значимая электронная подпись для документов с подтверждением личности подписанта через доверенный центр.
+          </div>
+          <div class="data-type-recommendation">
+            <span class="recommendation-line">Рекомендуется: GOST Р 34.10-2012</span>
+            <span class="recommendation-line">(требуется для юридической силы в РФ)</span>
+          </div>
+        </div>
+        <!-- Блок с кнопкой продолжения -->
+        <div class="continue-container disabled" id="continueContainer">
+          <button class="continue-button" id="continueButton" disabled>Перейти к настройке ключей</button>
+          <div class="continue-description" id="continueDescription">
+            После нажатия этой кнопки вы перейдете к настройке асимметричной криптографии для выбранного сценария
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="game-area" id="gameArea" aria-live="polite">
+      <div class="connection-status disconnected" id="connectionStatus" aria-live="polite">
+        СИСТЕМА АУТЕНТИФИКАЦИИ НЕ НАСТРОЕНА
+      </div>
+      <div class="quantum-setup">
+        <div class="character alice" aria-label="Параметры Алисы">
+          <div class="character-icon">A</div>
+          <div class="character-name">Алиса</div>
+          <div class="config-section">
+            <h3>Генерация ключей</h3>
+            <div class="select-container">
+              <select class="custom-select" id="aliceAlgorithm" aria-label="Выберите алгоритм для Алисы">
+                <option value="" selected disabled>Выберите алгоритм</option>
+                <option value="rsa">RSA (2048-4096 bit)</option>
+                <option value="ecc">ECC (256-384 bit)</option>
+                <option value="gost" data-regulation="russian">ГОСТ Р 34.10-2012</option>
+              </select>
+              <div class="option-description" id="aliceAlgorithmDesc" aria-live="polite"></div>
+              <div class="compatibility-info" id="aliceCompatInfo" aria-live="polite"></div>
+            </div>
+          </div>
+          <div class="algorithm-display" id="aliceAlgorithmDisplay">Не выбран</div>
+        </div>
+        <div class="channels-log-container" aria-label="Каналы связи и логи">
+          <div class="channels-container">
+            <div class="channel-wrapper">
+              <div class="channel-label">Канал обмена ключами</div>
+              <div class="channel inactive" id="keyExchangeChannel" aria-label="Канал обмена ключами">
+                <div class="eve-icon" id="eveIcon" aria-hidden="true">👁️‍🗨️</div>
+              </div>
+            </div>
+            <div class="channel-wrapper">
+              <div class="channel-label">Канал передачи данных</div>
+              <div class="channel inactive" id="dataChannel" aria-label="Канал передачи данных">
+                <!-- Пакеты данных будут добавляться динамически -->
+              </div>
+            </div>
+          </div>
+          <div class="log-area">
+            <h2 class="section-title">Log файл</h2>
+            <div class="log-box" id="logBox" aria-live="polite">
+              <div class="log-entry system">
+                <span class="log-timestamp">[12:00:01]</span>
+                <span class="log-sender system">SYSTEM:</span>
+                <div class="log-content">Инициализация протокола асимметричной криптографии</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="character bob" aria-label="Параметры Боба">
+          <div class="character-icon">B</div>
+          <div class="character-name">Боб</div>
+          <div class="config-section">
+            <h3>Генерация ключей</h3>
+            <div class="select-container">
+              <select class="custom-select" id="bobAlgorithm" aria-label="Выберите алгоритм для Боба">
+                <option value="" selected disabled>Выберите алгоритм</option>
+                <option value="rsa">RSA (2048-4096 bit)</option>
+                <option value="ecc">ECC (256-384 bit)</option>
+                <option value="gost" data-regulation="russian">ГОСТ Р 34.10-2012</option>
+              </select>
+              <div class="option-description" id="bobAlgorithmDesc" aria-live="polite"></div>
+              <div class="compatibility-info" id="bobCompatInfo" aria-live="polite"></div>
+            </div>
+          </div>
+          <div class="algorithm-display" id="bobAlgorithmDisplay">Не выбран</div>
+        </div>
+      </div>
+      
+      <div class="key-setup-container" id="keySetupContainer" aria-label="Настройка асимметричной криптографии">
+        <h2 class="section-title">Сертификаты и удостоверяющие центры</h2>
+        <p style="margin-bottom: 15px; color: #8ab0c5; font-size: 0.9rem;">
+          Для обеспечения доверия к открытым ключам используйте сертификаты, выданные доверенными центрами:
+        </p>
+        <div class="key-methods" id="keyMethods">
+          <div class="key-method" data-method="self-signed" tabindex="0" role="button" aria-label="Создать самоподписанный сертификат">
+            <div class="key-method-title">Самоподписанный</div>
+            <div class="key-method-description">Быстро, но ненадежно для общего использования</div>
+          </div>
+          <div class="key-method" data-method="letsencrypt" tabindex="0" role="button" aria-label="Получить бесплатный сертификат от Let's Encrypt">
+            <div class="key-method-title">Let's Encrypt</div>
+            <div class="key-method-description">Бесплатно для веб-сайтов, автоматическое обновление</div>
+          </div>
+          <div class="key-method" data-method="commercial" tabindex="0" role="button" aria-label="Приобрести коммерческий сертификат">
+            <div class="key-method-title">Коммерческий CA</div>
+            <div class="key-method-description">DigiCert, Sectigo для максимального доверия</div>
+          </div>
+          <div class="key-method" data-method="government" tabindex="0" role="button" aria-label="Использовать государственный удостоверяющий центр">
+            <div class="key-method-title">Гос. УЦ</div>
+            <div class="key-method-description">УЦ Минцифры для юридической силы в РФ</div>
+          </div>
+        </div>
+        <div style="margin-top: 15px; font-size: 0.85rem; color: #8ab0c5;">
+          <div id="certificateInfo" aria-live="polite">
+            <strong>Информация по сертификатам:</strong> Выберите метод получения сертификата для установления доверия
+          </div>
+        </div>
+      </div>
+      
+      <div class="alert-container" aria-live="assertive">
+        <div class="eve-alert" id="eveAlert">
+          ⚠️ Ева пытается подделать сертификат!
+        </div>
+        <div class="success-alert" id="successAlert">
+          ✅ Система аутентификации успешно настроена!
+        </div>
+        <div class="info-alert" id="infoAlert">
+          ℹ️ Настройте алгоритмы и получите сертификаты у доверенного центра
+        </div>
+        <div class="warning-alert" id="warningAlert">
+          ⚠️ Используется самоподписанный сертификат - возможна атака "Man-in-the-middle"
+        </div>
+      </div>
+      
+      <div class="controls" id="controlsContainer">
+        <h2 class="section-title">Панель управления</h2>
+        <div class="action-buttons">
+          <div class="button-row">
+            <button class="action-button" id="generateKeysBtn" aria-label="Сгенерировать ключевые пары для Алисы и Боба">
+              <div>
+                <div>Сгенерировать ключи</div>
+                <div class="mode-description">Создать пары открытых и закрытых ключей</div>
+              </div>
+            </button>
+            <button class="action-button" id="getCertificateBtn" disabled aria-label="Получить сертификаты от УЦ">
+              <div>
+                <div>Получить сертификаты</div>
+                <div class="mode-description">Подписать открытые ключи у доверенного центра</div>
+              </div>
+            </button>
+          </div>
+          <div class="button-row">
+            <button class="action-button" id="exchangeKeysBtn" disabled aria-label="Обменяться открытыми ключами">
+              <div>
+                <div>Обменяться ключами</div>
+                <div class="mode-description">Безопасно распространить открытые ключи</div>
+              </div>
+            </button>
+            <button class="action-button" id="sendMessageBtn" disabled aria-label="Отправить зашифрованное сообщение с цифровой подписью">
+              <div>
+                <div>Отправить сообщение</div>
+                <div class="mode-description">Зашифровать и подписать сообщение</div>
+              </div>
+            </button>
+          </div>
+          <div class="button-row">
+            <button class="action-button danger" id="simulateAttackBtn" aria-label="Симулировать атаку man-in-the-middle">
+              <div>
+                <div>MITM атака</div>
+                <div class="mode-description">Проверить устойчивость к атакам</div>
+              </div>
+            </button>
+            <button class="action-button" id="resetBtn" aria-label="Сбросить настройки">
+              <div>
+                <div>Сбросить настройки</div>
+                <div class="mode-description">Вернуть начальное состояние</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Новый блок навигации -->
+    <div class="navigation-links">
+      <a href="https://ludus-lab.ru/" class="nav-link primary">
+        <i class="fas fa-home"></i> Вернуться в лабораторию
+      </a>
+    </div>
+    <div class="lab-return-container" style="display: none;">
+      <button class="return-to-selection-button" id="returnToSelectionBtn" aria-label="Вернуться к выбору сценария">Вернуться к выбору сценария</button>
+      <a href="https://ludus-lab.ru/" class="lab-return-button" aria-label="Вернуться в лабораторию Ludus Lab">Вернуться в лабораторию</a>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Класс для управления состоянием игры
+      class GameState {
+        constructor() {
+          this.reset();
+        }
+        reset() {
+          this.aliceConfig = { algorithm: null, publicKey: null, privateKey: null, certificate: null, ca: null };
+          this.bobConfig = { algorithm: null, publicKey: null, privateKey: null, certificate: null, ca: null };
+          this.selectedScenario = null;
+          this.certificateMethod = null;
+          this.keysGenerated = false;
+          this.certificatesIssued = false;
+          this.keysExchanged = false;
+          this.packetCounter = 0;
+          this.messageCounter = 0;
+          this.attackSimulated = false;
+        }
+        areAlgorithmsSelected() {
+          return this.aliceConfig.algorithm && this.bobConfig.algorithm;
+        }
+        areKeysGenerated() {
+          return this.aliceConfig.publicKey && this.aliceConfig.privateKey &&
+                 this.bobConfig.publicKey && this.bobConfig.privateKey;
+        }
+        areCertificatesIssued() {
+          return this.aliceConfig.certificate && this.bobConfig.certificate;
+        }
+        areKeysExchanged() {
+          return this.keysExchanged;
+        }
+      }
+      // Класс для управления DOM-элементами
+      class DOMManager {
+        constructor() {
+          this.elements = {
+            // Элементы для выбора сценария
+            dataTypeSelection: document.getElementById('dataTypeSelection'),
+            dataTypeOptions: document.querySelectorAll('.data-type-option'),
+            continueButton: document.getElementById('continueButton'),
+            continueContainer: document.getElementById('continueContainer'),
+            continueDescription: document.getElementById('continueDescription'),
+            gameArea: document.getElementById('gameArea'),
+            returnToSelectionBtn: document.getElementById('returnToSelectionBtn'),
+            // Элементы DOM
+            protocolHeader: document.getElementById('protocolHeader'),
+            protocolContent: document.getElementById('protocolContent'),
+            connectionStatus: document.getElementById('connectionStatus'),
+            generateKeysBtn: document.getElementById('generateKeysBtn'),
+            getCertificateBtn: document.getElementById('getCertificateBtn'),
+            exchangeKeysBtn: document.getElementById('exchangeKeysBtn'),
+            sendMessageBtn: document.getElementById('sendMessageBtn'),
+            simulateAttackBtn: document.getElementById('simulateAttackBtn'),
+            resetBtn: document.getElementById('resetBtn'),
+            logBox: document.getElementById('logBox'),
+            eveAlert: document.getElementById('eveAlert'),
+            successAlert: document.getElementById('successAlert'),
+            infoAlert: document.getElementById('infoAlert'),
+            warningAlert: document.getElementById('warningAlert'),
+            eveIcon: document.getElementById('eveIcon'),
+            keyExchangeChannel: document.getElementById('keyExchangeChannel'),
+            dataChannel: document.getElementById('dataChannel'),
+            keySetupContainer: document.getElementById('keySetupContainer'),
+            controlsContainer: document.getElementById('controlsContainer'),
+            // Элементы выпадающих списков
+            aliceAlgorithm: document.getElementById('aliceAlgorithm'),
+            bobAlgorithm: document.getElementById('bobAlgorithm'),
+            // Элементы для отображения алгоритмов
+            aliceAlgorithmDisplay: document.getElementById('aliceAlgorithmDisplay'),
+            bobAlgorithmDisplay: document.getElementById('bobAlgorithmDisplay'),
+            // Элементы для описаний и информации о совместимости
+            aliceAlgorithmDesc: document.getElementById('aliceAlgorithmDesc'),
+            aliceCompatInfo: document.getElementById('aliceCompatInfo'),
+            bobAlgorithmDesc: document.getElementById('bobAlgorithmDesc'),
+            bobCompatInfo: document.getElementById('bobCompatInfo'),
+            // Элементы управления сертификатами
+            keyMethods: document.querySelectorAll('.key-method'),
+            certificateInfo: document.getElementById('certificateInfo')
+          };
+          this.keyAnimators = new Map();
+        }
+        updateConnectionStatus(text, className) {
+          this.elements.connectionStatus.textContent = text;
+          this.elements.connectionStatus.className = `connection-status ${className}`;
+        }
+        showAlert(alertElement, message, duration = 4000) {
+          if (alertElement.classList.contains('alert-visible')) {
+            alertElement.textContent = message;
+            return;
+          }
+          alertElement.textContent = message;
+          alertElement.classList.add('alert-visible');
+          setTimeout(() => {
+            alertElement.classList.remove('alert-visible');
+          }, duration);
+        }
+        showError(message) {
+          this.showAlert(this.elements.eveAlert, message);
+        }
+        showSuccess(message) {
+          this.showAlert(this.elements.successAlert, message);
+        }
+        showInfo(message) {
+          this.showAlert(this.elements.infoAlert, message);
+        }
+        showWarning(message) {
+          this.showAlert(this.elements.warningAlert, message);
+        }
+        addLogEntry(sender, content, type = null) {
+          const logEntry = document.createElement('div');
+          if (type) {
+            logEntry.className = `log-entry ${type}`;
+          } else {
+            logEntry.className = `log-entry ${sender}`;
+          }
+          const timestamp = document.createElement('span');
+          timestamp.className = 'log-timestamp';
+          timestamp.textContent = `[${this.getCurrentTime()}]`;
+          logEntry.appendChild(timestamp);
+          const senderSpan = document.createElement('span');
+          senderSpan.className = `log-sender ${sender}`;
+          let senderText = '';
+          switch(sender) {
+            case 'alice': senderText = 'ALICE:'; break;
+            case 'bob': senderText = 'BOB:'; break;
+            case 'system': senderText = 'SYSTEM:'; break;
+            case 'eve': senderText = 'EVE:'; break;
+            case 'ca': senderText = 'CA:'; break;
+          }
+          senderSpan.textContent = senderText;
+          logEntry.appendChild(senderSpan);
+          const contentDiv = document.createElement('div');
+          contentDiv.className = 'log-content';
+          contentDiv.textContent = content;
+          logEntry.appendChild(contentDiv);
+          if (type === 'critical') {
+            const icon = document.createElement('span');
+            icon.className = 'log-icon';
+            icon.textContent = '🔥 ';
+            contentDiv.prepend(icon);
+          } else if (type === 'warning') {
+            const icon = document.createElement('span');
+            icon.className = 'log-icon';
+            icon.textContent = '⚠️ ';
+            contentDiv.prepend(icon);
+          } else if (sender === 'eve') {
+            const icon = document.createElement('span');
+            icon.className = 'log-icon';
+            icon.textContent = '👁️ ';
+            contentDiv.prepend(icon);
+          }
+          this.elements.logBox.appendChild(logEntry);
+          this.elements.logBox.scrollTop = this.elements.logBox.scrollHeight;
+        }
+        getCurrentTime() {
+          const now = new Date();
+          return now.toTimeString().split(' ')[0];
+        }
+        showEveInterception() {
+          this.elements.eveIcon.style.opacity = '1';
+          setTimeout(() => {
+            this.elements.eveIcon.style.opacity = '0';
+          }, 3000);
+        }
+        resetEveAnimation() {
+          this.elements.eveIcon.style.opacity = '0';
+        }
+        activateChannels() {
+          this.elements.keyExchangeChannel.classList.remove('inactive');
+          this.elements.keyExchangeChannel.classList.add('active');
+          this.elements.dataChannel.classList.remove('inactive');
+          this.elements.dataChannel.classList.add('active');
+        }
+        deactivateChannels() {
+          this.elements.keyExchangeChannel.classList.remove('active');
+          this.elements.keyExchangeChannel.classList.add('inactive');
+          this.elements.dataChannel.classList.remove('active');
+          this.elements.dataChannel.classList.add('inactive');
+        }
+        resetUI() {
+          // Сбрасываем отображение алгоритмов
+          this.elements.aliceAlgorithmDisplay.textContent = 'Не выбран';
+          this.elements.aliceAlgorithmDisplay.className = 'algorithm-display';
+          this.elements.bobAlgorithmDisplay.textContent = 'Не выбран';
+          this.elements.bobAlgorithmDisplay.className = 'algorithm-display';
+          // Сбрасываем методы получения сертификатов
+          this.elements.keyMethods.forEach(m => {
+            m.classList.remove('selected', 'disabled');
+            m.style.cursor = 'pointer';
+          });
+          // Сбрасываем описания
+          document.querySelectorAll('.option-description, .compatibility-info').forEach(desc => {
+            desc.classList.remove('show');
+          });
+          // Сбрасываем панели
+          this.elements.keySetupContainer.style.display = 'none';
+          this.elements.controlsContainer.style.display = 'none';
+          // Сбрасываем статусы
+          this.updateConnectionStatus("СИСТЕМА АУТЕНТИФИКАЦИИ НЕ НАСТРОЕНА", "disconnected");
+          // Сбрасываем кнопки
+          this.elements.getCertificateBtn.disabled = true;
+          this.elements.exchangeKeysBtn.disabled = true;
+          this.elements.sendMessageBtn.disabled = true;
+          // Деактивируем каналы
+          this.deactivateChannels();
+        }
+        updateAlgorithmDisplay(element, algorithm) {
+          if (algorithm === 'rsa') {
+            element.textContent = 'RSA (2048-bit)';
+            element.className = 'algorithm-display rsa';
+          } else if (algorithm === 'ecc') {
+            element.textContent = 'ECC (256-bit)';
+            element.className = 'algorithm-display ecc';
+          } else if (algorithm === 'gost') {
+            element.textContent = 'ГОСТ Р 34.10-2012';
+            element.className = 'algorithm-display ecc';
+          }
+        }
+        startKeyExchangeAnimation(sender, receiver, keyType = 'public') {
+          const animId = `key-${this.elements.keyExchangeChannel.children.length + 1}`;
+          
+          const keyElement = document.createElement('div');
+          keyElement.className = `public-key to-${receiver}`;
+          keyElement.id = animId;
+          keyElement.textContent = '🔑';
+          keyElement.setAttribute('aria-hidden', 'true');
+          
+          this.elements.keyExchangeChannel.appendChild(keyElement);
+          
+          setTimeout(() => {
+            const el = document.getElementById(animId);
+            if (el && el.parentNode) {
+              el.parentNode.removeChild(el);
+            }
+          }, 4000);
+          
+          return animId;
+        }
+        
+        startSignatureAnimation(sender, receiver) {
+          const animId = `sig-${this.elements.dataChannel.children.length + 1}`;
+          
+          const sigElement = document.createElement('div');
+          sigElement.className = `digital-signature to-${receiver}`;
+          sigElement.id = animId;
+          sigElement.textContent = '✍️';
+          sigElement.setAttribute('aria-hidden', 'true');
+          
+          this.elements.dataChannel.appendChild(sigElement);
+          
+          setTimeout(() => {
+            const el = document.getElementById(animId);
+            if (el && el.parentNode) {
+              el.parentNode.removeChild(el);
+            }
+          }, 4000);
+          
+          return animId;
+        }
+        
+        startCertificateAnimation(ca, receiver) {
+          const animId = `cert-${this.elements.keyExchangeChannel.children.length + 1}`;
+          
+          const certElement = document.createElement('div');
+          certElement.className = `certificate to-${receiver} from-ca`;
+          certElement.id = animId;
+          certElement.textContent = '📜';
+          certElement.setAttribute('aria-hidden', 'true');
+          
+          this.elements.keyExchangeChannel.appendChild(certElement);
+          
+          setTimeout(() => {
+            const el = document.getElementById(animId);
+            if (el && el.parentNode) {
+              el.parentNode.removeChild(el);
+            }
+          }, 4000);
+          
+          return animId;
+        }
+        
+        startMessageAnimation(sender, receiver) {
+          const animId = `msg-${this.elements.dataChannel.children.length + 1}`;
+          
+          const msgElement = document.createElement('div');
+          msgElement.className = `encrypted-message to-${receiver}`;
+          msgElement.id = animId;
+          msgElement.textContent = '🔒';
+          msgElement.setAttribute('aria-hidden', 'true');
+          
+          this.elements.dataChannel.appendChild(msgElement);
+          
+          setTimeout(() => {
+            const el = document.getElementById(animId);
+            if (el && el.parentNode) {
+              el.parentNode.removeChild(el);
+            }
+          }, 3000);
+          
+          return animId;
+        }
+      }
+      // Класс для логики игры
+      class GameLogic {
+        constructor(state, domManager) {
+          this.state = state;
+          this.domManager = domManager;
+          
+          // Описания алгоритмов
+          this.algorithmDescriptions = {
+            'rsa': {
+              'description': 'RSA (Rivest-Shamir-Adleman) - один из первых и наиболее широко используемых алгоритмов асимметричной криптографии. Безопасность основана на сложности факторизации больших чисел.',
+              'keySize': '2048-4096 бит',
+              'useCases': 'Веб-безопасность, электронная почта, кодовая подпись',
+              'advantages': 'Хорошая совместимость, проверенная временем безопасность',
+              'disadvantages': 'Большие размеры ключей, медленнее чем ECC'
+            },
+            'ecc': {
+              'description': 'ECC (Elliptic Curve Cryptography) - современный алгоритм, основанный на эллиптических кривых. Обеспечивает ту же степень безопасности, что и RSA, но с гораздо меньшими размерами ключей.',
+              'keySize': '256-384 бит',
+              'useCases': 'Мобильные устройства, IoT, современные веб-сайты',
+              'advantages': 'Меньшие размеры ключей, выше производительность, меньшее энергопотребление',
+              'disadvantages': 'Сложнее в реализации, возможны патентные ограничения'
+            },
+            'gost': {
+              'description': 'ГОСТ Р 34.10-2012 - российский стандарт асимметричной криптографии на основе эллиптических кривых. Требуется для юридической силы электронных документов в Российской Федерации.',
+              'keySize': '256-512 бит',
+              'useCases': 'Электронная подпись документов, государственные системы',
+              'advantages': 'Юридическая сила в РФ, высокая безопасность',
+              'disadvantages': 'Ограниченная международная поддержка'
+            }
+          };
+          
+          // Описания методов сертификатов
+          this.certificateMethods = {
+            'self-signed': {
+              'description': 'Самоподписанный сертификат создается самостоятельно без участия доверенного центра. Подходит для тестирования и внутренних систем, но не обеспечивает доверия от третьих лиц.',
+              'trustLevel': 'Низкий',
+              'validityPeriod': 'До 1 года',
+              'cost': 'Бесплатно',
+              'warning': '⚠️ Не рекомендуется для публичных сервисов - высокий риск атаки "Man-in-the-middle"'
+            },
+            'letsencrypt': {
+              'description': 'Бесплатный удостоверяющий центр Let\'s Encrypt предоставляет сертификаты для веб-сайтов с автоматическим обновлением. Широко доверяем браузерами.',
+              'trustLevel': 'Высокий для веб-сайтов',
+              'validityPeriod': '90 дней (автоматическое обновление)',
+              'cost': 'Бесплатно',
+              'requirements': 'Доступ к DNS или веб-серверу для проверки прав на домен'
+            },
+            'commercial': {
+              'description': 'Коммерческие удостоверяющие центры (DigiCert, Sectigo, GlobalSign) предоставляют сертификаты с расширенной проверкой для максимального доверия.',
+              'trustLevel': 'Наивысший',
+              'validityPeriod': '1-2 года',
+              'cost': 'От $10 до $1000+ в год в зависимости от типа',
+              'advantages': 'Расширенная проверка организации (EV), поддержка всех устройств, гарантии безопасности'
+            },
+            'government': {
+              'description': 'Государственные удостоверяющие центры (например, УЦ Минцифры) выдают сертификаты, имеющие юридическую силу в соответствии с российским законодательством.',
+              'trustLevel': 'Юридически значимый в РФ',
+              'validityPeriod': '1 год',
+              'cost': 'От 1000 до 10000+ рублей в год',
+              'requirements': 'Личное присутствие, проверка документов, аккредитация'
+            }
+          };
+          
+          // Сценарии использования
+          this.scenarios = {
+            'web-security': {
+              'name': 'SSL/TLS сертификаты для веб-безопасности',
+              'description': 'Защита веб-трафика с помощью SSL/TLS сертификатов для шифрования данных между браузером и сервером.',
+              'recommendedAlgorithms': ['ecc', 'rsa'],
+              'recommendedCertificates': ['letsencrypt', 'commercial']
+            },
+            'email-security': {
+              'name': 'PGP/GPG для электронной почты',
+              'description': 'Обеспечение конфиденциальности и аутентификации электронных писем с помощью шифрования и цифровых подписей.',
+              'recommendedAlgorithms': ['rsa', 'ecc'],
+              'recommendedCertificates': ['self-signed']
+            },
+            'code-signing': {
+              'name': 'Подпись программного обеспечения',
+              'description': 'Цифровая подпись программного кода для подтверждения его подлинности и целостности при распространении.',
+              'recommendedAlgorithms': ['rsa'],
+              'recommendedCertificates': ['commercial']
+            },
+            'document-signing': {
+              'name': 'Электронная подпись документов',
+              'description': 'Юридически значимая электронная подпись для документов с подтверждением личности подписанта через доверенный центр.',
+              'recommendedAlgorithms': ['gost'],
+              'recommendedCertificates': ['government']
+            }
+          };
+          
+          this.initializeEventListeners();
+        }
+        
+        initializeEventListeners() {
+          // Обработка выбора сценария
+          this.domManager.elements.dataTypeOptions.forEach(option => {
+            option.addEventListener('click', () => this.handleScenarioSelection(option));
+            option.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.handleScenarioSelection(option);
+              }
+            });
+          });
+          
+          // Обработка кнопки продолжения
+          this.domManager.elements.continueButton.addEventListener('click', () => this.continueToGame());
+          
+          // Обработка кнопки возврата
+          this.domManager.elements.returnToSelectionBtn.addEventListener('click', () => this.returnToScenarioSelection());
+          
+          // Обработка выбора алгоритмов
+          this.domManager.elements.aliceAlgorithm.addEventListener('change', (e) => 
+            this.handleAlgorithmSelection('alice', e.target.value));
+          this.domManager.elements.bobAlgorithm.addEventListener('change', (e) => 
+            this.handleAlgorithmSelection('bob', e.target.value));
+            
+          // Обработка выбора метода сертификата
+          this.domManager.elements.keyMethods.forEach(method => {
+            method.addEventListener('click', () => this.handleCertificateMethodSelection(method));
+            method.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.handleCertificateMethodSelection(method);
+              }
+            });
+          });
+          
+          // Обработка кнопок управления
+          this.domManager.elements.generateKeysBtn.addEventListener('click', () => this.generateKeys());
+          this.domManager.elements.getCertificateBtn.addEventListener('click', () => this.getCertificates());
+          this.domManager.elements.exchangeKeysBtn.addEventListener('click', () => this.exchangeKeys());
+          this.domManager.elements.sendMessageBtn.addEventListener('click', () => this.sendMessage());
+          this.domManager.elements.simulateAttackBtn.addEventListener('click', () => this.simulateAttack());
+          this.domManager.elements.resetBtn.addEventListener('click', () => this.resetGame());
+          
+          // Обработка открытия/закрытия описания протокола
+          this.domManager.elements.protocolHeader.addEventListener('click', () => this.toggleProtocolDescription());
+          this.domManager.elements.protocolHeader.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              this.toggleProtocolDescription();
+            }
+          });
+        }
+        
+        handleScenarioSelection(optionElement) {
+          // Снимаем выделение с других опций
+          this.domManager.elements.dataTypeOptions.forEach(opt => opt.classList.remove('selected'));
+          
+          // Выделяем выбранную опцию
+          optionElement.classList.add('selected');
+          
+          // Сохраняем выбранный сценарий
+          this.state.selectedScenario = optionElement.getAttribute('data-type');
+          
+          // Активируем кнопку продолжения
+          this.domManager.elements.continueButton.disabled = false;
+          this.domManager.elements.continueContainer.classList.remove('disabled');
+          
+          // Добавляем запись в лог
+          const scenarioName = this.scenarios[this.state.selectedScenario].name;
+          this.domManager.addLogEntry("system", `Выбран сценарий: ${scenarioName}`);
+          
+          // Показываем рекомендации
+          const scenario = this.scenarios[this.state.selectedScenario];
+          this.domManager.showInfo(`ℹ️ Рекомендуемые алгоритмы: ${scenario.recommendedAlgorithms.map(a => a.toUpperCase()).join(', ')}`);
+        }
+        
+        continueToGame() {
+          if (!this.state.selectedScenario) return;
+          
+          // Скрываем выбор сценария
+          this.domManager.elements.dataTypeSelection.style.display = 'none';
+          
+          // Показываем игровую область
+          this.domManager.elements.gameArea.style.display = 'block';
+          
+          // Показываем кнопку возврата
+          this.domManager.elements.returnToSelectionBtn.style.display = 'inline-flex';
+          
+          // Показываем контейнер для сертификатов
+          this.domManager.elements.keySetupContainer.style.display = 'block';
+          this.domManager.elements.controlsContainer.style.display = 'block';
+          
+          // Добавляем запись в лог
+          const scenario = this.scenarios[this.state.selectedScenario];
+          this.domManager.addLogEntry("system", `Инициализация асимметричной криптографии для: ${scenario.name}`);
+          this.domManager.addLogEntry("system", scenario.description);
+          this.domManager.addLogEntry("system", "Шаг 1: Выберите алгоритмы шифрования для Алисы и Боба");
+          
+          // Показываем информационное сообщение
+          this.domManager.showInfo("ℹ️ Выберите алгоритмы асимметричного шифрования для Алисы и Боба");
+        }
+        
+        returnToScenarioSelection() {
+          // Скрываем игровую область
+          this.domManager.elements.gameArea.style.display = 'none';
+          
+          // Скрываем кнопку возврата
+          this.domManager.elements.returnToSelectionBtn.style.display = 'none';
+          
+          // Показываем выбор сценария
+          this.domManager.elements.dataTypeSelection.style.display = 'block';
+          
+          // Сбрасываем выбор сценария
+          this.domManager.elements.dataTypeOptions.forEach(opt => opt.classList.remove('selected'));
+          this.state.selectedScenario = null;
+          
+          // Деактивируем кнопку продолжения
+          this.domManager.elements.continueButton.disabled = true;
+          this.domManager.elements.continueContainer.classList.add('disabled');
+          
+          // Сбрасываем настройки
+          this.resetGame(true);
+          
+          // Добавляем запись в лог
+          this.domManager.addLogEntry("system", "Возврат к выбору сценария использования");
+        }
+        
+        handleAlgorithmSelection(character, algorithm) {
+          if (character === 'alice') {
+            this.state.aliceConfig.algorithm = algorithm;
+            this.domManager.addLogEntry("system", `Алиса выбрала алгоритм: ${this.getAlgorithmName(algorithm)}`);
+            
+            // Показываем описание алгоритма
+            this.showAlgorithmDescription('alice', algorithm);
+          } else if (character === 'bob') {
+            this.state.bobConfig.algorithm = algorithm;
+            this.domManager.addLogEntry("system", `Боб выбрал алгоритм: ${this.getAlgorithmName(algorithm)}`);
+            
+            // Показываем описание алгоритма
+            this.showAlgorithmDescription('bob', algorithm);
+          }
+          
+          // Обновляем отображение алгоритмов
+          this.domManager.updateAlgorithmDisplay(this.domManager.elements.aliceAlgorithmDisplay, this.state.aliceConfig.algorithm);
+          this.domManager.updateAlgorithmDisplay(this.domManager.elements.bobAlgorithmDisplay, this.state.bobConfig.algorithm);
+          
+          // Активируем кнопку генерации ключей, если оба алгоритма выбраны
+          if (this.state.areAlgorithmsSelected()) {
+            this.domManager.elements.generateKeysBtn.disabled = false;
+            this.domManager.showInfo("✅ Алгоритмы выбраны. Теперь сгенерируйте ключевые пары");
+          }
+        }
+        
+        getAlgorithmName(algorithm) {
+          const names = {
+            'rsa': 'RSA (2048-4096 bit)',
+            'ecc': 'ECC (256-384 bit)',
+            'gost': 'ГОСТ Р 34.10-2012'
+          };
+          return names[algorithm] || algorithm;
+        }
+        
+        showAlgorithmDescription(character, algorithm) {
+          const descElement = character === 'alice' ? 
+            this.domManager.elements.aliceAlgorithmDesc : 
+            this.domManager.elements.bobAlgorithmDesc;
+            
+          const compatElement = character === 'alice' ? 
+            this.domManager.elements.aliceCompatInfo : 
+            this.domManager.elements.bobCompatInfo;
+            
+          if (this.algorithmDescriptions[algorithm]) {
+            const desc = this.algorithmDescriptions[algorithm];
+            descElement.innerHTML = `
+              <strong>${this.getAlgorithmName(algorithm)}</strong><br>
+              ${desc.description}<br>
+              <strong>Размер ключа:</strong> ${desc.keySize}<br>
+              <strong>Применение:</strong> ${desc.useCases}
+            `;
+            descElement.classList.add('show');
+            
+            // Проверяем совместимость алгоритмов
+            if (this.state.aliceConfig.algorithm && this.state.bobConfig.algorithm) {
+              const isCompatible = this.areAlgorithmsCompatible(
+                this.state.aliceConfig.algorithm, 
+                this.state.bobConfig.algorithm
+              );
+              
+              if (isCompatible) {
+                compatElement.textContent = '✅ Алгоритмы совместимы для безопасного обмена';
+                compatElement.classList.add('show');
+              } else {
+                compatElement.textContent = '❌ Алгоритмы несовместимы для безопасного обмена';
+                compatElement.classList.add('show');
+                compatElement.style.color = '#ff4444';
+                compatElement.style.borderColor = 'rgba(255, 68, 68, 0.5)';
+              }
+            }
+          }
+        }
+        
+        areAlgorithmsCompatible(alg1, alg2) {
+          // RSA совместим только с RSA
+          if (alg1 === 'rsa' && alg2 === 'rsa') return true;
+          
+          // ECC совместим только с ECC
+          if (alg1 === 'ecc' && alg2 === 'ecc') return true;
+          
+          // ГОСТ совместим только с ГОСТ
+          if (alg1 === 'gost' && alg2 === 'gost') return true;
+          
+          return false;
+        }
+        
+        handleCertificateMethodSelection(methodElement) {
+          // Проверяем, подходящий ли метод для выбранного сценария
+          const method = methodElement.getAttribute('data-method');
+          const scenario = this.scenarios[this.state.selectedScenario];
+          
+          if (!scenario.recommendedCertificates.includes(method)) {
+            this.domManager.showWarning(`⚠️ Метод "${method}" не рекомендуется для выбранного сценария. ` + 
+              `Рекомендуемые методы: ${scenario.recommendedCertificates.join(', ')}`);
+          }
+          
+          // Снимаем выделение с других методов
+          this.domManager.elements.keyMethods.forEach(m => m.classList.remove('selected'));
+          
+          // Выделяем выбранный метод
+          methodElement.classList.add('selected');
+          
+          // Сохраняем выбранный метод
+          this.state.certificateMethod = method;
+          
+          // Показываем описание метода
+          this.showCertificateDescription(method);
+          
+          // Активируем кнопку получения сертификатов, если ключи уже сгенерированы
+          if (this.state.areKeysGenerated()) {
+            this.domManager.elements.getCertificateBtn.disabled = false;
+            this.domManager.showInfo("✅ Ключи сгенерированы. Теперь получите сертификаты у выбранного центра");
+          }
+        }
+        
+        showCertificateDescription(method) {
+          if (this.certificateMethods[method]) {
+            const cert = this.certificateMethods[method];
+            this.domManager.elements.certificateInfo.innerHTML = `
+              <strong>${method.toUpperCase()} сертификат:</strong><br>
+              ${cert.description}<br>
+              <strong>Уровень доверия:</strong> ${cert.trustLevel}<br>
+              <strong>Срок действия:</strong> ${cert.validityPeriod}<br>
+              <strong>Стоимость:</strong> ${cert.cost}
+              ${cert.warning ? `<br><span style="color: #ff4444">${cert.warning}</span>` : ''}
+            `;
+          }
+        }
+        
+        toggleProtocolDescription() {
+          const isExpanded = this.domManager.elements.protocolContent.style.display === 'block';
+          const toggleIcon = this.domManager.elements.protocolHeader.querySelector('.toggle-icon');
+          
+          if (isExpanded) {
+            this.domManager.elements.protocolContent.style.display = 'none';
+            this.domManager.elements.protocolContent.setAttribute('aria-hidden', 'true');
+            this.domManager.elements.protocolHeader.setAttribute('aria-expanded', 'false');
+            toggleIcon.textContent = '+';
+          } else {
+            this.domManager.elements.protocolContent.style.display = 'block';
+            this.domManager.elements.protocolContent.setAttribute('aria-hidden', 'false');
+            this.domManager.elements.protocolHeader.setAttribute('aria-expanded', 'true');
+            toggleIcon.textContent = '-';
+          }
+        }
+        
+        generateKeys() {
+          if (!this.state.areAlgorithmsSelected()) {
+            this.domManager.showError("Сначала выберите алгоритмы для Алисы и Боба");
+            return;
+          }
+          
+          if (!this.areAlgorithmsCompatible(
+            this.state.aliceConfig.algorithm,
+            this.state.bobConfig.algorithm
+          )) {
+            this.domManager.showError("Выбранные алгоритмы несовместимы для безопасного обмена. Выберите одинаковые алгоритмы для Алисы и Боба.");
+            return;
+          }
+          
+          // Генерация ключей для Алисы
+          this.state.aliceConfig.publicKey = this.generatePublicKey(this.state.aliceConfig.algorithm, 'alice');
+          this.state.aliceConfig.privateKey = this.generatePrivateKey(this.state.aliceConfig.algorithm, 'alice');
+          
+          // Генерация ключей для Боба
+          this.state.bobConfig.publicKey = this.generatePublicKey(this.state.bobConfig.algorithm, 'bob');
+          this.state.bobConfig.privateKey = this.generatePrivateKey(this.state.bobConfig.algorithm, 'bob');
+          
+          this.state.keysGenerated = true;
+          
+          // Добавляем записи в лог
+          this.domManager.addLogEntry("system", `✅ Ключи Алисы сгенерированы: ${this.state.aliceConfig.publicKey.substring(0, 15)}...`);
+          this.domManager.addLogEntry("system", `✅ Ключи Боба сгенерированы: ${this.state.bobConfig.publicKey.substring(0, 15)}...`);
+          
+          // Активируем кнопку получения сертификатов
+          this.domManager.elements.getCertificateBtn.disabled = false;
+          
+          // Показываем сообщение об успехе
+          this.domManager.showSuccess("✅ Ключевые пары успешно сгенерированы для Алисы и Боба");
+          
+          // Показываем информационное сообщение
+          this.domManager.showInfo("ℹ️ Теперь получите сертификаты для открытых ключей у доверенного центра");
+        }
+        
+        generatePublicKey(algorithm, owner) {
+          const prefixes = {
+            'rsa': 'RSA-PUB-',
+            'ecc': 'ECC-PUB-',
+            'gost': 'GOST-PUB-'
+          };
+          const prefix = prefixes[algorithm] || 'PUB-';
+          return prefix + owner.toUpperCase() + '-' + Math.random().toString(36).substr(2, 10).toUpperCase();
+        }
+        
+        generatePrivateKey(algorithm, owner) {
+          const prefixes = {
+            'rsa': 'RSA-PRIV-',
+            'ecc': 'ECC-PRIV-',
+            'gost': 'GOST-PRIV-'
+          };
+          const prefix = prefixes[algorithm] || 'PRIV-';
+          return prefix + owner.toUpperCase() + '-' + Math.random().toString(36).substr(2, 15).toUpperCase();
+        }
+        
+        getCertificates() {
+          if (!this.state.certificateMethod) {
+            this.domManager.showError("Сначала выберите метод получения сертификата");
+            return;
+          }
+          
+          if (!this.state.areKeysGenerated()) {
+            this.domManager.showError("Сначала сгенерируйте ключевые пары");
+            return;
+          }
+          
+          // Симуляция получения сертификатов
+          this.domManager.addLogEntry("system", `Получение сертификатов у ${this.getCertificateAuthorityName(this.state.certificateMethod)}...`);
+          
+          setTimeout(() => {
+            this.state.aliceConfig.certificate = this.generateCertificate(
+              this.state.aliceConfig.publicKey, 
+              this.state.certificateMethod,
+              'alice'
+            );
+            this.state.aliceConfig.ca = this.state.certificateMethod;
+            
+            this.domManager.addLogEntry("ca", `✅ Сертификат для Алисы выдан: ${this.state.aliceConfig.certificate.substring(0, 20)}...`);
+            
+            setTimeout(() => {
+              this.state.bobConfig.certificate = this.generateCertificate(
+                this.state.bobConfig.publicKey, 
+                this.state.certificateMethod,
+                'bob'
+              );
+              this.state.bobConfig.ca = this.state.certificateMethod;
+              
+              this.domManager.addLogEntry("ca", `✅ Сертификат для Боба выдан: ${this.state.bobConfig.certificate.substring(0, 20)}...`);
+              
+              this.state.certificatesIssued = true;
+              
+              // Активируем кнопку обмена ключами
+              this.domManager.elements.exchangeKeysBtn.disabled = false;
+              
+              this.domManager.showSuccess("✅ Сертификаты успешно получены для Алисы и Боба");
+              
+              // Предупреждение для самоподписанных сертификатов
+              if (this.state.certificateMethod === 'self-signed') {
+                this.domManager.showWarning("⚠️ Используются самоподписанные сертификаты. Возможна атака 'Man-in-the-middle'");
+                this.domManager.addLogEntry("system", "⚠️ ВНИМАНИЕ: Используются самоподписанные сертификаты. Данный метод не обеспечивает доверия от третьих лиц и уязвим к атакам 'Man-in-the-middle'", "warning");
+              }
+            }, 1000);
+          }, 1000);
+        }
+        
+        getCertificateAuthorityName(method) {
+          const names = {
+            'self-signed': 'самоподписанный сертификат',
+            'letsencrypt': 'Let\'s Encrypt',
+            'commercial': 'коммерческий УЦ (DigiCert/Sectigo)',
+            'government': 'государственный УЦ (Минцифры)'
+          };
+          return names[method] || method;
+        }
+        
+        generateCertificate(publicKey, method, owner) {
+          const prefixes = {
+            'self-signed': 'SELF-',
+            'letsencrypt': 'LE-',
+            'commercial': 'COM-',
+            'government': 'GOV-'
+          };
+          const prefix = prefixes[method] || 'CERT-';
+          return prefix + owner.toUpperCase() + '-' + publicKey.substring(0, 8) + '-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+        }
+        
+        exchangeKeys() {
+          if (!this.state.areCertificatesIssued()) {
+            this.domManager.showError("Сначала получите сертификаты для открытых ключей");
+            return;
+          }
+          
+          this.domManager.activateChannels();
+          
+          // Симуляция обмена открытыми ключами
+          this.domManager.addLogEntry("system", "🔄 Обмен открытыми ключами с проверкой сертификатов...");
+          
+          // Анимация отправки открытого ключа Алисы Бобу
+          this.domManager.startKeyExchangeAnimation('alice', 'bob');
+          this.domManager.addLogEntry("alice", `Отправка открытого ключа Бобу: ${this.state.aliceConfig.publicKey.substring(0, 20)}...`);
+          
+          setTimeout(() => {
+            // Анимация отправки открытого ключа Боба Алисе
+            this.domManager.startKeyExchangeAnimation('bob', 'alice');
+            this.domManager.addLogEntry("bob", `Отправка открытого ключа Алисе: ${this.state.bobConfig.publicKey.substring(0, 20)}...`);
+            
+            setTimeout(() => {
+              // Проверка сертификатов
+              this.domManager.addLogEntry("system", "🔍 Проверка подлинности сертификатов...");
+              
+              setTimeout(() => {
+                this.domManager.addLogEntry("system", "✅ Сертификат Алисы проверен");
+                this.domManager.addLogEntry("system", "✅ Сертификат Боба проверен");
+                
+                this.state.keysExchanged = true;
+                
+                // Активируем кнопку отправки сообщения
+                this.domManager.elements.sendMessageBtn.disabled = false;
+                
+                this.domManager.showSuccess("✅ Ключи успешно обменены и проверены");
+                this.domManager.updateConnectionStatus("СИСТЕМА АУТЕНТИФИКАЦИИ НАСТРОЕНА", "connected");
+              }, 1000);
+            }, 1500);
+          }, 1500);
+        }
+        
+        sendMessage() {
+          if (!this.state.areKeysExchanged()) {
+            this.domManager.showError("Сначала обменяйтесь ключами для установления доверия");
+            return;
+          }
+          
+          // Анимация отправки сообщения
+          this.domManager.addLogEntry("alice", "Отправка зашифрованного сообщения Бобу с цифровой подписью...");
+          
+          // Анимация сообщения
+          this.domManager.startMessageAnimation('alice', 'bob');
+          
+          // Анимация цифровой подписи
+          this.domManager.startSignatureAnimation('alice', 'bob');
+          
+          setTimeout(() => {
+            // Имитация процесса расшифровки и проверки подписи
+            this.domManager.addLogEntry("bob", "Получение сообщения от Алисы...");
+            this.domManager.addLogEntry("bob", "Расшифровка сообщения с помощью закрытого ключа Боба...");
+            this.domManager.addLogEntry("bob", "Проверка цифровой подписи Алисы с помощью её открытого ключа...");
+            
+            setTimeout(() => {
+              // Генерация случайного сообщения
+              const message = this.generateRandomMessage();
+              this.domManager.addLogEntry("bob", `✅ Сообщение расшифровано и подпись подтверждена: "${message}"`);
+              
+              // Статистика безопасности
+              const securityLevel = this.calculateSecurityLevel();
+              this.domManager.addLogEntry("system", `🔒 Уровень безопасности: ${securityLevel}`);
+            }, 1500);
+          }, 1000);
+        }
+        
+        generateRandomMessage() {
+          const messages = [
+            "Совершенно секретно: Встреча в 21:00 у фонтана",
+            "Доступ к серверу разрешен. Код: 7X9F2P",
+            "Финансовый отчет Q4 готов к отправке",
+            "Координаты груза: 55.7558° N, 37.6173° E",
+            "Проект 'Феникс' одобрен советом директоров",
+            "Пин-код сейфа: 2486",
+            "Пароль для доступа к базе данных: SecurePass123!",
+            "Дедлайн по проекту перенесен на 15 декабря",
+            "Ключевой клиент одобрил контракт на $2M",
+            "Важно: система безопасности скомпрометирована!"
+          ];
+          return messages[Math.floor(Math.random() * messages.length)];
+        }
+        
+        calculateSecurityLevel() {
+          let level = "Базовый";
+          
+          // Проверяем алгоритм
+          if (this.state.aliceConfig.algorithm === 'ecc' || this.state.aliceConfig.algorithm === 'gost') {
+            level = "Высокий";
+          } else if (this.state.aliceConfig.algorithm === 'rsa') {
+            level = "Средний";
+          }
+          
+          // Проверяем тип сертификата
+          if (this.state.certificateMethod === 'government' || this.state.certificateMethod === 'commercial') {
+            level = level === "Высокий" ? "Максимальный" : "Высокий";
+          } else if (this.state.certificateMethod === 'self-signed') {
+            level = level === "Средний" ? "Низкий" : "Базовый";
+          }
+          
+          return level;
+        }
+        
+        simulateAttack() {
+          this.domManager.showEveInterception();
+          this.domManager.addLogEntry("eve", "Атака 'Man-in-the-middle': попытка перехвата сообщения и подмены ключей", "warning");
+          
+          setTimeout(() => {
+            if (this.state.certificateMethod === 'self-signed') {
+              this.domManager.addLogEntry("eve", "АТАКА УСПЕШНА: самоподписанные сертификаты невозможно проверить", "critical");
+              this.domManager.addLogEntry("system", "❌ Уровень безопасности: КРИТИЧЕСКИЙ - требуется смена метода сертификатов", "critical");
+              this.domManager.showError("Атака успешна! Самоподписанные сертификаты не обеспечивают доверия");
+              
+              // Сбрасываем статус подключения
+              this.domManager.updateConnectionStatus("СИСТЕМА СКОМПРОМЕТИРОВАНА", "disconnected");
+              this.state.keysExchanged = false;
+              this.domManager.elements.sendMessageBtn.disabled = true;
+            } else {
+              this.domManager.addLogEntry("system", "✅ АТАКА ОТРАЖЕНА: сертификаты проверены и подтверждены доверенным центром", "security");
+              this.domManager.addLogEntry("system", "🔒 Уровень безопасности: Высокий - атака man-in-the-middle невозможна при использовании доверенных сертификатов", "security");
+              this.domManager.showSuccess("Атака отражена! Доверенные сертификаты обеспечивают защиту");
+            }
+          }, 1500);
+        }
+        
+        resetGame(partial = false) {
+          if (!partial) {
+            this.state.reset();
+            this.domManager.resetUI();
+            this.domManager.resetEveAnimation();
+            this.domManager.addLogEntry("system", "Игра сброшена. Выберите сценарий использования асимметричной криптографии");
+          } else {
+            // Частичный сброс для возврата к выбору сценария
+            this.state.selectedScenario = null;
+            this.domManager.elements.aliceAlgorithm.value = '';
+            this.domManager.elements.bobAlgorithm.value = '';
+            this.domManager.elements.keyMethods.forEach(m => m.classList.remove('selected'));
+            this.domManager.elements.aliceAlgorithmDisplay.textContent = 'Не выбран';
+            this.domManager.elements.aliceAlgorithmDisplay.className = 'algorithm-display';
+            this.domManager.elements.bobAlgorithmDisplay.textContent = 'Не выбран';
+            this.domManager.elements.bobAlgorithmDisplay.className = 'algorithm-display';
+            document.querySelectorAll('.option-description, .compatibility-info').forEach(desc => {
+              desc.classList.remove('show');
+            });
+          }
+          
+          // Сбрасываем кнопки
+          this.domManager.elements.generateKeysBtn.disabled = true;
+          this.domManager.elements.getCertificateBtn.disabled = true;
+          this.domManager.elements.exchangeKeysBtn.disabled = true;
+          this.domManager.elements.sendMessageBtn.disabled = true;
+        }
+      }
+      
+      // Инициализация игры
+      function initGame() {
+        const state = new GameState();
+        const domManager = new DOMManager();
+        const gameLogic = new GameLogic(state, domManager);
+        
+        // Показываем информационное сообщение при запуске
+        setTimeout(() => {
+          domManager.showInfo("ℹ️ Выберите сценарий использования асимметричной криптографии для начала работы");
+        }, 1000);
+      }
+      
+      // Запуск игры
+      initGame();
+    });
+  </script>
+</body>
+</html>

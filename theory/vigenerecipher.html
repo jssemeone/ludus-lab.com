@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title id="pageTitle">Шифр Виженера: теория | Ludus Lab</title>
+  <meta id="pageDescription" name="description" content="Объяснение классического полиалфавитного шифра Виженера. Как работает таблица, почему он был прорывом и как его взломать.">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+
+    ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { height: 100%; }
+    body {
+      background: #0a1a2a;
+      color: #c5d5e0;
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.8;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Language switch */
+    .lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+    .lang-btn {
+      background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3);
+      font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.5px;
+      padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease;
+    }
+    .lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+    .lang-btn.active {
+      background: rgba(212, 175, 55, 0.18); border-color: #d4af37; color: #d4af37;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+
+    /* Навигация */
+    .theory-nav {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 162, 255, 0.3);
+      flex-shrink: 0;
+    }
+    .nav-logo {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.8rem;
+      color: #d4af37;
+      text-decoration: none;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+    }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-link {
+      color: #8ab0c5;
+      text-decoration: none;
+      font-family: 'Oswald', sans-serif;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+      padding: 8px 15px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .nav-link:hover {
+      color: #00a2ff;
+      border-color: rgba(0, 162, 255, 0.3);
+      background: rgba(0, 162, 255, 0.1);
+    }
+
+    /* Основной контент */
+    .theory-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      flex: 1 0 auto;
+    }
+
+    /* Заголовок статьи */
+    .article-header {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .article-category {
+      display: inline-block;
+      background: rgba(0, 162, 255, 0.2);
+      color: #00a2ff;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      border: 1px solid rgba(0, 162, 255, 0.3);
+    }
+    .article-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 3rem;
+      color: #d4af37;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .article-subtitle {
+      font-size: 1.3rem;
+      color: #8ab0c5;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    .article-meta {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #557585;
+    }
+    .meta-item { display: flex; align-items: center; gap: 8px; }
+
+    /* Контентные блоки */
+    .content-block {
+      margin: 60px 0;
+      padding: 30px;
+      background: rgba(10, 30, 45, 0.6);
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 162, 255, 0.1);
+    }
+    .content-block h2 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2rem;
+      color: #00a2ff;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(0, 162, 255, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .content-block p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #a0c0d0;
+    }
+    .highlight {
+      color: #00a2ff;
+      font-weight: 500;
+      text-shadow: 0 0 5px rgba(0, 162, 255, 0.3);
+    }
+
+    /* Шаги объяснения */
+    .explanation-steps { margin: 30px 0; }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      margin: 25px 0;
+      padding: 20px;
+      background: rgba(5, 20, 30, 0.8);
+      border-left: 4px solid #00a2ff;
+      border-radius: 0 8px 8px 0;
+    }
+    .step-number {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      background: #00a2ff;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.2rem;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0, 162, 255, 0.5);
+    }
+    .step-content h3 {
+      color: #d4af37;
+      margin-bottom: 10px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.3rem;
+    }
+
+    /* Ключевая идея */
+    .key-insight {
+      background: rgba(212, 175, 55, 0.1);
+      border-left: 4px solid #d4af37;
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .key-insight strong {
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      display: block;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    /* Список действий */
+    .action-list {
+      list-style: none;
+      margin: 30px 0;
+    }
+    .action-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin: 15px 0;
+      padding: 15px;
+      background: rgba(0, 162, 255, 0.05);
+      border-radius: 6px;
+      border-left: 3px solid #00a2ff;
+    }
+    .action-icon {
+      font-size: 1.5rem;
+      width: 40px;
+      text-align: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .action-text { flex: 1; }
+    .action-text strong { color: #00a2ff; font-family: 'Oswald', sans-serif; }
+
+    /* ДИАГРАММА ВИЖЕНЕРА */
+    .vigenere-diagram {
+      margin: 40px auto;
+      padding: 30px;
+      background: rgba(5, 20, 30, 0.85);
+      border: 1px solid rgba(0, 162, 255, 0.25);
+      border-radius: 10px;
+      max-width: 800px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .diagram-title {
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .diagram-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+    @media (max-width: 600px) {
+      .diagram-grid { grid-template-columns: 1fr; }
+    }
+    .diagram-card {
+      background: rgba(10, 30, 45, 0.9);
+      border: 1px solid rgba(0, 162, 255, 0.2);
+      border-radius: 8px;
+      padding: 20px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .diagram-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      border-color: rgba(0, 162, 255, 0.4);
+    }
+    .diagram-card-title {
+      color: #00a2ff;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .diagram-formula {
+      background: rgba(0, 20, 40, 0.6);
+      padding: 15px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 1rem;
+      text-align: center;
+      margin: 10px 0;
+      color: #00ff80;
+      border: 1px solid rgba(0, 255, 128, 0.2);
+    }
+    .diagram-example {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.95rem;
+      color: #a0c0d0;
+    }
+    .diagram-example code {
+      background: rgba(0, 162, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: #00a2ff;
+    }
+    
+    /* ИЗМЕНЕНО: убран градиент, оставлен сплошной золотой фон */
+    .final-key {
+      margin-top: 30px;
+      padding: 25px;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 10px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .final-key:before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(to right, #00a2ff, #d4af37, #00a2ff);
+    }
+    .final-key-title {
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .final-key-description {
+      color: #a0c0d0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    .key-parameter {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.15);
+      color: #d4af37;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .diagram-note {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #557585;
+      font-size: 0.85rem;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* Кнопки действий */
+    .article-actions {
+      text-align: center;
+      margin: 60px 0;
+      padding: 30px;
+      background: rgba(10, 30, 45, 0.4);
+      border-radius: 8px;
+      border: 1px solid rgba(0, 162, 255, 0.2);
+    }
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    .btn-primary, .btn-secondary {
+      padding: 15px 30px;
+      font-family: 'Oswald', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      border: 1px solid;
+      text-align: center;
+      min-width: 180px;
+    }
+    .btn-primary {
+      background: linear-gradient(to bottom, #006ba6, #004d7a);
+      color: #e6f0ff;
+      border-color: #00a2ff;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(to bottom, #0088cc, #006ba6);
+      box-shadow: 0 0 20px rgba(0, 162, 255, 0.4);
+      transform: translateY(-3px);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: #8ab0c5;
+      border-color: rgba(138, 176, 197, 0.4);
+    }
+    .btn-secondary:hover {
+      border-color: #8ab0c5;
+      color: #a0c0d0;
+    }
+
+    /* Дополнительный материал */
+    .advanced-section {
+      margin: 40px 0;
+      padding: 20px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 8px;
+      background: rgba(212, 175, 55, 0.05);
+    }
+    .advanced-section summary {
+      cursor: pointer;
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      list-style: none;
+      padding: 10px;
+    }
+    .advanced-section summary::before {
+      content: '▶';
+      margin-right: 10px;
+      display: inline-block;
+      transition: transform 0.3s;
+    }
+    .advanced-section[open] summary::before { transform: rotate(90deg); }
+    .advanced-content {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .advanced-content h3 {
+      color: #d4af37;
+      margin: 15px 0 10px;
+      font-family: 'Oswald', sans-serif;
+    }
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .topic-card {
+      background: rgba(5, 20, 30, 0.6);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 6px;
+      padding: 15px;
+      text-align: left;
+    }
+    .topic-card h4 {
+      color: #d4af37;
+      margin-bottom: 8px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+    }
+    .topic-card p {
+      font-size: 0.9rem;
+      color: #8ab0c5;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Футер */
+    .theory-footer {
+      text-align: center;
+      margin-top: auto;
+      padding: 30px 20px;
+      border-top: 1px solid rgba(0, 162, 255, 0.2);
+      color: #557585;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      background: #0a1a2a;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+      .theory-container { padding: 20px 15px; margin-bottom: 40px; }
+      .article-title { font-size: 2.2rem; }
+      .content-block { padding: 20px; margin: 40px 0; }
+      .step { flex-direction: column; gap: 15px; }
+      .action-buttons { flex-direction: column; align-items: center; gap: 15px; }
+      .btn-primary, .btn-secondary { width: 100%; max-width: 300px; padding: 12px 20px; }
+      .nav-links { flex-direction: row; gap: 15px; flex-wrap: wrap; justify-content: center; }
+      .article-actions { margin: 40px 0 20px; padding: 20px 15px; }
+      .article-meta { flex-direction: column; gap: 10px; }
+      .topics-grid { grid-template-columns: 1fr; }
+      .theory-nav { flex-direction: column; gap: 15px; padding: 15px; }
+      .vigenere-diagram { padding: 20px; margin: 30px auto; }
+      .diagram-grid { gap: 15px; }
+      .final-key { padding: 20px 15px; }
+    }
+    @media (max-width: 480px) {
+      .article-title { font-size: 1.8rem; }
+      .article-subtitle { font-size: 1.1rem; }
+      .content-block h2 { font-size: 1.5rem; }
+      .nav-logo { font-size: 1.5rem; }
+      .nav-link { padding: 6px 10px; font-size: 0.8rem; flex: 1; text-align: center; }
+      .btn-primary, .btn-secondary { min-width: auto; padding: 12px 15px; font-size: 0.9rem; }
+      .theory-footer { padding: 20px 15px; font-size: 0.8rem; }
+      .vigenere-diagram { padding: 15px; }
+      .diagram-title { font-size: 1.2rem; }
+      .diagram-card { padding: 15px; }
+      .final-key-title { font-size: 1.1rem; }
+      .lang-switch { top: 8px; right: 8px; }
+      .lang-btn { font-size: 0.65rem; padding: 3px 7px; }
+    }
+    @media (max-width: 320px) {
+      .article-title { font-size: 1.5rem; }
+      .content-block h2 { font-size: 1.3rem; }
+      .nav-links { flex-direction: column; width: 100%; }
+      .nav-link { width: 100%; margin-bottom: 5px; }
+      .btn-primary, .btn-secondary { padding: 10px 12px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="lang-switch" role="group" aria-label="Language">
+    <button class="lang-btn" data-lang-btn="ru">RU</button>
+    <button class="lang-btn" data-lang-btn="en">EN</button>
+    <button class="lang-btn" data-lang-btn="es">ES</button>
+  </div>
+
+  <!-- Навигация -->
+  <nav class="theory-nav">
+    <a href="https://ludus-lab.ru/" class="nav-logo">LUDUS LAB</a>
+    <div class="nav-links">
+      <a href="https://ludus-lab.ru/" class="nav-link" data-i18n="nav.home">Главная</a>
+      <!-- ИЗМЕНЕНО: убрана кнопка "Теория" -->
+      <a href="https://ludus-lab.ru/games/vigenerecipher/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+    </div>
+  </nav>
+
+  <!-- Основной контент -->
+  <div class="theory-container">
+    <!-- Заголовок статьи -->
+    <header class="article-header">
+      <div class="article-category" data-i18n="article.category">Основы криптографии</div>
+      <h1 class="article-title" data-i18n="article.title">Шифр Виженера</h1>
+      <p class="article-subtitle" data-i18n="article.subtitle">
+        Полиалфавитный шифр, который считался «невзламываемым» три столетия и изменил историю криптографии
+      </p>
+      <div class="article-meta">
+        <div class="meta-item" data-i18n="meta.readtime">⏱️ 4 мин чтения</div>
+        <div class="meta-item" data-i18n="meta.level">📊 Начальный уровень</div>
+        <div class="meta-item" data-i18n="meta.era">🗝️ XVI век</div>
+      </div>
+    </header>
+
+    <!-- Блок "Зачем это нужно?" -->
+    <section class="content-block">
+      <h2 data-i18n="block1.heading">Зачем это нужно?</h2>
+      <p data-i18n="block1.p1">Представьте: вы — <span class="highlight">Алиса</span>, дипломат эпохи Возрождения. Вам нужно отправить секретное послание <span class="highlight">Бобу</span>, но почта ненадёжна — письма перехватывают, вскрывают, копируют.</p>
+
+      <p data-i18n="block1.p2">Простой шифр замены (где А→Х, Б→Ц и т.д.) легко взломать частотным анализом: в русском языке буква «О» встречается чаще всех — значит, самый частый символ в шифротексте, скорее всего, и есть «О».</p>
+
+      <p data-i18n="block1.p3"><span class="highlight">Шифр Виженера решает эту проблему</span>. Вместо одного алфавита он использует <span class="highlight">множество алфавитов</span>, переключаясь между ними по ключевому слову. Одна и та же буква открытого текста шифруется по-разному в зависимости от позиции — и частотный анализ перестаёт работать.</p>
+
+      <p data-i18n="block1.p4">Этот метод был настолько надёжен, что его называли <span class="highlight">«le chiffre indéchiffrable»</span> — «не взламываемый шифр». Лишь в 1863 году Фридрих Касиски опубликовал метод его взлома.</p>
+    </section>
+
+    <!-- Блок "Как это работает?" -->
+    <section class="content-block">
+      <h2 data-i18n="block2.heading">Как это работает?</h2>
+
+      <p data-i18n="block2.intro">В основе шифра — <span class="highlight">таблица Виженера</span>: квадрат 33×33 (для русского алфавита), где каждая строка — это сдвинутый алфавит.</p>
+
+      <div class="explanation-steps">
+        <!-- Шаг 1 -->
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3 data-i18n="step1.title">Подготовка таблицы</h3>
+            <p data-i18n="step1.text">Первая строка — обычный алфавит. Каждая следующая строка сдвинута на одну позицию влево. Строка с номером <code>K</code> начинается с <code>K-й</code> буквы алфавита.</p>
+            <p data-i18n="step1.example.intro">Пример для английского (первые 3 строки):</p>
+            <div style="background:rgba(0,20,40,0.6); padding:10px; border-radius:4px; font-family:monospace; font-size:0.9rem; margin:10px 0;">
+              ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
+              BCDEFGHIJKLMNOPQRSTUVWXYZA<br>
+              CDEFGHIJKLMNOPQRSTUVWXYZAB
+            </div>
+          </div>
+        </div>
+
+        <!-- Шаг 2 -->
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3 data-i18n="step2.title">Выбор ключа</h3>
+            <p data-i18n="step2.text">Алиса и Боб договариваются о <span class="highlight">ключевом слове</span>, например <code>КЛЮЧ</code>. Это слово циклически повторяется под сообщением:</p>
+            <div style="background:rgba(0,20,40,0.6); padding:10px; border-radius:4px; font-family:monospace; margin:10px 0; text-align:center;">
+              Сообщение: П Р И В Е Т М И Р У !<br>
+                   Ключ:      К Л Ю Ч К Л Ю Ч К Л
+            </div>
+          </div>
+        </div>
+
+        <!-- Шаг 3 -->
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3 data-i18n="step3.title">Шифрование</h3>
+            <p data-i18n="step3.intro">Для каждой буквы сообщения:</p>
+            <ul style="margin-left:20px; color:#a0c0d0;">
+              <li data-i18n="step3.li1">Находим строку по букве <strong>ключа</strong></li>
+              <li data-i18n="step3.li2">Находим столбец по букве <strong>сообщения</strong></li>
+              <li data-i18n="step3.li3">На пересечении — <strong>зашифрованная буква</strong></li>
+            </ul>
+            <p data-i18n="step3.formula"><strong>Формула:</strong> <code>C = (P + K) mod N</code></p>
+            <p data-i18n="step3.formula.legend">где <code>P</code> — позиция открытого текста, <code>K</code> — позиция ключа, <code>N</code> — размер алфавита, <code>C</code> — шифротекст.</p>
+          </div>
+        </div>
+
+        <!-- Шаг 4 -->
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3 data-i18n="step4.title">Расшифровка</h3>
+            <p data-i18n="step4.intro">Боб использует ту же таблицу, но в обратном порядке:</p>
+            <ul style="margin-left:20px; color:#a0c0d0;">
+              <li data-i18n="step4.li1">Строка = буква ключа</li>
+              <li data-i18n="step4.li2">В этой строке ищем символ шифротекста</li>
+              <li data-i18n="step4.li3">Столбец, где он находится — исходная буква</li>
+            </ul>
+            <p data-i18n="step4.formula"><strong>Формула:</strong> <code>P = (C − K + N) mod N</code></p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- ДИАГРАММА ВИЖЕНЕРА -->
+      <div class="vigenere-diagram">
+        <div class="diagram-title" data-i18n="diagram.title">Математика шифра Виженера</div>
+
+        <div class="diagram-grid">
+          <!-- Карточка шифрования -->
+          <div class="diagram-card">
+            <div class="diagram-title" style="font-size:1rem; border:none; padding:0; margin-bottom:10px; text-align:left;" data-i18n="diagram.encrypt.title">
+              🔐 Шифрование
+            </div>
+            <div class="diagram-formula">C = (P + K) mod N</div>
+            <div class="diagram-example" data-i18n="diagram.encrypt.example">
+              <strong>Пример:</strong><br>Шифруем <code>П</code> с ключом <code>К</code><br>
+              П = 16-я буква (0-индекс), К = 11-я<br>
+              (16 + 11) mod 33 = 27 → <code>Ч</code>
+            </div>
+          </div>
+
+          <!-- Карточка расшифровки -->
+          <div class="diagram-card">
+            <div class="diagram-title" style="font-size:1rem; border:none; padding:0; margin-bottom:10px; text-align:left;" data-i18n="diagram.decrypt.title">
+              🔓 Расшифровка
+            </div>
+            <div class="diagram-formula">P = (C − K + N) mod N</div>
+            <div class="diagram-example" data-i18n="diagram.decrypt.example">
+              <strong>Пример:</strong><br>Расшифровываем <code>Ч</code> с ключом <code>К</code><br>
+              Ч = 27, К = 11, N = 33<br>
+              (27 − 11 + 33) mod 33 = 16 → <code>П</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Финальный блок -->
+        <div class="final-key">
+          <div class="final-key-title" data-i18n="diagram.final.title">Почему это работало?</div>
+          <div class="final-key-description" data-i18n="diagram.final.desc">
+            Каждая буква открытого текста шифруется <strong>разными буквами</strong> в зависимости от позиции ключа. Частотный анализ, который ломает простые шифры замены, становится бесполезным — буква «О» может превратиться в «А», «М», «Щ» и т.д.
+          </div>
+          <div class="key-parameter" data-i18n="diagram.final.param">Длина ключа > 5 → высокая стойкость</div>
+        </div>
+
+        <div class="diagram-note" data-i18n="diagram.note">
+          * В игре таблица визуализирована: строки и столбцы подсвечиваются при каждом шаге, чтобы вы видели процесс «вживую».
+        </div>
+      </div>
+      <!-- КОНЕЦ ДИАГРАММЫ -->
+
+      <div class="key-insight">
+        <strong data-i18n="insight.label">Ключевая мысль:</strong> <span class="highlight" data-i18n="insight.text">Сила Виженера — в повторении ключа</span><span data-i18n="insight.rest">. Чем длиннее и случайнее ключ, тем сложнее его взломать. Но именно цикличность ключа стала его слабостью: метод Касиски использует повторения в шифротексте, чтобы найти длину ключа, а затем применить частотный анализ к каждой «подстроке».</span>
+      </div>
+    </section>
+
+    <!-- Блок "А теперь — главная магия" -->
+    <section class="content-block">
+      <h2 data-i18n="block3.heading">А теперь — главная магия</h2>
+      <p data-i18n="block3.intro">Что вы <span class="highlight">сделаете</span> в симуляции?</p>
+
+      <ul class="action-list">
+        <li>
+          <span class="action-icon">⌨️</span>
+          <div class="action-text" data-i18n="action1">
+            <span>Вы <strong>введёте своё сообщение</strong> на русском или английском — игра автоматически отфильтрует недопустимые символы</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">🔑</span>
+          <div class="action-text" data-i18n="action2">
+            <span>Вы <strong>зададите ключевое слово</strong> и увидите, как оно циклически повторяется под сообщением</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">📊</span>
+          <div class="action-text" data-i18n="action3">
+            <span>Вы <strong>увидите таблицу Виженера в действии</strong> — строки и столбцы будут подсвечиваться при каждом шаге шифрования</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">📡</span>
+          <div class="action-text" data-i18n="action4">
+            <span>Вы <strong>отправите ключ и шифротекст Бобу</strong> через визуализированные каналы связи — ключ по защищённому маршруту, шифротекст по открытому</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">🔍</span>
+          <div class="action-text" data-i18n="action5">
+            <span>Вы <strong>пройдёте расшифровку шаг за шагом</strong> и увидите, как Боб восстанавливает исходное сообщение с помощью той же таблицы</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">✅</span>
+          <div class="action-text" data-i18n="action6">
+            <span>Вы <strong>получите подтверждение</strong> — система сравнит исходное и расшифрованное сообщение, чтобы убедиться в корректности процесса</span>
+          </div>
+        </li>
+      </ul>
+
+      <p data-i18n="block3.outro">В игре вы не просто читаете о Виженере — вы <span class="highlight">проживаете весь цикл</span>: от ввода сообщения до успешной передачи. Вы увидите, как абстрактная формула превращается в наглядную анимацию, и поймёте, почему этот шифр был прорывом для своего времени.</p>
+    </section>
+
+    <!-- Дополнительный материал -->
+    <details class="advanced-section">
+      <summary data-i18n="advanced.summary">Для любознательных</summary>
+      <div class="advanced-content">
+        <h3 data-i18n="advanced.history.heading">Историческая справка</h3>
+        <p data-i18n="advanced.history.text">Шифр впервые описал <strong>Джован Баттиста Беллазо</strong> в 1553 году, но ошибочно приписали <strong>Блезу де Виженеру</strong>, который описал его в 1586 году. Название прижилось, и сегодня мы говорим «шифр Виженера».</p>
+
+        <h3 data-i18n="advanced.broken.heading">Почему его взломали?</h3>
+        <p data-i18n="advanced.broken.text1">В 1863 году прусский офицер <strong>Фридрих Касиски</strong> опубликовал метод, который использует повторения в шифротексте. Если одна и та же фраза открытого текста зашифрована одним и тем же фрагментом ключа, в шифротексте появится одинаковая последовательность. Расстояние между такими повторениями часто кратно длине ключа.</p>
+        <p data-i18n="advanced.broken.text2">Зная длину ключа, криптоаналитик разбивает шифротекст на группы (все буквы, зашифрованные первым символом ключа, вторым и т.д.) и применяет частотный анализ к каждой группе отдельно.</p>
+
+        <h3 data-i18n="advanced.topics.heading">Темы для углублённого изучения</h3>
+        <p data-i18n="advanced.topics.intro">Если вы хотите погрузиться глубже в криптографию, вот ключевые темы:</p>
+
+        <div class="topics-grid">
+          <div class="topic-card">
+            <h4 data-i18n="topic1.title">Частотный анализ</h4>
+            <p data-i18n="topic1.desc">Как статистика языка помогает взламывать шифры: частоты букв, биграмм, триграмм</p>
+          </div>
+
+          <div class="topic-card">
+            <h4 data-i18n="topic2.title">Метод Касиски</h4>
+            <p data-i18n="topic2.desc">Алгоритм поиска длины ключа по повторениям в шифротексте</p>
+          </div>
+
+          <div class="topic-card">
+            <h4 data-i18n="topic3.title">Индекс совпадения</h4>
+            <p data-i18n="topic3.desc">Статистический тест Фридмана для определения длины ключа</p>
+          </div>
+
+          <div class="topic-card">
+            <h4 data-i18n="topic4.title">Одноразовый блокнот</h4>
+            <p data-i18n="topic4.desc">Единственный теоретически невзламываемый шифр: ключ = длина сообщения, используется один раз</p>
+          </div>
+
+          <div class="topic-card">
+            <h4 data-i18n="topic5.title">Современные блочные шифры</h4>
+            <p data-i18n="topic5.desc">Как идеи полиалфавитного шифрования эволюционировали в AES, ChaCha20 и другие алгоритмы</p>
+          </div>
+
+          <div class="topic-card">
+            <h4 data-i18n="topic6.title">Криптоанализ в Python</h4>
+            <p data-i18n="topic6.desc">Практические скрипты для частотного анализа и атак на шифр Виженера</p>
+          </div>
+        </div>
+
+        <h3 data-i18n="advanced.practical.heading">Практическое применение сегодня</h3>
+        <p data-i18n="advanced.practical.intro">Хотя шифр Виженера не используется для защиты реальных данных, он остаётся:</p>
+        <ul style="margin-left: 20px; color: #a0c0d0;">
+          <li data-i18n="practical1">Отличным учебным примером полиалфавитного шифрования</li>
+          <li data-i18n="practical2">Основой для понимания более сложных алгоритмов</li>
+          <li data-i18n="practical3">Элементом CTF-соревнований и криптографических квестов</li>
+          <li data-i18n="practical4">Историческим мостом между классической и современной криптографией</li>
+        </ul>
+      </div>
+    </details>
+
+    <!-- Кнопки действий -->
+    <div class="article-actions" id="article-actions">
+      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">
+        Теперь, когда вы понимаете основы, самое время попробовать на практике и увидеть шифр в действии!
+      </p>
+
+      <div class="action-buttons">
+        <!-- ИЗМЕНЕНО: ссылка на игру обновлена -->
+        <a href="https://ludus-lab.ru/games/vigenerecipher/index.html" class="btn-primary" data-i18n="actions.play">▶ Перейти к игре</a>
+        <a href="https://ludus-lab.ru/#theory-section" class="btn-secondary" data-i18n="actions.back">← Вернуться к списку тем</a>
+      </div>
+
+      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">
+        В интерактивной симуляции вы сможете зашифровать своё сообщение и увидеть каждый шаг процесса
+      </p>
+    </div>
+  </div>
+
+  <!-- Футер -->
+  <footer class="theory-footer">
+    <p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
+    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Эта статья — упрощённое объяснение для понимания принципов. Реальные криптографические системы используют более сложные алгоритмы.</p>
+  </footer>
+
+  <script>
+    const I18N = {
+      ru: {
+        'meta.title': 'Шифр Виженера: теория | Ludus Lab',
+        'meta.description': 'Объяснение классического полиалфавитного шифра Виженера. Как работает таблица, почему он был прорывом и как его взломать.',
+        'nav.home': 'Главная', 'nav.play': 'Играть',
+        'article.category': 'Основы криптографии',
+        'article.title': 'Шифр Виженера',
+        'article.subtitle': 'Полиалфавитный шифр, который считался «невзламываемым» три столетия и изменил историю криптографии',
+        'meta.readtime': '⏱️ 4 мин чтения', 'meta.level': '📊 Начальный уровень', 'meta.era': '🗝️ XVI век',
+        'block1.heading': 'Зачем это нужно?',
+        'block1.p1': 'Представьте: вы — <span class="highlight">Алиса</span>, дипломат эпохи Возрождения. Вам нужно отправить секретное послание <span class="highlight">Бобу</span>, но почта ненадёжна — письма перехватывают, вскрывают, копируют.',
+        'block1.p2': 'Простой шифр замены (где А→Х, Б→Ц и т.д.) легко взломать частотным анализом: в русском языке буква «О» встречается чаще всех — значит, самый частый символ в шифротексте, скорее всего, и есть «О».',
+        'block1.p3': '<span class="highlight">Шифр Виженера решает эту проблему</span>. Вместо одного алфавита он использует <span class="highlight">множество алфавитов</span>, переключаясь между ними по ключевому слову. Одна и та же буква открытого текста шифруется по-разному в зависимости от позиции — и частотный анализ перестаёт работать.',
+        'block1.p4': 'Этот метод был настолько надёжен, что его называли <span class="highlight">«le chiffre indéchiffrable»</span> — «не взламываемый шифр». Лишь в 1863 году Фридрих Касиски опубликовал метод его взлома.',
+        'block2.heading': 'Как это работает?',
+        'block2.intro': 'В основе шифра — <span class="highlight">таблица Виженера</span>: квадрат 33×33 (для русского алфавита), где каждая строка — это сдвинутый алфавит.',
+        'step1.title': 'Подготовка таблицы',
+        'step1.text': 'Первая строка — обычный алфавит. Каждая следующая строка сдвинута на одну позицию влево. Строка с номером <code>K</code> начинается с <code>K-й</code> буквы алфавита.',
+        'step1.example.intro': 'Пример для английского (первые 3 строки):',
+        'step2.title': 'Выбор ключа',
+        'step2.text': 'Алиса и Боб договариваются о <span class="highlight">ключевом слове</span>, например <code>КЛЮЧ</code>. Это слово циклически повторяется под сообщением:',
+        'step3.title': 'Шифрование',
+        'step3.intro': 'Для каждой буквы сообщения:',
+        'step3.li1': 'Находим строку по букве <strong>ключа</strong>',
+        'step3.li2': 'Находим столбец по букве <strong>сообщения</strong>',
+        'step3.li3': 'На пересечении — <strong>зашифрованная буква</strong>',
+        'step3.formula': '<strong>Формула:</strong> <code>C = (P + K) mod N</code>',
+        'step3.formula.legend': 'где <code>P</code> — позиция открытого текста, <code>K</code> — позиция ключа, <code>N</code> — размер алфавита, <code>C</code> — шифротекст.',
+        'step4.title': 'Расшифровка',
+        'step4.intro': 'Боб использует ту же таблицу, но в обратном порядке:',
+        'step4.li1': 'Строка = буква ключа',
+        'step4.li2': 'В этой строке ищем символ шифротекста',
+        'step4.li3': 'Столбец, где он находится — исходная буква',
+        'step4.formula': '<strong>Формула:</strong> <code>P = (C − K + N) mod N</code>',
+        'diagram.title': 'Математика шифра Виженера',
+        'diagram.encrypt.title': '🔐 Шифрование',
+        'diagram.encrypt.example': '<strong>Пример:</strong><br>Шифруем <code>П</code> с ключом <code>К</code><br>П = 16-я буква (0-индекс), К = 11-я<br>(16 + 11) mod 33 = 27 → <code>Ч</code>',
+        'diagram.decrypt.title': '🔓 Расшифровка',
+        'diagram.decrypt.example': '<strong>Пример:</strong><br>Расшифровываем <code>Ч</code> с ключом <code>К</code><br>Ч = 27, К = 11, N = 33<br>(27 − 11 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.final.title': 'Почему это работало?',
+        'diagram.final.desc': 'Каждая буква открытого текста шифруется <strong>разными буквами</strong> в зависимости от позиции ключа. Частотный анализ, который ломает простые шифры замены, становится бесполезным — буква «О» может превратиться в «А», «М», «Щ» и т.д.',
+        'diagram.final.param': 'Длина ключа > 5 → высокая стойкость',
+        'diagram.note': '* В игре таблица визуализирована: строки и столбцы подсвечиваются при каждом шаге, чтобы вы видели процесс «вживую».',
+        'insight.label': 'Ключевая мысль:',
+        'insight.text': 'Сила Виженера — в повторении ключа',
+        'insight.rest': '. Чем длиннее и случайнее ключ, тем сложнее его взломать. Но именно цикличность ключа стала его слабостью: метод Касиски использует повторения в шифротексте, чтобы найти длину ключа, а затем применить частотный анализ к каждой «подстроке».',
+        'block3.heading': 'А теперь — главная магия',
+        'block3.intro': 'Что вы <span class="highlight">сделаете</span> в симуляции?',
+        'action1': 'Вы <strong>введёте своё сообщение</strong> на русском или английском — игра автоматически отфильтрует недопустимые символы',
+        'action2': 'Вы <strong>зададите ключевое слово</strong> и увидите, как оно циклически повторяется под сообщением',
+        'action3': 'Вы <strong>увидите таблицу Виженера в действии</strong> — строки и столбцы будут подсвечиваться при каждом шаге шифрования',
+        'action4': 'Вы <strong>отправите ключ и шифротекст Бобу</strong> через визуализированные каналы связи — ключ по защищённому маршруту, шифротекст по открытому',
+        'action5': 'Вы <strong>пройдёте расшифровку шаг за шагом</strong> и увидите, как Боб восстанавливает исходное сообщение с помощью той же таблицы',
+        'action6': 'Вы <strong>получите подтверждение</strong> — система сравнит исходное и расшифрованное сообщение, чтобы убедиться в корректности процесса',
+        'block3.outro': 'В игре вы не просто читаете о Виженере — вы <span class="highlight">проживаете весь цикл</span>: от ввода сообщения до успешной передачи. Вы увидите, как абстрактная формула превращается в наглядную анимацию, и поймёте, почему этот шифр был прорывом для своего времени.',
+        'advanced.summary': 'Для любознательных',
+        'advanced.history.heading': 'Историческая справка',
+        'advanced.history.text': 'Шифр впервые описал <strong>Джован Баттиста Беллазо</strong> в 1553 году, но ошибочно приписали <strong>Блезу де Виженеру</strong>, который описал его в 1586 году. Название прижилось, и сегодня мы говорим «шифр Виженера».',
+        'advanced.broken.heading': 'Почему его взломали?',
+        'advanced.broken.text1': 'В 1863 году прусский офицер <strong>Фридрих Касиски</strong> опубликовал метод, который использует повторения в шифротексте. Если одна и та же фраза открытого текста зашифрована одним и тем же фрагментом ключа, в шифротексте появится одинаковая последовательность. Расстояние между такими повторениями часто кратно длине ключа.',
+        'advanced.broken.text2': 'Зная длину ключа, криптоаналитик разбивает шифротекст на группы (все буквы, зашифрованные первым символом ключа, вторым и т.д.) и применяет частотный анализ к каждой группе отдельно.',
+        'advanced.topics.heading': 'Темы для углублённого изучения',
+        'advanced.topics.intro': 'Если вы хотите погрузиться глубже в криптографию, вот ключевые темы:',
+        'topic1.title': 'Частотный анализ', 'topic1.desc': 'Как статистика языка помогает взламывать шифры: частоты букв, биграмм, триграмм',
+        'topic2.title': 'Метод Касиски', 'topic2.desc': 'Алгоритм поиска длины ключа по повторениям в шифротексте',
+        'topic3.title': 'Индекс совпадения', 'topic3.desc': 'Статистический тест Фридмана для определения длины ключа',
+        'topic4.title': 'Одноразовый блокнот', 'topic4.desc': 'Единственный теоретически невзламываемый шифр: ключ = длина сообщения, используется один раз',
+        'topic5.title': 'Современные блочные шифры', 'topic5.desc': 'Как идеи полиалфавитного шифрования эволюционировали в AES, ChaCha20 и другие алгоритмы',
+        'topic6.title': 'Криптоанализ в Python', 'topic6.desc': 'Практические скрипты для частотного анализа и атак на шифр Виженера',
+        'advanced.practical.heading': 'Практическое применение сегодня',
+        'advanced.practical.intro': 'Хотя шифр Виженера не используется для защиты реальных данных, он остаётся:',
+        'practical1': 'Отличным учебным примером полиалфавитного шифрования',
+        'practical2': 'Основой для понимания более сложных алгоритмов',
+        'practical3': 'Элементом CTF-соревнований и криптографических квестов',
+        'practical4': 'Историческим мостом между классической и современной криптографией',
+        'actions.intro': 'Теперь, когда вы понимаете основы, самое время попробовать на практике и увидеть шифр в действии!',
+        'actions.play': '▶ Перейти к игре', 'actions.back': '← Вернуться к списку тем',
+        'actions.outro': 'В интерактивной симуляции вы сможете зашифровать своё сообщение и увидеть каждый шаг процесса',
+        'footer.line1': '© 2025 Ludus Lab · Сложные вещи простыми играми',
+        'footer.line2': 'Эта статья — упрощённое объяснение для понимания принципов. Реальные криптографические системы используют более сложные алгоритмы.',
+      },
+      en: {
+        'meta.title': 'Vigenère Cipher: Theory | Ludus Lab',
+        'meta.description': 'An explanation of the classic polyalphabetic Vigenère cipher. How the table works, why it was a breakthrough, and how it was eventually broken.',
+        'nav.home': 'Home', 'nav.play': 'Play',
+        'article.category': 'Cryptography fundamentals',
+        'article.title': 'Vigenère Cipher',
+        'article.subtitle': 'A polyalphabetic cipher considered "unbreakable" for three centuries — one that changed the course of cryptography',
+        'meta.readtime': '⏱️ 4 min read', 'meta.level': '📊 Beginner level', 'meta.era': '🗝️ 16th century',
+        'block1.heading': 'Why do we need this?',
+        'block1.p1': 'Imagine you are <span class="highlight">Alice</span>, a Renaissance-era diplomat. You need to send a secret message to <span class="highlight">Bob</span>, but the mail isn\'t safe — letters get intercepted, opened, copied.',
+        'block1.p2': 'A simple substitution cipher (where A→X, B→C, and so on) is easy to break with frequency analysis: in any given language, certain letters appear far more often than others — so the most common symbol in the ciphertext is likely the most common letter of the alphabet.',
+        'block1.p3': '<span class="highlight">The Vigenère cipher solves this problem</span>. Instead of one alphabet, it uses <span class="highlight">many alphabets</span>, switching between them according to a keyword. The same plaintext letter gets encrypted differently depending on its position — so frequency analysis stops working.',
+        'block1.p4': 'The method was considered so reliable that it was called <span class="highlight">"le chiffre indéchiffrable"</span> — "the indecipherable cipher." It wasn\'t until 1863 that Friedrich Kasiski published a method for breaking it.',
+        'block2.heading': 'How does it work?',
+        'block2.intro': 'At the heart of the cipher is the <span class="highlight">Vigenère table</span>: a 33×33 square (for the Russian alphabet), where each row is the alphabet shifted by one more position.',
+        'step1.title': 'Preparing the table',
+        'step1.text': 'The first row is the plain alphabet. Each following row is shifted one position to the left. Row number <code>K</code> starts with the <code>K-th</code> letter of the alphabet.',
+        'step1.example.intro': 'Example for English (first 3 rows):',
+        'step2.title': 'Choosing a key',
+        'step2.text': 'Alice and Bob agree on a <span class="highlight">keyword</span>, for example <code>KEY</code>. This word repeats cyclically underneath the message:',
+        'step3.title': 'Encryption',
+        'step3.intro': 'For each letter of the message:',
+        'step3.li1': 'Find the row using the <strong>key</strong> letter',
+        'step3.li2': 'Find the column using the <strong>message</strong> letter',
+        'step3.li3': 'The intersection gives the <strong>encrypted letter</strong>',
+        'step3.formula': '<strong>Formula:</strong> <code>C = (P + K) mod N</code>',
+        'step3.formula.legend': 'where <code>P</code> is the plaintext position, <code>K</code> is the key position, <code>N</code> is the alphabet size, and <code>C</code> is the ciphertext.',
+        'step4.title': 'Decryption',
+        'step4.intro': 'Bob uses the same table, but in reverse:',
+        'step4.li1': 'Row = the key letter',
+        'step4.li2': 'In that row, find the ciphertext symbol',
+        'step4.li3': 'The column it sits in gives the original letter',
+        'step4.formula': '<strong>Formula:</strong> <code>P = (C − K + N) mod N</code>',
+        'diagram.title': 'The math behind the Vigenère cipher',
+        'diagram.encrypt.title': '🔐 Encryption',
+        'diagram.encrypt.example': '<strong>Example:</strong><br>Encrypting <code>П</code> with key <code>К</code><br>П = 16th letter (0-indexed), К = 11th<br>(16 + 11) mod 33 = 27 → <code>Ч</code>',
+        'diagram.decrypt.title': '🔓 Decryption',
+        'diagram.decrypt.example': '<strong>Example:</strong><br>Decrypting <code>Ч</code> with key <code>К</code><br>Ч = 27, К = 11, N = 33<br>(27 − 11 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.final.title': 'Why did this work?',
+        'diagram.final.desc': 'Every plaintext letter is encrypted into <strong>different letters</strong> depending on the key\'s position. The frequency analysis that breaks simple substitution ciphers becomes useless — the letter "O" might turn into "A," "M," "Щ," and so on.',
+        'diagram.final.param': 'Key length > 5 → high resistance',
+        'diagram.note': '* In the game, the table is visualized: rows and columns light up at every step, so you can watch the process happen live.',
+        'insight.label': 'Key takeaway:',
+        'insight.text': "Vigenère's strength lies in repeating the key",
+        'insight.rest': '. The longer and more random the key, the harder it is to break. But that very cyclicality became its weakness: the Kasiski method uses repetitions in the ciphertext to find the key length, then applies frequency analysis to each "substring" separately.',
+        'block3.heading': 'And now for the real magic',
+        'block3.intro': 'What will you <span class="highlight">actually do</span> in the simulation?',
+        'action1': 'You\'ll <strong>type your own message</strong> in Russian or English — the game automatically filters out invalid characters',
+        'action2': 'You\'ll <strong>set a keyword</strong> and watch it repeat cyclically underneath the message',
+        'action3': 'You\'ll <strong>see the Vigenère table in action</strong> — rows and columns light up at every step of encryption',
+        'action4': 'You\'ll <strong>send the key and the ciphertext to Bob</strong> over visualized communication channels — the key over a secure route, the ciphertext over an open one',
+        'action5': 'You\'ll <strong>walk through decryption step by step</strong> and see how Bob recovers the original message using the same table',
+        'action6': 'You\'ll <strong>get confirmation</strong> — the system compares the original and decrypted messages to verify the process worked correctly',
+        'block3.outro': 'In the game you don\'t just read about Vigenère — you <span class="highlight">live through the whole cycle</span>: from typing the message to a successful transfer. You\'ll see an abstract formula turn into a vivid animation, and understand why this cipher was a breakthrough for its time.',
+        'advanced.summary': 'For the curious',
+        'advanced.history.heading': 'Historical background',
+        'advanced.history.text': 'The cipher was first described by <strong>Giovan Battista Bellaso</strong> in 1553, but was mistakenly attributed to <strong>Blaise de Vigenère</strong>, who described it in 1586. The name stuck, and today we still call it the "Vigenère cipher."',
+        'advanced.broken.heading': 'Why was it broken?',
+        'advanced.broken.text1': 'In 1863, the Prussian officer <strong>Friedrich Kasiski</strong> published a method that exploits repetitions in the ciphertext. If the same plaintext phrase is encrypted with the same fragment of the key, the same sequence will appear in the ciphertext. The distance between such repetitions is often a multiple of the key length.',
+        'advanced.broken.text2': 'Once the key length is known, a cryptanalyst splits the ciphertext into groups (all letters encrypted with the first key symbol, the second, and so on) and applies frequency analysis to each group separately.',
+        'advanced.topics.heading': 'Topics for further study',
+        'advanced.topics.intro': 'If you want to dive deeper into cryptography, here are the key topics:',
+        'topic1.title': 'Frequency analysis', 'topic1.desc': 'How language statistics help break ciphers: letter, bigram, and trigram frequencies',
+        'topic2.title': 'The Kasiski method', 'topic2.desc': 'An algorithm for finding key length from repetitions in the ciphertext',
+        'topic3.title': 'Index of coincidence', 'topic3.desc': "Friedman's statistical test for determining key length",
+        'topic4.title': 'The one-time pad', 'topic4.desc': 'The only theoretically unbreakable cipher: key length = message length, used only once',
+        'topic5.title': 'Modern block ciphers', 'topic5.desc': 'How the ideas behind polyalphabetic ciphers evolved into AES, ChaCha20, and other algorithms',
+        'topic6.title': 'Cryptanalysis in Python', 'topic6.desc': 'Practical scripts for frequency analysis and attacks on the Vigenère cipher',
+        'advanced.practical.heading': 'Practical uses today',
+        'advanced.practical.intro': "Although the Vigenère cipher isn't used to protect real data anymore, it remains:",
+        'practical1': 'An excellent teaching example of polyalphabetic encryption',
+        'practical2': 'A foundation for understanding more complex algorithms',
+        'practical3': 'A staple of CTF competitions and cryptography puzzles',
+        'practical4': 'A historical bridge between classical and modern cryptography',
+        'actions.intro': "Now that you understand the basics, it's the perfect time to try it in practice and see the cipher in action!",
+        'actions.play': '▶ Go to the game', 'actions.back': '← Back to the topic list',
+        'actions.outro': 'In the interactive simulation you can encrypt your own message and watch every step of the process.',
+        'footer.line1': '© 2025 Ludus Lab · Complex things through simple games',
+        'footer.line2': 'This article is a simplified explanation meant to convey the principles. Real cryptographic systems use far more complex algorithms.',
+      },
+      es: {
+        'meta.title': 'Cifrado de Vigenère: teoría | Ludus Lab',
+        'meta.description': 'Explicación del clásico cifrado polialfabético de Vigenère. Cómo funciona la tabla, por qué fue un gran avance y cómo se logró descifrarlo.',
+        'nav.home': 'Inicio', 'nav.play': 'Jugar',
+        'article.category': 'Fundamentos de criptografía',
+        'article.title': 'Cifrado de Vigenère',
+        'article.subtitle': 'Un cifrado polialfabético considerado «indescifrable» durante tres siglos, que cambió el curso de la criptografía',
+        'meta.readtime': '⏱️ 4 min de lectura', 'meta.level': '📊 Nivel inicial', 'meta.era': '🗝️ Siglo XVI',
+        'block1.heading': '¿Para qué sirve esto?',
+        'block1.p1': 'Imagina que eres <span class="highlight">Alicia</span>, una diplomática del Renacimiento. Necesitas enviarle un mensaje secreto a <span class="highlight">Bob</span>, pero el correo no es seguro: las cartas se interceptan, se abren, se copian.',
+        'block1.p2': 'Un cifrado de sustitución simple (donde A→X, B→C, etc.) es fácil de romper con análisis de frecuencia: en cualquier idioma ciertas letras aparecen mucho más que otras, así que el símbolo más frecuente del texto cifrado probablemente sea la letra más común del alfabeto.',
+        'block1.p3': '<span class="highlight">El cifrado de Vigenère resuelve este problema</span>. En vez de un solo alfabeto, usa <span class="highlight">muchos alfabetos</span>, alternando entre ellos según una palabra clave. La misma letra del texto plano se cifra de forma distinta según su posición, y el análisis de frecuencia deja de funcionar.',
+        'block1.p4': 'Este método era tan fiable que lo llamaban <span class="highlight">«le chiffre indéchiffrable»</span>: «el cifrado indescifrable». No fue hasta 1863 que Friedrich Kasiski publicó un método para romperlo.',
+        'block2.heading': '¿Cómo funciona?',
+        'block2.intro': 'La base del cifrado es la <span class="highlight">tabla de Vigenère</span>: un cuadrado de 33×33 (para el alfabeto ruso), donde cada fila es el alfabeto desplazado una posición más.',
+        'step1.title': 'Preparar la tabla',
+        'step1.text': 'La primera fila es el alfabeto normal. Cada fila siguiente se desplaza una posición hacia la izquierda. La fila número <code>K</code> empieza con la <code>K-ésima</code> letra del alfabeto.',
+        'step1.example.intro': 'Ejemplo en inglés (primeras 3 filas):',
+        'step2.title': 'Elegir una clave',
+        'step2.text': 'Alicia y Bob acuerdan una <span class="highlight">palabra clave</span>, por ejemplo <code>CLAVE</code>. Esta palabra se repite cíclicamente debajo del mensaje:',
+        'step3.title': 'Cifrado',
+        'step3.intro': 'Para cada letra del mensaje:',
+        'step3.li1': 'Buscamos la fila según la letra de la <strong>clave</strong>',
+        'step3.li2': 'Buscamos la columna según la letra del <strong>mensaje</strong>',
+        'step3.li3': 'En la intersección está la <strong>letra cifrada</strong>',
+        'step3.formula': '<strong>Fórmula:</strong> <code>C = (P + K) mod N</code>',
+        'step3.formula.legend': 'donde <code>P</code> es la posición del texto plano, <code>K</code> la posición de la clave, <code>N</code> el tamaño del alfabeto y <code>C</code> el texto cifrado.',
+        'step4.title': 'Descifrado',
+        'step4.intro': 'Bob usa la misma tabla, pero en orden inverso:',
+        'step4.li1': 'Fila = letra de la clave',
+        'step4.li2': 'En esa fila buscamos el símbolo del texto cifrado',
+        'step4.li3': 'La columna donde se encuentra da la letra original',
+        'step4.formula': '<strong>Fórmula:</strong> <code>P = (C − K + N) mod N</code>',
+        'diagram.title': 'La matemática del cifrado de Vigenère',
+        'diagram.encrypt.title': '🔐 Cifrado',
+        'diagram.encrypt.example': '<strong>Ejemplo:</strong><br>Cifrando <code>П</code> con la clave <code>К</code><br>П = letra 16 (índice 0), К = letra 11<br>(16 + 11) mod 33 = 27 → <code>Ч</code>',
+        'diagram.decrypt.title': '🔓 Descifrado',
+        'diagram.decrypt.example': '<strong>Ejemplo:</strong><br>Descifrando <code>Ч</code> con la clave <code>К</code><br>Ч = 27, К = 11, N = 33<br>(27 − 11 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.final.title': '¿Por qué funcionaba esto?',
+        'diagram.final.desc': 'Cada letra del texto plano se cifra con <strong>letras distintas</strong> según la posición de la clave. El análisis de frecuencia, que rompe los cifrados de sustitución simples, se vuelve inútil: la letra «O» puede convertirse en «A», «M», «Щ», etc.',
+        'diagram.final.param': 'Longitud de clave > 5 → alta resistencia',
+        'diagram.note': '* En el juego, la tabla está visualizada: las filas y columnas se iluminan en cada paso para que veas el proceso en vivo.',
+        'insight.label': 'Idea clave:',
+        'insight.text': 'La fuerza de Vigenère está en la repetición de la clave',
+        'insight.rest': '. Cuanto más larga y aleatoria sea la clave, más difícil será romperla. Pero precisamente esa repetición cíclica fue su debilidad: el método de Kasiski usa las repeticiones del texto cifrado para hallar la longitud de la clave y luego aplica análisis de frecuencia a cada «subcadena» por separado.',
+        'block3.heading': 'Y ahora, la verdadera magia',
+        'block3.intro': '¿Qué <span class="highlight">harás</span> en la simulación?',
+        'action1': '<strong>Escribirás tu propio mensaje</strong> en ruso o inglés — el juego filtra automáticamente los caracteres no válidos',
+        'action2': '<strong>Definirás una palabra clave</strong> y verás cómo se repite cíclicamente debajo del mensaje',
+        'action3': '<strong>Verás la tabla de Vigenère en acción</strong> — las filas y columnas se iluminan en cada paso del cifrado',
+        'action4': '<strong>Enviarás la clave y el texto cifrado a Bob</strong> a través de canales de comunicación visualizados: la clave por una ruta segura, el texto cifrado por una abierta',
+        'action5': '<strong>Recorrerás el descifrado paso a paso</strong> y verás cómo Bob recupera el mensaje original usando la misma tabla',
+        'action6': '<strong>Obtendrás la confirmación</strong> — el sistema compara el mensaje original con el descifrado para verificar que el proceso fue correcto',
+        'block3.outro': 'En el juego no solo lees sobre Vigenère: <span class="highlight">vives todo el ciclo</span>, desde escribir el mensaje hasta una transmisión exitosa. Verás cómo una fórmula abstracta se convierte en una animación clara, y entenderás por qué este cifrado fue un gran avance para su época.',
+        'advanced.summary': 'Para los curiosos',
+        'advanced.history.heading': 'Contexto histórico',
+        'advanced.history.text': 'El cifrado fue descrito por primera vez por <strong>Giovan Battista Bellaso</strong> en 1553, pero se atribuyó erróneamente a <strong>Blaise de Vigenère</strong>, quien lo describió en 1586. El nombre se quedó, y hoy seguimos hablando del «cifrado de Vigenère».',
+        'advanced.broken.heading': '¿Por qué se rompió?',
+        'advanced.broken.text1': 'En 1863, el oficial prusiano <strong>Friedrich Kasiski</strong> publicó un método que aprovecha las repeticiones en el texto cifrado. Si la misma frase del texto plano se cifra con el mismo fragmento de la clave, aparecerá la misma secuencia en el texto cifrado. La distancia entre esas repeticiones suele ser un múltiplo de la longitud de la clave.',
+        'advanced.broken.text2': 'Conociendo la longitud de la clave, el criptoanalista divide el texto cifrado en grupos (todas las letras cifradas con el primer símbolo de la clave, el segundo, etc.) y aplica análisis de frecuencia a cada grupo por separado.',
+        'advanced.topics.heading': 'Temas para profundizar',
+        'advanced.topics.intro': 'Si quieres profundizar en criptografía, estos son los temas clave:',
+        'topic1.title': 'Análisis de frecuencia', 'topic1.desc': 'Cómo la estadística del lenguaje ayuda a romper cifrados: frecuencias de letras, bigramas y trigramas',
+        'topic2.title': 'Método de Kasiski', 'topic2.desc': 'Algoritmo para hallar la longitud de la clave a partir de repeticiones en el texto cifrado',
+        'topic3.title': 'Índice de coincidencia', 'topic3.desc': 'La prueba estadística de Friedman para determinar la longitud de la clave',
+        'topic4.title': 'El cuaderno de un solo uso', 'topic4.desc': 'El único cifrado teóricamente indescifrable: clave = longitud del mensaje, usada una sola vez',
+        'topic5.title': 'Cifrados de bloque modernos', 'topic5.desc': 'Cómo las ideas del cifrado polialfabético evolucionaron hasta AES, ChaCha20 y otros algoritmos',
+        'topic6.title': 'Criptoanálisis en Python', 'topic6.desc': 'Scripts prácticos para análisis de frecuencia y ataques al cifrado de Vigenère',
+        'advanced.practical.heading': 'Aplicaciones prácticas hoy',
+        'advanced.practical.intro': 'Aunque el cifrado de Vigenère ya no se usa para proteger datos reales, sigue siendo:',
+        'practical1': 'Un excelente ejemplo didáctico de cifrado polialfabético',
+        'practical2': 'Una base para entender algoritmos más complejos',
+        'practical3': 'Un elemento habitual en competiciones CTF y acertijos criptográficos',
+        'practical4': 'Un puente histórico entre la criptografía clásica y la moderna',
+        'actions.intro': '¡Ahora que entiendes los fundamentos, es el momento perfecto para probarlo en la práctica y ver el cifrado en acción!',
+        'actions.play': '▶ Ir al juego', 'actions.back': '← Volver a la lista de temas',
+        'actions.outro': 'En la simulación interactiva podrás cifrar tu propio mensaje y ver cada paso del proceso.',
+        'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
+        'footer.line2': 'Este artículo es una explicación simplificada para transmitir los principios. Los sistemas criptográficos reales usan algoritmos mucho más complejos.',
+      },
+    };
+
+    function applyLanguage(lang) {
+      if (!I18N[lang]) lang = 'ru';
+      const dict = I18N[lang];
+      document.documentElement.lang = lang;
+      document.title = dict['meta.title'];
+      const descTag = document.getElementById('pageDescription');
+      if (descTag) descTag.setAttribute('content', dict['meta.description']);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.langBtn === lang);
+      });
+      try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn));
+    });
+
+    (function initLanguage() {
+      let saved = null;
+      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      if (!saved) {
+        const browserLang = (navigator.language || 'ru').slice(0, 2);
+        saved = I18N[browserLang] ? browserLang : 'ru';
+      }
+      applyLanguage(saved);
+    })();
+
+    // Плавная прокрутка для якорных ссылок
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 20,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+    
+    // Исправление для кнопок при раскрытии details
+    const detailsElement = document.querySelector('.advanced-section');
+    const articleActions = document.getElementById('article-actions');
+    if (detailsElement && articleActions) {
+      detailsElement.addEventListener('toggle', function() {
+        setTimeout(() => {
+          articleActions.style.marginTop = '40px';
+        }, 10);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title id="pageTitle">Шифр Цезаря: теория | Ludus Lab</title>
+  <meta id="pageDescription" name="description" content="Объяснение самого древнего шифра в истории. Как работает сдвиг, почему его легко взломать и как он стал основой криптографии.">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+
+    ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { height: 100%; }
+    body {
+      background: #0a1a2a;
+      color: #c5d5e0;
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.8;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Language switch */
+    .lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+    .lang-btn {
+      background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3);
+      font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.5px;
+      padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease;
+    }
+    .lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+    .lang-btn.active {
+      background: rgba(212, 175, 55, 0.18); border-color: #d4af37; color: #d4af37;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+
+    /* Навигация */
+    .theory-nav {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 162, 255, 0.3);
+      flex-shrink: 0;
+    }
+    .nav-logo {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.8rem;
+      color: #d4af37;
+      text-decoration: none;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+    }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-link {
+      color: #8ab0c5;
+      text-decoration: none;
+      font-family: 'Oswald', sans-serif;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+      padding: 8px 15px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .nav-link:hover {
+      color: #00a2ff;
+      border-color: rgba(0, 162, 255, 0.3);
+      background: rgba(0, 162, 255, 0.1);
+    }
+
+    /* Основной контент */
+    .theory-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      flex: 1 0 auto;
+    }
+
+    /* Заголовок статьи */
+    .article-header {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .article-category {
+      display: inline-block;
+      background: rgba(0, 162, 255, 0.2);
+      color: #00a2ff;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      border: 1px solid rgba(0, 162, 255, 0.3);
+    }
+    .article-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 3rem;
+      color: #d4af37;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .article-subtitle {
+      font-size: 1.3rem;
+      color: #8ab0c5;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    .article-meta {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #557585;
+    }
+    .meta-item { display: flex; align-items: center; gap: 8px; }
+
+    /* Контентные блоки */
+    .content-block {
+      margin: 60px 0;
+      padding: 30px;
+      background: rgba(10, 30, 45, 0.6);
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 162, 255, 0.1);
+    }
+    .content-block h2 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2rem;
+      color: #00a2ff;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(0, 162, 255, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .content-block p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #a0c0d0;
+    }
+    .highlight {
+      color: #00a2ff;
+      font-weight: 500;
+      text-shadow: 0 0 5px rgba(0, 162, 255, 0.3);
+    }
+
+    /* Шаги объяснения */
+    .explanation-steps { margin: 30px 0; }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      margin: 25px 0;
+      padding: 20px;
+      background: rgba(5, 20, 30, 0.8);
+      border-left: 4px solid #00a2ff;
+      border-radius: 0 8px 8px 0;
+    }
+    .step-number {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      background: #00a2ff;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.2rem;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0, 162, 255, 0.5);
+    }
+    .step-content h3 {
+      color: #d4af37;
+      margin-bottom: 10px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.3rem;
+    }
+
+    /* Ключевая идея */
+    .key-insight {
+      background: rgba(212, 175, 55, 0.1);
+      border-left: 4px solid #d4af37;
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .key-insight strong {
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      display: block;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    /* Список действий */
+    .action-list {
+      list-style: none;
+      margin: 30px 0;
+    }
+    .action-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin: 15px 0;
+      padding: 15px;
+      background: rgba(0, 162, 255, 0.05);
+      border-radius: 6px;
+      border-left: 3px solid #00a2ff;
+    }
+    .action-icon {
+      font-size: 1.5rem;
+      width: 40px;
+      text-align: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .action-text { flex: 1; }
+    .action-text strong { color: #00a2ff; font-family: 'Oswald', sans-serif; }
+
+    /* ДИАГРАММА ЦЕЗАРЯ */
+    .caesar-diagram {
+      margin: 40px auto;
+      padding: 30px;
+      background: rgba(5, 20, 30, 0.85);
+      border: 1px solid rgba(0, 162, 255, 0.25);
+      border-radius: 10px;
+      max-width: 800px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .diagram-title {
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .diagram-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+    @media (max-width: 600px) {
+      .diagram-grid { grid-template-columns: 1fr; }
+    }
+    .diagram-card {
+      background: rgba(10, 30, 45, 0.9);
+      border: 1px solid rgba(0, 162, 255, 0.2);
+      border-radius: 8px;
+      padding: 20px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .diagram-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      border-color: rgba(0, 162, 255, 0.4);
+    }
+    .diagram-card-title {
+      color: #00a2ff;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .diagram-formula {
+      background: rgba(0, 20, 40, 0.6);
+      padding: 15px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 1rem;
+      text-align: center;
+      margin: 10px 0;
+      color: #00ff80;
+      border: 1px solid rgba(0, 255, 128, 0.2);
+    }
+    .diagram-example {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.95rem;
+      color: #a0c0d0;
+    }
+    .diagram-example code {
+      background: rgba(0, 162, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: #00a2ff;
+    }
+    .final-key {
+      margin-top: 30px;
+      padding: 25px;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 10px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .final-key:before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(to right, #00a2ff, #d4af37, #00a2ff);
+    }
+    .final-key-title {
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .final-key-description {
+      color: #a0c0d0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    .key-parameter {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.15);
+      color: #d4af37;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .diagram-note {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #557585;
+      font-size: 0.85rem;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* Кнопки действий */
+    .article-actions {
+      text-align: center;
+      margin: 60px 0;
+      padding: 30px;
+      background: rgba(10, 30, 45, 0.4);
+      border-radius: 8px;
+      border: 1px solid rgba(0, 162, 255, 0.2);
+    }
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    .btn-primary, .btn-secondary {
+      padding: 15px 30px;
+      font-family: 'Oswald', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      border: 1px solid;
+      text-align: center;
+      min-width: 180px;
+    }
+    .btn-primary {
+      background: linear-gradient(to bottom, #006ba6, #004d7a);
+      color: #e6f0ff;
+      border-color: #00a2ff;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(to bottom, #0088cc, #006ba6);
+      box-shadow: 0 0 20px rgba(0, 162, 255, 0.4);
+      transform: translateY(-3px);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: #8ab0c5;
+      border-color: rgba(138, 176, 197, 0.4);
+    }
+    .btn-secondary:hover {
+      border-color: #8ab0c5;
+      color: #a0c0d0;
+    }
+
+    /* Дополнительный материал */
+    .advanced-section {
+      margin: 40px 0;
+      padding: 20px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 8px;
+      background: rgba(212, 175, 55, 0.05);
+    }
+    .advanced-section summary {
+      cursor: pointer;
+      color: #d4af37;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+      list-style: none;
+      padding: 10px;
+    }
+    .advanced-section summary::before {
+      content: '▶';
+      margin-right: 10px;
+      display: inline-block;
+      transition: transform 0.3s;
+    }
+    .advanced-section[open] summary::before { transform: rotate(90deg); }
+    .advanced-content {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .advanced-content h3 {
+      color: #d4af37;
+      margin: 15px 0 10px;
+      font-family: 'Oswald', sans-serif;
+    }
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .topic-card {
+      background: rgba(5, 20, 30, 0.6);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 6px;
+      padding: 15px;
+      text-align: left;
+    }
+    .topic-card h4 {
+      color: #d4af37;
+      margin-bottom: 8px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.1rem;
+    }
+    .topic-card p {
+      font-size: 0.9rem;
+      color: #8ab0c5;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Футер */
+    .theory-footer {
+      text-align: center;
+      margin-top: auto;
+      padding: 30px 20px;
+      border-top: 1px solid rgba(0, 162, 255, 0.2);
+      color: #557585;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      background: #0a1a2a;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+      .theory-container { padding: 20px 15px; margin-bottom: 40px; }
+      .article-title { font-size: 2.2rem; }
+      .content-block { padding: 20px; margin: 40px 0; }
+      .step { flex-direction: column; gap: 15px; }
+      .action-buttons { flex-direction: column; align-items: center; gap: 15px; }
+      .btn-primary, .btn-secondary { width: 100%; max-width: 300px; padding: 12px 20px; }
+      .nav-links { flex-direction: row; gap: 15px; flex-wrap: wrap; justify-content: center; }
+      .article-actions { margin: 40px 0 20px; padding: 20px 15px; }
+      .article-meta { flex-direction: column; gap: 10px; }
+      .topics-grid { grid-template-columns: 1fr; }
+      .theory-nav { flex-direction: column; gap: 15px; padding: 15px; }
+      .caesar-diagram { padding: 20px; margin: 30px auto; }
+      .diagram-grid { gap: 15px; }
+      .final-key { padding: 20px 15px; }
+    }
+    @media (max-width: 480px) {
+      .article-title { font-size: 1.8rem; }
+      .article-subtitle { font-size: 1.1rem; }
+      .content-block h2 { font-size: 1.5rem; }
+      .nav-logo { font-size: 1.5rem; }
+      .nav-link { padding: 6px 10px; font-size: 0.8rem; flex: 1; text-align: center; }
+      .btn-primary, .btn-secondary { min-width: auto; padding: 12px 15px; font-size: 0.9rem; }
+      .theory-footer { padding: 20px 15px; font-size: 0.8rem; }
+      .caesar-diagram { padding: 15px; }
+      .diagram-title { font-size: 1.2rem; }
+      .diagram-card { padding: 15px; }
+      .final-key-title { font-size: 1.1rem; }
+      .lang-switch { top: 8px; right: 8px; }
+      .lang-btn { font-size: 0.65rem; padding: 3px 7px; }
+    }
+    @media (max-width: 320px) {
+      .article-title { font-size: 1.5rem; }
+      .content-block h2 { font-size: 1.3rem; }
+      .nav-links { flex-direction: column; width: 100%; }
+      .nav-link { width: 100%; margin-bottom: 5px; }
+      .btn-primary, .btn-secondary { padding: 10px 12px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="lang-switch" role="group" aria-label="Language">
+    <button class="lang-btn" data-lang-btn="ru">RU</button>
+    <button class="lang-btn" data-lang-btn="en">EN</button>
+    <button class="lang-btn" data-lang-btn="es">ES</button>
+  </div>
+
+  <!-- Навигация -->
+  <nav class="theory-nav">
+    <a href="https://ludus-lab.ru/" class="nav-logo">LUDUS LAB</a>
+    <div class="nav-links">
+      <a href="https://ludus-lab.ru/" class="nav-link" data-i18n="nav.home">Главная</a>
+      <!-- Ссылка на игру по шифру Цезаря -->
+      <a href="https://ludus-lab.ru/games/caesarcipher/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+    </div>
+  </nav>
+
+  <!-- Основной контент -->
+  <div class="theory-container">
+    <!-- Заголовок статьи -->
+    <header class="article-header">
+      <div class="article-category" data-i18n="article.category">Основы криптографии</div>
+      <h1 class="article-title" data-i18n="article.title">Шифр Цезаря</h1>
+      <p class="article-subtitle" data-i18n="article.subtitle">
+        Простейший шифр сдвига, который использовал Юлий Цезарь две тысячи лет назад. Именно с него началась история криптографии.
+      </p>
+      <div class="article-meta">
+        <div class="meta-item" data-i18n="meta.readtime">⏱️ 4 мин чтения</div>
+        <div class="meta-item" data-i18n="meta.level">📊 Начальный уровень</div>
+        <div class="meta-item" data-i18n="meta.era">🗝️ I век до н.э.</div>
+      </div>
+    </header>
+
+    <!-- Блок "Зачем изучать шифр Цезаря?" -->
+    <section class="content-block">
+      <h2 data-i18n="block1.heading">Зачем изучать шифр Цезаря?</h2>
+      <p data-i18n="block1.p1">Представьте, что вы — полководец в Древнем Риме. Вам нужно передать приказ войскам, но гонец может попасть в руки врага. Как сделать так, чтобы даже при перехвате сообщения никто, кроме ваших генералов, не понял его смысла?</p>
+
+      <p data-i18n="block1.p2">Именно эту задачу решил Юлий Цезарь более 2000 лет назад. Его метод — <span class="highlight">простой сдвиг букв алфавита</span> — стал первым шагом к современной криптографии.</p>
+
+      <p data-i18n="block1.p3">Сегодня шифр Цезаря не используется для реальной защиты данных — его можно взломать за секунды. Но он остаётся <span class="highlight">идеальным учебным инструментом</span>, потому что наглядно показывает фундаментальные принципы:</p>
+
+      <ul style="margin-left: 20px; color: #a0c0d0; margin-top: 15px;">
+        <li data-i18n="block1.li1"><strong>Ключ</strong> — секретный параметр, известный только отправителю и получателю</li>
+        <li data-i18n="block1.li2"><strong>Алгоритм</strong> — правило преобразования данных</li>
+        <li data-i18n="block1.li3"><strong>Обратимость</strong> — возможность восстановить исходное сообщение</li>
+        <li data-i18n="block1.li4"><strong>Модульная арифметика</strong> — математическая основа большинства шифров</li>
+      </ul>
+    </section>
+
+    <!-- Блок "Как работает шифр?" -->
+    <section class="content-block">
+      <h2 data-i18n="block2.heading">Как работает шифр Цезаря?</h2>
+
+      <p data-i18n="block2.intro">Принцип прост до гениальности: каждая буква в сообщении заменяется на другую букву, отстоящую от неё на фиксированное число позиций в алфавите. Это число называется <span class="highlight">сдвигом</span> или <span class="highlight">ключом</span>.</p>
+
+      <div class="explanation-steps">
+        <!-- Шаг 1 -->
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3 data-i18n="step1.title">Присвоение позиций</h3>
+            <p data-i18n="step1.text">Каждой букве алфавита присваивается числовая позиция: А=0, Б=1, В=2... Я=32 (для русского алфавита).</p>
+          </div>
+        </div>
+
+        <!-- Шаг 2 -->
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3 data-i18n="step2.title">Применение сдвига</h3>
+            <p data-i18n="step2.text">К позиции каждой буквы добавляется ключ: <span class="highlight">новая_позиция = (старая_позиция + ключ) mod N</span>, где N — размер алфавита.</p>
+          </div>
+        </div>
+
+        <!-- Шаг 3 -->
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3 data-i18n="step3.title">Обратное преобразование</h3>
+            <p data-i18n="step3.text">Для расшифровки получатель вычитает ключ: <span class="highlight">старая_позиция = (новая_позиция - ключ + N) mod N</span>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ДИАГРАММА ЦЕЗАРЯ -->
+      <div class="caesar-diagram">
+        <div class="diagram-title" data-i18n="diagram.title">Математика шифра Цезаря</div>
+
+        <div class="diagram-grid">
+          <!-- Карточка шифрования -->
+          <div class="diagram-card">
+            <div class="diagram-card-title" data-i18n="diagram.encrypt.title">
+              🔐 Шифрование
+            </div>
+            <div class="diagram-formula">C = (P + K) mod N</div>
+            <div class="diagram-example" data-i18n="diagram.encrypt.example">
+              <strong>Пример:</strong><br>Шифруем букву <code>П</code> со сдвигом <code>3</code><br>
+              П = 16-я буква (0-индекс), K = 3<br>
+              (16 + 3) mod 33 = 19 → <code>С</code>
+            </div>
+          </div>
+
+          <!-- Карточка расшифровки -->
+          <div class="diagram-card">
+            <div class="diagram-card-title" data-i18n="diagram.decrypt.title">
+              🔓 Расшифровка
+            </div>
+            <div class="diagram-formula">P = (C − K + N) mod N</div>
+            <div class="diagram-example" data-i18n="diagram.decrypt.example">
+              <strong>Пример:</strong><br>Расшифровываем <code>С</code> со сдвигом <code>3</code><br>
+              С = 19, K = 3, N = 33<br>
+              (19 − 3 + 33) mod 33 = 16 → <code>П</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Финальный блок -->
+        <div class="final-key">
+          <div class="final-key-title" data-i18n="diagram.final.title">Почему это работает?</div>
+          <div class="final-key-description" data-i18n="diagram.final.desc">
+            Операция <code>mod N</code> обеспечивает «зацикливание» алфавита: после последней буквы снова идёт первая. Это простое, но мощное математическое свойство лежит в основе многих современных шифров.
+          </div>
+          <div class="key-parameter" data-i18n="diagram.final.param">Ключ может быть от 1 до N−1</div>
+        </div>
+
+        <div class="diagram-note" data-i18n="diagram.note">
+          * В игре криптодиск вращается, наглядно показывая соответствие букв открытого текста и шифротекста.
+        </div>
+      </div>
+      <!-- КОНЕЦ ДИАГРАММЫ -->
+
+      <div class="key-insight">
+        <strong data-i18n="insight.label">Ключевая мысль:</strong>
+        <span data-i18n="insight.text">Магия шифра Цезаря — в <span class="highlight">модульной арифметике</span>. Операция "mod N" обеспечивает "зацикливание" алфавита: после последней буквы снова идёт первая. Это простой, но мощный принцип, лежащий в основе современных криптографических алгоритмов.</span>
+      </div>
+    </section>
+
+    <!-- Блок "Что вы сделаете в игре" -->
+    <section class="content-block">
+      <h2 data-i18n="block3.heading">Испытайте шифр на практике</h2>
+      <p data-i18n="block3.intro">В интерактивной симуляции "Шифр Цезаря" вы не просто прочитаете теорию — вы станете криптографом:</p>
+
+      <ul class="action-list">
+        <li>
+          <span class="action-icon">✍️</span>
+          <div class="action-text" data-i18n="action1">
+            <span>Вы <strong>введёте своё сообщение</strong> — до 50 символов на русском или английском языке</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">🔢</span>
+          <div class="action-text" data-i18n="action2">
+            <span>Вы <strong>выберете ключ шифрования</strong> — сдвиг от 0 до 90 позиций в любую сторону</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">🔄</span>
+          <div class="action-text" data-i18n="action3">
+            <span>Вы <strong>увидите работу криптодиска</strong> — два вращающихся кольца показывают соответствие открытого текста и шифра</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">⚡</span>
+          <div class="action-text" data-i18n="action4">
+            <span>Вы <strong>запустите пошаговое шифрование</strong> — символ за символом, с визуализацией каждого преобразования</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">📡</span>
+          <div class="action-text" data-i18n="action5">
+            <span>Вы <strong>смоделируете передачу данных</strong> — ключ и шифротекст отправляются от Алисы к Бобу по разным каналам</span>
+          </div>
+        </li>
+        <li>
+          <span class="action-icon">🔓</span>
+          <div class="action-text" data-i18n="action6">
+            <span>Вы <strong>выполните расшифровку</strong> — Боб применяет обратный сдвиг и восстанавливает исходное сообщение</span>
+          </div>
+        </li>
+      </ul>
+
+      <p data-i18n="block3.outro">Вы увидите, как <span class="highlight">зелёный диск</span> (открытый текст) и <span class="highlight">синий диск</span> (шифротекст) вращаются, наглядно демонстрируя симметрию шифрования и расшифрования.</p>
+
+      <div class="key-insight">
+        <strong data-i18n="insight2.label">Главный урок:</strong>
+        <span data-i18n="insight2.text">Игра показывает не только математику шифра, но и <span class="highlight">протокол безопасной передачи</span>: сначала передаётся ключ, затем — зашифрованное сообщение. Это фундаментальная идея, которая лежит в основе всех современных систем защиты данных.</span>
+      </div>
+    </section>
+
+    <!-- Дополнительный материал -->
+    <details class="advanced-section">
+      <summary data-i18n="advanced.summary">Для любознательных</summary>
+      <div class="advanced-content">
+        <h3 data-i18n="advanced.history.heading">Историческая справка</h3>
+        <p data-i18n="advanced.history.text">Шифр, которым пользовался Юлий Цезарь, описан римским историком Светонием. Цезарь сдвигал буквы на 3 позиции, но принцип работает с любым ключом. Долгое время этот метод считался достаточно надёжным, пока арабские учёные не разработали частотный анализ (IX век).</p>
+
+        <h3 data-i18n="advanced.weak.heading">Почему шифр Цезаря нестойкий?</h3>
+        <p data-i18n="advanced.weak.intro">Несмотря на историческую важность, шифр Цезаря легко взломать:</p>
+        <ul style="margin-left: 20px; color: #a0c0d0;">
+          <li data-i18n="weak1"><strong>Малое пространство ключей</strong> — всего N-1 возможных сдвигов (для русского алфавита — 32)</li>
+          <li data-i18n="weak2"><strong>Частотный анализ</strong> — буквы в языке встречаются с разной частотой; сопоставив частоты в шифротексте с эталонными, можно восстановить ключ</li>
+          <li data-i18n="weak3"><strong>Атака полным перебором</strong> — даже вручную можно попробовать все 32 варианта за пару минут</li>
+        </ul>
+
+        <h3 data-i18n="advanced.topics.heading">Темы для углублённого изучения</h3>
+        <p data-i18n="advanced.topics.intro">Если вы хотите погрузиться глубже в криптографию, вот ключевые темы:</p>
+
+        <div class="topics-grid">
+          <div class="topic-card">
+            <h4 data-i18n="topic1.title">Частотный анализ</h4>
+            <p data-i18n="topic1.desc">Как статистика языка помогает взламывать шифры: частоты букв, биграмм, триграмм</p>
+          </div>
+
+          <div class="topic-card">
+            <h4 data-i18n="topic2.title">Шифр Виженера</h4>
+            <p data-i18n="topic2.desc">Полиалфавитный шифр, который считался невзламываемым три столетия</p>
+          </div>
+
+          <div class="topic-card">
+            <h4 data-i18n="topic3.title">Одноразовый блокнот</h4>
+            <p data-i18n="topic3.desc">Единственный теоретически невзламываемый шифр: ключ = длина сообщения, используется один раз</p>
+          </div>
+
+          <div class="topic-card">
+            <h4 data-i18n="topic4.title">Современные блочные шифры</h4>
+            <p data-i18n="topic4.desc">Как идеи простой подстановки эволюционировали в AES, ГОСТ «Кузнечик» и другие алгоритмы</p>
+          </div>
+
+          <div class="topic-card">
+            <h4 data-i18n="topic5.title">Криптоанализ в Python</h4>
+            <p data-i18n="topic5.desc">Практические скрипты для частотного анализа и атак на шифр Цезаря</p>
+          </div>
+
+          <div class="topic-card">
+            <h4 data-i18n="topic6.title">Российские стандарты</h4>
+            <p data-i18n="topic6.desc">ГОСТ 28147-89 «Магма», ГОСТ Р 34.12-2015 «Кузнечик», хеш-функция «Стрибог»</p>
+          </div>
+        </div>
+
+        <h3 data-i18n="advanced.facts.heading">Интересные факты</h3>
+        <ul style="margin-left: 20px; color: #a0c0d0;">
+          <li data-i18n="fact1">Шифр Цезаря использовался в русской армии во время Первой мировой войны — и регулярно взламывался противником</li>
+          <li data-i18n="fact2">В иврите существует традиция шифрования "Атбаш" — замена первой буквы алфавита на последнюю, второй на предпоследнюю и т.д.</li>
+          <li data-i18n="fact3">ROT13 — вариант шифра Цезаря со сдвигом 13, популярный в интернете для скрытия спойлеров; его особенность: шифрование и расшифрование совпадают</li>
+          <li data-i18n="fact4">В игре используется расширенный алфавит (кириллица + латиница + цифры + знаки), что увеличивает пространство ключей до 90+ вариантов</li>
+        </ul>
+      </div>
+    </details>
+
+    <!-- Кнопки действий -->
+    <div class="article-actions" id="article-actions">
+      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">
+        Теперь, когда вы понимаете математику и историю шифра Цезаря, самое время попробовать его в действии!
+      </p>
+
+      <div class="action-buttons">
+        <!-- Ссылка на игру по Цезарю -->
+        <a href="https://ludus-lab.ru/games/caesarcipher/index.html" class="btn-primary" data-i18n="actions.play">▶ Запустить симуляцию</a>
+        <a href="https://ludus-lab.ru/#theory-section" class="btn-secondary" data-i18n="actions.back">← Вернуться к списку тем</a>
+      </div>
+
+      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">
+        В интерактивной симуляции вы сможете зашифровать своё сообщение и увидеть каждый шаг процесса
+      </p>
+    </div>
+  </div>
+
+  <!-- Футер -->
+  <footer class="theory-footer">
+    <p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
+    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Эта статья — упрощённое объяснение для понимания принципов. Реальные криптографические системы используют более сложные алгоритмы и должны соответствовать требованиям регуляторов, включая ФСБ России для систем, используемых в РФ.</p>
+  </footer>
+
+  <script>
+    const I18N = {
+      ru: {
+        'meta.title': 'Шифр Цезаря: теория | Ludus Lab',
+        'meta.description': 'Объяснение самого древнего шифра в истории. Как работает сдвиг, почему его легко взломать и как он стал основой криптографии.',
+        'nav.home': 'Главная', 'nav.play': 'Играть',
+        'article.category': 'Основы криптографии',
+        'article.title': 'Шифр Цезаря',
+        'article.subtitle': 'Простейший шифр сдвига, который использовал Юлий Цезарь две тысячи лет назад. Именно с него началась история криптографии.',
+        'meta.readtime': '⏱️ 4 мин чтения', 'meta.level': '📊 Начальный уровень', 'meta.era': '🗝️ I век до н.э.',
+        'block1.heading': 'Зачем изучать шифр Цезаря?',
+        'block1.p1': 'Представьте, что вы — полководец в Древнем Риме. Вам нужно передать приказ войскам, но гонец может попасть в руки врага. Как сделать так, чтобы даже при перехвате сообщения никто, кроме ваших генералов, не понял его смысла?',
+        'block1.p2': 'Именно эту задачу решил Юлий Цезарь более 2000 лет назад. Его метод — <span class="highlight">простой сдвиг букв алфавита</span> — стал первым шагом к современной криптографии.',
+        'block1.p3': 'Сегодня шифр Цезаря не используется для реальной защиты данных — его можно взломать за секунды. Но он остаётся <span class="highlight">идеальным учебным инструментом</span>, потому что наглядно показывает фундаментальные принципы:',
+        'block1.li1': '<strong>Ключ</strong> — секретный параметр, известный только отправителю и получателю',
+        'block1.li2': '<strong>Алгоритм</strong> — правило преобразования данных',
+        'block1.li3': '<strong>Обратимость</strong> — возможность восстановить исходное сообщение',
+        'block1.li4': '<strong>Модульная арифметика</strong> — математическая основа большинства шифров',
+        'block2.heading': 'Как работает шифр Цезаря?',
+        'block2.intro': 'Принцип прост до гениальности: каждая буква в сообщении заменяется на другую букву, отстоящую от неё на фиксированное число позиций в алфавите. Это число называется <span class="highlight">сдвигом</span> или <span class="highlight">ключом</span>.',
+        'step1.title': 'Присвоение позиций',
+        'step1.text': 'Каждой букве алфавита присваивается числовая позиция: А=0, Б=1, В=2... Я=32 (для русского алфавита).',
+        'step2.title': 'Применение сдвига',
+        'step2.text': 'К позиции каждой буквы добавляется ключ: <span class="highlight">новая_позиция = (старая_позиция + ключ) mod N</span>, где N — размер алфавита.',
+        'step3.title': 'Обратное преобразование',
+        'step3.text': 'Для расшифровки получатель вычитает ключ: <span class="highlight">старая_позиция = (новая_позиция - ключ + N) mod N</span>.',
+        'diagram.title': 'Математика шифра Цезаря',
+        'diagram.encrypt.title': '🔐 Шифрование',
+        'diagram.encrypt.example': '<strong>Пример:</strong><br>Шифруем букву <code>П</code> со сдвигом <code>3</code><br>П = 16-я буква (0-индекс), K = 3<br>(16 + 3) mod 33 = 19 → <code>С</code>',
+        'diagram.decrypt.title': '🔓 Расшифровка',
+        'diagram.decrypt.example': '<strong>Пример:</strong><br>Расшифровываем <code>С</code> со сдвигом <code>3</code><br>С = 19, K = 3, N = 33<br>(19 − 3 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.final.title': 'Почему это работает?',
+        'diagram.final.desc': 'Операция <code>mod N</code> обеспечивает «зацикливание» алфавита: после последней буквы снова идёт первая. Это простое, но мощное математическое свойство лежит в основе многих современных шифров.',
+        'diagram.final.param': 'Ключ может быть от 1 до N−1',
+        'diagram.note': '* В игре криптодиск вращается, наглядно показывая соответствие букв открытого текста и шифротекста.',
+        'insight.label': 'Ключевая мысль:',
+        'insight.text': 'Магия шифра Цезаря — в <span class="highlight">модульной арифметике</span>. Операция "mod N" обеспечивает "зацикливание" алфавита: после последней буквы снова идёт первая. Это простой, но мощный принцип, лежащий в основе современных криптографических алгоритмов.',
+        'block3.heading': 'Испытайте шифр на практике',
+        'block3.intro': 'В интерактивной симуляции "Шифр Цезаря" вы не просто прочитаете теорию — вы станете криптографом:',
+        'action1': 'Вы <strong>введёте своё сообщение</strong> — до 50 символов на русском или английском языке',
+        'action2': 'Вы <strong>выберете ключ шифрования</strong> — сдвиг от 0 до 90 позиций в любую сторону',
+        'action3': 'Вы <strong>увидите работу криптодиска</strong> — два вращающихся кольца показывают соответствие открытого текста и шифра',
+        'action4': 'Вы <strong>запустите пошаговое шифрование</strong> — символ за символом, с визуализацией каждого преобразования',
+        'action5': 'Вы <strong>смоделируете передачу данных</strong> — ключ и шифротекст отправляются от Алисы к Бобу по разным каналам',
+        'action6': 'Вы <strong>выполните расшифровку</strong> — Боб применяет обратный сдвиг и восстанавливает исходное сообщение',
+        'block3.outro': 'Вы увидите, как <span class="highlight">зелёный диск</span> (открытый текст) и <span class="highlight">синий диск</span> (шифротекст) вращаются, наглядно демонстрируя симметрию шифрования и расшифрования.',
+        'insight2.label': 'Главный урок:',
+        'insight2.text': 'Игра показывает не только математику шифра, но и <span class="highlight">протокол безопасной передачи</span>: сначала передаётся ключ, затем — зашифрованное сообщение. Это фундаментальная идея, которая лежит в основе всех современных систем защиты данных.',
+        'advanced.summary': 'Для любознательных',
+        'advanced.history.heading': 'Историческая справка',
+        'advanced.history.text': 'Шифр, которым пользовался Юлий Цезарь, описан римским историком Светонием. Цезарь сдвигал буквы на 3 позиции, но принцип работает с любым ключом. Долгое время этот метод считался достаточно надёжным, пока арабские учёные не разработали частотный анализ (IX век).',
+        'advanced.weak.heading': 'Почему шифр Цезаря нестойкий?',
+        'advanced.weak.intro': 'Несмотря на историческую важность, шифр Цезаря легко взломать:',
+        'weak1': '<strong>Малое пространство ключей</strong> — всего N-1 возможных сдвигов (для русского алфавита — 32)',
+        'weak2': '<strong>Частотный анализ</strong> — буквы в языке встречаются с разной частотой; сопоставив частоты в шифротексте с эталонными, можно восстановить ключ',
+        'weak3': '<strong>Атака полным перебором</strong> — даже вручную можно попробовать все 32 варианта за пару минут',
+        'advanced.topics.heading': 'Темы для углублённого изучения',
+        'advanced.topics.intro': 'Если вы хотите погрузиться глубже в криптографию, вот ключевые темы:',
+        'topic1.title': 'Частотный анализ', 'topic1.desc': 'Как статистика языка помогает взламывать шифры: частоты букв, биграмм, триграмм',
+        'topic2.title': 'Шифр Виженера', 'topic2.desc': 'Полиалфавитный шифр, который считался невзламываемым три столетия',
+        'topic3.title': 'Одноразовый блокнот', 'topic3.desc': 'Единственный теоретически невзламываемый шифр: ключ = длина сообщения, используется один раз',
+        'topic4.title': 'Современные блочные шифры', 'topic4.desc': 'Как идеи простой подстановки эволюционировали в AES, ГОСТ «Кузнечик» и другие алгоритмы',
+        'topic5.title': 'Криптоанализ в Python', 'topic5.desc': 'Практические скрипты для частотного анализа и атак на шифр Цезаря',
+        'topic6.title': 'Российские стандарты', 'topic6.desc': 'ГОСТ 28147-89 «Магма», ГОСТ Р 34.12-2015 «Кузнечик», хеш-функция «Стрибог»',
+        'advanced.facts.heading': 'Интересные факты',
+        'fact1': 'Шифр Цезаря использовался в русской армии во время Первой мировой войны — и регулярно взламывался противником',
+        'fact2': 'В иврите существует традиция шифрования "Атбаш" — замена первой буквы алфавита на последнюю, второй на предпоследнюю и т.д.',
+        'fact3': 'ROT13 — вариант шифра Цезаря со сдвигом 13, популярный в интернете для скрытия спойлеров; его особенность: шифрование и расшифрование совпадают',
+        'fact4': 'В игре используется расширенный алфавит (кириллица + латиница + цифры + знаки), что увеличивает пространство ключей до 90+ вариантов',
+        'actions.intro': 'Теперь, когда вы понимаете математику и историю шифра Цезаря, самое время попробовать его в действии!',
+        'actions.play': '▶ Запустить симуляцию', 'actions.back': '← Вернуться к списку тем',
+        'actions.outro': 'В интерактивной симуляции вы сможете зашифровать своё сообщение и увидеть каждый шаг процесса',
+        'footer.line1': '© 2025 Ludus Lab · Сложные вещи простыми играми',
+        'footer.line2': 'Эта статья — упрощённое объяснение для понимания принципов. Реальные криптографические системы используют более сложные алгоритмы и должны соответствовать требованиям регуляторов, включая ФСБ России для систем, используемых в РФ.',
+      },
+      en: {
+        'meta.title': 'Caesar Cipher: Theory | Ludus Lab',
+        'meta.description': 'An explanation of the oldest cipher in history. How the shift works, why it is easy to break, and how it became the foundation of cryptography.',
+        'nav.home': 'Home', 'nav.play': 'Play',
+        'article.category': 'Cryptography basics',
+        'article.title': 'Caesar Cipher',
+        'article.subtitle': 'The simplest shift cipher, used by Julius Caesar two thousand years ago. This is where the history of cryptography began.',
+        'meta.readtime': '⏱️ 4 min read', 'meta.level': '📊 Beginner level', 'meta.era': '🗝️ 1st century BCE',
+        'block1.heading': 'Why study the Caesar cipher?',
+        'block1.p1': 'Imagine you are a general in ancient Rome. You need to send an order to your troops, but the messenger could be captured by the enemy. How do you make sure that even if the message is intercepted, no one but your generals can understand it?',
+        'block1.p2': 'That is exactly the problem Julius Caesar solved more than 2000 years ago. His method — <span class="highlight">a simple shift of the alphabet\'s letters</span> — became the first step toward modern cryptography.',
+        'block1.p3': 'Today the Caesar cipher isn\'t used to protect real data — it can be cracked in seconds. But it remains <span class="highlight">a perfect teaching tool</span>, because it clearly demonstrates fundamental principles:',
+        'block1.li1': '<strong>Key</strong> — a secret parameter known only to the sender and the receiver',
+        'block1.li2': '<strong>Algorithm</strong> — the rule used to transform the data',
+        'block1.li3': '<strong>Reversibility</strong> — the ability to recover the original message',
+        'block1.li4': '<strong>Modular arithmetic</strong> — the mathematical foundation of most ciphers',
+        'block2.heading': 'How does the Caesar cipher work?',
+        'block2.intro': 'The idea is brilliantly simple: every letter in the message is replaced with another letter a fixed number of positions away in the alphabet. That number is called the <span class="highlight">shift</span> or the <span class="highlight">key</span>.',
+        'step1.title': 'Assigning positions',
+        'step1.text': 'Every letter of the alphabet gets a numeric position: А=0, Б=1, В=2... Я=32 (for the Russian alphabet).',
+        'step2.title': 'Applying the shift',
+        'step2.text': 'The key is added to each letter\'s position: <span class="highlight">new_position = (old_position + key) mod N</span>, where N is the size of the alphabet.',
+        'step3.title': 'Reversing the transformation',
+        'step3.text': 'To decrypt, the receiver subtracts the key: <span class="highlight">old_position = (new_position - key + N) mod N</span>.',
+        'diagram.title': 'The math behind the Caesar cipher',
+        'diagram.encrypt.title': '🔐 Encryption',
+        'diagram.encrypt.example': '<strong>Example:</strong><br>Encrypting the letter <code>П</code> with shift <code>3</code><br>П = 16th letter (0-indexed), K = 3<br>(16 + 3) mod 33 = 19 → <code>С</code>',
+        'diagram.decrypt.title': '🔓 Decryption',
+        'diagram.decrypt.example': '<strong>Example:</strong><br>Decrypting <code>С</code> with shift <code>3</code><br>С = 19, K = 3, N = 33<br>(19 − 3 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.final.title': 'Why does this work?',
+        'diagram.final.desc': 'The <code>mod N</code> operation makes the alphabet "wrap around": after the last letter comes the first one again. This simple but powerful mathematical property underlies many modern ciphers.',
+        'diagram.final.param': 'The key can be anywhere from 1 to N−1',
+        'diagram.note': '* In the game, a cipher disk rotates, visually showing how plaintext letters map to ciphertext letters.',
+        'insight.label': 'Key takeaway:',
+        'insight.text': 'The magic of the Caesar cipher lies in <span class="highlight">modular arithmetic</span>. The "mod N" operation makes the alphabet "wrap around": after the last letter comes the first one again. It\'s a simple but powerful principle underlying modern cryptographic algorithms.',
+        'block3.heading': 'Try the cipher yourself',
+        'block3.intro': 'In the interactive "Caesar Cipher" simulation you won\'t just read the theory — you\'ll become a cryptographer:',
+        'action1': 'You\'ll <strong>type your own message</strong> — up to 50 characters in Russian or English',
+        'action2': 'You\'ll <strong>choose an encryption key</strong> — a shift from 0 to 90 positions in either direction',
+        'action3': 'You\'ll <strong>watch the cipher disk in action</strong> — two rotating rings show how plaintext maps to ciphertext',
+        'action4': 'You\'ll <strong>run step-by-step encryption</strong> — character by character, with every transformation visualized',
+        'action5': 'You\'ll <strong>simulate data transmission</strong> — the key and ciphertext travel from Alice to Bob over separate channels',
+        'action6': 'You\'ll <strong>perform the decryption</strong> — Bob applies the reverse shift and recovers the original message',
+        'block3.outro': 'You\'ll see the <span class="highlight">green disk</span> (plaintext) and the <span class="highlight">blue disk</span> (ciphertext) rotate, vividly showing the symmetry between encryption and decryption.',
+        'insight2.label': 'Main lesson:',
+        'insight2.text': 'The game shows not just the math of the cipher, but also a <span class="highlight">secure transmission protocol</span>: the key is sent first, then the encrypted message. This is a fundamental idea underlying all modern data-protection systems.',
+        'advanced.summary': 'For the curious',
+        'advanced.history.heading': 'Historical background',
+        'advanced.history.text': 'The cipher Julius Caesar used was described by the Roman historian Suetonius. Caesar shifted letters by 3 positions, but the principle works with any key. For a long time the method was considered secure enough, until Arab scholars developed frequency analysis (9th century).',
+        'advanced.weak.heading': 'Why is the Caesar cipher weak?',
+        'advanced.weak.intro': 'Despite its historical importance, the Caesar cipher is easy to break:',
+        'weak1': '<strong>Small key space</strong> — only N−1 possible shifts (32 for the Russian alphabet)',
+        'weak2': '<strong>Frequency analysis</strong> — letters occur with different frequencies in a language; comparing ciphertext frequencies to reference ones can recover the key',
+        'weak3': '<strong>Brute-force attack</strong> — you can try all 32 options by hand in a couple of minutes',
+        'advanced.topics.heading': 'Topics for further study',
+        'advanced.topics.intro': 'If you want to dive deeper into cryptography, here are some key topics:',
+        'topic1.title': 'Frequency analysis', 'topic1.desc': 'How language statistics help break ciphers: letter, bigram, and trigram frequencies',
+        'topic2.title': 'Vigenère cipher', 'topic2.desc': 'A polyalphabetic cipher considered unbreakable for three centuries',
+        'topic3.title': 'One-time pad', 'topic3.desc': 'The only theoretically unbreakable cipher: a key as long as the message, used only once',
+        'topic4.title': 'Modern block ciphers', 'topic4.desc': 'How simple substitution evolved into AES, the Russian "Kuznyechik" standard, and other algorithms',
+        'topic5.title': 'Cryptanalysis in Python', 'topic5.desc': 'Practical scripts for frequency analysis and attacks on the Caesar cipher',
+        'topic6.title': 'Russian standards', 'topic6.desc': 'GOST 28147-89 "Magma," GOST R 34.12-2015 "Kuznyechik," and the "Streebog" hash function',
+        'advanced.facts.heading': 'Fun facts',
+        'fact1': 'The Caesar cipher was used by the Russian army during World War I — and was routinely broken by the enemy',
+        'fact2': 'In Hebrew there is a cipher tradition called "Atbash" — swapping the first letter of the alphabet with the last, the second with the second-to-last, and so on',
+        'fact3': 'ROT13 is a Caesar cipher variant with a shift of 13, popular online for hiding spoilers; its quirk is that encryption and decryption are the same operation',
+        'fact4': 'The game uses an extended alphabet (Cyrillic + Latin + digits + symbols), which expands the key space to over 90 options',
+        'actions.intro': 'Now that you understand the math and history of the Caesar cipher, it\'s the perfect time to try it in action!',
+        'actions.play': '▶ Launch the simulation', 'actions.back': '← Back to the topic list',
+        'actions.outro': 'In the interactive simulation you can encrypt your own message and watch every step of the process',
+        'footer.line1': '© 2025 Ludus Lab · Complex things through simple games',
+        'footer.line2': 'This article is a simplified explanation meant to convey the principles. Real cryptographic systems use far more complex algorithms and must comply with regulatory requirements, including FSB requirements for systems used in Russia.',
+      },
+      es: {
+        'meta.title': 'Cifrado César: teoría | Ludus Lab',
+        'meta.description': 'Explicación del cifrado más antiguo de la historia. Cómo funciona el desplazamiento, por qué es fácil de romper y cómo se convirtió en la base de la criptografía.',
+        'nav.home': 'Inicio', 'nav.play': 'Jugar',
+        'article.category': 'Fundamentos de criptografía',
+        'article.title': 'Cifrado César',
+        'article.subtitle': 'El cifrado de desplazamiento más simple, usado por Julio César hace dos mil años. Con él comenzó la historia de la criptografía.',
+        'meta.readtime': '⏱️ 4 min de lectura', 'meta.level': '📊 Nivel inicial', 'meta.era': '🗝️ Siglo I a.C.',
+        'block1.heading': '¿Para qué estudiar el cifrado César?',
+        'block1.p1': 'Imagina que eres un general en la antigua Roma. Necesitas enviar una orden a tus tropas, pero el mensajero podría caer en manos del enemigo. ¿Cómo lograr que, aunque el mensaje sea interceptado, nadie salvo tus generales entienda su significado?',
+        'block1.p2': 'Precisamente ese problema lo resolvió Julio César hace más de 2000 años. Su método — <span class="highlight">un simple desplazamiento de las letras del alfabeto</span> — fue el primer paso hacia la criptografía moderna.',
+        'block1.p3': 'Hoy el cifrado César no se usa para proteger datos reales — se puede romper en segundos. Pero sigue siendo <span class="highlight">una herramienta didáctica perfecta</span>, porque muestra con claridad principios fundamentales:',
+        'block1.li1': '<strong>Clave</strong> — un parámetro secreto conocido solo por el emisor y el receptor',
+        'block1.li2': '<strong>Algoritmo</strong> — la regla para transformar los datos',
+        'block1.li3': '<strong>Reversibilidad</strong> — la posibilidad de recuperar el mensaje original',
+        'block1.li4': '<strong>Aritmética modular</strong> — la base matemática de la mayoría de los cifrados',
+        'block2.heading': '¿Cómo funciona el cifrado César?',
+        'block2.intro': 'El principio es de una simplicidad genial: cada letra del mensaje se sustituye por otra letra, situada a una distancia fija de posiciones en el alfabeto. Ese número se llama <span class="highlight">desplazamiento</span> o <span class="highlight">clave</span>.',
+        'step1.title': 'Asignación de posiciones',
+        'step1.text': 'A cada letra del alfabeto se le asigna una posición numérica: А=0, Б=1, В=2... Я=32 (para el alfabeto ruso).',
+        'step2.title': 'Aplicar el desplazamiento',
+        'step2.text': 'A la posición de cada letra se le suma la clave: <span class="highlight">nueva_posición = (posición_anterior + clave) mod N</span>, donde N es el tamaño del alfabeto.',
+        'step3.title': 'Transformación inversa',
+        'step3.text': 'Para descifrar, el receptor resta la clave: <span class="highlight">posición_anterior = (nueva_posición - clave + N) mod N</span>.',
+        'diagram.title': 'La matemática del cifrado César',
+        'diagram.encrypt.title': '🔐 Cifrado',
+        'diagram.encrypt.example': '<strong>Ejemplo:</strong><br>Cifrando la letra <code>П</code> con desplazamiento <code>3</code><br>П = letra 16 (índice 0), K = 3<br>(16 + 3) mod 33 = 19 → <code>С</code>',
+        'diagram.decrypt.title': '🔓 Descifrado',
+        'diagram.decrypt.example': '<strong>Ejemplo:</strong><br>Descifrando <code>С</code> con desplazamiento <code>3</code><br>С = 19, K = 3, N = 33<br>(19 − 3 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.final.title': '¿Por qué funciona esto?',
+        'diagram.final.desc': 'La operación <code>mod N</code> hace que el alfabeto se «cierre en bucle»: después de la última letra vuelve a empezar la primera. Esta propiedad matemática simple pero poderosa es la base de muchos cifrados modernos.',
+        'diagram.final.param': 'La clave puede ir de 1 a N−1',
+        'diagram.note': '* En el juego, un disco cifrador gira mostrando visualmente la correspondencia entre el texto plano y el texto cifrado.',
+        'insight.label': 'Idea clave:',
+        'insight.text': 'La magia del cifrado César está en la <span class="highlight">aritmética modular</span>. La operación "mod N" hace que el alfabeto se «cierre en bucle»: tras la última letra vuelve la primera. Es un principio simple pero poderoso que está en la base de los algoritmos criptográficos modernos.',
+        'block3.heading': 'Pon a prueba el cifrado',
+        'block3.intro': 'En la simulación interactiva "Cifrado César" no solo leerás la teoría, sino que te convertirás en criptógrafo:',
+        'action1': '<strong>Escribirás tu propio mensaje</strong> — hasta 50 caracteres en ruso o inglés',
+        'action2': '<strong>Elegirás la clave de cifrado</strong> — un desplazamiento de 0 a 90 posiciones en cualquier dirección',
+        'action3': '<strong>Verás el disco cifrador en acción</strong> — dos anillos giratorios muestran la correspondencia entre texto plano y cifrado',
+        'action4': '<strong>Ejecutarás el cifrado paso a paso</strong> — carácter por carácter, con cada transformación visualizada',
+        'action5': '<strong>Simularás la transmisión de datos</strong> — la clave y el texto cifrado viajan de Alicia a Bob por canales distintos',
+        'action6': '<strong>Realizarás el descifrado</strong> — Bob aplica el desplazamiento inverso y recupera el mensaje original',
+        'block3.outro': 'Verás cómo el <span class="highlight">disco verde</span> (texto plano) y el <span class="highlight">disco azul</span> (texto cifrado) giran, mostrando con claridad la simetría entre cifrado y descifrado.',
+        'insight2.label': 'Lección principal:',
+        'insight2.text': 'El juego no solo muestra la matemática del cifrado, sino también un <span class="highlight">protocolo de transmisión segura</span>: primero se envía la clave y después el mensaje cifrado. Es una idea fundamental que sustenta todos los sistemas modernos de protección de datos.',
+        'advanced.summary': 'Para los curiosos',
+        'advanced.history.heading': 'Contexto histórico',
+        'advanced.history.text': 'El cifrado que usaba Julio César fue descrito por el historiador romano Suetonio. César desplazaba las letras 3 posiciones, pero el principio funciona con cualquier clave. Durante mucho tiempo se consideró un método bastante seguro, hasta que los eruditos árabes desarrollaron el análisis de frecuencias (siglo IX).',
+        'advanced.weak.heading': '¿Por qué el cifrado César es débil?',
+        'advanced.weak.intro': 'A pesar de su importancia histórica, el cifrado César es fácil de romper:',
+        'weak1': '<strong>Espacio de claves pequeño</strong> — solo N−1 desplazamientos posibles (32 para el alfabeto ruso)',
+        'weak2': '<strong>Análisis de frecuencias</strong> — las letras de un idioma aparecen con frecuencias distintas; comparando las frecuencias del texto cifrado con las de referencia se puede recuperar la clave',
+        'weak3': '<strong>Ataque por fuerza bruta</strong> — incluso a mano se pueden probar las 32 opciones en un par de minutos',
+        'advanced.topics.heading': 'Temas para profundizar',
+        'advanced.topics.intro': 'Si quieres profundizar más en criptografía, aquí tienes algunos temas clave:',
+        'topic1.title': 'Análisis de frecuencias', 'topic1.desc': 'Cómo la estadística del lenguaje ayuda a romper cifrados: frecuencias de letras, bigramas y trigramas',
+        'topic2.title': 'Cifrado de Vigenère', 'topic2.desc': 'Un cifrado polialfabético que se consideró indescifrable durante tres siglos',
+        'topic3.title': 'Libreta de un solo uso', 'topic3.desc': 'El único cifrado teóricamente indescifrable: una clave tan larga como el mensaje, usada una sola vez',
+        'topic4.title': 'Cifrados de bloque modernos', 'topic4.desc': 'Cómo las ideas de sustitución simple evolucionaron hasta AES, el estándar ruso «Kuznyechik» y otros algoritmos',
+        'topic5.title': 'Criptoanálisis en Python', 'topic5.desc': 'Scripts prácticos para análisis de frecuencias y ataques al cifrado César',
+        'topic6.title': 'Estándares rusos', 'topic6.desc': 'GOST 28147-89 «Magma», GOST R 34.12-2015 «Kuznyechik» y la función hash «Streebog»',
+        'advanced.facts.heading': 'Datos curiosos',
+        'fact1': 'El cifrado César se usó en el ejército ruso durante la Primera Guerra Mundial — y el enemigo lo descifraba con regularidad',
+        'fact2': 'En hebreo existe una tradición de cifrado llamada «Atbash» — sustituir la primera letra del alfabeto por la última, la segunda por la penúltima, y así sucesivamente',
+        'fact3': 'ROT13 es una variante del cifrado César con desplazamiento 13, popular en internet para ocultar espóileres; su particularidad es que cifrado y descifrado son la misma operación',
+        'fact4': 'El juego usa un alfabeto extendido (cirílico + latino + dígitos + símbolos), lo que amplía el espacio de claves a más de 90 opciones',
+        'actions.intro': 'Ahora que entiendes la matemática y la historia del cifrado César, ¡es el momento perfecto para probarlo en acción!',
+        'actions.play': '▶ Iniciar la simulación', 'actions.back': '← Volver a la lista de temas',
+        'actions.outro': 'En la simulación interactiva podrás cifrar tu propio mensaje y ver cada paso del proceso',
+        'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
+        'footer.line2': 'Este artículo es una explicación simplificada para transmitir los principios. Los sistemas criptográficos reales usan algoritmos mucho más complejos y deben cumplir con los requisitos regulatorios, incluidos los del FSB para los sistemas utilizados en Rusia.',
+      },
+    };
+
+    function applyLanguage(lang) {
+      if (!I18N[lang]) lang = 'ru';
+      const dict = I18N[lang];
+      document.documentElement.lang = lang;
+      document.title = dict['meta.title'];
+      const descTag = document.getElementById('pageDescription');
+      if (descTag) descTag.setAttribute('content', dict['meta.description']);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.langBtn === lang);
+      });
+      try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn));
+    });
+
+    (function initLanguage() {
+      let saved = null;
+      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      if (!saved) {
+        const browserLang = (navigator.language || 'ru').slice(0, 2);
+        saved = I18N[browserLang] ? browserLang : 'ru';
+      }
+      applyLanguage(saved);
+    })();
+
+    // Плавная прокрутка для якорных ссылок
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 20,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+    
+    // Исправление для кнопок при раскрытии details
+    const detailsElement = document.querySelector('.advanced-section');
+    const articleActions = document.getElementById('article-actions');
+    if (detailsElement && articleActions) {
+      detailsElement.addEventListener('toggle', function() {
+        setTimeout(() => {
+          articleActions.style.marginTop = '40px';
+        }, 10);
+      });
+    }
+  </script>
+</body>
+</html>

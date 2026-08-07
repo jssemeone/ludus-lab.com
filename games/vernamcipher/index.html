@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title id="pageTitle">Шифр Вернама — Побитовое XOR-шифрование</title>
+<!-- Favicon -->
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function(m,e,t,r,i,k,a){
+m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+m[i].l=1*new Date();
+for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<style>
+/* =========================================
+   1. ПЕРЕМЕННЫЕ (THEME)
+   ========================================= */
+:root {
+  --color-blue: #00a2ff; --color-blue-15: rgba(0, 162, 255, 0.15); --color-blue-25: rgba(0, 162, 255, 0.25); --color-blue-30: rgba(0, 162, 255, 0.3); --color-blue-35: rgba(0, 162, 255, 0.35); --color-blue-40: rgba(0, 162, 255, 0.4); --color-blue-50: rgba(0, 162, 255, 0.5); --color-blue-60: rgba(0, 162, 255, 0.6); --color-blue-dark: #001a2d; --color-blue-darker: #000c1a;
+  --color-gold: #d4af37; --color-gold-15: rgba(212, 175, 55, 0.15); --color-gold-25: rgba(212, 175, 55, 0.25); --color-gold-30: rgba(212, 175, 55, 0.3); --color-gold-35: rgba(212, 175, 55, 0.35); --color-gold-40: rgba(212, 175, 55, 0.4); --color-gold-50: rgba(212, 175, 55, 0.5); --color-gold-60: rgba(212, 175, 55, 0.6); --color-gold-dark: #2d1a00; --color-gold-darker: #1a0c00;
+  --color-green: #00ff80; --color-green-15: rgba(0, 255, 128, 0.15); --color-green-25: rgba(0, 255, 128, 0.25); --color-green-30: rgba(0, 255, 128, 0.3); --color-green-35: rgba(0, 255, 128, 0.35); --color-green-40: rgba(0, 255, 128, 0.4); --color-green-50: rgba(0, 255, 128, 0.5); --color-green-60: rgba(0, 255, 128, 0.6);
+  --color-red: #ff6b6b; --color-red-15: rgba(255, 107, 107, 0.15); --color-red-40: rgba(255, 107, 107, 0.4);
+  --bg-gradient-start: #0a1a2a; --bg-gradient-end: #050d15; --bg-panel: rgba(5, 20, 30, 0.85); --bg-panel-light: rgba(5, 20, 30, 0.7); --bg-input: rgba(0, 10, 20, 0.8); --bg-bit: rgba(40, 60, 70, 0.5);
+  --text-primary: #c5d5e0; --text-secondary: #8ab0c5; --text-muted: #6a8a9a;
+  --radius-sm: 4px; --radius-md: 6px; --radius-lg: 8px; --radius-xl: 12px;
+  --space-xxs: 2px; --space-xs: 4px; --space-sm: 6px; --space-md: 8px; --space-lg: 10px; --space-xl: 12px; --space-xxl: 15px; --space-xxxl: 20px;
+  --trans-fast: 0.2s; --trans-normal: 0.3s;
+  --anim-glow: 3s ease-in-out infinite; --anim-neon: 2.5s ease-in-out infinite;
+}
+
+/* ===== LANGUAGE SWITCH ===== */
+.lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+.lang-btn { background: rgba(5, 20, 30, 0.75); color: var(--text-secondary); border: 1px solid var(--color-blue-30); font-size: 0.7rem; letter-spacing: 0.5px; padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+.lang-btn:hover { border-color: var(--color-blue); color: var(--color-blue); }
+.lang-btn.active { background: var(--color-gold-15); border-color: var(--color-gold); color: var(--color-gold); box-shadow: 0 0 8px var(--color-gold-30); }
+@media (max-width: 600px) { .lang-switch { top: 8px; right: 8px; } .lang-btn { font-size: 0.6rem; padding: 3px 7px; } }
+
+/* =========================================
+   2. СБРОС И БАЗА
+   ========================================= */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+html, body { height: 100%; overflow-x: hidden; overflow-y: auto; }
+body { background: linear-gradient(to bottom, var(--bg-gradient-start), var(--bg-gradient-end)); color: var(--text-primary); line-height: 1.4; position: relative; }
+body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 50%, rgba(0, 162, 255, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0, 255, 128, 0.03) 0%, transparent 50%); pointer-events: none; z-index: -1; }
+input, button, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: rgba(0, 10, 20, 0.8); border-radius: 5px; }
+::-webkit-scrollbar-thumb { background: var(--color-blue); border-radius: 5px; border: 2px solid rgba(0, 10, 20, 0.8); }
+::-webkit-scrollbar-thumb:hover { background: #00c2ff; }
+
+/* Focus & Accessibility */
+*:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } .bit-cell.active-plain, .bit-cell.active-key, .bit-cell.active-cipher { animation: none !important; transform: scale(1.1) !important; } .transmission-box::before { animation: none !important; } }
+
+/* =========================================
+   3. LAYOUT & GRID
+   ========================================= */
+.container { max-width: 1400px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding: var(--space-lg); }
+header { text-align: center; margin-bottom: var(--space-lg); flex-shrink: 0; }
+h1 { font-size: 1.6rem; color: var(--color-blue); margin-bottom: var(--space-xs); text-shadow: 0 0 10px var(--color-blue-30); letter-spacing: 1px; font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; }
+.subtitle { font-size: 0.8rem; color: var(--text-secondary); font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; }
+.line { width: 150px; height: 2px; background: linear-gradient(90deg, transparent, var(--color-gold), transparent); margin: var(--space-sm) auto var(--space-md); }
+
+.game-area { background: var(--bg-panel); border: 1px solid var(--color-blue-40); border-radius: var(--radius-lg); padding: var(--space-xl); box-shadow: 0 0 20px var(--color-blue-30), inset 0 0 15px rgba(0, 100, 150, 0.2); flex: 1; display: flex; flex-direction: column; overflow: visible; min-height: 0; }
+.stage-indicator { display: flex; justify-content: center; gap: var(--space-xs); margin-bottom: var(--space-lg); flex-shrink: 0; }
+.stage-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(0, 50, 80, 0.6); border: 1px solid var(--color-blue-30); transition: all var(--trans-normal); }
+.stage-dot.active { background: var(--color-blue); box-shadow: 0 0 6px var(--color-blue-40); }
+.stage-dot.completed { background: var(--color-green); border-color: var(--color-green); }
+
+.main-layout { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xxl); min-height: 0; align-items: stretch; flex: 1; }
+#encryption-stage .main-layout, #decryption-stage .main-layout { grid-template-columns: 1fr 5fr; }
+.left-panel { display: flex; flex-direction: column; gap: var(--space-lg); min-width: 0; min-height: 0; overflow: visible; }
+.right-panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
+@media (max-width: 900px) { .main-layout, #encryption-stage .main-layout, #decryption-stage .main-layout { grid-template-columns: 1fr; } .right-panel { position: relative; order: -1; min-height: 400px; } .left-panel { max-width: 100%; } }
+
+/* =========================================
+   4. COMPONENTS
+   ========================================= */
+/* Protocol */
+.protocol-container { margin-bottom: var(--space-xl); }
+.protocol-header { cursor: pointer; padding: var(--space-md) var(--space-lg); background: var(--bg-panel-light); border: 1px solid var(--color-blue-40); border-radius: var(--radius-md); transition: all var(--trans-normal); display: flex; align-items: center; justify-content: space-between; }
+.protocol-header:hover { background: rgba(10, 30, 45, 0.8); border-color: var(--color-blue-60); }
+.protocol-header h2 { color: var(--color-blue); display: flex; align-items: center; gap: var(--space-sm); margin: 0; font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; font-size: 1rem; }
+.toggle-icon { font-size: 1.2rem; width: 18px; text-align: center; color: var(--color-blue); transition: transform var(--trans-normal); }
+.protocol-header.open .toggle-icon { transform: rotate(45deg); }
+.protocol-description { background: var(--bg-panel-light); border: 1px solid var(--color-blue-30); border-top: none; border-radius: 0 0 var(--radius-md) var(--radius-md); padding: var(--space-xl); font-size: 0.85rem; display: none; line-height: 1.5; }
+.protocol-description.open { display: block; }
+.protocol-step { margin-bottom: var(--space-lg); padding-bottom: var(--space-md); border-bottom: 1px solid var(--color-blue-30); }
+.protocol-step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.protocol-step-title { display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-xs); font-weight: bold; color: var(--color-blue); font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; }
+.protocol-step-number { background: var(--color-blue); color: var(--bg-gradient-end); width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; }
+.protocol-description ul { padding-left: 18px; margin: var(--space-xs) 0; }
+.protocol-description li { margin-bottom: var(--space-xxs); color: var(--text-secondary); }
+.protocol-description p, .protocol-description .step-desc { margin: var(--space-xs) 0; color: var(--text-secondary); }
+.highlight { color: var(--color-blue); font-weight: 600; } .highlight-gold { color: var(--color-gold); font-weight: 600; }
+
+/* Inputs & Buttons - Neon Border Only */
+.action-button { 
+  background: var(--bg-input);
+  color: var(--color-blue); 
+  border: 2px solid var(--color-blue-40); 
+  padding: var(--space-sm) var(--space-lg); 
+  border-radius: var(--radius-md); 
+  cursor: pointer; 
+  font-weight: 600; 
+  font-size: 0.85rem; 
+  transition: all var(--trans-fast); 
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: var(--space-xxs); 
+  text-shadow: 0 0 3px var(--color-blue-30); 
+  font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px; 
+  margin: 0; 
+  width: 100%; 
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  animation: neonFlicker 4s infinite alternate;
+}
+.action-button::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  z-index: -1;
+  box-shadow: 0 0 5px var(--color-blue-40), 0 0 10px var(--color-blue-30);
+  animation: neonPulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+.action-button:hover:not(:disabled) { 
+  background: rgba(0, 20, 35, 0.9); 
+  transform: translateY(-1px); 
+  box-shadow: 0 0 8px var(--color-blue-40), 0 0 15px var(--color-blue-30); 
+}
+.action-button:disabled { opacity: 0.5; cursor: not-allowed; animation: none; }
+
+.action-button.secondary { color: var(--color-gold); border-color: var(--color-gold-40); }
+.action-button.secondary::before {
+  box-shadow: 0 0 5px var(--color-gold-40), 0 0 10px var(--color-gold-30);
+}
+.action-button.secondary:hover:not(:disabled) { 
+  background: rgba(20, 15, 0, 0.9); 
+  box-shadow: 0 0 8px var(--color-gold-40), 0 0 15px var(--color-gold-30); 
+}
+
+.action-button.success { color: var(--color-green); border-color: var(--color-green-40); }
+.action-button.success::before {
+  box-shadow: 0 0 5px var(--color-green-40), 0 0 10px var(--color-green-30);
+}
+.action-button.success:hover:not(:disabled) { 
+  background: rgba(0, 25, 15, 0.9); 
+  box-shadow: 0 0 8px var(--color-green-40), 0 0 15px var(--color-green-30); 
+}
+
+.action-button.instant { color: var(--color-green); border-color: var(--color-green-50); background: var(--bg-input); }
+.action-button.instant::before {
+  box-shadow: 0 0 5px var(--color-green-40), 0 0 10px var(--color-gold-30);
+}
+.action-button.instant:hover:not(:disabled) { 
+  background: rgba(0, 25, 15, 0.9); 
+  box-shadow: 0 0 8px var(--color-green-40), 0 0 15px var(--color-green-30); 
+}
+
+/* Navigation Buttons */
+.nav-link { 
+  display: inline-flex; 
+  align-items: center; 
+  padding: var(--space-xs) var(--space-md); 
+  background: var(--bg-input); 
+  color: var(--text-secondary); 
+  text-decoration: none; 
+  border: 2px solid var(--color-blue-30); 
+  border-radius: var(--radius-md); 
+  font-size: 0.85rem; 
+  transition: all var(--trans-fast); 
+  gap: var(--space-xxs);
+  position: relative;
+  overflow: hidden;
+  font-weight: 500;
+}
+.nav-link .nav-icon {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 162, 255, 0.1), rgba(0, 255, 128, 0.1));
+  opacity: 0;
+  transition: opacity var(--trans-fast);
+  z-index: -1;
+}
+.nav-link:hover { 
+  color: var(--color-blue); 
+  border-color: var(--color-blue); 
+  background: rgba(0, 20, 35, 0.7); 
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 12px var(--color-blue-25); 
+}
+.nav-link:hover::before { opacity: 1; }
+.nav-link.primary { background: rgba(0, 40, 80, 0.7); color: var(--color-blue); border-color: var(--color-blue-50); }
+.nav-link.primary:hover { color: var(--color-blue); border-color: var(--color-blue); }
+.nav-link.secondary { background: var(--color-gold-15); color: var(--color-gold); border-color: var(--color-gold-30); }
+.nav-link.secondary:hover { color: var(--color-gold); border-color: var(--color-gold); }
+
+/* Encoding/Decoding Cards */
+.encoding-cards, .decoding-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); margin-bottom: var(--space-xl); }
+.encoding-card, .decoding-card { background: var(--bg-input); border: 2px solid var(--color-blue-30); border-radius: var(--radius-lg); padding: var(--space-xl); cursor: pointer; transition: all var(--trans-normal); position: relative; overflow: hidden; }
+.encoding-card:hover, .decoding-card:hover { border-color: var(--color-blue-60); transform: translateY(-2px); box-shadow: 0 5px 15px var(--color-blue-25); }
+.encoding-card.selected, .decoding-card.selected { border-color: var(--color-gold); box-shadow: 0 0 20px var(--color-gold-30); background: var(--color-gold-15); }
+.encoding-card:focus-visible, .decoding-card:focus-visible { box-shadow: 0 0 0 3px var(--color-gold-50), 0 0 20px var(--color-gold-30); outline: none; }
+.encoding-card.selected:focus-visible { box-shadow: 0 0 0 3px var(--color-gold-50), 0 0 20px var(--color-gold-30); }
+.encoding-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-sm); }
+.encoding-card-name { font-weight: bold; color: var(--color-blue); font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; font-size: 1rem; }
+.encoding-card.selected .encoding-card-name, .decoding-card.selected .encoding-card-name { color: var(--color-gold); }
+.encoding-card-bits { background: var(--color-gold-25); color: var(--color-gold); padding: var(--space-xxs) var(--space-sm); border-radius: var(--radius-sm); font-size: 0.75rem; font-family: monospace; }
+.encoding-card-desc { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: var(--space-xs); }
+.encoding-card-example { font-size: 0.7rem; color: var(--text-muted); font-family: monospace; background: rgba(0, 0, 0, 0.3); padding: var(--space-xxs) var(--space-xs); border-radius: var(--radius-sm); }
+
+/* Bit Visualizer & Tables */
+.bit-visualizer { background: var(--bg-input); border: 1px solid var(--color-blue-30); border-radius: var(--radius-lg); padding: var(--space-xl); width: 100%; flex-shrink: 0; display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.bit-row { display: flex; align-items: flex-start; margin-bottom: var(--space-sm); gap: var(--space-lg); flex-wrap: nowrap; flex: 1; min-height: 0; }
+.bit-row:last-child { margin-bottom: 0; }
+.bit-label { min-width: 80px; max-width: 80px; font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; flex-shrink: 0; padding-top: var(--space-xxs); }
+.bit-label.plain { color: var(--color-green); } .bit-label.key { color: var(--color-gold); } .bit-label.cipher { color: var(--color-blue); } .bit-label.result { color: var(--color-gold); }
+.bit-container { display: flex; flex-wrap: wrap; gap: var(--space-xxs); width: 100%; min-width: 0; overflow-y: auto; overflow-x: hidden; padding: var(--space-xxs); flex: 1; align-content: flex-start; scrollbar-width: thin; scrollbar-color: var(--color-green-40) rgba(0, 20, 35, 0.5); max-height: 400px; }
+.bit-container::-webkit-scrollbar { width: 6px; } .bit-container::-webkit-scrollbar-track { background: rgba(0, 20, 35, 0.5); border-radius: 3px; } .bit-container::-webkit-scrollbar-thumb { background: var(--color-green-40); border-radius: 3px; }
+.bit-symbol-group { display: inline-flex; gap: var(--space-xxs); margin-right: var(--space-sm); margin-bottom: var(--space-xxs); break-inside: avoid; transition: all var(--trans-fast) ease; background: rgba(0, 30, 45, 0.3); border-radius: var(--radius-md); padding: var(--space-xxs) var(--space-xs); }
+.sync-bits-container { display: flex; flex-direction: column; gap: var(--space-lg); width: 100%; max-height: 500px; }
+.sync-bit-section { background: var(--bg-input); border: 1px solid var(--color-gold-25); border-radius: var(--radius-md); overflow: hidden; }
+.sync-bit-header { padding: var(--space-sm) var(--space-lg); font-size: 0.75rem; font-weight: bold; text-transform: uppercase; font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; letter-spacing: 1px; border-bottom: 1px solid var(--color-gold-25); }
+.sync-bit-header.plain { background: var(--color-green-15); color: var(--color-green); border-color: var(--color-green-30); }
+.sync-bit-header.key { background: var(--color-gold-15); color: var(--color-gold); border-color: var(--color-gold-30); }
+.sync-bit-header.cipher { background: var(--color-blue-15); color: var(--color-blue); border-color: var(--color-blue-30); }
+.sync-bit-rows { max-height: 150px; overflow-y: auto; padding: var(--space-sm); scrollbar-width: thin; scrollbar-color: var(--color-gold-40) rgba(0, 20, 35, 0.5); }
+.sync-bit-rows::-webkit-scrollbar { width: 6px; } .sync-bit-rows::-webkit-scrollbar-track { background: rgba(0, 20, 35, 0.5); border-radius: 3px; } .sync-bit-rows::-webkit-scrollbar-thumb { background: var(--color-gold-40); border-radius: 3px; }
+.sync-bit-row { display: flex; flex-wrap: wrap; gap: var(--space-xxs); padding: var(--space-xxs) 0; border-bottom: 1px solid var(--color-gold-15); align-items: center; }
+.sync-bit-row:last-child { border-bottom: none; }
+.sync-bit-row-label { font-size: 0.65rem; color: var(--text-secondary); min-width: 70px; max-width: 70px; flex-shrink: 0; text-align: right; padding-right: var(--space-sm); white-space: nowrap; }
+.bit-cell { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm); font-family: monospace; font-size: 0.85rem; font-weight: bold; transition: all var(--trans-fast); flex-shrink: 0; background: var(--bg-bit); color: var(--text-muted); border: 1px solid rgba(70, 90, 100, 0.3); }
+.bit-cell.highlighted { background: var(--color-green-25); color: var(--color-green); border: 1px solid var(--color-green-60); box-shadow: 0 0 10px var(--color-green-50), 0 0 20px var(--color-green-30); transform: scale(1.1); z-index: 5; }
+.bit-cell.active-plain { background: var(--color-green-40); color: var(--color-green); border: 1px solid var(--color-green-60); box-shadow: 0 0 15px var(--color-green-60), 0 0 30px var(--color-green-40); transform: scale(1.2); z-index: 10; opacity: 1; animation: currentBitPulse 1.5s infinite; }
+.bit-cell.active-key { background: var(--color-gold-40); color: #ffd700; border: 1px solid var(--color-gold-60); box-shadow: 0 0 15px var(--color-gold-60), 0 0 30px var(--color-gold-40); transform: scale(1.2); z-index: 10; opacity: 1; animation: currentBitPulse 1.5s infinite; }
+.bit-cell.active-cipher { background: var(--color-blue-40); color: #00e0ff; border: 1px solid var(--color-blue-60); box-shadow: 0 0 15px var(--color-blue-60), 0 0 30px var(--color-blue-40); transform: scale(1.2); z-index: 10; opacity: 1; animation: currentBitPulse 1.5s infinite; }
+.bit-cell.processed-plain { background: var(--color-green-25); color: var(--color-green); border: 1px solid var(--color-green-50); box-shadow: 0 0 8px var(--color-green-40); animation: flicker 5s infinite; }
+.bit-cell.processed-key { background: var(--color-gold-25); color: #ffd700; border: 1px solid var(--color-gold-50); box-shadow: 0 0 8px var(--color-gold-40); animation: flicker 5s infinite; }
+.bit-cell.processed-cipher { background: var(--color-blue-25); color: #00e0ff; border: 1px solid var(--color-blue-50); box-shadow: 0 0 8px var(--color-blue-40); animation: flicker 5s infinite; }
+.bit-cell.xor-result { background: var(--color-gold-30); color: var(--color-gold); border: 1px solid var(--color-gold-60); box-shadow: 0 0 6px var(--color-gold-40); }
+
+.char-table-container { width: 100%; border: 1px solid var(--color-gold-30); border-radius: var(--radius-lg); background: var(--bg-input); overflow-y: auto; max-height: 450px; }
+.char-table { width: 100%; border-collapse: collapse; font-family: monospace; font-size: 0.8rem; }
+.char-table th, .char-table td { padding: var(--space-xs) var(--space-sm); text-align: center; border: 1px solid var(--color-blue-25); }
+.char-table th { background: rgba(0, 20, 35, 0.8); color: var(--color-gold); position: sticky; top: 0; z-index: 10; font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; }
+.char-table tr:hover { background: var(--color-blue-15); }
+.char-table tr.highlighted { background: var(--color-green-25); box-shadow: inset 0 0 12px var(--color-green-40); transition: background var(--trans-fast) ease, box-shadow var(--trans-fast) ease; }
+.char-table tr.highlighted td { border-color: var(--color-green-60); }
+.char-table .char-col { color: var(--color-green); font-weight: bold; } .char-table .code-col { color: var(--color-gold); } .char-table .bits-col { color: var(--color-gold); font-size: 0.7rem; }
+
+/* Transmission & Channels */
+.message-top-panel { margin-bottom: var(--space-xl); flex-shrink: 0; }
+.message-top-panel .transmission-box { margin-bottom: 0; max-width: 100%; }
+.message-top-panel .transmission-box h3 { text-align: left; }
+.message-top-panel .transmission-box input { text-align: center; border-color: var(--color-gold); box-shadow: 0 0 8px var(--color-gold-30); }
+.transmission-box { background: var(--bg-panel-light); border: 1px solid var(--color-gold-30); border-radius: var(--radius-lg); padding: var(--space-xl); text-align: center; position: relative; overflow: hidden; flex-shrink: 0; max-width: 100%; width: 100%; margin: 0 auto var(--space-md); min-height: 90px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 15px var(--color-gold-15); }
+.transmission-box::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, var(--color-gold-15), transparent); animation: transmit 3s infinite; }
+.transmission-box h3 { color: var(--color-gold); margin-bottom: var(--space-lg); font-size: 0.9rem; position: relative; z-index: 1; text-align: left; width: 100%; }
+.transmission-box .input-wrapper { width: 100%; position: relative; z-index: 1; }
+.key-display { font-family: monospace; font-size: 1.1rem; padding: var(--space-md) var(--space-lg); border-radius: var(--radius-md); display: inline-block; min-width: 200px; letter-spacing: 1px; background: rgba(0, 0, 0, 0.4); }
+.key-display#keyDisplay { color: var(--color-gold); } .key-display#cipherTextDisplay { color: var(--color-blue); }
+.hex-info-box { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: var(--space-sm); padding: var(--space-xs) var(--space-sm); background: rgba(212, 175, 55, 0.08); border-radius: var(--radius-md); border-left: 3px solid var(--color-gold); display: flex; align-items: flex-start; gap: var(--space-sm); line-height: 1.4; text-align: left; width: 100%; align-self: stretch; box-sizing: border-box; }
+.channel-container { width: 100%; height: 280px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg-panel); border: 1px solid var(--color-blue-30); border-radius: var(--radius-xl); overflow: hidden; box-shadow: 0 0 20px var(--color-blue-15); margin-bottom: var(--space-md); }
+.transmission-setup { display: flex; justify-content: space-between; align-items: center; width: 100%; height: 100%; position: relative; }
+.character { text-align: center; width: 100px; z-index: 35; }
+.character-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-xs); font-size: 1.6rem; border: 2px solid; background: var(--bg-panel); font-weight: bold; font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; text-transform: uppercase; animation: glow var(--anim-glow); }
+.alice .character-icon, .bob .character-icon { border-color: var(--color-blue); color: var(--color-blue); text-shadow: 0 0 10px var(--color-blue-60); }
+.character-name { font-weight: bold; margin-bottom: var(--space-xxs); color: var(--text-primary); font-size: 0.85rem; font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; }
+.character-status { font-size: 0.7rem; color: var(--text-secondary); height: 25px; }
+.channels-wrapper { flex: 1; min-width: 180px; margin: 0 var(--space-md); position: relative; height: 120px; display: flex; flex-direction: column; justify-content: center; gap: var(--space-lg); }
+.key-channel, .cipher-channel { height: 40px; border-radius: var(--radius-md); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; transition: all var(--trans-normal); background: rgba(5, 15, 25, 0.7); box-shadow: 0 0 10px var(--color-blue-25); }
+.key-channel { border: 2px dashed var(--color-gold); box-shadow: 0 0 15px var(--color-gold-30); }
+.cipher-channel { border: 2px solid var(--color-blue); box-shadow: 0 0 15px var(--color-blue-30); }
+.channel-label { position: absolute; top: -16px; font-size: 0.65rem; color: var(--text-secondary); }
+.data-packet { position: absolute; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; left: 0; top: 0; z-index: 40; box-shadow: 0 0 20px currentColor; will-change: transform; }
+.key-packet { background: var(--color-gold); color: var(--color-gold-darker); border: 2px solid #ffd700; animation: glowGold 1.5s infinite; }
+.cipher-packet { background: var(--color-blue); color: var(--color-blue-dark); border: 2px solid #00c2ff; animation: glow 1.5s infinite; }
+.route-info { position: absolute; bottom: var(--space-md); left: 50%; transform: translateX(-50%); font-size: 0.65rem; color: var(--text-secondary); text-align: center; animation: routeLabelFade 3s ease-in-out infinite; z-index: 50; background: var(--bg-input); padding: var(--space-xxs) var(--space-sm); border-radius: var(--radius-sm); border: 1px solid var(--color-blue-30); }
+.route-info span { display: block; margin: var(--space-xxs) 0; }
+.route-info .key-route { color: var(--color-gold); } .route-info .cipher-route { color: var(--color-blue); }
+
+/* XOR Visualizer & Decoding */
+.xor-visualizer { background: var(--bg-panel); border: 2px solid var(--color-gold-35); border-radius: var(--radius-lg); padding: var(--space-xl); margin-bottom: var(--space-md); animation: neonPulseGold var(--anim-neon); width: 100%; }
+.xor-title { text-align: center; color: var(--color-gold); font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; font-size: 1rem; margin-bottom: var(--space-lg); display: flex; align-items: center; justify-content: center; gap: var(--space-sm); text-shadow: 0 0 10px var(--color-gold-50), 0 0 20px var(--color-gold-30); animation: flicker 5s infinite; }
+.xor-demo { display: flex; flex-direction: column; gap: var(--space-sm); }
+.xor-line { display: flex; align-items: center; gap: var(--space-lg); }
+.xor-line-label { min-width: 60px; font-size: 0.75rem; color: var(--text-secondary); }
+.xor-line-bits { display: flex; gap: var(--space-xxs); }
+.decoding-layout { display: flex; flex-direction: column; gap: var(--space-xl); height: 100%; padding: var(--space-lg); overflow-y: auto; }
+.decoding-section { background: var(--bg-input); border: 1px solid var(--color-blue-30); border-radius: var(--radius-lg); padding: var(--space-xl); }
+.decoding-section-title { font-size: 0.85rem; color: var(--color-gold); font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; margin-bottom: var(--space-md); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: var(--space-sm); }
+.decoding-result-display { min-height: 40px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--color-green-30); border-radius: var(--radius-md); padding: var(--space-md); font-family: monospace; color: var(--color-green); font-size: 1rem; word-break: break-all; text-align: center; }
+
+/* Key Options & Modal */
+.key-options-panel { padding: var(--space-lg); background: var(--bg-input); border-radius: var(--radius-lg); border: 1px solid var(--color-blue-30); }
+.key-options-panel h3 { color: var(--color-gold); font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; margin-bottom: var(--space-xs); }
+.key-options-panel .hint { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-md); }
+.key-length-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); margin-bottom: var(--space-lg); }
+.key-length-option { position: relative; background: rgba(0, 5, 15, 0.9); border: 1px solid var(--color-gold-40); border-radius: var(--radius-md); padding: var(--space-md) var(--space-sm); cursor: pointer; transition: all var(--trans-fast); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 48px; }
+.key-length-option.full-width { grid-column: 1 / -1; flex-direction: row; justify-content: center; gap: var(--space-sm); }
+.key-length-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+.key-length-option .option-content { font-weight: bold; color: #c5d5e0; font-size: 0.95rem; transition: color 0.2s; text-align: center; }
+.key-length-option .option-bits { font-size: 0.75rem; color: var(--text-secondary); }
+.key-length-option:hover { border-color: var(--color-gold); background: rgba(212, 175, 55, 0.08); }
+.key-length-option:has(input:checked) { border-color: var(--color-gold); background: rgba(212, 175, 55, 0.15); box-shadow: 0 0 12px rgba(212, 175, 55, 0.25); }
+.key-length-option:has(input:checked) .option-content, .key-length-option:has(input:checked) .option-bits { color: var(--color-gold); }
+.key-disclaimer { margin-top: var(--space-md); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); font-size: 0.8rem; line-height: 1.3; text-align: center; }
+.key-disclaimer.warning { background: var(--color-red-15); border: 1px solid var(--color-red-40); color: var(--color-red); }
+.key-disclaimer.success { background: var(--color-green-15); border: 1px solid var(--color-green-40); color: var(--color-green); }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 5, 10, 0.85); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all var(--trans-normal); }
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal-content { background: linear-gradient(135deg, rgba(0, 20, 35, 0.95), rgba(0, 10, 20, 0.95)); border: 1px solid var(--color-blue-40); border-radius: var(--radius-xl); padding: var(--space-xxl); max-width: 400px; width: 90%; box-shadow: 0 0 40px var(--color-blue-30); transform: scale(0.9); transition: transform var(--trans-normal); }
+.modal-overlay.active .modal-content { transform: scale(1); }
+.modal-title { color: var(--color-blue); font-size: 1.2rem; margin-bottom: var(--space-lg); text-align: center; font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; }
+.modal-message { color: var(--text-primary); text-align: center; margin-bottom: var(--space-xl); line-height: 1.5; }
+.modal-buttons { display: flex; justify-content: center; gap: var(--space-md); }
+.modal-error { border-color: var(--color-red-40); } .modal-error .modal-title { color: var(--color-red); }
+.modal-success { border-color: var(--color-green-40); } .modal-success .modal-title { color: var(--color-green); }
+
+/* Final Stage & Nav */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin: var(--space-md) 0; }
+.stat-card { background: var(--bg-input); border: 1px solid var(--color-blue-30); border-radius: var(--radius-lg); padding: var(--space-xl); text-align: center; }
+.stat-card.key { border-color: var(--color-gold); } .stat-card.cipher { border-color: var(--color-blue); } .stat-card.original { border-color: var(--color-green); } .stat-card.decrypted { border-color: var(--color-green); }
+.stat-label { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: var(--space-xs); text-transform: uppercase; letter-spacing: 1px; }
+.stat-value { font-family: monospace; font-size: 1.1rem; word-break: break-all; }
+.stat-value.key-value { color: var(--color-gold); } .stat-value.cipher-value { color: var(--color-blue); } .stat-value.original-value { color: var(--color-green); } .stat-value.decrypted-value { color: var(--color-green); }
+.final-title { text-align: center; color: var(--color-gold); font-size: 1.2rem; margin-bottom: var(--space-md); font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; }
+.navigation-container { margin-top: var(--space-xxl); padding: 0; background: transparent; border: none; }
+.navigation-links { display: flex; justify-content: center; gap: var(--space-xl); flex-wrap: wrap; }
+.action-button-container { display: flex; flex-direction: column; gap: var(--space-sm); margin-top: var(--space-sm); width: 100%; transition: all var(--trans-normal); }
+.action-button-container.hidden { display: none; }
+.alphabet-legend { display: flex; justify-content: flex-start; gap: var(--space-xxl); margin-bottom: var(--space-lg); font-size: 0.75rem; flex-shrink: 0; width: 100%; }
+.legend-item { display: flex; align-items: center; gap: var(--space-xs); padding: var(--space-xxs) var(--space-sm); border-radius: var(--radius-sm); background: rgba(0, 20, 35, 0.5); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.legend-dot.open { background: var(--color-green); box-shadow: 0 0 6px var(--color-green); }
+.legend-dot.cipher { background: var(--color-blue); box-shadow: 0 0 6px var(--color-blue); }
+.legend-dot.key { background: var(--color-gold); box-shadow: 0 0 6px var(--color-gold); }
+.legend-dot.xor { background: var(--color-gold); box-shadow: 0 0 6px var(--color-gold); }
+
+/* =========================================
+   5. ANIMATIONS (GPU-Optimized + Neon Flicker)
+   ========================================= */
+@keyframes transmit { 0% { left: -100%; } 100% { left: 100%; } }
+@keyframes glow { 0%, 100% { box-shadow: 0 0 5px var(--color-blue-40); } 50% { box-shadow: 0 0 20px var(--color-blue-60); } }
+@keyframes glowGold { 0%, 100% { box-shadow: 0 0 5px var(--color-gold-40); } 50% { box-shadow: 0 0 20px var(--color-gold-60); } }
+@keyframes glowGreen { 0%, 100% { box-shadow: 0 0 5px var(--color-green-40); } 50% { box-shadow: 0 0 20px var(--color-green-60); } }
+@keyframes neonPulseGreen { 0%, 100% { border-color: var(--color-green-35); box-shadow: 0 0 4px var(--color-green-15), 0 0 8px rgba(0, 255, 128, 0.1), inset 0 0 6px rgba(0, 255, 128, 0.05); } 50% { border-color: var(--color-green-50); box-shadow: 0 0 6px var(--color-green-25), 0 0 12px rgba(0, 255, 128, 0.15), inset 0 0 8px rgba(0, 255, 128, 0.08); } }
+@keyframes neonPulseBlue { 0%, 100% { border-color: var(--color-blue-35); box-shadow: 0 0 4px var(--color-blue-15), 0 0 8px rgba(0, 162, 255, 0.1), inset 0 0 6px rgba(0, 162, 255, 0.05); } 50% { border-color: var(--color-blue-50); box-shadow: 0 0 6px var(--color-blue-25), 0 0 12px rgba(0, 162, 255, 0.15), inset 0 0 8px rgba(0, 162, 255, 0.08); } }
+@keyframes neonPulseGold { 0%, 100% { border-color: var(--color-gold-35); box-shadow: 0 0 4px var(--color-gold-15), 0 0 8px rgba(212, 175, 55, 0.1), inset 0 0 6px rgba(212, 175, 55, 0.05); } 50% { border-color: var(--color-gold-50); box-shadow: 0 0 6px var(--color-gold-25), 0 0 12px rgba(212, 175, 55, 0.15), inset 0 0 8px rgba(212, 175, 55, 0.08); } }
+@keyframes flicker { 0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; } 20%, 22%, 24%, 55% { opacity: 0.8; } }
+@keyframes currentBitPulse { 0%, 100% { transform: scale(1.2); box-shadow: 0 0 10px currentColor; } 50% { transform: scale(1.3); box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; } }
+@keyframes routeLabelFade { 0%, 100% { opacity: 0; transform: translateX(-50%) translateY(10px); } 50% { opacity: 1; transform: translateX(-50%) translateY(0); } }
+@keyframes neonFlicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { 
+    border-color: var(--color-blue-50);
+    box-shadow: 0 0 5px var(--color-blue-40), 0 0 10px var(--color-blue-30);
+  }
+  20%, 22%, 24%, 55% { 
+    border-color: var(--color-blue-30);
+    box-shadow: 0 0 2px var(--color-blue-40), 0 0 4px var(--color-blue-30);
+    opacity: 0.95;
+  }
+}
+@keyframes neonPulse {
+  0%, 100% { opacity: 0.6; box-shadow: 0 0 5px var(--color-blue-40), 0 0 10px var(--color-blue-30); }
+  50% { opacity: 0.9; box-shadow: 0 0 8px var(--color-blue-50), 0 0 15px var(--color-blue-40); }
+}
+
+/* =========================================
+   6. UTILITIES
+   ========================================= */
+.hidden { display: none !important; }
+.spacer { flex: 1; min-height: var(--space-sm); }
+.bit-separator { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--color-gold-50), transparent); margin: 5px 0; }
+.bit-operator { font-size: 1.2rem; color: var(--color-gold); font-weight: bold; min-width: 20px; text-align: center; }
+.bottom-buttons { display: flex; justify-content: center; gap: var(--space-xxl); margin-top: var(--space-xl); flex-shrink: 0; }
+
+/* =========================================
+   7. MEDIA QUERIES
+   ========================================= */
+@media (max-width: 600px) { 
+  .channel-container { height: 200px; } .character { width: 80px; } .character-icon { width: 45px; height: 45px; font-size: 1.3rem; margin: 0 auto var(--space-xxs); } .character-name { font-size: 0.75rem; } .character-status { font-size: 0.6rem; height: 22px; } .channels-wrapper { min-width: 100px; margin: 0 var(--space-xs); height: 90px; gap: var(--space-sm); } .key-channel, .cipher-channel { height: 30px; } .data-packet { width: 24px; height: 24px; font-size: 0.7rem; } .transmission-box { padding: var(--space-lg); min-height: 80px; } .transmission-box h3 { font-size: 0.8rem; margin-bottom: var(--space-xs); } .key-display { font-size: 0.9rem; padding: var(--space-xs) var(--space-lg); min-width: 150px; } .main-layout { gap: var(--space-sm); } .left-panel, .right-panel { gap: var(--space-sm); } .message-char { width: 22px; height: 22px; font-size: 0.75rem; } .message-char.current { font-size: 0.95rem; } .message-char.space { width: 18px; } .bit-cell { width: 20px; height: 20px; font-size: 0.75rem; } .encoding-cards, .decoding-cards { grid-template-columns: 1fr; } .key-length-grid { grid-template-columns: 1fr; } .key-length-option.full-width { grid-column: 1 / -1; } 
+}
+</style>
+</head>
+<body>
+<div class="lang-switch" role="group" aria-label="Language">
+  <button class="lang-btn" data-lang-btn="ru">RU</button>
+  <button class="lang-btn" data-lang-btn="en">EN</button>
+  <button class="lang-btn" data-lang-btn="es">ES</button>
+</div>
+<div class="container">
+<header><h1 data-i18n="game.title">Шифр Вернама</h1><div class="line"></div><div class="subtitle" data-i18n="game.subtitle">XOR-шифрование · Побитовая операция</div></header>
+
+<div class="protocol-container"><div class="protocol-header" id="protocolHeader"><h2 data-i18n="protocol.toggle">Как работает шифр Вернама?</h2><span class="toggle-icon">+</span></div><div class="protocol-description" id="protocolContent">
+  <p data-i18n="protocol.intro"><span class="highlight-gold">Шифр Вернама</span> (одноразовый блокнот) — метод шифрования, теоретически невзламываемый при трёх условиях: ключ случаен, равен длине сообщения и используется единожды.</p>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">Выбор кодировки</span></div><p data-i18n="protocol.step1.desc">Символы сообщения преобразуются в биты. Доступные кодировки: <b>Код Бодо</b> (5 бит/символ), <b>ASCII 7/8 бит</b>, <b>UTF-8</b> (переменная длина). Таблица символов обновляется динамически.</p></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">Ввод сообщения</span></div><p data-i18n="protocol.step2.desc">Текст конвертируется в битовую последовательность согласно выбранной кодировке. Неподдерживаемые символы подсвечиваются предупреждением.</p></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">Генерация ключа</span></div><p data-i18n="protocol.step3.desc">Ключ генерируется случайно (0/1 с равной вероятностью). Опции длины: 64–2048 бит или <b>«По длине сообщения»</b> (идеальный одноразовый блокнот). Если ключ короче сообщения — он циклически повторяется (снижает стойкость).</p></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">Шифрование (XOR)</span></div><p data-i18n="protocol.step4.desc">Каждый бит сообщения складывается с битом ключа по правилу <b>исключающего ИЛИ (XOR)</b>: <code>0⊕0=0, 0⊕1=1, 1⊕0=1, 1⊕1=0</code>. Режимы: пошаговый (визуализация побитовой операции) или мгновенный.</p></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">Передача</span></div><div class="step-desc" data-i18n="protocol.step5.desc">Алиса отправляет Бобу:<ul><li><span class="highlight-gold">Ключ</span> — по <i>защищённому каналу</i> (анимация: золотой пакет по кривой траектории)</li><li><span class="highlight">Шифротекст</span> — по <i>открытому каналу</i> (анимация: синий пакет по прямой)</li></ul>Оба пакета отображаются в <b>HEX-формате</b> (биты группируются по 8, конвертируются в шестнадцатеричные символы). Прибытие синхронизировано.</div></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">Расшифровка</span></div><p data-i18n="protocol.step6.desc">Боб применяет тот же ключ к шифротексту через XOR: <code>шифротекст ⊕ ключ = исходное сообщение</code>. Благодаря свойству обратимости XOR, операция идентична шифрованию.</p></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">7</span> <span data-i18n="protocol.step7.title">Обратная кодировка</span></div><p data-i18n="protocol.step7.desc">Расшифрованные биты конвертируются обратно в символы. Пользователь выбирает кодировку декодирования — система проверяет совпадение с исходным сообщением и показывает предпросмотр.</p></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">8</span> <span data-i18n="protocol.step8.title">Результат</span></div><p data-i18n="protocol.step8.desc">Финальное сравнение: исходное сообщение, ключ (HEX), шифротекст (HEX), расшифрованный текст. При успешном совпадении отображается подтверждение и статистика.</p></div>
+  <p style="margin-top:12px; color:var(--text-secondary);" data-i18n="protocol.legend"><strong>Легенда визуализации:</strong><br><span style="color:var(--color-green);">●</span> Сообщение / результат &nbsp;|&nbsp; <span style="color:var(--color-gold);">●</span> Ключ &nbsp;|&nbsp; <span style="color:var(--color-blue);">●</span> Шифротекст &nbsp;|&nbsp; <span style="color:var(--color-gold);">⊕</span> XOR-операция</p>
+  <p style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);" data-i18n="protocol.note"><b>Важно:</b> В реальной криптографии ключ должен быть истинно случайным, никогда не повторяться и передаваться по защищённому каналу. Данная демонстрация — образовательная модель.</p>
+</div></div>
+
+<div class="game-area">
+<div class="stage-indicator" role="tablist" data-i18n-aria-label="stage.ariaLabel" aria-label="Этапы шифрования"><div class="stage-dot active" id="stage1" data-i18n-title="stage.encoding" title="Кодировка"></div><div class="stage-dot" id="stage2" data-i18n-title="stage.message" title="Сообщение"></div><div class="stage-dot" id="stage3" data-i18n-title="stage.key" title="Ключ"></div><div class="stage-dot" id="stage4" data-i18n-title="stage.encrypt" title="Шифрование"></div><div class="stage-dot" id="stage5" data-i18n-title="stage.transmit" title="Передача"></div><div class="stage-dot" id="stage6" data-i18n-title="stage.decrypt" title="Расшифровка"></div><div class="stage-dot" id="stage7" data-i18n-title="stage.decoding" title="Обратная кодировка"></div><div class="stage-dot" id="stage8" data-i18n-title="stage.result" title="Результат"></div></div>
+
+<!-- ЭТАП 1 -->
+<div id="encoding-stage" class="stage-content"><div class="main-layout"><div class="left-panel"><div style="padding: var(--space-lg);"><h3 data-i18n="encoding.heading">Выберите кодировку</h3><p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-xl);" data-i18n="encoding.desc">Кодировка определяет, как символы преобразуются в биты</p><div class="encoding-cards"><div class="encoding-card selected" data-encoding="baudot" tabindex="0" role="button"><div class="encoding-card-header"><span class="encoding-card-name" data-i18n="encoding.baudot.name">Код Бодо</span><span class="encoding-card-bits" data-i18n="encoding.baudot.bits">5 бит</span></div><div class="encoding-card-desc" data-i18n="encoding.baudot.desc">Исторический телеграфный код (ITA1/ITA2).</div><div class="encoding-card-example">A = 11000, B = 10011</div></div><div class="encoding-card" data-encoding="ascii7" tabindex="0" role="button"><div class="encoding-card-header"><span class="encoding-card-name">ASCII 7</span><span class="encoding-card-bits" data-i18n="encoding.ascii7.bits">7 бит</span></div><div class="encoding-card-desc" data-i18n="encoding.ascii7.desc">Стандартный ASCII (0-127).</div><div class="encoding-card-example">A = 1000001, Space = 0100000</div></div><div class="encoding-card" data-encoding="ascii8" tabindex="0" role="button"><div class="encoding-card-header"><span class="encoding-card-name">ASCII 8</span><span class="encoding-card-bits" data-i18n="encoding.ascii8.bits">8 бит</span></div><div class="encoding-card-desc" data-i18n="encoding.ascii8.desc">Расширенный ASCII (0-255).</div><div class="encoding-card-example">A = 01000001, Ä = 11000100</div></div><div class="encoding-card" data-encoding="utf8" tabindex="0" role="button"><div class="encoding-card-header"><span class="encoding-card-name">UTF-8</span><span class="encoding-card-bits" data-i18n="encoding.utf8.bits">8-32 бит</span></div><div class="encoding-card-desc" data-i18n="encoding.utf8.desc">Unicode переменной длины.</div><div class="encoding-card-example">A = 01000001, Ж = 1101000010010110</div></div></div><div class="action-button-container"><button class="action-button gold-primary" id="goToMessageBtn" data-i18n="btn.next">Далее</button></div></div></div><div class="right-panel"><div class="alphabet-legend"><div class="legend-item"><div class="legend-dot xor"></div><span data-i18n="encoding.legend">Выбранная кодировка</span></div></div><div class="char-table-container" id="encodingTableContainer"><table class="char-table" id="encodingTable"><thead><tr><th data-i18n="table.char">Символ</th><th data-i18n="table.code">Код</th><th data-i18n="table.bits">Биты</th></tr></thead><tbody id="encodingTableBody"></tbody></table></div></div></div></div>
+
+<!-- ЭТАП 2 -->
+<div id="message-stage" class="stage-content hidden"><div class="message-top-panel"><div class="transmission-box"><h3 data-i18n="message.heading">Введите сообщение</h3><div class="input-wrapper"><input type="text" id="messageInput" data-i18n-placeholder="message.placeholder" placeholder="Введите текст..." maxlength="100" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--color-gold); border-radius:4px; padding:10px; color:var(--color-green); font-family:monospace; font-size:1rem; text-align:center;" data-i18n-aria-label="message.ariaLabel" aria-label="Поле ввода сообщения"></div><div style="margin-top:8px; font-size:0.7rem; color:var(--text-secondary);" aria-live="polite"><span id="charCounter">0</span> <span data-i18n="message.charsLabel">символов</span> · <span id="bitCounter">0</span> <span data-i18n="unit.bits">бит</span></div><div id="estimatedTime" style="margin-top:5px; font-size:0.7rem; color:var(--color-blue); display:none;"><span id="timeText"></span></div><div id="encodingWarning" style="margin-top:5px; font-size:0.7rem; color:var(--color-red); display:none;" role="alert"><span id="warningText"></span></div></div></div><div class="main-layout"><div class="left-panel"><div class="bit-visualizer"><div class="bit-row"><span class="bit-label plain" data-i18n="message.bitsRowLabel">Сообщение (биты)</span><div class="bit-container" id="messageBitsContainer" aria-live="polite"></div></div></div></div><div class="right-panel"><div class="char-table-container"><table class="char-table" id="messageTable"><thead><tr><th data-i18n="table.char">Символ</th><th data-i18n="table.code">Код</th><th data-i18n="table.bits">Биты</th></tr></thead><tbody id="messageTableBody"></tbody></table></div></div></div><div class="bottom-buttons"><button class="action-button secondary" id="goToEncodingBtn" data-i18n="btn.back">Назад</button><button class="action-button gold-primary" id="goToKeyBtn" data-i18n="btn.next">Далее</button></div></div>
+
+<!-- ЭТАП 3 -->
+<div id="key-stage" class="stage-content hidden">
+  <div class="main-layout">
+    <div class="left-panel">
+      <div class="key-options-panel">
+        <h3 data-i18n="key.heading">Параметры ключа</h3>
+        <p class="hint" data-i18n="key.hint">Выберите длину ключа для генерации</p>
+        <div class="key-length-grid">
+          <label class="key-length-option"><input type="radio" name="keyLength" value="64"><span class="option-content" data-i18n="key.length.64">64 бит</span></label>
+          <label class="key-length-option"><input type="radio" name="keyLength" value="128"><span class="option-content" data-i18n="key.length.128">128 бит</span></label>
+          <label class="key-length-option"><input type="radio" name="keyLength" value="256"><span class="option-content" data-i18n="key.length.256">256 бит</span></label>
+          <label class="key-length-option"><input type="radio" name="keyLength" value="512"><span class="option-content" data-i18n="key.length.512">512 бит</span></label>
+          <label class="key-length-option"><input type="radio" name="keyLength" value="1024"><span class="option-content" data-i18n="key.length.1024">1024 бита</span></label>
+          <label class="key-length-option"><input type="radio" name="keyLength" value="2048"><span class="option-content" data-i18n="key.length.2048">2048 бит</span></label>
+          <label class="key-length-option full-width"><input type="radio" name="keyLength" value="auto"><span class="option-content" data-i18n="key.length.auto">По длине сообщения</span><span class="option-bits" id="autoBitsLabel">(автоматически)</span></label>
+        </div>
+        <button class="action-button gold" id="generateKeyBtn" disabled data-i18n="key.generateBtn">Сгенерировать ключ</button>
+        <div class="key-disclaimer warning" id="keyDisclaimer"><span data-i18n="key.disclaimer.waiting">Ожидается выбор длины ключа...</span></div>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="bit-visualizer">
+        <div class="bit-row">
+          <span class="bit-label key" data-i18n="key.padLabel">Ключ</span>
+          <div class="bit-container" id="keyPadBits" style="gap:0; max-height:350px;">
+            <span style="color:var(--text-muted); font-size:0.8rem;" data-i18n="key.padPlaceholder">Выберите длину и нажмите "Сгенерировать"</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-buttons">
+    <button class="action-button secondary" id="backToMsgBtn" data-i18n="btn.back">Назад</button>
+    <button class="action-button gold" id="startEncryptBtn" disabled data-i18n="key.encryptBtn">Шифровать</button>
+  </div>
+</div>
+
+<!-- ЭТАП 4 -->
+<div id="encryption-stage" class="stage-content hidden"><div class="main-layout"><div class="left-panel"><div class="action-button-container" id="encryptModeContainer">
+  <button class="action-button gold-primary" id="nextBitBtn" data-i18n="encrypt.nextBitBtn">Следующий бит</button>
+  <button class="action-button instant" id="instantEncryptBtn" data-i18n="encrypt.instantBtn">Мгновенное шифрование</button>
+</div><div class="xor-visualizer"><div class="xor-title" data-i18n="encrypt.xorTitle">XOR Операция</div><div class="xor-demo" id="xorDemoContent" aria-live="polite"></div></div><div class="action-button-container hidden" id="encryptActionContainer"><button class="action-button success hidden" id="nextStageEncryptBtn" data-i18n="btn.next">Далее</button></div></div><div class="right-panel"><div class="sync-bits-container" id="syncBitsContainer"></div></div></div></div>
+
+<!-- ЭТАП 5 -->
+<div id="transmission-stage" class="stage-content hidden"><div class="main-layout"><div class="left-panel"><div class="transmission-container"><div class="transmission-box"><h3 data-i18n="transmit.keyHeading">Ключ (HEX)</h3><div class="hex-info-box"><span data-i18n="transmit.keyInfo">Биты сгруппированы по 8 и представлены в <b>HEX</b> (шестнадцатеричной системе). 1 HEX-символ = 4 бита. Это стандартный компактный формат для чтения и передачи бинарных данных.</span></div><div class="key-display" id="keyDisplayTransmit" style="font-size:0.85rem;">—</div></div><div class="transmission-box"><h3 data-i18n="transmit.cipherHeading">Шифротекст (HEX)</h3><div class="key-display" id="cipherDisplayTransmit" style="font-size:0.85rem;"></div></div></div><div class="action-button-container" id="transmitBtnContainer"><button class="action-button" id="transmitBtn" data-i18n="transmit.sendBtn">Отправить ключ и шифротекст</button></div></div><div class="right-panel">
+    <div class="channel-container" id="channelContainer">
+      <div class="transmission-setup">
+        <div class="character alice"><div class="character-icon">A</div><div class="character-name" data-i18n="char.alice">Алиса</div><div class="character-status" id="aliceStatus" data-i18n="status.ready">Готова</div></div>
+        <div class="channels-wrapper">
+          <div class="key-channel" id="keyChannelTransmit"><span class="channel-label" data-i18n="channel.key">Ключ</span></div>
+          <div class="cipher-channel" id="cipherChannelTransmit"><span class="channel-label" data-i18n="channel.cipher">Шифротекст</span></div>
+        </div>
+        <div class="character bob"><div class="character-icon">B</div><div class="character-name" data-i18n="char.bob">Боб</div><div class="character-status" id="bobStatus" data-i18n="status.waiting">Ожидает</div></div>
+      </div>
+      <div class="route-info"><span class="key-route" data-i18n="route.keyChannel">Ключ: защищённый канал</span><span class="cipher-route" data-i18n="route.cipherChannel">Шифротекст: открытый канал</span></div>
+    </div>
+  </div></div></div>
+
+<!-- ЭТАП 6 -->
+<div id="decryption-stage" class="stage-content hidden"><div class="main-layout"><div class="left-panel"><div class="action-button-container" id="decryptModeContainer">
+  <button class="action-button gold-primary" id="nextDecryptBitBtn" data-i18n="decrypt.nextBitBtn">Следующий бит</button>
+  <button class="action-button instant" id="instantDecryptBtn" data-i18n="decrypt.instantBtn">Мгновенная расшифровка</button>
+</div><div class="xor-visualizer"><div class="xor-title" data-i18n="decrypt.xorTitle">XOR Расшифровка</div><div class="xor-demo" id="decryptXorDemo" aria-live="polite"></div></div></div><div class="right-panel"><div class="sync-bits-container" id="decryptSyncBitsContainer"></div></div></div></div>
+
+<!-- ЭТАП 7 -->
+<div id="decoding-stage" class="stage-content hidden">
+  <div class="decoding-layout">
+    <div class="decoding-section">
+      <div class="decoding-section-title" data-i18n="decoding.bitsHeading">Расшифрованные биты</div>
+      <div class="bit-container" id="decodedBitsDisplay" style="max-height:200px; justify-content:flex-start;" aria-live="polite"></div>
+    </div>
+    <div class="decoding-section">
+      <div class="decoding-section-title" data-i18n="decoding.chooseHeading">Выберите кодировку</div>
+      <div class="decoding-cards" id="decodingCardsContainer">
+        <div class="decoding-card" data-encoding="baudot" tabindex="0" role="button" aria-pressed="false"><div class="encoding-card-header"><span class="encoding-card-name" data-i18n="encoding.baudot.name">Код Бодо</span><span class="encoding-card-bits" data-i18n="encoding.baudot.bits">5 бит</span></div><div class="encoding-card-desc" data-i18n="decoding.card.baudot">Исторический телеграфный код</div></div>
+        <div class="decoding-card" data-encoding="ascii7" tabindex="0" role="button" aria-pressed="false"><div class="encoding-card-header"><span class="encoding-card-name">ASCII 7</span><span class="encoding-card-bits" data-i18n="encoding.ascii7.bits">7 бит</span></div><div class="encoding-card-desc" data-i18n="decoding.card.ascii7">Стандартный ASCII</div></div>
+        <div class="decoding-card" data-encoding="ascii8" tabindex="0" role="button" aria-pressed="false"><div class="encoding-card-header"><span class="encoding-card-name">ASCII 8</span><span class="encoding-card-bits" data-i18n="encoding.ascii8.bits">8 бит</span></div><div class="encoding-card-desc" data-i18n="decoding.card.ascii8">Расширенный ASCII</div></div>
+        <div class="decoding-card" data-encoding="utf8" tabindex="0" role="button" aria-pressed="false"><div class="encoding-card-header"><span class="encoding-card-name">UTF-8</span><span class="encoding-card-bits" data-i18n="encoding.utf8.bits">8-32 бит</span></div><div class="encoding-card-desc" data-i18n="decoding.card.utf8">Unicode переменной длины</div></div>
+      </div>
+    </div>
+    <div class="decoding-section">
+      <div class="decoding-section-title" data-i18n="decoding.previewHeading">Предпросмотр декодирования</div>
+      <div class="decoding-result-display" id="decodingPreview" aria-live="polite" data-i18n="decoding.previewPlaceholder">Выберите кодировку для предпросмотра...</div>
+    </div>
+    <div class="action-button-container" style="margin-top: var(--space-xl);">
+      <button class="action-button gold-primary" id="finishDecodingBtn" data-i18n="decoding.finishBtn">Завершить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ЭТАП 8 -->
+<div id="final-stage" class="stage-content hidden">
+  <div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 800px; margin: 0 auto;">
+    <div class="final-title" data-i18n="final.heading">Результат передачи</div>
+    <div class="stats-grid" style="width: 100%;">
+      <div class="stat-card key"><div class="stat-label" data-i18n="final.keyLabel">Ключ (HEX)</div><div class="stat-value key-value" id="finalKey"></div></div>
+      <div class="stat-card cipher"><div class="stat-label" data-i18n="final.cipherLabel">Шифротекст (HEX)</div><div class="stat-value cipher-value" id="finalCipher"></div></div>
+      <div class="stat-card original"><div class="stat-label" data-i18n="final.originalLabel">Исходное сообщение</div><div class="stat-value original-value" id="finalOriginal"></div></div>
+      <div class="stat-card decrypted"><div class="stat-label" data-i18n="final.decryptedLabel">Расшифрованное</div><div class="stat-value decrypted-value" id="finalDecrypted"></div></div>
+    </div>
+    <div class="action-button-container" style="width: 100%; max-width: 400px; margin-top: var(--space-xl);">
+      <button class="action-button" id="resetGameBtn" data-i18n="final.resetBtn">Новая передача</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="navigation-container"><div class="navigation-links">
+  <a href="/theory/vernamcipher.html" class="nav-link secondary">
+    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </svg>
+    <span data-i18n="nav.theory">Прочитать теорию</span>
+  </a>
+  <a href="https://ludus-lab.ru/" class="nav-link primary">
+    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    <span data-i18n="nav.home">Вернуться в лабораторию</span>
+  </a>
+</div></div>
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalMessage"><div class="modal-content" id="modalContent"><div class="modal-title" id="modalTitle" data-i18n="modal.defaultTitle">Информация</div><div class="modal-message" id="modalMessage" data-i18n="modal.defaultMsg">Текст сообщения</div><div class="modal-buttons"><button class="action-button" id="closeModalBtn" data-i18n="modal.okBtn">OK</button></div></div></div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  const DOM = {};
+  const CONFIG = {
+    BITS_PER_ROW: 36,
+    STAGES: { ENCODING: 1, MESSAGE: 2, KEY: 3, ENCRYPT: 4, TRANSMIT: 5, DECRYPT: 6, DECODING: 7, FINAL: 8 },
+    DISPLAY: { MAX_BITS_PREVIEW: 40 },
+    TIMING: { ANIMATION_DELAY: 800 }
+  };
+  const state = {
+    lang: 'ru', keyDisclaimerState: 'waiting',
+    currentEncoding: 'baudot', decodingEncoding: 'baudot',
+    message: '', messageBits: '', keyBits: '', cipherBits: '', decryptedBits: '',
+    currentStage: 1, currentBitIndex: 0,
+    _cipherBuf: [], _decryptBuf: []
+  };
+  const BAUDOT_LETTERS = { '\0':'00000','E':'00001','\n':'00010','A':'00011',' ':'00100','S':'00101','I':'00110','U':'00111','\r':'01000','D':'01001','R':'01010','J':'01011','N':'01100','F':'01101','C':'01110','K':'01111','T':'10000','Z':'10001','L':'10010','W':'10011','H':'10100','Y':'10101','P':'10110','Q':'10111','O':'11000','B':'11001','G':'11010','FIGS':'11011','M':'11100','X':'11101','V':'11110','LETTERS':'11111' };
+  const BAUDOT_FIGURES = { '\0':'00000','3':'00001','\n':'00010','-':'00011',' ':'00100',"'":'00101','8':'00110','7':'00111','\r':'01000','$':'01001','4':'01010','\a':'01011',',':'01100','!':'01101',':':'01110','(':'01111','5':'10000','+':'10001',')':'10010','2':'10011','£':'10100','6':'10101','0':'10110','1':'10111','9':'11000','?':'11001','&':'11010','FIGS':'11011','.':'11100','/':'11101','=':'11110','LETTERS':'11111' };
+  const BAUDOT_LETTERS_DECODE = {}; const BAUDOT_FIGURES_DECODE = {};
+  for (const [c,b] of Object.entries(BAUDOT_LETTERS)) BAUDOT_LETTERS_DECODE[b]=c;
+  for (const [c,b] of Object.entries(BAUDOT_FIGURES)) BAUDOT_FIGURES_DECODE[b]=c;
+
+  // ===== I18N =====
+  const I18N = {
+    ru: {
+      'meta.title': 'Шифр Вернама — Побитовое XOR-шифрование',
+      'game.title': 'Шифр Вернама', 'game.subtitle': 'XOR-шифрование · Побитовая операция',
+      'protocol.toggle': 'Как работает шифр Вернама?',
+      'protocol.intro': '<span class="highlight-gold">Шифр Вернама</span> (одноразовый блокнот) — метод шифрования, теоретически невзламываемый при трёх условиях: ключ случаен, равен длине сообщения и используется единожды.',
+      'protocol.step1.title': 'Выбор кодировки', 'protocol.step1.desc': 'Символы сообщения преобразуются в биты. Доступные кодировки: <b>Код Бодо</b> (5 бит/символ), <b>ASCII 7/8 бит</b>, <b>UTF-8</b> (переменная длина). Таблица символов обновляется динамически.',
+      'protocol.step2.title': 'Ввод сообщения', 'protocol.step2.desc': 'Текст конвертируется в битовую последовательность согласно выбранной кодировке. Неподдерживаемые символы подсвечиваются предупреждением.',
+      'protocol.step3.title': 'Генерация ключа', 'protocol.step3.desc': 'Ключ генерируется случайно (0/1 с равной вероятностью). Опции длины: 64–2048 бит или <b>«По длине сообщения»</b> (идеальный одноразовый блокнот). Если ключ короче сообщения — он циклически повторяется (снижает стойкость).',
+      'protocol.step4.title': 'Шифрование (XOR)', 'protocol.step4.desc': 'Каждый бит сообщения складывается с битом ключа по правилу <b>исключающего ИЛИ (XOR)</b>: <code>0⊕0=0, 0⊕1=1, 1⊕0=1, 1⊕1=0</code>. Режимы: пошаговый (визуализация побитовой операции) или мгновенный.',
+      'protocol.step5.title': 'Передача', 'protocol.step5.desc': 'Алиса отправляет Бобу:<ul><li><span class="highlight-gold">Ключ</span> — по <i>защищённому каналу</i> (анимация: золотой пакет по кривой траектории)</li><li><span class="highlight">Шифротекст</span> — по <i>открытому каналу</i> (анимация: синий пакет по прямой)</li></ul>Оба пакета отображаются в <b>HEX-формате</b> (биты группируются по 8, конвертируются в шестнадцатеричные символы). Прибытие синхронизировано.',
+      'protocol.step6.title': 'Расшифровка', 'protocol.step6.desc': 'Боб применяет тот же ключ к шифротексту через XOR: <code>шифротекст ⊕ ключ = исходное сообщение</code>. Благодаря свойству обратимости XOR, операция идентична шифрованию.',
+      'protocol.step7.title': 'Обратная кодировка', 'protocol.step7.desc': 'Расшифрованные биты конвертируются обратно в символы. Пользователь выбирает кодировку декодирования — система проверяет совпадение с исходным сообщением и показывает предпросмотр.',
+      'protocol.step8.title': 'Результат', 'protocol.step8.desc': 'Финальное сравнение: исходное сообщение, ключ (HEX), шифротекст (HEX), расшифрованный текст. При успешном совпадении отображается подтверждение и статистика.',
+      'protocol.legend': '<strong>Легенда визуализации:</strong><br><span style="color:var(--color-green);">●</span> Сообщение / результат &nbsp;|&nbsp; <span style="color:var(--color-gold);">●</span> Ключ &nbsp;|&nbsp; <span style="color:var(--color-blue);">●</span> Шифротекст &nbsp;|&nbsp; <span style="color:var(--color-gold);">⊕</span> XOR-операция',
+      'protocol.note': '<b>Важно:</b> В реальной криптографии ключ должен быть истинно случайным, никогда не повторяться и передаваться по защищённому каналу. Данная демонстрация — образовательная модель.',
+      'stage.ariaLabel': 'Этапы шифрования', 'stage.encoding': 'Кодировка', 'stage.message': 'Сообщение', 'stage.key': 'Ключ', 'stage.encrypt': 'Шифрование', 'stage.transmit': 'Передача', 'stage.decrypt': 'Расшифровка', 'stage.decoding': 'Обратная кодировка', 'stage.result': 'Результат',
+      'encoding.heading': 'Выберите кодировку', 'encoding.desc': 'Кодировка определяет, как символы преобразуются в биты',
+      'encoding.baudot.name': 'Код Бодо', 'encoding.baudot.bits': '5 бит', 'encoding.baudot.desc': 'Исторический телеграфный код (ITA1/ITA2).',
+      'encoding.ascii7.bits': '7 бит', 'encoding.ascii7.desc': 'Стандартный ASCII (0-127).',
+      'encoding.ascii8.bits': '8 бит', 'encoding.ascii8.desc': 'Расширенный ASCII (0-255).',
+      'encoding.utf8.bits': '8-32 бит', 'encoding.utf8.desc': 'Unicode переменной длины.',
+      'encoding.legend': 'Выбранная кодировка',
+      'table.char': 'Символ', 'table.code': 'Код', 'table.bits': 'Биты',
+      'btn.next': 'Далее', 'btn.back': 'Назад',
+      'message.heading': 'Введите сообщение', 'message.placeholder': 'Введите текст...', 'message.ariaLabel': 'Поле ввода сообщения', 'message.charsLabel': 'символов', 'unit.bits': 'бит', 'message.bitsRowLabel': 'Сообщение (биты)',
+      'key.heading': 'Параметры ключа', 'key.hint': 'Выберите длину ключа для генерации',
+      'key.length.64': '64 бит', 'key.length.128': '128 бит', 'key.length.256': '256 бит', 'key.length.512': '512 бит', 'key.length.1024': '1024 бита', 'key.length.2048': '2048 бит', 'key.length.auto': 'По длине сообщения',
+      'key.generateBtn': 'Сгенерировать ключ', 'key.padLabel': 'Ключ', 'key.padPlaceholder': 'Выберите длину и нажмите "Сгенерировать"', 'key.encryptBtn': 'Шифровать',
+      'key.disclaimer.waiting': 'Ожидается выбор длины ключа...', 'key.disclaimer.autoOk': 'Условия одноразового блокнота соблюдены — шифр теоретически невзламываем.', 'key.disclaimer.secure': 'Длина ключа достаточна для высокой стойкости.', 'key.disclaimer.insecure': 'Ключ короче сообщения — ключ будет повторяться, что снижает криптостойкость.', 'key.disclaimer.generated': 'Ключ сгенерирован успешно. Можно переходить к шифрованию.',
+      'encrypt.nextBitBtn': 'Следующий бит', 'encrypt.instantBtn': 'Мгновенное шифрование', 'encrypt.xorTitle': 'XOR Операция',
+      'xor.pressNext': 'Нажмите "Следующий бит" для начала', 'xor.label.message': 'Сообщение', 'xor.label.xor': 'XOR', 'xor.label.key': 'Ключ', 'xor.label.equals': '=', 'xor.label.result': 'Результат',
+      'sync.label.plain': 'Сообщение', 'sync.label.key': 'Ключ', 'sync.label.cipher': 'Шифротекст', 'sync.label.result': 'Результат', 'sync.bitsRange': 'Биты {from}-{to}',
+      'transmit.keyHeading': 'Ключ (HEX)', 'transmit.keyInfo': 'Биты сгруппированы по 8 и представлены в <b>HEX</b> (шестнадцатеричной системе). 1 HEX-символ = 4 бита. Это стандартный компактный формат для чтения и передачи бинарных данных.', 'transmit.cipherHeading': 'Шифротекст (HEX)', 'transmit.sendBtn': 'Отправить ключ и шифротекст',
+      'char.alice': 'Алиса', 'char.bob': 'Боб',
+      'status.ready': 'Готова', 'status.sending': 'Отправляет...', 'status.waiting': 'Ожидает', 'status.waitingDots': 'Ожидает...', 'status.keyReceived': 'Ключ получен...', 'status.cipherReceived': 'Шифротекст получен!',
+      'channel.key': 'Ключ', 'channel.cipher': 'Шифротекст', 'route.keyChannel': 'Ключ: защищённый канал', 'route.cipherChannel': 'Шифротекст: открытый канал',
+      'decrypt.nextBitBtn': 'Следующий бит', 'decrypt.instantBtn': 'Мгновенная расшифровка', 'decrypt.xorTitle': 'XOR Расшифровка',
+      'decoding.bitsHeading': 'Расшифрованные биты', 'decoding.chooseHeading': 'Выберите кодировку',
+      'decoding.card.baudot': 'Исторический телеграфный код', 'decoding.card.ascii7': 'Стандартный ASCII', 'decoding.card.ascii8': 'Расширенный ASCII', 'decoding.card.utf8': 'Unicode переменной длины',
+      'decoding.previewHeading': 'Предпросмотр декодирования', 'decoding.previewPlaceholder': 'Выберите кодировку для предпросмотра...', 'decoding.waitingData': 'Ожидание данных...', 'decoding.notInterpretable': '(не интерпретируется выбранной кодировкой)', 'decoding.finishBtn': 'Завершить',
+      'final.heading': 'Результат передачи', 'final.keyLabel': 'Ключ (HEX)', 'final.cipherLabel': 'Шифротекст (HEX)', 'final.originalLabel': 'Исходное сообщение', 'final.decryptedLabel': 'Расшифрованное', 'final.resetBtn': 'Новая передача',
+      'modal.defaultTitle': 'Информация', 'modal.defaultMsg': 'Текст сообщения', 'modal.okBtn': 'OK',
+      'modal.error.title': 'Ошибка', 'modal.error.noMessage': 'Введите сообщение!', 'modal.error.noBits': 'Сообщение не содержит бит!', 'modal.error.noKey': 'Сгенерируйте ключ!', 'modal.error.mismatch': 'Расшифрованное сообщение не совпадает с исходным. Проверьте правильность выбранной кодировки.',
+      'modal.success.title': 'Успешно!', 'modal.success.decrypted': 'Сообщение успешно расшифровано!',
+      'warning.unsupportedChar': 'Символ "{ch}" не поддерживается кодировкой {enc}',
+      'encodingName.baudot': 'Код Бодо (5 бит)', 'encodingName.ascii7': 'ASCII 7 бит', 'encodingName.ascii8': 'ASCII 8 бит', 'encodingName.utf8': 'UTF-8',
+      'nav.theory': 'Прочитать теорию', 'nav.home': 'Вернуться в лабораторию',
+    },
+    en: {
+      'meta.title': 'Vernam Cipher — Bitwise XOR Encryption',
+      'game.title': 'Vernam Cipher', 'game.subtitle': 'XOR encryption · Bitwise operation',
+      'protocol.toggle': 'How does the Vernam cipher work?',
+      'protocol.intro': 'The <span class="highlight-gold">Vernam cipher</span> (one-time pad) is an encryption method that is theoretically unbreakable under three conditions: the key is random, equal in length to the message, and used only once.',
+      'protocol.step1.title': 'Choosing an encoding', 'protocol.step1.desc': 'Message characters are converted into bits. Available encodings: <b>Baudot code</b> (5 bits/char), <b>ASCII 7/8 bit</b>, <b>UTF-8</b> (variable length). The character table updates dynamically.',
+      'protocol.step2.title': 'Entering the message', 'protocol.step2.desc': 'The text is converted into a bit sequence according to the selected encoding. Unsupported characters are highlighted with a warning.',
+      'protocol.step3.title': 'Key generation', 'protocol.step3.desc': 'The key is generated randomly (0/1 with equal probability). Length options: 64–2048 bits or <b>"Match message length"</b> (a true one-time pad). If the key is shorter than the message, it repeats cyclically (reducing security).',
+      'protocol.step4.title': 'Encryption (XOR)', 'protocol.step4.desc': 'Each message bit is combined with a key bit using <b>exclusive OR (XOR)</b>: <code>0⊕0=0, 0⊕1=1, 1⊕0=1, 1⊕1=0</code>. Modes: step-by-step (visualizing the bitwise operation) or instant.',
+      'protocol.step5.title': 'Transmission', 'protocol.step5.desc': 'Alice sends Bob:<ul><li>The <span class="highlight-gold">key</span> — over a <i>secure channel</i> (animation: gold packet on a curved path)</li><li>The <span class="highlight">ciphertext</span> — over an <i>open channel</i> (animation: blue packet on a straight path)</li></ul>Both packets are displayed in <b>HEX format</b> (bits grouped by 8, converted into hexadecimal symbols). Arrival is synchronized.',
+      'protocol.step6.title': 'Decryption', 'protocol.step6.desc': 'Bob applies the same key to the ciphertext using XOR: <code>ciphertext ⊕ key = original message</code>. Thanks to XOR\'s reversibility, this operation is identical to encryption.',
+      'protocol.step7.title': 'Reverse encoding', 'protocol.step7.desc': 'The decrypted bits are converted back into characters. The user chooses a decoding encoding — the system checks the result against the original message and shows a preview.',
+      'protocol.step8.title': 'Result', 'protocol.step8.desc': 'Final comparison: original message, key (HEX), ciphertext (HEX), decrypted text. On a successful match, a confirmation and statistics are shown.',
+      'protocol.legend': '<strong>Visualization legend:</strong><br><span style="color:var(--color-green);">●</span> Message / result &nbsp;|&nbsp; <span style="color:var(--color-gold);">●</span> Key &nbsp;|&nbsp; <span style="color:var(--color-blue);">●</span> Ciphertext &nbsp;|&nbsp; <span style="color:var(--color-gold);">⊕</span> XOR operation',
+      'protocol.note': '<b>Important:</b> In real cryptography the key must be truly random, never reused, and transmitted over a secure channel. This demo is an educational model.',
+      'stage.ariaLabel': 'Encryption stages', 'stage.encoding': 'Encoding', 'stage.message': 'Message', 'stage.key': 'Key', 'stage.encrypt': 'Encryption', 'stage.transmit': 'Transmission', 'stage.decrypt': 'Decryption', 'stage.decoding': 'Decoding', 'stage.result': 'Result',
+      'encoding.heading': 'Choose an encoding', 'encoding.desc': 'The encoding determines how characters are converted into bits',
+      'encoding.baudot.name': 'Baudot code', 'encoding.baudot.bits': '5 bits', 'encoding.baudot.desc': 'Historical telegraph code (ITA1/ITA2).',
+      'encoding.ascii7.bits': '7 bits', 'encoding.ascii7.desc': 'Standard ASCII (0-127).',
+      'encoding.ascii8.bits': '8 bits', 'encoding.ascii8.desc': 'Extended ASCII (0-255).',
+      'encoding.utf8.bits': '8-32 bits', 'encoding.utf8.desc': 'Variable-length Unicode.',
+      'encoding.legend': 'Selected encoding',
+      'table.char': 'Char', 'table.code': 'Code', 'table.bits': 'Bits',
+      'btn.next': 'Next', 'btn.back': 'Back',
+      'message.heading': 'Enter a message', 'message.placeholder': 'Type text...', 'message.ariaLabel': 'Message input field', 'message.charsLabel': 'characters', 'unit.bits': 'bits', 'message.bitsRowLabel': 'Message (bits)',
+      'key.heading': 'Key parameters', 'key.hint': 'Choose a key length to generate',
+      'key.length.64': '64 bits', 'key.length.128': '128 bits', 'key.length.256': '256 bits', 'key.length.512': '512 bits', 'key.length.1024': '1024 bits', 'key.length.2048': '2048 bits', 'key.length.auto': 'Match message length',
+      'key.generateBtn': 'Generate key', 'key.padLabel': 'Key', 'key.padPlaceholder': 'Choose a length and click "Generate"', 'key.encryptBtn': 'Encrypt',
+      'key.disclaimer.waiting': 'Waiting for a key length to be selected...', 'key.disclaimer.autoOk': 'One-time pad conditions are met — the cipher is theoretically unbreakable.', 'key.disclaimer.secure': 'The key length is sufficient for strong security.', 'key.disclaimer.insecure': 'The key is shorter than the message — it will repeat, which reduces security.', 'key.disclaimer.generated': 'Key generated successfully. You can proceed to encryption.',
+      'encrypt.nextBitBtn': 'Next bit', 'encrypt.instantBtn': 'Instant encryption', 'encrypt.xorTitle': 'XOR Operation',
+      'xor.pressNext': 'Click "Next bit" to begin', 'xor.label.message': 'Message', 'xor.label.xor': 'XOR', 'xor.label.key': 'Key', 'xor.label.equals': '=', 'xor.label.result': 'Result',
+      'sync.label.plain': 'Message', 'sync.label.key': 'Key', 'sync.label.cipher': 'Ciphertext', 'sync.label.result': 'Result', 'sync.bitsRange': 'Bits {from}-{to}',
+      'transmit.keyHeading': 'Key (HEX)', 'transmit.keyInfo': 'Bits are grouped by 8 and shown in <b>HEX</b> (hexadecimal). 1 HEX digit = 4 bits. This is the standard compact format for reading and transmitting binary data.', 'transmit.cipherHeading': 'Ciphertext (HEX)', 'transmit.sendBtn': 'Send key and ciphertext',
+      'char.alice': 'Alice', 'char.bob': 'Bob',
+      'status.ready': 'Ready', 'status.sending': 'Sending...', 'status.waiting': 'Waiting', 'status.waitingDots': 'Waiting...', 'status.keyReceived': 'Key received...', 'status.cipherReceived': 'Ciphertext received!',
+      'channel.key': 'Key', 'channel.cipher': 'Ciphertext', 'route.keyChannel': 'Key: secure channel', 'route.cipherChannel': 'Ciphertext: open channel',
+      'decrypt.nextBitBtn': 'Next bit', 'decrypt.instantBtn': 'Instant decryption', 'decrypt.xorTitle': 'XOR Decryption',
+      'decoding.bitsHeading': 'Decrypted bits', 'decoding.chooseHeading': 'Choose an encoding',
+      'decoding.card.baudot': 'Historical telegraph code', 'decoding.card.ascii7': 'Standard ASCII', 'decoding.card.ascii8': 'Extended ASCII', 'decoding.card.utf8': 'Variable-length Unicode',
+      'decoding.previewHeading': 'Decoding preview', 'decoding.previewPlaceholder': 'Choose an encoding to preview...', 'decoding.waitingData': 'Waiting for data...', 'decoding.notInterpretable': '(not interpretable with the selected encoding)', 'decoding.finishBtn': 'Finish',
+      'final.heading': 'Transmission result', 'final.keyLabel': 'Key (HEX)', 'final.cipherLabel': 'Ciphertext (HEX)', 'final.originalLabel': 'Original message', 'final.decryptedLabel': 'Decrypted', 'final.resetBtn': 'New transmission',
+      'modal.defaultTitle': 'Information', 'modal.defaultMsg': 'Message text', 'modal.okBtn': 'OK',
+      'modal.error.title': 'Error', 'modal.error.noMessage': 'Enter a message!', 'modal.error.noBits': 'The message contains no bits!', 'modal.error.noKey': 'Generate a key!', 'modal.error.mismatch': 'The decrypted message does not match the original. Check that you selected the correct encoding.',
+      'modal.success.title': 'Success!', 'modal.success.decrypted': 'Message decrypted successfully!',
+      'warning.unsupportedChar': 'Character "{ch}" is not supported by the {enc} encoding',
+      'encodingName.baudot': 'Baudot code (5 bits)', 'encodingName.ascii7': 'ASCII 7-bit', 'encodingName.ascii8': 'ASCII 8-bit', 'encodingName.utf8': 'UTF-8',
+      'nav.theory': 'Read the theory', 'nav.home': 'Back to the lab',
+    },
+    es: {
+      'meta.title': 'Cifrado Vernam — Cifrado XOR a nivel de bits',
+      'game.title': 'Cifrado Vernam', 'game.subtitle': 'Cifrado XOR · Operación a nivel de bits',
+      'protocol.toggle': '¿Cómo funciona el cifrado Vernam?',
+      'protocol.intro': 'El <span class="highlight-gold">cifrado Vernam</span> (libreta de un solo uso) es un método de cifrado teóricamente inquebrantable bajo tres condiciones: la clave es aleatoria, tiene la misma longitud que el mensaje y se usa una sola vez.',
+      'protocol.step1.title': 'Elección de codificación', 'protocol.step1.desc': 'Los caracteres del mensaje se convierten en bits. Codificaciones disponibles: <b>Código Baudot</b> (5 bits/carácter), <b>ASCII de 7/8 bits</b>, <b>UTF-8</b> (longitud variable). La tabla de caracteres se actualiza dinámicamente.',
+      'protocol.step2.title': 'Introducción del mensaje', 'protocol.step2.desc': 'El texto se convierte en una secuencia de bits según la codificación elegida. Los caracteres no soportados se resaltan con una advertencia.',
+      'protocol.step3.title': 'Generación de la clave', 'protocol.step3.desc': 'La clave se genera aleatoriamente (0/1 con igual probabilidad). Opciones de longitud: 64–2048 bits o <b>«Según la longitud del mensaje»</b> (libreta de un solo uso ideal). Si la clave es más corta que el mensaje, se repite cíclicamente (reduciendo la seguridad).',
+      'protocol.step4.title': 'Cifrado (XOR)', 'protocol.step4.desc': 'Cada bit del mensaje se combina con un bit de la clave mediante <b>OR exclusivo (XOR)</b>: <code>0⊕0=0, 0⊕1=1, 1⊕0=1, 1⊕1=0</code>. Modos: paso a paso (visualización de la operación a nivel de bits) o instantáneo.',
+      'protocol.step5.title': 'Transmisión', 'protocol.step5.desc': 'Alicia envía a Bob:<ul><li>La <span class="highlight-gold">clave</span> — por un <i>canal seguro</i> (animación: paquete dorado con trayectoria curva)</li><li>El <span class="highlight">texto cifrado</span> — por un <i>canal abierto</i> (animación: paquete azul en línea recta)</li></ul>Ambos paquetes se muestran en <b>formato HEX</b> (los bits se agrupan de 8 en 8 y se convierten en símbolos hexadecimales). La llegada está sincronizada.',
+      'protocol.step6.title': 'Descifrado', 'protocol.step6.desc': 'Bob aplica la misma clave al texto cifrado mediante XOR: <code>texto cifrado ⊕ clave = mensaje original</code>. Gracias a la propiedad de reversibilidad del XOR, la operación es idéntica al cifrado.',
+      'protocol.step7.title': 'Codificación inversa', 'protocol.step7.desc': 'Los bits descifrados se convierten de nuevo en caracteres. El usuario elige la codificación de decodificación — el sistema comprueba la coincidencia con el mensaje original y muestra una vista previa.',
+      'protocol.step8.title': 'Resultado', 'protocol.step8.desc': 'Comparación final: mensaje original, clave (HEX), texto cifrado (HEX), texto descifrado. Si coinciden, se muestra una confirmación y estadísticas.',
+      'protocol.legend': '<strong>Leyenda de la visualización:</strong><br><span style="color:var(--color-green);">●</span> Mensaje / resultado &nbsp;|&nbsp; <span style="color:var(--color-gold);">●</span> Clave &nbsp;|&nbsp; <span style="color:var(--color-blue);">●</span> Texto cifrado &nbsp;|&nbsp; <span style="color:var(--color-gold);">⊕</span> Operación XOR',
+      'protocol.note': '<b>Importante:</b> en criptografía real, la clave debe ser verdaderamente aleatoria, nunca reutilizarse y transmitirse por un canal seguro. Esta demostración es un modelo educativo.',
+      'stage.ariaLabel': 'Etapas del cifrado', 'stage.encoding': 'Codificación', 'stage.message': 'Mensaje', 'stage.key': 'Clave', 'stage.encrypt': 'Cifrado', 'stage.transmit': 'Transmisión', 'stage.decrypt': 'Descifrado', 'stage.decoding': 'Decodificación', 'stage.result': 'Resultado',
+      'encoding.heading': 'Elige una codificación', 'encoding.desc': 'La codificación determina cómo se convierten los caracteres en bits',
+      'encoding.baudot.name': 'Código Baudot', 'encoding.baudot.bits': '5 bits', 'encoding.baudot.desc': 'Código telegráfico histórico (ITA1/ITA2).',
+      'encoding.ascii7.bits': '7 bits', 'encoding.ascii7.desc': 'ASCII estándar (0-127).',
+      'encoding.ascii8.bits': '8 bits', 'encoding.ascii8.desc': 'ASCII extendido (0-255).',
+      'encoding.utf8.bits': '8-32 bits', 'encoding.utf8.desc': 'Unicode de longitud variable.',
+      'encoding.legend': 'Codificación seleccionada',
+      'table.char': 'Carácter', 'table.code': 'Código', 'table.bits': 'Bits',
+      'btn.next': 'Siguiente', 'btn.back': 'Atrás',
+      'message.heading': 'Introduce un mensaje', 'message.placeholder': 'Escribe el texto...', 'message.ariaLabel': 'Campo de entrada del mensaje', 'message.charsLabel': 'caracteres', 'unit.bits': 'bits', 'message.bitsRowLabel': 'Mensaje (bits)',
+      'key.heading': 'Parámetros de la clave', 'key.hint': 'Elige una longitud de clave para generar',
+      'key.length.64': '64 bits', 'key.length.128': '128 bits', 'key.length.256': '256 bits', 'key.length.512': '512 bits', 'key.length.1024': '1024 bits', 'key.length.2048': '2048 bits', 'key.length.auto': 'Según la longitud del mensaje',
+      'key.generateBtn': 'Generar clave', 'key.padLabel': 'Clave', 'key.padPlaceholder': 'Elige una longitud y pulsa "Generar"', 'key.encryptBtn': 'Cifrar',
+      'key.disclaimer.waiting': 'Esperando la selección de la longitud de la clave...', 'key.disclaimer.autoOk': 'Se cumplen las condiciones de la libreta de un solo uso — el cifrado es teóricamente inquebrantable.', 'key.disclaimer.secure': 'La longitud de la clave es suficiente para una alta seguridad.', 'key.disclaimer.insecure': 'La clave es más corta que el mensaje — se repetirá, lo que reduce la seguridad criptográfica.', 'key.disclaimer.generated': 'Clave generada correctamente. Puedes pasar al cifrado.',
+      'encrypt.nextBitBtn': 'Siguiente bit', 'encrypt.instantBtn': 'Cifrado instantáneo', 'encrypt.xorTitle': 'Operación XOR',
+      'xor.pressNext': 'Pulsa "Siguiente bit" para empezar', 'xor.label.message': 'Mensaje', 'xor.label.xor': 'XOR', 'xor.label.key': 'Clave', 'xor.label.equals': '=', 'xor.label.result': 'Resultado',
+      'sync.label.plain': 'Mensaje', 'sync.label.key': 'Clave', 'sync.label.cipher': 'Texto cifrado', 'sync.label.result': 'Resultado', 'sync.bitsRange': 'Bits {from}-{to}',
+      'transmit.keyHeading': 'Clave (HEX)', 'transmit.keyInfo': 'Los bits se agrupan de 8 en 8 y se muestran en <b>HEX</b> (sistema hexadecimal). 1 símbolo HEX = 4 bits. Es el formato compacto estándar para leer y transmitir datos binarios.', 'transmit.cipherHeading': 'Texto cifrado (HEX)', 'transmit.sendBtn': 'Enviar clave y texto cifrado',
+      'char.alice': 'Alicia', 'char.bob': 'Bob',
+      'status.ready': 'Lista', 'status.sending': 'Enviando...', 'status.waiting': 'Esperando', 'status.waitingDots': 'Esperando...', 'status.keyReceived': 'Clave recibida...', 'status.cipherReceived': '¡Texto cifrado recibido!',
+      'channel.key': 'Clave', 'channel.cipher': 'Texto cifrado', 'route.keyChannel': 'Clave: canal seguro', 'route.cipherChannel': 'Texto cifrado: canal abierto',
+      'decrypt.nextBitBtn': 'Siguiente bit', 'decrypt.instantBtn': 'Descifrado instantáneo', 'decrypt.xorTitle': 'Descifrado XOR',
+      'decoding.bitsHeading': 'Bits descifrados', 'decoding.chooseHeading': 'Elige una codificación',
+      'decoding.card.baudot': 'Código telegráfico histórico', 'decoding.card.ascii7': 'ASCII estándar', 'decoding.card.ascii8': 'ASCII extendido', 'decoding.card.utf8': 'Unicode de longitud variable',
+      'decoding.previewHeading': 'Vista previa de la decodificación', 'decoding.previewPlaceholder': 'Elige una codificación para previsualizar...', 'decoding.waitingData': 'Esperando datos...', 'decoding.notInterpretable': '(no interpretable con la codificación seleccionada)', 'decoding.finishBtn': 'Finalizar',
+      'final.heading': 'Resultado de la transmisión', 'final.keyLabel': 'Clave (HEX)', 'final.cipherLabel': 'Texto cifrado (HEX)', 'final.originalLabel': 'Mensaje original', 'final.decryptedLabel': 'Descifrado', 'final.resetBtn': 'Nueva transmisión',
+      'modal.defaultTitle': 'Información', 'modal.defaultMsg': 'Texto del mensaje', 'modal.okBtn': 'OK',
+      'modal.error.title': 'Error', 'modal.error.noMessage': '¡Introduce un mensaje!', 'modal.error.noBits': '¡El mensaje no contiene bits!', 'modal.error.noKey': '¡Genera una clave!', 'modal.error.mismatch': 'El mensaje descifrado no coincide con el original. Comprueba que elegiste la codificación correcta.',
+      'modal.success.title': '¡Listo!', 'modal.success.decrypted': '¡Mensaje descifrado correctamente!',
+      'warning.unsupportedChar': 'El carácter "{ch}" no es compatible con la codificación {enc}',
+      'encodingName.baudot': 'Código Baudot (5 bits)', 'encodingName.ascii7': 'ASCII de 7 bits', 'encodingName.ascii8': 'ASCII de 8 bits', 'encodingName.utf8': 'UTF-8',
+      'nav.theory': 'Leer la teoría', 'nav.home': 'Volver al laboratorio',
+    },
+  };
+
+  function t(key, vars) {
+    const dict = I18N[state.lang] || I18N.ru;
+    let str = dict[key] !== undefined ? dict[key] : (I18N.ru[key] !== undefined ? I18N.ru[key] : key);
+    if (vars) for (const k in vars) str = str.replace(new RegExp('\\{' + k + '\\}', 'g'), vars[k]);
+    return str;
+  }
+
+  function applyLanguage(lang) {
+    if (!I18N[lang]) lang = 'ru';
+    state.lang = lang;
+    document.documentElement.lang = lang;
+    document.title = t('meta.title');
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n')); });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.getAttribute('data-i18n-title')); });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
+    document.querySelectorAll('[data-i18n-aria-label]').forEach(el => { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label'))); });
+    document.querySelectorAll('.lang-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.langBtn === lang); });
+    try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+    refreshDynamicUI();
+  }
+
+  function initLanguage() {
+    let saved = null;
+    try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+    if (!saved) { const browserLang = (navigator.language || 'ru').slice(0, 2); saved = I18N[browserLang] ? browserLang : 'ru'; }
+    applyLanguage(saved);
+  }
+
+  function refreshDynamicUI() {
+    updateAutoButtonLabel();
+    validateMessageEncoding();
+    if (DOM.keyDisclaimer) renderKeyDisclaimer();
+    if (state.modal) renderModal();
+    if (state.currentStage === CONFIG.STAGES.ENCRYPT) redrawEncryptStage();
+    if (state.currentStage === CONFIG.STAGES.DECRYPT) redrawDecryptStage();
+    updateDecodingPreview();
+  }
+
+  function charToBits(char, encoding) {
+    try {
+      switch(encoding){
+        case 'baudot': return BAUDOT_LETTERS[char.toUpperCase()] || BAUDOT_FIGURES[char.toUpperCase()] || null;
+        case 'ascii7': { const c = char.charCodeAt(0); return c < 128 ? c.toString(2).padStart(7,'0') : null; }
+        case 'ascii8': { const c = char.charCodeAt(0); return c < 256 ? c.toString(2).padStart(8,'0') : null; }
+        case 'utf8': { const bytes = new TextEncoder().encode(char); const bits=[]; for(const b of bytes) bits.push(b.toString(2).padStart(8,'0')); return bits.join(''); }
+        default: return null;
+      }
+    } catch(e) { console.warn(`[Vernam] Ошибка кодирования: ${e.message}`); return null; }
+  }
+
+  function bitsToChar(bits, encoding){
+    if (!bits || bits.length === 0) return '';
+    try {
+      let result = '';
+      switch(encoding){
+        case 'baudot': {
+          let isFigures = false;
+          for(let i=0; i<bits.length; i+=5){
+            let chunk = bits.slice(i, i+5);
+            if(chunk.length < 5) chunk = chunk.padEnd(5, '0');
+            if(chunk === '11011') { isFigures = true; continue; }
+            if(chunk === '11111') { isFigures = false; continue; }
+            const char = isFigures ? BAUDOT_FIGURES_DECODE[chunk] : BAUDOT_LETTERS_DECODE[chunk];
+            result += (char === undefined || char === null) ? '?' : char;
+          }
+          return result;
+        }
+        case 'ascii7': { for(let i=0; i<bits.length; i+=7){ let chunk = bits.slice(i, i+7); if(chunk.length < 7) chunk = chunk.padEnd(7, '0'); result += String.fromCharCode(parseInt(chunk, 2)); } return result; }
+        case 'ascii8': { for(let i=0; i<bits.length; i+=8){ let chunk = bits.slice(i, i+8); if(chunk.length < 8) chunk = chunk.padEnd(8, '0'); result += String.fromCharCode(parseInt(chunk, 2)); } return result; }
+        case 'utf8': { const bytes = []; for(let i=0; i<bits.length; i+=8){ let chunk = bits.slice(i, i+8); if(chunk.length < 8) chunk = chunk.padEnd(8, '0'); bytes.push(parseInt(chunk, 2)); } return new TextDecoder('utf-8', {fatal: false}).decode(new Uint8Array(bytes)); }
+        default: return '?';
+      }
+    } catch(e) { console.warn(`[Vernam] Ошибка декодирования: ${e.message}`); return '␣⚠️'; }
+  }
+
+  function getEncodingName(e){ return t('encodingName.' + e); }
+  function checkDecodingCorrectness() { return bitsToChar(state.messageBits, state.decodingEncoding) === bitsToChar(state.decryptedBits, state.decodingEncoding); }
+
+  function messageToBits(text, encoding) {
+    const buf = [];
+    if (encoding === 'baudot') {
+      let isFigures = false;
+      for (const ch of text) {
+        const u = ch.toUpperCase();
+        if (BAUDOT_LETTERS[u]) {
+          if (isFigures) { buf.push('11111'); isFigures = false; }
+          buf.push(BAUDOT_LETTERS[u]);
+        } else if (BAUDOT_FIGURES[u]) {
+          if (!isFigures) { buf.push('11011'); isFigures = true; }
+          buf.push(BAUDOT_FIGURES[u]);
+        }
+      }
+    } else {
+      for (const ch of text) { const b = charToBits(ch, encoding); if (b) buf.push(b); }
+    }
+    return buf.join('');
+  }
+
+  function updateStages(){ 
+    for(let i=0; i<DOM.stageDots.length; i++){ 
+      const d = DOM.stageDots[i]; const stageNum = i + 1;
+      d.classList.remove('active','completed'); 
+      if(stageNum<state.currentStage) d.classList.add('completed'); 
+      else if(stageNum===state.currentStage) d.classList.add('active'); 
+    } 
+  }
+  function showStage(num){ 
+    DOM.stageContents.forEach(el=>el.classList.add('hidden')); 
+    const map={1:'encoding-stage',2:'message-stage',3:'key-stage',4:'encryption-stage',5:'transmission-stage',6:'decryption-stage',7:'decoding-stage',8:'final-stage'};
+    const stageEl=document.getElementById(map[num]); if(stageEl) stageEl.classList.remove('hidden');
+    state.currentStage=num; updateStages(); 
+  }
+
+  function closeModal(){ DOM.modalOverlay.classList.remove('active'); }
+  function showModal(titleKey, msgKey, type='info', vars){
+    state.modal = { titleKey, msgKey, type, vars };
+    renderModal();
+    DOM.modalOverlay.classList.add('active');
+  }
+  function renderModal(){
+    if(!state.modal) return;
+    DOM.modalTitle.textContent = t(state.modal.titleKey, state.modal.vars);
+    DOM.modalMessage.textContent = t(state.modal.msgKey, state.modal.vars);
+    DOM.modalContent.className='modal-content'; if(state.modal.type==='error') DOM.modalContent.classList.add('modal-error'); else if(state.modal.type==='success') DOM.modalContent.classList.add('modal-success');
+  }
+
+  function selectEncoding(enc){ 
+    state.currentEncoding=enc; 
+    document.querySelectorAll('.encoding-card').forEach(c=>c.classList.remove('selected')); 
+    const sel=document.querySelector(`.encoding-card[data-encoding="${enc}"]`); sel?.classList.add('selected'); 
+    updateEncodingTable();
+    if(state.message) { 
+      if(enc === 'baudot') state.message = state.message.toUpperCase();
+      state.messageBits = messageToBits(state.message, state.currentEncoding); 
+      updateMessageBits(); updateMessageTable(); 
+    }
+  }
+  function updateAutoButtonLabel() { const el = DOM.autoBitsLabel || document.getElementById('autoBitsLabel'); if(el) el.textContent = `(${state.messageBits.length || 0} ${t('unit.bits')})`; }
+  function renderKeyDisclaimer() {
+    const map = { waiting: ['warning','key.disclaimer.waiting'], autoOk: ['success','key.disclaimer.autoOk'], secure: ['success','key.disclaimer.secure'], insecure: ['warning','key.disclaimer.insecure'], generated: ['success','key.disclaimer.generated'] };
+    const [cls, key] = map[state.keyDisclaimerState] || map.waiting;
+    DOM.keyDisclaimer.className = 'key-disclaimer ' + cls;
+    DOM.keyDisclaimer.innerHTML = `<span>${t(key)}</span>`;
+  }
+
+  function updateEncodingTable() {
+    DOM.encodingTableBody.innerHTML = '';
+    const rows = [];
+    switch(state.currentEncoding){
+      case 'baudot': for(let i=65;i<=90;i++) rows.push(String.fromCharCode(i)); for(let i=48;i<=57;i++) rows.push(String.fromCharCode(i)); rows.push(' ','.',',','?','!','-',"'",'(',')',':',';','=','+','/','&','$','£'); break;
+      case 'ascii7': for(let i=65;i<=90;i++) rows.push(String.fromCharCode(i)); for(let i=97;i<=122;i++) rows.push(String.fromCharCode(i)); for(let i=48;i<=57;i++) rows.push(String.fromCharCode(i)); rows.push(' ','.',',','?','!',':',';','"',"'",'-','(',')','[',']','{','}','<','>','/','\\','|','`','~','@','#','$','%','^','&','*','+','='); break;
+      case 'ascii8': for(let i=65;i<=90;i++) rows.push(String.fromCharCode(i)); for(let i=97;i<=122;i++) rows.push(String.fromCharCode(i)); for(let i=48;i<=57;i++) rows.push(String.fromCharCode(i)); rows.push(' ','.',',','?','!',':',';','"',"'",'-','(',')','[',']','{','}','<','>','/','\\','|','`','~','@','#','$','%','^','&','*','+','='); rows.push('©','®','±','¼','½','¾','§','¶','·','¸','¹','º','»','À','Á','Â','Ã','Ä','Å','Æ','Ç','È','É','Ê','Ë','Ì','Í','Î','Ï','Ð','Ñ','Ò','Ó','Ô','Õ','Ö','×','Ø','Ù','Ú','Û','Ü','Ý','Þ','ß','à','á','â','ã','ä','å','æ','ç','è','é','ê','ë','ì','í','î','ï','ð','ñ','ò','ó','ô','õ','ö','÷','ø','ù','ú','û','ü','ý','þ','ÿ'); break;
+      case 'utf8': for(let i=0x0410;i<=0x042F;i++) rows.push(String.fromCodePoint(i)); for(let i=0x0430;i<=0x044F;i++) rows.push(String.fromCodePoint(i)); rows.push('Ё','ё'); for(let i=65;i<=90;i++) rows.push(String.fromCharCode(i)); for(let i=97;i<=122;i++) rows.push(String.fromCharCode(i)); for(let i=48;i<=57;i++) rows.push(String.fromCharCode(i)); rows.push(' ','.',',','?','!',':',';','"',"'",'-','(',')','[',']','{','}','<','>','/','\\','|','`','~','@','#','$','%','^','&','*','+','='); rows.push('😊','😂','❤️','🔥','🎉','✨','🌟','','🚀','','🔒',''); break;
+    }
+    const CHUNK_SIZE = 25; let offset = 0;
+    function renderChunk() {
+      const limit = Math.min(offset + CHUNK_SIZE, rows.length);
+      const frag = document.createDocumentFragment();
+      for (let i = offset; i < limit; i++) {
+        const ch = rows[i]; const b = charToBits(ch, state.currentEncoding);
+        if(b){ const tr = document.createElement('tr'); tr.dataset.char=ch; tr.dataset.bits=b; tr.innerHTML=`<td class="char-col">${ch===' '?'␣':(ch==='\n'?'LF':(ch==='\r'?'CR':ch))}</td><td class="code-col">${parseInt(b,2)}</td><td class="bits-col">${b}</td>`; frag.appendChild(tr); }
+      }
+      DOM.encodingTableBody.appendChild(frag);
+      offset = limit; if (offset < rows.length) requestAnimationFrame(renderChunk);
+    }
+    requestAnimationFrame(renderChunk);
+  }
+  
+  function goToMessageStage(){ showStage(2); updateMessageBits(); updateMessageTable(); }
+  function validateMessageEncoding(){
+    if (!DOM.warningText) return;
+    let hw = false, warnCh = '';
+    for (const ch of state.message) { if (ch !== '' && !charToBits(ch, state.currentEncoding)) { hw = true; warnCh = ch; break; } }
+    if (hw) DOM.warningText.textContent = t('warning.unsupportedChar', { ch: warnCh, enc: getEncodingName(state.currentEncoding) });
+    DOM.encodingWarning.style.display = hw ? 'block' : 'none';
+  }
+  function initMessageInput(){
+    DOM.messageInput.addEventListener('input', (e) => {
+      let raw = e.target.value;
+      if (state.currentEncoding === 'baudot') { raw = raw.toUpperCase(); e.target.value = raw; }
+      state.message = raw; state.messageBits = messageToBits(raw, state.currentEncoding);
+      validateMessageEncoding();
+      updateMessageBits(); updateMessageTable();
+    });
+  }
+  
+  function updateMessageBits(){ DOM.charCounter.textContent=state.message.length; DOM.bitCounter.textContent=state.messageBits.length; DOM.messageBitsContainer.innerHTML=''; if(!state.messageBits.length) return; let idx=0; const f=document.createDocumentFragment(); for(const ch of state.message){ const c=charToBits(ch,state.currentEncoding); if(!c) continue; const g=document.createElement('div'); g.className='bit-symbol-group'; g.dataset.charIndex=idx; const cf=document.createDocumentFragment(); for(let i=0;i<c.length;i++){ const cl=document.createElement('span'); cl.className='bit-cell'; cl.textContent=c[i]; cf.appendChild(cl); } g.appendChild(cf); f.appendChild(g); idx++; } DOM.messageBitsContainer.appendChild(f); setTimeout(setupBitHoverLinks, 50); updateAutoButtonLabel(); }
+  function updateMessageTable(){ DOM.messageTableBody.innerHTML=''; const f=document.createDocumentFragment(); state.message.split('').forEach((ch,i)=>{ const b=charToBits(ch,state.currentEncoding); if(b){ const r=document.createElement('tr'); r.dataset.charIndex=i; r.dataset.bits=b; r.innerHTML=`<td class="char-col">${ch===' '?'␣':ch}</td><td class="code-col">${parseInt(b,2)}</td><td class="bits-col">${b}</td>`; f.appendChild(r); } }); DOM.messageTableBody.appendChild(f); }
+  function setupBitHoverLinks() {
+    DOM.messageBitsContainer.addEventListener('mouseover', e => { const g = e.target.closest('.bit-symbol-group'); if(!g) return; document.querySelectorAll(`#messageTable tbody tr[data-char-index="${g.dataset.charIndex}"]`).forEach(r => r.classList.add('highlighted')); });
+    DOM.messageBitsContainer.addEventListener('mouseout', e => { const g = e.target.closest('.bit-symbol-group'); if(!g || !g.contains(e.relatedTarget)) { if(g) document.querySelectorAll(`#messageTable tbody tr[data-char-index="${g.dataset.charIndex}"]`).forEach(r => r.classList.remove('highlighted')); } });
+    DOM.messageTableBody.addEventListener('mouseover', e => { const r = e.target.closest('tr'); if(r && r.dataset.charIndex !== undefined) { const g = DOM.messageBitsContainer.querySelector(`.bit-symbol-group[data-char-index="${r.dataset.charIndex}"]`); if(g) g.querySelectorAll('.bit-cell').forEach(c => c.classList.add('highlighted')); } });
+    DOM.messageTableBody.addEventListener('mouseout', e => { const r = e.target.closest('tr'); if(r && r.dataset.charIndex !== undefined) { const g = DOM.messageBitsContainer.querySelector(`.bit-symbol-group[data-char-index="${r.dataset.charIndex}"]`); if(g) g.querySelectorAll('.bit-cell').forEach(c => c.classList.remove('highlighted')); } });
+  }
+
+  function goToKeyStage(){ if(!state.message){ showModal('modal.error.title','modal.error.noMessage','error'); return; } showStage(3); updateKeyStage(); }
+  function updateKeyStage() {
+    document.querySelectorAll('input[name="keyLength"]').forEach(r => r.checked = false);
+    DOM.generateKeyBtn.disabled = true; DOM.startEncryptBtn.disabled = true;
+    DOM.keyPadBits.innerHTML = `<span style="color:var(--text-muted); font-size:0.8rem;" data-i18n="key.padPlaceholder">${t('key.padPlaceholder')}</span>`;
+    state.keyDisclaimerState = 'waiting'; renderKeyDisclaimer();
+    updateAutoButtonLabel();
+  }
+  document.querySelector('.key-length-grid').addEventListener('change', function(e) {
+    if(e.target.name !== 'keyLength') return;
+    const val = e.target.value; const msgLen = state.messageBits.length; let target = val === 'auto' ? msgLen : parseInt(val);
+    DOM.generateKeyBtn.disabled = false;
+    if(val === 'auto') { state.keyDisclaimerState = 'autoOk'; }
+    else { const isSecure = target >= msgLen && msgLen > 0; state.keyDisclaimerState = isSecure ? 'secure' : 'insecure'; }
+    renderKeyDisclaimer();
+  });
+  function generateKey() {
+    const selected = document.querySelector('input[name="keyLength"]:checked'); if(!selected) return;
+    let len = selected.value === 'auto' ? state.messageBits.length : parseInt(selected.value);
+    if(len === 0) { showModal('modal.error.title', 'modal.error.noBits', 'error'); return; }
+    const a = []; for(let i=0; i<len; i++) a.push(Math.random() < 0.5 ? '0' : '1');
+    state.keyBits = a.join('');
+    DOM.keyPadBits.innerHTML = ''; const f = document.createDocumentFragment(); for(let i=0; i<len; i++) { const cl=document.createElement('span'); cl.className='bit-cell'; cl.textContent=state.keyBits[i]; f.appendChild(cl); }
+    DOM.keyPadBits.appendChild(f);
+    DOM.startEncryptBtn.disabled = false; state.keyDisclaimerState = 'generated'; renderKeyDisclaimer();
+  }
+
+  // ЭТАП 4
+  function encryptSecs(){ return [{type:'plain',label:'🔓 '+t('sync.label.plain'),class:'plain'},{type:'key',label:'🔑 '+t('sync.label.key'),class:'key'},{type:'cipher',label:'🔒 '+t('sync.label.cipher'),class:'cipher'}]; }
+  function decryptSecs(){ return [{type:'cipher',label:'🔒 '+t('sync.label.cipher'),class:'cipher'},{type:'key',label:'🔑 '+t('sync.label.key'),class:'key'},{type:'plain',label:'🔓 '+t('sync.label.result'),class:'plain'}]; }
+  function goToEncryptionStage(){
+    if(!state.keyBits){ showModal('modal.error.title','modal.error.noKey','error'); return; }
+    showStage(4); state.currentBitIndex = -1; state._cipherBuf = []; state.cipherBits = '';
+    DOM.nextBitBtn.classList.remove('hidden'); DOM.instantEncryptBtn.classList.remove('hidden'); DOM.encryptModeContainer.classList.remove('hidden');
+    updateFullBitVisualizer('syncBitsContainer', encryptSecs(), ()=>state.messageBits, ()=>state.cipherBits, 'encrypt');
+    updateXorDemo('xorDemoContent',-1,state.messageBits,state.keyBits);
+  }
+  function updateXorDemo(cid, bit, mb, kb){
+    const d=document.getElementById(cid); if(!d) return; d.innerHTML='';
+    if(bit<0||bit>=mb.length){ d.innerHTML=`<div style="text-align:center;color:var(--text-muted);">${t('xor.pressNext')}</div>`; return; }
+    const r=(parseInt(mb[bit])^parseInt(kb[bit%kb.length])).toString();
+    [{l:t('xor.label.message'),b:mb[bit]},{l:t('xor.label.xor'),b:'⊕'},{l:t('xor.label.key'),b:kb[bit%kb.length]},{l:t('xor.label.equals'),b:'='},{l:t('xor.label.result'),b:r}].forEach(x=>{
+      const ld=document.createElement('div'); ld.className='xor-line'; const lb=document.createElement('span'); lb.className='xor-line-label'; lb.textContent=x.l; const bs=document.createElement('span'); bs.className='xor-line-bits';
+      if(x.b==='⊕'||x.b==='=') bs.innerHTML=`<span style="color:var(--color-gold);font-size:1.2rem;font-weight:bold;">${x.b}</span>`;
+      else{ const c=document.createElement('span'); c.className='bit-cell'; c.textContent=x.b; bs.appendChild(c); } ld.appendChild(lb); ld.appendChild(bs); d.appendChild(ld);
+    });
+  }
+  function createBitRow(r, total, sec, cur, src, mode){
+    const rd=document.createElement('div'); rd.className='sync-bit-row'; const lb=document.createElement('div'); lb.className='sync-bit-row-label'; lb.textContent=t('sync.bitsRange', { from: r*CONFIG.BITS_PER_ROW+1, to: Math.min((r+1)*CONFIG.BITS_PER_ROW,total) }); rd.appendChild(lb);
+    const bd=document.createElement('div'); bd.style.cssText='display:flex;flex-wrap:wrap;gap:4px;flex:1;';
+    for(let b=0;b<CONFIG.BITS_PER_ROW;b++){ const i=r*CONFIG.BITS_PER_ROW+b; if(i>=total) break; const c=document.createElement('span'); c.className='bit-cell'; let text = '•'; if(mode === 'encrypt'){ if(sec.type==='plain') text = src.message[i]; else if(sec.type==='key') text = src.key[i%src.key.length]; else text = i < src.result.length ? src.result[i] : '•'; } else { if(sec.type==='cipher') text = src.message[i]; else if(sec.type==='key') text = src.key[i%src.key.length]; else text = i < src.result.length ? src.result[i] : '•'; } c.textContent = text; if(cur>=0){ if(i<cur) c.classList.add(`processed-${sec.type==='plain'?'plain':sec.type==='key'?'key':'cipher'}`); if(i===cur) c.classList.add(`active-${sec.type==='plain'?'plain':sec.type==='key'?'key':'cipher'}`); } bd.appendChild(c); } rd.appendChild(bd); return rd;
+  }
+  function updateFullBitVisualizer(cid, secs, msgG, resG, mode='encrypt'){
+    const c=document.getElementById(cid); if(!c) return; c.innerHTML=''; const totalBits = mode==='decrypt' ? state.cipherBits.length : state.messageBits.length; const rows=Math.ceil(totalBits/CONFIG.BITS_PER_ROW); const src={message:msgG(), key:state.keyBits, result:resG()}; const f=document.createDocumentFragment();
+    secs.forEach(s=>{ const sd=document.createElement('div'); sd.className='sync-bit-section'; const h=document.createElement('div'); h.className=`sync-bit-header ${s.class}`; h.textContent=s.label; sd.appendChild(h); const rd=document.createElement('div'); rd.className='sync-bit-rows'; for(let r=0;r<rows;r++) rd.appendChild(createBitRow(r,totalBits,s,state.currentBitIndex,src,mode)); sd.appendChild(rd); f.appendChild(sd); }); c.appendChild(f);
+  }
+  function redrawEncryptStage(){ const lastBit = Math.max(-1, state.currentBitIndex - 1); updateXorDemo('xorDemoContent', lastBit, state.messageBits, state.keyBits); updateFullBitVisualizer('syncBitsContainer', encryptSecs(), ()=>state.messageBits, ()=>state.cipherBits, 'encrypt'); }
+  function redrawDecryptStage(){ const lastBit = Math.max(-1, state.currentBitIndex - 1); updateXorDemo('decryptXorDemo', lastBit, state.cipherBits, state.keyBits); updateFullBitVisualizer('decryptSyncBitsContainer', decryptSecs(), ()=>state.cipherBits, ()=>state.decryptedBits, 'decrypt'); }
+  function nextBitManual(){ nextBit(); }
+  function nextBit(){
+    if(state.currentBitIndex === -1) state.currentBitIndex = 0;
+    if(state.currentBitIndex >= state.messageBits.length){ finishEncryption(); return; }
+    const i = state.currentBitIndex; state._cipherBuf.push((parseInt(state.messageBits[i]) ^ parseInt(state.keyBits[i % state.keyBits.length])).toString()); state.cipherBits = state._cipherBuf.join('');
+    updateXorDemo('xorDemoContent', i, state.messageBits, state.keyBits); updateFullBitVisualizer('syncBitsContainer', encryptSecs(), ()=>state.messageBits, ()=>state.cipherBits, 'encrypt');
+    state.currentBitIndex++; if(state.currentBitIndex >= state.messageBits.length) setTimeout(finishEncryption, CONFIG.TIMING.ANIMATION_DELAY);
+  }
+  function instantEncrypt(){
+    state._cipherBuf = []; for(let i=0;i<state.messageBits.length;i++) state._cipherBuf.push((parseInt(state.messageBits[i])^parseInt(state.keyBits[i%state.keyBits.length])).toString()); state.cipherBits = state._cipherBuf.join(''); state.currentBitIndex=state.messageBits.length;
+    updateFullBitVisualizer('syncBitsContainer', encryptSecs(), ()=>state.messageBits, ()=>state.cipherBits, 'encrypt'); updateXorDemo('xorDemoContent',state.messageBits.length-1,state.messageBits,state.keyBits);
+    setTimeout(finishEncryption, 800);
+  }
+  function finishEncryption(){
+    DOM.nextBitBtn.classList.add('hidden'); DOM.instantEncryptBtn.classList.add('hidden'); DOM.encryptModeContainer.classList.add('hidden');
+    setTimeout(() => { showStage(CONFIG.STAGES.TRANSMIT); DOM.keyDisplayTransmit.textContent = state.keyBits.match(/.{1,8}/g).map(b=>parseInt(b,2).toString(16).padStart(2,'0')).join(' ').toUpperCase(); DOM.cipherDisplayTransmit.textContent = state.cipherBits.match(/.{1,8}/g).map(b=>parseInt(b,2).toString(16).padStart(2,'0')).join(' ').toUpperCase(); DOM.transmitBtnContainer.classList.remove('hidden'); }, 500);
+  }
+
+  // ЭТАП 5: GPU-Optimized Animation (Фаза 4)
+  function setStatus(el, key){ el.setAttribute('data-i18n', key); el.textContent = t(key); }
+  function transmitData(){
+    DOM.transmitBtnContainer.classList.add('hidden'); setStatus(DOM.aliceStatus, 'status.sending'); setStatus(DOM.bobStatus, 'status.waitingDots');
+    function animatePacket(channelEl, label, colorClass, options = {}) {
+      return new Promise(resolve => {
+        const { duration = 2000, delay = 0, curved = false, onStart, onComplete } = options;
+        const p = document.createElement('div'); p.className = 'data-packet ' + colorClass; p.textContent = label;
+        p.style.position = 'absolute'; p.style.left = '0'; p.style.top = '0'; p.style.transform = 'translate3d(0,0,0)'; p.style.transition = 'none'; p.style.willChange = 'transform';
+        channelEl.appendChild(p); void p.offsetWidth;
+        
+        const rect = channelEl.getBoundingClientRect();
+        const startX = rect.width * 0.05, endX = rect.width * 0.95;
+        const startY = rect.height / 2;
+        const curveAmp = rect.height * 0.4;
+        const startTime = Date.now() + delay;
+        function easeInOutCubic(t) { return t < 0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+        function animate() {
+          const now = Date.now(); if(now < startTime) { requestAnimationFrame(animate); return; }
+          const rawT = Math.min((now - startTime) / duration, 1);
+          const t = easeInOutCubic(rawT);
+          let x = startX + (endX - startX) * t;
+          let y = startY; if(curved) y = startY - Math.sin(t * Math.PI) * curveAmp;
+          p.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) scale(${1 + 0.1*(1-rawT)})`;
+          if(rawT < 1) { requestAnimationFrame(animate); }
+          else {
+            p.style.transform = `translate3d(${endX}px, ${startY}px, 0) translate(-50%, -50%) scale(1)`;
+            p.style.willChange = 'auto'; if(onComplete) onComplete();
+            setTimeout(() => { p.remove(); resolve(); }, 150);
+          }
+        }
+        if(onStart) onStart(); requestAnimationFrame(animate);
+      });
+    }
+    Promise.all([
+      animatePacket(DOM.keyChannelTransmit, 'K', 'key-packet', { delay: 0, duration: 2000, curved: true, onStart: () => DOM.keyChannelTransmit.style.boxShadow = '0 0 20px var(--color-gold-40)', onComplete: () => { DOM.keyChannelTransmit.style.boxShadow = ''; setStatus(DOM.bobStatus, 'status.keyReceived'); } }),
+      animatePacket(DOM.cipherChannelTransmit, 'C', 'cipher-packet', { delay: 1800, duration: 2400, curved: false, onStart: () => DOM.cipherChannelTransmit.style.boxShadow = '0 0 20px var(--color-blue-40)', onComplete: () => { DOM.cipherChannelTransmit.style.boxShadow = ''; setStatus(DOM.bobStatus, 'status.cipherReceived'); } })
+    ]).then(() => { setStatus(DOM.aliceStatus, 'status.ready'); setTimeout(() => { showStage(CONFIG.STAGES.DECRYPT); initDecryptionStage(); }, 800); });
+  }
+
+  // ЭТАП 6
+  function initDecryptionStage(){
+    state.currentBitIndex = -1; state._decryptBuf = []; state.decryptedBits = '';
+    DOM.nextDecryptBitBtn.classList.remove('hidden'); DOM.instantDecryptBtn.classList.remove('hidden'); DOM.decryptModeContainer.classList.remove('hidden');
+    updateFullBitVisualizer('decryptSyncBitsContainer', decryptSecs(), ()=>state.cipherBits, ()=>state.decryptedBits, 'decrypt');
+    DOM.decryptXorDemo.innerHTML = `<div style="text-align:center;color:var(--text-muted);">${t('xor.pressNext')}</div>`;
+  }
+  function nextDecryptBitManual(){ nextDecryptBit(); }
+  function nextDecryptBit(){
+    if(state.currentBitIndex === -1) state.currentBitIndex = 0;
+    if(state.currentBitIndex >= state.cipherBits.length){ finishDecryptionAnimation(); return; }
+    const i = state.currentBitIndex; state._decryptBuf.push((parseInt(state.cipherBits[i]) ^ parseInt(state.keyBits[i % state.keyBits.length])).toString()); state.decryptedBits = state._decryptBuf.join('');
+    updateDecryptXorDemo(i); updateFullBitVisualizer('decryptSyncBitsContainer', decryptSecs(), ()=>state.cipherBits, ()=>state.decryptedBits, 'decrypt');
+    state.currentBitIndex++; if(state.currentBitIndex >= state.cipherBits.length) setTimeout(finishDecryptionAnimation, 600);
+  }
+  function updateDecryptXorDemo(b){ updateXorDemo('decryptXorDemo',b,state.cipherBits,state.keyBits); }
+  function instantDecrypt(){
+    state._decryptBuf = []; for(let i=0; i<state.cipherBits.length; i++) state._decryptBuf.push((parseInt(state.cipherBits[i]) ^ parseInt(state.keyBits[i % state.keyBits.length])).toString()); state.decryptedBits = state._decryptBuf.join(''); state.currentBitIndex = state.cipherBits.length;
+    updateFullBitVisualizer('decryptSyncBitsContainer', decryptSecs(), ()=>state.cipherBits, ()=>state.decryptedBits, 'decrypt'); updateDecryptXorDemo(state.cipherBits.length - 1); setTimeout(finishDecryptionAnimation, 800);
+  }
+  function finishDecryptionAnimation(){
+    DOM.nextDecryptBitBtn.classList.add('hidden'); DOM.instantDecryptBtn.classList.add('hidden'); DOM.decryptModeContainer.classList.add('hidden');
+    setTimeout(() => { showStage(CONFIG.STAGES.DECODING); DOM.decodedBitsDisplay.innerHTML=''; const f=document.createDocumentFragment(); for(let i=0;i<state.decryptedBits.length;i++){ const cl=document.createElement('span'); cl.className='bit-cell'; cl.textContent=state.decryptedBits[i]; f.appendChild(cl); } DOM.decodedBitsDisplay.appendChild(f); state.decodingEncoding=state.currentEncoding; document.querySelectorAll('.decoding-card').forEach(c=>c.classList.remove('selected')); const sel=document.querySelector(`.decoding-card[data-encoding="${state.decodingEncoding}"]`); sel?.classList.add('selected'); updateDecodingPreview(); }, CONFIG.TIMING.ANIMATION_DELAY);
+  }
+  function updateDecodingPreview(){
+    if(!DOM.decodingPreview) return; if(!state.decryptedBits.length) { DOM.decodingPreview.setAttribute('data-i18n','decoding.waitingData'); DOM.decodingPreview.textContent = t('decoding.waitingData'); DOM.decodingPreview.style.color = 'var(--text-muted)'; return; }
+    let result = ''; try { result = bitsToChar(state.decryptedBits, state.decodingEncoding); } catch(e) { result = ''; }
+    DOM.decodingPreview.removeAttribute('data-i18n');
+    DOM.decodingPreview.textContent = result || t('decoding.notInterpretable'); DOM.decodingPreview.style.color = checkDecodingCorrectness() ? 'var(--color-green)' : 'var(--color-gold)';
+  }
+  function selectDecodingEncoding(enc){ state.decodingEncoding=enc; document.querySelectorAll('.decoding-card').forEach(c=>c.classList.remove('selected')); document.querySelector(`.decoding-card[data-encoding="${enc}"]`)?.classList.add('selected'); updateDecodingPreview(); }
+  function finishDecoding(){
+    const decodedText = bitsToChar(state.decryptedBits, state.decodingEncoding);
+    let match = state.currentEncoding === 'baudot' ? decodedText.toUpperCase() === state.message.toUpperCase() : decodedText === state.message;
+    if (!match) { showModal('modal.error.title', 'modal.error.mismatch', 'error'); return; }
+    showStage(CONFIG.STAGES.FINAL);
+    DOM.finalKey.textContent = state.keyBits.match(/.{1,8}/g).map(b=>parseInt(b,2).toString(16).padStart(2,'0')).join(' ').toUpperCase();
+    DOM.finalCipher.textContent = state.cipherBits.match(/.{1,8}/g).map(b=>parseInt(b,2).toString(16).padStart(2,'0')).join(' ').toUpperCase();
+    DOM.finalOriginal.textContent = state.message; DOM.finalDecrypted.textContent = decodedText;
+    showModal('modal.success.title', 'modal.success.decrypted', 'success');
+  }
+  function resetGame(){ state.message=state.messageBits=state.keyBits=state.cipherBits=state.decryptedBits=''; state.currentBitIndex=0; state._cipherBuf=[]; state._decryptBuf=[]; DOM.messageInput.value=''; showStage(1); selectEncoding('baudot'); updateEncodingTable(); }
+  function toggleProtocol() { DOM.protocolContent.classList.toggle('open'); DOM.protocolHeader.classList.toggle('open'); }
+  function initEventListeners() {
+    document.querySelector('.encoding-cards').addEventListener('click', e => { const card = e.target.closest('.encoding-card'); if (card?.dataset.encoding) selectEncoding(card.dataset.encoding); });
+    document.querySelector('.encoding-cards').addEventListener('keydown', e => { const card = e.target.closest('.encoding-card'); if (card?.dataset.encoding && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); selectEncoding(card.dataset.encoding); } });
+    document.querySelector('.decoding-cards').addEventListener('click', e => { const card = e.target.closest('.decoding-card'); if (card?.dataset.encoding) selectDecodingEncoding(card.dataset.encoding); });
+    document.querySelector('.decoding-cards').addEventListener('keydown', e => { const card = e.target.closest('.decoding-card'); if (card?.dataset.encoding && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); selectDecodingEncoding(card.dataset.encoding); } });
+    const btnMap = { 'goToMessageBtn': goToMessageStage, 'goToKeyBtn': goToKeyStage, 'goToEncodingBtn': () => showStage(1), 'backToMsgBtn': () => showStage(2), 'generateKeyBtn': generateKey, 'startEncryptBtn': goToEncryptionStage, 'nextBitBtn': nextBitManual, 'instantEncryptBtn': instantEncrypt, 'transmitBtn': transmitData, 'nextDecryptBitBtn': nextDecryptBitManual, 'instantDecryptBtn': instantDecrypt, 'finishDecodingBtn': finishDecoding, 'resetGameBtn': resetGame, 'closeModalBtn': closeModal };
+    for (const [id, handler] of Object.entries(btnMap)) { const btn = document.getElementById(id); if (btn) btn.addEventListener('click', handler); }
+    DOM.protocolHeader.addEventListener('click', toggleProtocol);
+  }
+  function init(){ 
+    DOM.stageDots = Array.from(document.querySelectorAll('.stage-dot')); DOM.stageContents = document.querySelectorAll('.stage-content');
+    DOM.messageInput = document.getElementById('messageInput'); DOM.charCounter = document.getElementById('charCounter'); DOM.bitCounter = document.getElementById('bitCounter'); DOM.encodingWarning = document.getElementById('encodingWarning'); DOM.warningText = document.getElementById('warningText');
+    DOM.messageBitsContainer = document.getElementById('messageBitsContainer'); DOM.messageTableBody = document.getElementById('messageTableBody'); DOM.encodingTableBody = document.getElementById('encodingTableBody'); DOM.keyPadBits = document.getElementById('keyPadBits'); DOM.generateKeyBtn = document.getElementById('generateKeyBtn'); DOM.startEncryptBtn = document.getElementById('startEncryptBtn'); DOM.keyDisclaimer = document.getElementById('keyDisclaimer');
+    DOM.xorDemoContent = document.getElementById('xorDemoContent'); DOM.syncBitsContainer = document.getElementById('syncBitsContainer'); DOM.nextBitBtn = document.getElementById('nextBitBtn'); DOM.instantEncryptBtn = document.getElementById('instantEncryptBtn'); DOM.encryptModeContainer = document.getElementById('encryptModeContainer');
+    DOM.keyDisplayTransmit = document.getElementById('keyDisplayTransmit'); DOM.cipherDisplayTransmit = document.getElementById('cipherDisplayTransmit'); DOM.transmitBtnContainer = document.getElementById('transmitBtnContainer'); DOM.aliceStatus = document.getElementById('aliceStatus'); DOM.bobStatus = document.getElementById('bobStatus'); DOM.keyChannelTransmit = document.getElementById('keyChannelTransmit'); DOM.cipherChannelTransmit = document.getElementById('cipherChannelTransmit');
+    DOM.nextDecryptBitBtn = document.getElementById('nextDecryptBitBtn'); DOM.instantDecryptBtn = document.getElementById('instantDecryptBtn'); DOM.decryptModeContainer = document.getElementById('decryptModeContainer'); DOM.decryptSyncBitsContainer = document.getElementById('decryptSyncBitsContainer'); DOM.decryptXorDemo = document.getElementById('decryptXorDemo');
+    DOM.decodedBitsDisplay = document.getElementById('decodedBitsDisplay'); DOM.decodingPreview = document.getElementById('decodingPreview'); DOM.finalKey = document.getElementById('finalKey'); DOM.finalCipher = document.getElementById('finalCipher'); DOM.finalOriginal = document.getElementById('finalOriginal'); DOM.finalDecrypted = document.getElementById('finalDecrypted');
+    DOM.modalOverlay = document.getElementById('modalOverlay'); DOM.modalContent = document.getElementById('modalContent'); DOM.modalTitle = document.getElementById('modalTitle'); DOM.modalMessage = document.getElementById('modalMessage');
+    DOM.protocolHeader = document.getElementById('protocolHeader'); DOM.protocolContent = document.getElementById('protocolContent');
+    DOM.autoBitsLabel = document.getElementById('autoBitsLabel');
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn)));
+    updateStages(); selectEncoding('baudot'); updateEncodingTable(); initMessageInput(); initEventListeners(); initLanguage();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title id="pageTitle">Симметричная криптография: один ключ для всех секретов | Ludus Lab</title>
+<meta id="pageDescription" name="description" content="Как работает самый древний и самый быстрый вид шифрования. От шифра Цезаря до AES и российского ГОСТ — путь к современной защите данных.">
+<!-- Favicon -->
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function(m,e,t,r,i,k,a){
+m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+m[i].l=1*new Date();
+for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { height: 100%; }
+body {
+background: #0a1a2a;
+color: #c5d5e0;
+font-family: 'Roboto', sans-serif;
+line-height: 1.8;
+padding: 0;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
+
+/* Language switch */
+.lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+.lang-btn {
+background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3);
+font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.5px;
+padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease;
+}
+.lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+.lang-btn.active {
+background: rgba(212, 175, 55, 0.18); border-color: #d4af37; color: #d4af37;
+box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+/* Навигация */
+.theory-nav {
+max-width: 900px;
+margin: 0 auto;
+padding: 20px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 1px solid rgba(0, 162, 255, 0.3);
+flex-shrink: 0;
+}
+.nav-logo {
+font-family: 'Oswald', sans-serif;
+font-size: 1.8rem;
+color: #d4af37;
+text-decoration: none;
+text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+}
+.nav-links { display: flex; gap: 20px; }
+.nav-link {
+color: #8ab0c5;
+text-decoration: none;
+font-family: 'Oswald', sans-serif;
+text-transform: uppercase;
+font-size: 0.9rem;
+letter-spacing: 1px;
+transition: all 0.3s;
+padding: 8px 15px;
+border-radius: 4px;
+border: 1px solid transparent;
+white-space: nowrap;
+}
+.nav-link:hover {
+color: #00a2ff;
+border-color: rgba(0, 162, 255, 0.3);
+background: rgba(0, 162, 255, 0.1);
+}
+/* Основной контент */
+.theory-container {
+max-width: 900px;
+margin: 0 auto;
+padding: 40px 20px;
+flex: 1 0 auto;
+}
+/* Заголовок статьи */
+.article-header {
+margin-bottom: 40px;
+text-align: center;
+}
+.article-category {
+display: inline-block;
+background: rgba(0, 162, 255, 0.2);
+color: #00a2ff;
+padding: 5px 15px;
+border-radius: 20px;
+font-size: 0.9rem;
+margin-bottom: 15px;
+border: 1px solid rgba(0, 162, 255, 0.3);
+}
+.article-title {
+font-family: 'Oswald', sans-serif;
+font-size: 3rem;
+color: #d4af37;
+text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+margin-bottom: 20px;
+text-transform: uppercase;
+letter-spacing: 2px;
+}
+.article-subtitle {
+font-size: 1.3rem;
+color: #8ab0c5;
+max-width: 700px;
+margin: 0 auto;
+line-height: 1.6;
+}
+/* Мета-информация */
+.article-meta {
+display: flex;
+justify-content: center;
+gap: 30px;
+margin-top: 20px;
+font-size: 0.9rem;
+color: #557585;
+}
+.meta-item { display: flex; align-items: center; gap: 8px; }
+/* Контентные блоки */
+.content-block {
+margin: 60px 0;
+padding: 30px;
+background: rgba(10, 30, 45, 0.6);
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 8px;
+box-shadow: 0 0 20px rgba(0, 162, 255, 0.1);
+}
+.content-block h2 {
+font-family: 'Oswald', sans-serif;
+font-size: 2rem;
+color: #00a2ff;
+margin-bottom: 25px;
+padding-bottom: 10px;
+border-bottom: 2px solid rgba(0, 162, 255, 0.3);
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+.content-block p {
+font-size: 1.1rem;
+line-height: 1.8;
+margin-bottom: 20px;
+color: #a0c0d0;
+}
+.highlight { color: #00a2ff; font-weight: 500; text-shadow: 0 0 5px rgba(0, 162, 255, 0.3); }
+.highlight-gold { color: #d4af37; font-weight: 500; text-shadow: 0 0 5px rgba(212, 175, 55, 0.3); }
+.highlight-symmetric { color: #9b59b6; font-weight: 500; text-shadow: 0 0 5px rgba(155, 89, 182, 0.3); }
+.highlight-neon {
+color: #e6f0ff;
+font-weight: 500;
+text-shadow: 0 0 3px rgba(255, 255, 255, 0.7), 0 0 6px rgba(100, 200, 255, 0.4), 0 0 9px rgba(100, 200, 255, 0.2);
+position: relative;
+padding: 0 2px;
+}
+.highlight-neon::after {
+content: '';
+position: absolute;
+bottom: -1px;
+left: 0;
+width: 100%;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(100, 200, 255, 0.5), transparent);
+}
+/* Шаги объяснения */
+.explanation-steps { margin: 30px 0; }
+.step {
+display: flex;
+align-items: flex-start;
+gap: 20px;
+margin: 25px 0;
+padding: 20px;
+background: rgba(5, 20, 30, 0.8);
+border-left: 4px solid #00a2ff;
+border-radius: 0 8px 8px 0;
+}
+.step-number {
+flex-shrink: 0;
+width: 40px;
+height: 40px;
+background: #00a2ff;
+color: #fff;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: 'Oswald', sans-serif;
+font-size: 1.2rem;
+font-weight: bold;
+box-shadow: 0 0 10px rgba(0, 162, 255, 0.5);
+}
+.step-content h3 { color: #d4af37; margin-bottom: 10px; font-family: 'Oswald', sans-serif; font-size: 1.3rem; }
+/* Ключевая идея */
+.key-insight {
+background: rgba(212, 175, 55, 0.1);
+border-left: 4px solid #d4af37;
+padding: 20px;
+margin: 30px 0;
+border-radius: 0 8px 8px 0;
+}
+.key-insight strong { color: #d4af37; font-family: 'Oswald', sans-serif; display: block; margin-bottom: 10px; font-size: 1.1rem; }
+/* Список действий */
+.action-list { list-style: none; margin: 30px 0; }
+.action-list li {
+display: flex;
+align-items: flex-start;
+gap: 15px;
+margin: 15px 0;
+padding: 15px;
+background: rgba(0, 162, 255, 0.05);
+border-radius: 6px;
+border-left: 3px solid #00a2ff;
+}
+.action-icon { font-size: 1.5rem; width: 40px; text-align: center; flex-shrink: 0; margin-top: 2px; }
+.action-text { flex: 1; }
+.action-text strong { color: #00a2ff; font-family: 'Oswald', sans-serif; }
+/* УПРОЩЕННАЯ СХЕМА ШИФРОВАНИЯ */
+.simple-encryption-scheme {
+margin: 40px auto;
+padding: 25px;
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(155, 89, 182, 0.3);
+border-radius: 12px;
+text-align: center;
+max-width: 700px;
+position: relative;
+}
+.simple-encryption-scheme::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 1px;
+background: linear-gradient(90deg, transparent, #9b59b6, transparent);
+}
+.scheme-title { color: #9b59b6; font-family: 'Oswald', sans-serif; margin-bottom: 25px; font-size: 1.2rem; letter-spacing: 1px; }
+.scheme-flow { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+.scheme-item { display: flex; flex-direction: column; align-items: center; min-width: 120px; }
+.scheme-box {
+width: 110px; height: 70px; border-radius: 8px;
+display: flex; align-items: center; justify-content: center;
+font-family: 'Courier New', monospace; font-size: 1rem; font-weight: bold;
+padding: 8px; text-align: center; margin-bottom: 8px;
+}
+.scheme-original { background: rgba(0, 162, 255, 0.1); border: 1px solid #00a2ff; color: #00a2ff; }
+.scheme-key { background: rgba(212, 175, 55, 0.1); border: 1px solid #d4af37; color: #d4af37; font-size: 0.9rem; }
+.scheme-cipher { background: rgba(155, 89, 182, 0.1); border: 1px solid #9b59b6; color: #9b59b6; font-size: 0.95em; }
+.scheme-label { font-size: 0.75rem; color: #8ab0c5; text-align: center; line-height: 1.3; max-width: 100px; }
+.scheme-arrow { font-size: 1.2rem; color: #9b59b6; margin: 0 5px; }
+.scheme-note { color: #8ab0c5; margin-top: 20px; font-size: 0.9rem; padding-top: 15px; border-top: 1px solid rgba(155, 89, 182, 0.2); font-style: italic; }
+@media (max-width: 768px) {
+.scheme-flow { gap: 8px; }
+.scheme-item { min-width: 100px; }
+.scheme-box { width: 90px; height: 60px; font-size: 0.9rem; }
+.scheme-arrow { font-size: 1rem; margin: 0 3px; }
+.scheme-label { font-size: 0.7rem; max-width: 80px; }
+}
+/* Исторические шифры */
+.historical-ciphers { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0; }
+.cipher-card {
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(155, 89, 182, 0.3);
+border-radius: 8px;
+padding: 20px;
+text-align: center;
+}
+.cipher-card h4 { color: #9b59b6; margin-bottom: 15px; font-family: 'Oswald', sans-serif; }
+.cipher-example {
+font-family: monospace; font-size: 1.1rem; margin: 15px 0;
+padding: 10px; background: rgba(10, 30, 45, 0.6);
+border-radius: 4px; border-left: 3px solid #d4af37;
+}
+/* Современные алгоритмы */
+.modern-algorithms { display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0; justify-content: center; }
+.algorithm-tag {
+background: rgba(155, 89, 182, 0.1);
+border: 1px solid rgba(155, 89, 182, 0.3);
+padding: 8px 15px; border-radius: 20px;
+font-size: 0.9rem; color: #9b59b6;
+transition: all 0.3s;
+}
+.algorithm-tag:hover {
+background: rgba(155, 89, 182, 0.2);
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(155, 89, 182, 0.2);
+}
+.algorithm-tag.important {
+background: rgba(212, 175, 55, 0.1);
+border-color: rgba(212, 175, 55, 0.3);
+color: #d4af37;
+}
+.algorithm-tag.russian {
+background: rgba(255, 255, 255, 0.05);
+border-color: rgba(255, 255, 255, 0.2);
+color: #e6f0ff;
+position: relative; overflow: hidden;
+}
+.algorithm-tag.russian::before {
+content: ''; position: absolute; top: -50%; left: -60%;
+width: 20px; height: 200%; background: rgba(255, 255, 255, 0.1);
+transform: rotate(30deg); transition: all 0.6s; opacity: 0;
+}
+.algorithm-tag.russian:hover::before { left: 120%; opacity: 1; }
+/* Кнопки действий */
+.article-actions {
+text-align: center; margin: 60px 0; padding: 30px;
+background: rgba(10, 30, 45, 0.4);
+border-radius: 8px; border: 1px solid rgba(0, 162, 255, 0.2);
+}
+.action-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 30px; flex-wrap: wrap; }
+.btn-primary, .btn-secondary, .btn-disabled {
+padding: 15px 30px; font-family: 'Oswald', sans-serif;
+text-transform: uppercase; letter-spacing: 1px;
+text-decoration: none; border-radius: 6px; font-size: 1rem;
+transition: all 0.3s; border: 1px solid; text-align: center; min-width: 180px;
+}
+.btn-primary {
+background: linear-gradient(to bottom, #006ba6, #004d7a);
+color: #e6f0ff; border-color: #00a2ff;
+}
+.btn-primary:hover {
+background: linear-gradient(to bottom, #0088cc, #006ba6);
+box-shadow: 0 0 20px rgba(0, 162, 255, 0.4);
+transform: translateY(-3px);
+}
+.btn-secondary {
+background: transparent; color: #8ab0c5;
+border-color: rgba(138, 176, 197, 0.4);
+}
+.btn-secondary:hover { border-color: #8ab0c5; color: #a0c0d0; }
+.btn-disabled {
+background: rgba(100, 100, 100, 0.3); color: #666;
+border-color: rgba(100, 100, 100, 0.5); cursor: not-allowed; opacity: 0.7;
+}
+/* Блок предупреждения */
+.warning-box {
+background: rgba(255, 165, 0, 0.1);
+border-left: 4px solid #ffa500;
+padding: 20px; margin: 30px 0;
+border-radius: 0 8px 8px 0;
+}
+.warning-box strong { color: #ffa500; font-family: 'Oswald', sans-serif; display: block; margin-bottom: 10px; font-size: 1.1rem; }
+/* Дополнительный материал */
+.advanced-section {
+margin: 40px 0; padding: 20px;
+border: 1px solid rgba(212, 175, 55, 0.3);
+border-radius: 8px; background: rgba(212, 175, 55, 0.05);
+}
+.advanced-section summary {
+cursor: pointer; color: #d4af37;
+font-family: 'Oswald', sans-serif; font-size: 1.1rem;
+list-style: none; padding: 10px;
+}
+.advanced-section summary::before {
+content: '▶'; margin-right: 10px;
+display: inline-block; transition: transform 0.3s;
+}
+.advanced-section[open] summary::before { transform: rotate(90deg); }
+.advanced-content {
+margin-top: 20px; padding-top: 20px;
+border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+.advanced-content h3 { color: #d4af37; margin: 15px 0 10px; font-family: 'Oswald', sans-serif; }
+/* Темы для углубления */
+.topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0; }
+.topic-card {
+background: rgba(5, 20, 30, 0.6);
+border: 1px solid rgba(212, 175, 55, 0.2);
+border-radius: 6px; padding: 15px; text-align: left;
+}
+.topic-card h4 { color: #d4af37; margin-bottom: 8px; font-family: 'Oswald', sans-serif; font-size: 1.1rem; }
+.topic-card p { font-size: 0.9rem; color: #8ab0c5; margin: 0; line-height: 1.5; }
+/* Футер */
+.theory-footer {
+text-align: center; margin-top: auto;
+padding: 30px 20px; border-top: 1px solid rgba(0, 162, 255, 0.2);
+color: #557585; font-size: 0.9rem; flex-shrink: 0; background: #0a1a2a;
+}
+/* Таблицы сравнения */
+.comparison-table { width: 100%; border-collapse: collapse; margin: 20px 0; color: #a0c0d0; }
+.comparison-table th {
+padding: 12px; border: 1px solid rgba(0,162,255,0.3);
+text-align: left; background: rgba(0, 30, 60, 0.3);
+color: #00a2ff; font-family: 'Oswald', sans-serif; font-weight: normal;
+}
+.comparison-table td { padding: 10px; border: 1px solid rgba(0,162,255,0.2); vertical-align: top; }
+.comparison-table tr:nth-child(even) { background: rgba(0, 30, 60, 0.2); }
+.comparison-table .russian-cell { border-left: 2px solid rgba(255, 255, 255, 0.3); }
+.comparison-table .western-cell { border-left: 3px solid #00a2ff; }
+/* ЭЛЕГАНТНЫЙ ЗАГОЛОВОК ДЛЯ РОССИЙСКИХ СТАНДАРТОВ */
+.russian-header {
+display: flex; align-items: center; gap: 15px;
+margin-bottom: 30px; padding-bottom: 15px;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+position: relative;
+}
+.russian-header::after {
+content: ''; position: absolute; bottom: -1px; left: 0;
+width: 100px; height: 2px;
+background: linear-gradient(90deg, rgba(100, 200, 255, 0.8), transparent);
+}
+.ru-badge {
+display: flex; align-items: center; justify-content: center;
+width: 45px; height: 45px;
+background: rgba(255, 255, 255, 0.05);
+color: #e6f0ff; font-family: 'Oswald', sans-serif;
+font-size: 1.1rem; font-weight: bold; border-radius: 50%;
+border: 1px solid rgba(255, 255, 255, 0.2);
+box-shadow: 0 0 8px rgba(255, 255, 255, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.05);
+position: relative; overflow: hidden;
+}
+.ru-badge::before {
+content: ''; position: absolute; top: -50%; left: -50%;
+width: 200%; height: 200%;
+background: radial-gradient(circle, rgba(100, 200, 255, 0.1) 0%, transparent 70%);
+}
+.russian-title {
+font-family: 'Oswald', sans-serif; font-size: 1.8rem;
+color: #e6f0ff; text-transform: uppercase; letter-spacing: 1px; position: relative;
+}
+.russian-subtitle { font-size: 1rem; color: #8ab0c5; margin-top: 5px; font-style: italic; }
+/* Схема эволюции российских стандартов */
+.evolution-flow { display: flex; align-items: center; justify-content: space-between; margin: 40px 0; position: relative; }
+.evolution-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+.evolution-box {
+width: 140px; height: 140px; border-radius: 12px;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+padding: 20px; text-align: center; margin-bottom: 15px;
+position: relative; overflow: hidden; transition: transform 0.3s ease;
+}
+.evolution-box:hover { transform: translateY(-3px); }
+.evolution-box.magma {
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+.evolution-box.transition {
+background: rgba(212, 175, 55, 0.05);
+border: 1px solid rgba(212, 175, 55, 0.2);
+box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+width: 100px; height: 100px;
+}
+.evolution-box.kuznyechik {
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+.evolution-title { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: bold; margin-bottom: 8px; color: #ffffff; }
+.evolution-subtitle { font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 5px; font-style: italic; }
+.evolution-details { font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); line-height: 1.4; }
+.evolution-arrow { font-size: 1.8rem; color: #8ab0c5; margin: 0 15px; position: relative; z-index: 2; opacity: 0.7; }
+.evolution-label { font-size: 0.85rem; color: #8ab0c5; margin-top: 10px; text-align: center; max-width: 140px; line-height: 1.4; }
+/* Адаптивность */
+@media (max-width: 768px) {
+.theory-container { padding: 20px 15px; margin-bottom: 40px; }
+.article-title { font-size: 2.2rem; }
+.content-block { padding: 20px; margin: 40px 0; }
+.step { flex-direction: column; gap: 15px; }
+.action-buttons { flex-direction: column; align-items: center; gap: 15px; }
+.btn-primary, .btn-secondary, .btn-disabled { width: 100%; max-width: 300px; padding: 12px 20px; }
+.evolution-flow { flex-direction: column; gap: 30px; }
+.evolution-arrow { transform: rotate(90deg); margin: 15px 0; }
+.historical-ciphers { grid-template-columns: 1fr; }
+.nav-links { flex-direction: row; gap: 15px; flex-wrap: wrap; justify-content: center; }
+.article-actions { margin: 40px 0 20px; padding: 20px 15px; }
+.article-meta { flex-direction: column; gap: 10px; }
+.topics-grid { grid-template-columns: 1fr; }
+.theory-nav { flex-direction: column; gap: 15px; padding: 15px; }
+.comparison-table { font-size: 0.9rem; }
+.comparison-table th, .comparison-table td { padding: 8px; }
+.russian-header { flex-direction: column; gap: 10px; text-align: center; align-items: center; }
+.ru-badge { width: 40px; height: 40px; font-size: 1rem; }
+.evolution-step { width: 100%; }
+.evolution-box { width: 180px; }
+}
+@media (max-width: 480px) {
+.article-title { font-size: 1.8rem; }
+.article-subtitle { font-size: 1.1rem; }
+.content-block h2 { font-size: 1.5rem; }
+.nav-logo { font-size: 1.5rem; }
+.nav-links { width: 100%; justify-content: space-between; }
+.nav-link { padding: 6px 10px; font-size: 0.8rem; flex: 1; text-align: center; }
+.btn-primary, .btn-secondary, .btn-disabled { min-width: auto; padding: 12px 15px; font-size: 0.9rem; }
+.theory-footer { padding: 20px 15px; font-size: 0.8rem; }
+.nav-links { justify-content: center; gap: 10px; }
+.nav-link { padding: 8px 12px; }
+.comparison-table { font-size: 0.8rem; }
+.evolution-box { width: 140px; height: 120px; }
+.evolution-box.transition { width: 90px; height: 90px; }
+.lang-switch { top: 8px; right: 8px; }
+.lang-btn { font-size: 0.65rem; padding: 3px 7px; }
+}
+@media (max-width: 320px) {
+.article-title { font-size: 1.5rem; }
+.article-subtitle { font-size: 1rem; }
+.content-block h2 { font-size: 1.3rem; }
+.btn-primary, .btn-secondary, .btn-disabled { padding: 10px 12px; font-size: 0.85rem; }
+.nav-links { flex-direction: column; width: 100%; }
+.nav-link { width: 100%; margin-bottom: 5px; }
+.evolution-box { width: 120px; height: 110px; }
+}
+</style>
+</head>
+<body>
+<div class="lang-switch" role="group" aria-label="Language">
+<button class="lang-btn" data-lang-btn="ru">RU</button>
+<button class="lang-btn" data-lang-btn="en">EN</button>
+<button class="lang-btn" data-lang-btn="es">ES</button>
+</div>
+
+<!-- Навигация -->
+<nav class="theory-nav">
+<a href="/" class="nav-logo">LUDUS LAB</a>
+<div class="nav-links">
+<a href="/" class="nav-link" data-i18n="nav.home">Главная</a>
+<!-- ИЗМЕНЕНО: убрана кнопка "Теория" -->
+<a href="/games/symmetric/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+</div>
+</nav>
+
+<!-- Основной контент -->
+<div class="theory-container">
+<!-- Заголовок статьи -->
+<header class="article-header">
+<div class="article-category" data-i18n="article.category">Основы криптографии</div>
+<h1 class="article-title" data-i18n="article.title">Симметричная криптография</h1>
+<p class="article-subtitle" data-i18n="article.subtitle">Как один ключ может и шифровать, и расшифровывать сообщения. От древних шифров до современных алгоритмов</p>
+<div class="article-meta">
+<div class="meta-item" data-i18n="meta.readtime">⏱️ 6 мин чтения</div>
+<div class="meta-item" data-i18n="meta.level">📊 Начальный уровень</div>
+<div class="meta-item" data-i18n="meta.security">🔐 Основа безопасности</div>
+</div>
+</header>
+
+<!-- Блок "Почему симметричная?" -->
+<section class="content-block">
+<h2 data-i18n="block1.heading">Почему симметричная?</h2>
+<p data-i18n="block1.p1">Представьте, что у вас есть сейф, который запирается и отпирается <span class="highlight-symmetric">одним и тем же ключом</span>. Это и есть суть симметричной криптографии: один ключ для всех операций.</p>
+<p data-i18n="block1.p2">Когда <span class="highlight">Алиса</span> хочет отправить секретное сообщение <span class="highlight">Бобу</span>, она берёт свой ключ, вставляет его в замок, поворачивает — и сообщение превращается в нечитаемую кашу. Боб берёт <span class="highlight">точно такой же ключ</span>, вставляет его в свой замок, поворачивает — и сообщение снова становится понятным.</p>
+<div class="simple-encryption-scheme">
+<div class="scheme-title" data-i18n="scheme1.title">Симметричное шифрование</div>
+<div class="scheme-flow">
+<div class="scheme-item"><div class="scheme-box scheme-original">ПРИВЕТ</div><div class="scheme-label" data-i18n="scheme1.label.original">Исходное сообщение</div></div>
+<div class="scheme-arrow">→</div>
+<div class="scheme-item"><div class="scheme-box scheme-key">СЕКРЕТНЫЙ КЛЮЧ</div><div class="scheme-label" data-i18n="scheme1.label.key">Секретный ключ</div></div>
+<div class="scheme-arrow">→</div>
+<div class="scheme-item"><div class="scheme-box scheme-cipher">XG*$@!#</div><div class="scheme-label" data-i18n="scheme1.label.cipher">Зашифрованное сообщение</div></div>
+<div class="scheme-arrow">→</div>
+<div class="scheme-item"><div class="scheme-box scheme-key">СЕКРЕТНЫЙ КЛЮЧ</div><div class="scheme-label" data-i18n="scheme1.label.samekey">Тот же ключ</div></div>
+<div class="scheme-arrow">→</div>
+<div class="scheme-item"><div class="scheme-box scheme-original">ПРИВЕТ</div><div class="scheme-label" data-i18n="scheme1.label.decrypted">Расшифрованное сообщение</div></div>
+</div>
+<p class="scheme-note" data-i18n="scheme1.note">Один и тот же ключ используется для шифрования и расшифрования — в этом симметрия.</p>
+</div>
+<div class="key-insight">
+<strong data-i18n="insight1.label">Ключевая мысль:</strong>
+<span data-i18n="insight1.text">Симметричная криптография — это <span class="highlight-gold">самый быстрый и эффективный</span> способ защитить данные, потому что использует простые математические операции (сравнительно с асимметричной криптографией). Она используется там, где нужна скорость: в Wi-Fi, VPN, защите дисков, мессенджерах. Но у неё есть одна большая проблема: <span class="highlight">как безопасно передать ключ второй стороне?</span></span>
+</div>
+</section>
+
+<!-- Блок "От Цезаря до наших дней" -->
+<section class="content-block">
+<h2 data-i18n="block2.heading">От Цезаря до наших дней</h2>
+<p data-i18n="block2.intro">Симметричная криптография старше, чем вы думаете. Ей пользовался ещё Юлий Цезарь для переписки со своими генералами. Давайте посмотрим на эволюцию шифров:</p>
+<div class="historical-ciphers">
+<div class="cipher-card">
+<h4 data-i18n="cipher1.title">Шифр Цезаря (I век до н.э.)</h4>
+<p data-i18n="cipher1.text">Каждая буква сдвигается на фиксированное число позиций в алфавите.</p>
+<div class="cipher-example" data-i18n="cipher1.example">ПРИВЕТ → СФНЕИХ<br>(сдвиг на 3)</div>
+<p data-i18n="cipher1.key">Ключ: число от 1 до 33</p>
+</div>
+<div class="cipher-card">
+<h4 data-i18n="cipher2.title">Шифр Виженера (XVI век)</h4>
+<p data-i18n="cipher2.text">Использует ключевое слово для сдвига букв разными величинами.</p>
+<div class="cipher-example">ПРИВЕТ + КЛЮЧ = ХФНХМИ</div>
+<p data-i18n="cipher2.key">Ключ: любое слово или фраза</p>
+</div>
+<div class="cipher-card">
+<h4 data-i18n="cipher3.title">Шифр Вернама (1917)</h4>
+<p data-i18n="cipher3.text">Каждая буква XORится с буквой ключа. При равной длине ключа и сообщения — абсолютно стойкий.</p>
+<div class="cipher-example">01001101 ⊕ 10101010 = 11100111</div>
+<p data-i18n="cipher3.key">Ключ: случайная последовательность битов</p>
+</div>
+</div>
+<p data-i18n="block2.outro">Все эти шифры объединяет одна идея: <span class="highlight">симметричность</span>. Для шифрования и расшифрования нужен один и тот же ключ. Но если древние шифры можно было взломать вручную, то современные алгоритмы требуют миллиарды лет для взлома даже на самых мощных компьютерах.</p>
+</section>
+
+<!-- Блок "Современные алгоритмы" -->
+<section class="content-block">
+<h2 data-i18n="block3.heading">Современные алгоритмы</h2>
+<p data-i18n="block3.intro">Сегодня симметричная криптография — это сложные математические преобразования, которые превращают данные в неразличимый шум. Вот самые известные алгоритмы:</p>
+<div class="modern-algorithms">
+<span class="algorithm-tag important">AES (Advanced Encryption Standard)</span>
+<span class="algorithm-tag russian">КУЗНЕЧИК (ГОСТ РФ)</span>
+<span class="algorithm-tag russian">МАГМА (ГОСТ 28147-89)</span>
+<span class="algorithm-tag">DES (Data Encryption Standard)</span>
+<span class="algorithm-tag">3DES (Triple DES)</span>
+<span class="algorithm-tag">Blowfish</span>
+<span class="algorithm-tag">Twofish</span>
+<span class="algorithm-tag">ChaCha20</span>
+<span class="algorithm-tag">Salsa20</span>
+</div>
+<div class="explanation-steps">
+<div class="step">
+<div class="step-number">1</div>
+<div class="step-content">
+<h3 data-i18n="step1.title">AES — золотой стандарт Запада</h3>
+<p data-i18n="step1.text">Принят в 2001 году как стандарт правительства США. Использует ключи длиной 128, 192 или 256 бит. <span class="highlight">Основа безопасности западного цифрового мира</span> — от банковских транзакций до VPN.</p>
+<p data-i18n="step1.note"><strong>Для российской аудитории важно:</strong> AES — отличный алгоритм, но его использование в системах, подпадающих под регулирование РФ, часто невозможно. Требования 152-ФЗ и приказы <span class="highlight-neon">ФСБ России</span> как регулятора по криптографии диктуют необходимость отечественных решений.</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">2</div>
+<div class="step-content">
+<h3 data-i18n="step2.title">Блочные и поточные шифры</h3>
+<p data-i18n="step2.text"><span class="highlight">Блочные шифры</span> (AES, DES, Кузнечик) работают с фиксированными блоками данных (обычно 128 бит). <span class="highlight">Поточные шифры</span> (RC4, ChaCha20) шифруют данные по одному биту или байту, идеальны для потоковой передачи.</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">3</div>
+<div class="step-content">
+<h3 data-i18n="step3.title">Режимы работы</h3>
+<p data-i18n="step3.text">Один алгоритм может работать в разных режимах: ECB (простой), CBC (с цепочкой блоков), CTR (счетчик), GCM (с аутентификацией). Каждый режим решает свои задачи: от шифрования файлов до защищённой связи.</p>
+</div>
+</div>
+</div>
+<p data-i18n="block3.outro">Несмотря на всю сложность, принцип остаётся прежним: <span class="highlight-symmetric">один ключ для шифрования, тот же ключ для расшифрования</span>. Простота концепции — сила симметричной криптографии.</p>
+</section>
+
+<!-- Блок "Отечественные стандарты" -->
+<section class="content-block">
+<div class="russian-header">
+<div class="ru-badge">RU</div>
+<div>
+<h2 class="russian-title" data-i18n="block4.heading">Отечественные стандарты</h2>
+<div class="russian-subtitle" data-i18n="block4.subtitle">от Магмы к Кузнечику</div>
+</div>
+</div>
+<p data-i18n="block4.intro">Пока западный мир стандартизировал AES, в России шла своя криптографическая история. Наши алгоритмы — не просто аналоги, а самостоятельные разработки со своей философией и преимуществами.</p>
+<div class="explanation-steps">
+<div class="step">
+<div class="step-number">1</div>
+<div class="step-content">
+<h3 data-i18n="step4.title"><span class="highlight-neon">ГОСТ 28147-89 "Магма" — советский фундамент</span></h3>
+<p data-i18n="step4.text">Разработан ещё в СССР, принят в 1989 году. <span class="highlight-gold">64-битный блочный шифр</span> с 256-битным ключом. Работает на основе сети Фейстеля — той же архитектуры, что и легендарный DES.</p>
+<p data-i18n="step4.note"><strong>Особенность:</strong> Использует нестандартные S-блоки (таблицы замен), которые можно менять, что добавляет гибкости. Долгое время использовался в государственных системах и банковской сфере.</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">2</div>
+<div class="step-content">
+<h3 data-i18n="step5.title"><span class="highlight-neon">ГОСТ Р 34.12-2015 "Кузнечик" — современный стандарт</span></h3>
+<p data-i18n="step5.text">Принят в 2015 году как преемник Магмы. <span class="highlight">128-битный блочный шифр</span> с 256-битным ключом. Работает на архитектуре SP-сети (подстановка-перестановка), как и AES.</p>
+<p data-i18n="step5.note2"><strong>Ключевое преимущество:</strong></p>
+<ul style="margin-left: 20px; color: #a0c0d0;">
+<li data-i18n="step5.benefit"><span class="highlight-neon">Используется в системах, требующих соответствия требованиям регуляторов РФ</span></li>
+</ul>
+</div>
+</div>
+<div class="step">
+<div class="step-number">3</div>
+<div class="step-content">
+<h3 data-i18n="step6.title">Почему это важно для России?</h3>
+<p data-i18n="step6.text"><span class="highlight-symmetric">Криптографический суверенитет</span> — это не просто слова. Использование отечественных алгоритмов:</p>
+<ul style="margin-left: 20px; color: #a0c0d0;">
+<li data-i18n="step6.li1"><strong>Гарантирует отсутствие закладок</strong> — мы знаем, как работает каждый бит алгоритма</li>
+<li data-i18n="step6.li2"><strong>Позволяет оптимизировать под отечественное "железо"</strong> — "КОТ", "Земля", "Текстиль"</li>
+<li data-i18n="step6.li3"><strong>Даёт юридическую определённость</strong> — соответствие 152-ФЗ и требованиям регуляторов</li>
+<li data-i18n="step6.li4"><strong>Создает технологическую независимость</strong> — даже при санкциях системы продолжают работать</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="simple-encryption-scheme">
+<div class="scheme-title" data-i18n="scheme2.title">Эволюция российских стандартов</div>
+<div class="scheme-flow">
+<div class="scheme-item"><div class="scheme-box scheme-original">ГОСТ 28147-89</div><div class="scheme-label" data-i18n="scheme2.label.magma">"Магма"<br>64-бит, с 1989</div></div>
+<div class="scheme-arrow">→</div>
+<div class="scheme-item"><div class="scheme-box scheme-key" data-i18n="scheme2.box.transition">Переход</div><div class="scheme-label" data-i18n="scheme2.label.transition">Необходимость современного стандарта</div></div>
+<div class="scheme-arrow">→</div>
+<div class="scheme-item"><div class="scheme-box scheme-cipher">ГОСТ Р 34.12-2015</div><div class="scheme-label" data-i18n="scheme2.label.kuznyechik">"Кузнечик"<br>128-бит, с 2015</div></div>
+</div>
+<p class="scheme-note" data-i18n="scheme2.note">От совместимости с DES-архитектурой к современной SP-сети. Эволюция в ответ на технологические вызовы.</p>
+</div>
+<div class="key-insight">
+<strong data-i18n="insight2.label">Прямо в игре:</strong>
+<span data-i18n="insight2.text">Когда вы выбираете защиту по требованиям РФ, вам доступно только российское оборудование ("КОТ", "Земля", "Текстиль"), и алгоритм автоматически устанавливается как <span class="highlight-neon">"Кузнечик"</span>. Вы увидите, почему парные ключи через ЦУС — обязательное требование для таких систем, сертифицированных <span class="highlight-neon">ФСБ России</span>.</span>
+</div>
+</section>
+
+<!-- Блок "Что вы сможете в игре" -->
+<section class="content-block">
+<h2 data-i18n="block5.heading">Испытайте симметричное шифрование на практике</h2>
+<p data-i18n="block5.intro">В симуляции симметричной криптографии вы сможете:</p>
+<ul class="action-list">
+<li><span class="action-icon">🔐</span><div class="action-text" data-i18n="action1"><span><strong>Выбирать тип защищаемых данных</strong> — от коммерческой тайны до информации, регулируемой стандартами РФ, США и ЕС</span></div></li>
+<li><span class="action-icon">🖥️</span><div class="action-text" data-i18n="action2"><span><strong>Настраивать оборудование</strong> для Алисы и Боба в соответствии с требованиями регуляторов и совместимостью</span></div></li>
+<li><span class="action-icon">⚙️</span><div class="action-text" data-i18n="action3"><span><strong>Выбирать метод распределения ключей</strong> — от ручного ввода PSK до квантового распределения ключей</span></div></li>
+<li><span class="action-icon">🔄</span><div class="action-text" data-i18n="action4"><span><strong>Наблюдать установку защищённого канала</strong> по протоколу IKEv2/IPsec с разной логикой для сетевого и парного ключа</span></div></li>
+<li><span class="action-icon">🚦</span><div class="action-text" data-i18n="action5"><span><strong>Запускать защищённый трафик</strong> и видеть, как разные методы получения ключа влияют на безопасность</span></div></li>
+<li><span class="action-icon">👁️</span><div class="action-text" data-i18n="action6"><span><strong>Наблюдать за атаками Евы</strong> — увидеть, как она пытается перехватить и расшифровать сообщения, чтобы понять уязвимости разных подходов</span></div></li>
+</ul>
+<div class="key-insight">
+<strong data-i18n="insight3.label">Главный урок игры:</strong>
+<span data-i18n="insight3.text">Вы увидите фундаментальное различие между <span class="highlight">сетевым PSK</span> (общий ключ для всех узлов) и <span class="highlight-symmetric">парными ключами</span> (уникальный ключ для каждой пары). Первый подход достаточен для базовой защиты, но для чувствительных данных требуется второй — с чётким разграничением зон, централизованным контролем ключей и уникальными парными ключами для каждого туннеля.</span>
+</div>
+</section>
+
+<!-- Дополнительный материал -->
+<details class="advanced-section">
+<summary data-i18n="advanced.summary">Для любознательных</summary>
+<div class="advanced-content">
+<h3 data-i18n="advanced.compare.heading">Сравнение AES и "Кузнечика"</h3>
+<p data-i18n="advanced.compare.text">Оба алгоритма — 128-битные блочные шифры, но с разной философией и регуляторной базой:</p>
+<table class="comparison-table">
+<tr><th style="width: 25%;" data-i18n="table.param">Параметр</th><th class="western-cell">AES (Rijndael)</th><th class="russian-cell">Кузнечик (ГОСТ Р 34.12-2015)</th></tr>
+<tr><td data-i18n="table.row1.label">Страна разработки</td><td class="western-cell" data-i18n="table.row1.west">Бельгия/США</td><td class="russian-cell" data-i18n="table.row1.ru">Россия</td></tr>
+<tr><td data-i18n="table.row2.label">Год принятия</td><td class="western-cell">2001</td><td class="russian-cell">2015</td></tr>
+<tr><td data-i18n="table.row3.label">Архитектура</td><td class="western-cell" data-i18n="table.row3.val">SP-сеть</td><td class="russian-cell" data-i18n="table.row3.val">SP-сеть</td></tr>
+<tr><td data-i18n="table.row4.label">Длина ключа</td><td class="western-cell" data-i18n="table.row4.west">128, 192, 256 бит</td><td class="russian-cell" data-i18n="table.row4.ru">256 бит</td></tr>
+<tr><td data-i18n="table.row5.label">Размер блока</td><td class="western-cell" data-i18n="table.row5.val">128 бит</td><td class="russian-cell" data-i18n="table.row5.val">128 бит</td></tr>
+<tr><td data-i18n="table.row6.label">Регулятор</td><td class="western-cell" data-i18n="table.row6.west">NIST (США)</td><td class="russian-cell"><span class="highlight-neon">ФСБ России</span></td></tr>
+<tr><td data-i18n="table.row7.label">Использование в РФ</td><td class="western-cell" data-i18n="table.row7.west">Международные системы, VPN, Wi-Fi (там, где не требуется соответствие 152-ФЗ)</td><td class="russian-cell" data-i18n="table.row7.ru">Госсектор, банки, КИИ, системы защиты гостайны</td></tr>
+<tr><td data-i18n="table.row8.label">Особенности</td><td class="western-cell" data-i18n="table.row8.west">Открытый конкурс, прозрачная разработка, поддержка аппаратного ускорения на большинстве CPU</td><td class="russian-cell" data-i18n="table.row8.ru">Оптимизирован для российского "железа", обязателен для систем, сертифицированных <span class="highlight-neon">ФСБ</span></td></tr>
+</table>
+<h3 data-i18n="advanced.keydist.heading">Проблема распределения ключей</h3>
+<p data-i18n="advanced.keydist.p1">Главная проблема симметричной криптографии — <strong>безопасная передача ключа</strong>. Если у вас есть защищённый канал для передачи ключа, зачем вам шифрование? Если канал не защищён, как передать ключ, чтобы его не перехватили?</p>
+<p data-i18n="advanced.keydist.p2">Эта дилемма породила целое направление — <span class="highlight">распределение ключей</span>. Именно для её решения были созданы:</p>
+<div class="topics-grid">
+<div class="topic-card"><h4 data-i18n="topic1.title">Криптография с открытым ключом</h4><p data-i18n="topic1.desc">Асимметричная криптография (RSA, ECC) решает проблему распределения ключей, но медленнее симметричной</p></div>
+<div class="topic-card"><h4 data-i18n="topic2.title">Протокол Диффи-Хеллмана</h4><p data-i18n="topic2.desc">Позволяет двум сторонам создать общий секретный ключ по открытому каналу</p></div>
+<div class="topic-card"><h4 data-i18n="topic3.title">Квантовое распределение ключей</h4><p data-i18n="topic3.desc">Протоколы BB84 и E91 решают проблему на физическом уровне, используются в системах, требующих максимальной безопасности</p></div>
+</div>
+<h3 data-i18n="advanced.hybrid.heading">Гибридные системы</h3>
+<p data-i18n="advanced.hybrid.text">В реальных системах почти всегда используют <strong>комбинацию симметричной и асимметричной криптографии</strong>:</p>
+<ol style="margin-left: 20px; color: #a0c0d0;">
+<li data-i18n="hybrid.li1"><strong>Асимметричная часть</strong>: для безопасного обмена симметричным ключом (медленно, но решает проблему распределения)</li>
+<li data-i18n="hybrid.li2"><strong>Симметричная часть</strong>: для шифрования самих данных (быстро и эффективно)</li>
+</ol>
+<p data-i18n="advanced.hybrid.outro">Так работают SSL/TLS (защита сайтов), PGP (шифрование почты), Signal/WhatsApp (мессенджеры).</p>
+<h3 data-i18n="advanced.attacks.heading">Атаки на симметричные шифры</h3>
+<p data-i18n="advanced.attacks.text">Даже самые стойкие алгоритмы имеют уязвимости при неправильном использовании:</p>
+<ul style="margin-left: 20px; color: #a0c0d0;">
+<li data-i18n="attacks.li1"><strong>Атака по времени</strong>: измерение времени выполнения операций</li>
+<li data-i18n="attacks.li2"><strong>Атака по сторонним каналам</strong>: анализ энергопотребления, электромагнитного излучения</li>
+<li data-i18n="attacks.li3"><strong>Атака на реализацию</strong>: ошибки в программном или аппаратном коде</li>
+<li data-i18n="attacks.li4"><strong>Социальная инженерия</strong>: самый старый и эффективный способ получить ключ</li>
+</ul>
+<h3 data-i18n="advanced.future.heading">Будущее симметричной криптографии</h3>
+<p data-i18n="advanced.future.text">С развитием квантовых компьютеров некоторые симметричные алгоритмы окажутся под угрозой:</p>
+<ul style="margin-left: 20px; color: #a0c0d0;">
+<li data-i18n="future.li1"><strong>Алгоритм Гровера</strong> уменьшает сложность перебора с 2<sup>n</sup> до 2<sup>n/2</sup></li>
+<li data-i18n="future.li2"><strong>AES-256 и Кузнечик</strong> остаются стойкими (2<sup>128</sup> операций всё ещё недостижимо)</li>
+<li data-i18n="future.li3"><strong>Разрабатываются постквантовые алгоритмы</strong>, стойкие к квантовым атакам</li>
+</ul>
+<h3 data-i18n="advanced.facts.heading">Интересные факты</h3>
+<ul style="margin-left: 20px; color: #a0c0d0;">
+<li data-i18n="facts.li1">Шифр Цезаря использовался российской армией в Первую мировую войну — и регулярно взламывался</li>
+<li data-i18n="facts.li2">Энигма — симметричный шифр нацистов — был взломан благодаря польским математикам и британскому компьютеру</li>
+<li data-i18n="facts.li3">AES выбран после 5 лет конкурса, в котором участвовали 15 алгоритмов со всего мира</li>
+<li data-i18n="facts.li4">Ключ AES-256 имеет 2<sup>256</sup> возможных значений — это больше, чем атомов в наблюдаемой Вселенной</li>
+<li data-i18n="facts.li5">ГОСТ 28147-89 ("Магма") использовался в советской и российской банковской системе более 25 лет</li>
+<li data-i18n="facts.li6">"Кузнечик" полностью совместим с режимами работы AES, что упрощает переход с западных стандартов</li>
+</ul>
+<h3 data-i18n="advanced.regulatory.heading">Регуляторные особенности в России</h3>
+<p data-i18n="advanced.regulatory.text">В Российской Федерации <span class="highlight-neon">Федеральная служба безопасности (ФСБ России)</span> является уполномоченным регулятором в области криптографической защиты информации. Это означает:</p>
+<ul style="margin-left: 20px; color: #a0c0d0;">
+<li data-i18n="regulatory.li1">Все алгоритмы шифрования, используемые для защиты государственной тайны, должны быть сертифицированы ФСБ</li>
+<li data-i18n="regulatory.li2">Оборудование для шифрования (шифраторы) подлежит обязательной сертификации</li>
+<li data-i18n="regulatory.li3">Для определённых категорий информации (КИИ, персональные данные в госорганах) использование алгоритмов, не сертифицированных ФСБ, запрещено</li>
+<li data-i18n="regulatory.li4">Центры управления ключами (ЦУС) должны соответствовать требованиям регулятора</li>
+</ul>
+<p data-i18n="advanced.regulatory.outro">Вот почему в игре при выборе "Защита по требованиям РФ" доступны только российские алгоритмы и оборудование — это отражение реальных регуляторных требований.</p>
+<div class="key-insight" style="margin-top: 20px;">
+<strong data-i18n="insight4.label">Философский момент:</strong>
+<span data-i18n="insight4.text">Симметричная криптография учит нас важному принципу: <span class="highlight-gold">чем проще концепция, тем надёжнее система</span>. Один ключ, две операции — и миллиарды защищённых транзакций каждый день. Иногда самые элегантные решения оказываются самыми мощными. А выбор между AES и "Кузнечиком" — это не только техническое решение, но и вопрос соответствия регуляторным требованиям, где <span class="highlight-neon">ФСБ России</span> устанавливает правила для отечественных систем.</span>
+</div>
+</div>
+</details>
+
+<!-- Кнопки действий -->
+<div class="article-actions" id="article-actions">
+<p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Теперь вы понимаете разницу между сетевым PSK и парными ключами, а также почему для разных задач нужны разные алгоритмы — от международного AES до отечественного "Кузнечика"</p>
+<div class="action-buttons">
+<a href="/games/symmetric/index.html" class="btn-primary" data-i18n="actions.play">🚀 Запустить симуляцию симметричной криптографии</a>
+<a href="/#theory-section" class="btn-secondary" data-i18n="actions.back">← Вернуться к списку тем</a>
+</div>
+<p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">В симуляции вы на практике увидите разницу между подходами и поймёте, почему выбор алгоритма — это не только техническое, но и стратегическое решение</p>
+</div>
+</div>
+
+<!-- Футер -->
+<footer class="theory-footer">
+<p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
+<p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Эта статья — упрощённое объяснение принципов. Реальные системы используют более сложные комбинации алгоритмов и должны соответствовать требованиям регуляторов, включая <span class="highlight-neon">ФСБ России</span> для систем, используемых в РФ.</p>
+</footer>
+
+<script>
+    const I18N = {
+      ru: {
+        'meta.title': 'Симметричная криптография: один ключ для всех секретов | Ludus Lab',
+        'meta.description': 'Как работает самый древний и самый быстрый вид шифрования. От шифра Цезаря до AES и российского ГОСТ — путь к современной защите данных.',
+        'nav.home': 'Главная', 'nav.play': 'Играть',
+        'article.category': 'Основы криптографии',
+        'article.title': 'Симметричная криптография',
+        'article.subtitle': 'Как один ключ может и шифровать, и расшифровывать сообщения. От древних шифров до современных алгоритмов',
+        'meta.readtime': '⏱️ 6 мин чтения', 'meta.level': '📊 Начальный уровень', 'meta.security': '🔐 Основа безопасности',
+        'block1.heading': 'Почему симметричная?',
+        'block1.p1': 'Представьте, что у вас есть сейф, который запирается и отпирается <span class="highlight-symmetric">одним и тем же ключом</span>. Это и есть суть симметричной криптографии: один ключ для всех операций.',
+        'block1.p2': 'Когда <span class="highlight">Алиса</span> хочет отправить секретное сообщение <span class="highlight">Бобу</span>, она берёт свой ключ, вставляет его в замок, поворачивает — и сообщение превращается в нечитаемую кашу. Боб берёт <span class="highlight">точно такой же ключ</span>, вставляет его в свой замок, поворачивает — и сообщение снова становится понятным.',
+        'scheme1.title': 'Симметричное шифрование',
+        'scheme1.label.original': 'Исходное сообщение',
+        'scheme1.label.key': 'Секретный ключ',
+        'scheme1.label.cipher': 'Зашифрованное сообщение',
+        'scheme1.label.samekey': 'Тот же ключ',
+        'scheme1.label.decrypted': 'Расшифрованное сообщение',
+        'scheme1.note': 'Один и тот же ключ используется для шифрования и расшифрования — в этом симметрия.',
+        'insight1.label': 'Ключевая мысль:',
+        'insight1.text': 'Симметричная криптография — это <span class="highlight-gold">самый быстрый и эффективный</span> способ защитить данные, потому что использует простые математические операции (сравнительно с асимметричной криптографией). Она используется там, где нужна скорость: в Wi-Fi, VPN, защите дисков, мессенджерах. Но у неё есть одна большая проблема: <span class="highlight">как безопасно передать ключ второй стороне?</span>',
+        'block2.heading': 'От Цезаря до наших дней',
+        'block2.intro': 'Симметричная криптография старше, чем вы думаете. Ей пользовался ещё Юлий Цезарь для переписки со своими генералами. Давайте посмотрим на эволюцию шифров:',
+        'cipher1.title': 'Шифр Цезаря (I век до н.э.)',
+        'cipher1.text': 'Каждая буква сдвигается на фиксированное число позиций в алфавите.',
+        'cipher1.example': 'ПРИВЕТ → СФНЕИХ<br>(сдвиг на 3)',
+        'cipher1.key': 'Ключ: число от 1 до 33',
+        'cipher2.title': 'Шифр Виженера (XVI век)',
+        'cipher2.text': 'Использует ключевое слово для сдвига букв разными величинами.',
+        'cipher2.key': 'Ключ: любое слово или фраза',
+        'cipher3.title': 'Шифр Вернама (1917)',
+        'cipher3.text': 'Каждая буква XORится с буквой ключа. При равной длине ключа и сообщения — абсолютно стойкий.',
+        'cipher3.key': 'Ключ: случайная последовательность битов',
+        'block2.outro': 'Все эти шифры объединяет одна идея: <span class="highlight">симметричность</span>. Для шифрования и расшифрования нужен один и тот же ключ. Но если древние шифры можно было взломать вручную, то современные алгоритмы требуют миллиарды лет для взлома даже на самых мощных компьютерах.',
+        'block3.heading': 'Современные алгоритмы',
+        'block3.intro': 'Сегодня симметричная криптография — это сложные математические преобразования, которые превращают данные в неразличимый шум. Вот самые известные алгоритмы:',
+        'step1.title': 'AES — золотой стандарт Запада',
+        'step1.text': 'Принят в 2001 году как стандарт правительства США. Использует ключи длиной 128, 192 или 256 бит. <span class="highlight">Основа безопасности западного цифрового мира</span> — от банковских транзакций до VPN.',
+        'step1.note': '<strong>Для российской аудитории важно:</strong> AES — отличный алгоритм, но его использование в системах, подпадающих под регулирование РФ, часто невозможно. Требования 152-ФЗ и приказы <span class="highlight-neon">ФСБ России</span> как регулятора по криптографии диктуют необходимость отечественных решений.',
+        'step2.title': 'Блочные и поточные шифры',
+        'step2.text': '<span class="highlight">Блочные шифры</span> (AES, DES, Кузнечик) работают с фиксированными блоками данных (обычно 128 бит). <span class="highlight">Поточные шифры</span> (RC4, ChaCha20) шифруют данные по одному биту или байту, идеальны для потоковой передачи.',
+        'step3.title': 'Режимы работы',
+        'step3.text': 'Один алгоритм может работать в разных режимах: ECB (простой), CBC (с цепочкой блоков), CTR (счетчик), GCM (с аутентификацией). Каждый режим решает свои задачи: от шифрования файлов до защищённой связи.',
+        'block3.outro': 'Несмотря на всю сложность, принцип остаётся прежним: <span class="highlight-symmetric">один ключ для шифрования, тот же ключ для расшифрования</span>. Простота концепции — сила симметричной криптографии.',
+        'block4.heading': 'Отечественные стандарты',
+        'block4.subtitle': 'от Магмы к Кузнечику',
+        'block4.intro': 'Пока западный мир стандартизировал AES, в России шла своя криптографическая история. Наши алгоритмы — не просто аналоги, а самостоятельные разработки со своей философией и преимуществами.',
+        'step4.title': '<span class="highlight-neon">ГОСТ 28147-89 "Магма" — советский фундамент</span>',
+        'step4.text': 'Разработан ещё в СССР, принят в 1989 году. <span class="highlight-gold">64-битный блочный шифр</span> с 256-битным ключом. Работает на основе сети Фейстеля — той же архитектуры, что и легендарный DES.',
+        'step4.note': '<strong>Особенность:</strong> Использует нестандартные S-блоки (таблицы замен), которые можно менять, что добавляет гибкости. Долгое время использовался в государственных системах и банковской сфере.',
+        'step5.title': '<span class="highlight-neon">ГОСТ Р 34.12-2015 "Кузнечик" — современный стандарт</span>',
+        'step5.text': 'Принят в 2015 году как преемник Магмы. <span class="highlight">128-битный блочный шифр</span> с 256-битным ключом. Работает на архитектуре SP-сети (подстановка-перестановка), как и AES.',
+        'step5.note2': '<strong>Ключевое преимущество:</strong>',
+        'step5.benefit': '<span class="highlight-neon">Используется в системах, требующих соответствия требованиям регуляторов РФ</span>',
+        'step6.title': 'Почему это важно для России?',
+        'step6.text': '<span class="highlight-symmetric">Криптографический суверенитет</span> — это не просто слова. Использование отечественных алгоритмов:',
+        'step6.li1': '<strong>Гарантирует отсутствие закладок</strong> — мы знаем, как работает каждый бит алгоритма',
+        'step6.li2': '<strong>Позволяет оптимизировать под отечественное "железо"</strong> — "КОТ", "Земля", "Текстиль"',
+        'step6.li3': '<strong>Даёт юридическую определённость</strong> — соответствие 152-ФЗ и требованиям регуляторов',
+        'step6.li4': '<strong>Создает технологическую независимость</strong> — даже при санкциях системы продолжают работать',
+        'scheme2.title': 'Эволюция российских стандартов',
+        'scheme2.label.magma': '"Магма"<br>64-бит, с 1989',
+        'scheme2.box.transition': 'Переход',
+        'scheme2.label.transition': 'Необходимость современного стандарта',
+        'scheme2.label.kuznyechik': '"Кузнечик"<br>128-бит, с 2015',
+        'scheme2.note': 'От совместимости с DES-архитектурой к современной SP-сети. Эволюция в ответ на технологические вызовы.',
+        'insight2.label': 'Прямо в игре:',
+        'insight2.text': 'Когда вы выбираете защиту по требованиям РФ, вам доступно только российское оборудование ("КОТ", "Земля", "Текстиль"), и алгоритм автоматически устанавливается как <span class="highlight-neon">"Кузнечик"</span>. Вы увидите, почему парные ключи через ЦУС — обязательное требование для таких систем, сертифицированных <span class="highlight-neon">ФСБ России</span>.',
+        'block5.heading': 'Испытайте симметричное шифрование на практике',
+        'block5.intro': 'В симуляции симметричной криптографии вы сможете:',
+        'action1': '<span><strong>Выбирать тип защищаемых данных</strong> — от коммерческой тайны до информации, регулируемой стандартами РФ, США и ЕС</span>',
+        'action2': '<span><strong>Настраивать оборудование</strong> для Алисы и Боба в соответствии с требованиями регуляторов и совместимостью</span>',
+        'action3': '<span><strong>Выбирать метод распределения ключей</strong> — от ручного ввода PSK до квантового распределения ключей</span>',
+        'action4': '<span><strong>Наблюдать установку защищённого канала</strong> по протоколу IKEv2/IPsec с разной логикой для сетевого и парного ключа</span>',
+        'action5': '<span><strong>Запускать защищённый трафик</strong> и видеть, как разные методы получения ключа влияют на безопасность</span>',
+        'action6': '<span><strong>Наблюдать за атаками Евы</strong> — увидеть, как она пытается перехватить и расшифровать сообщения, чтобы понять уязвимости разных подходов</span>',
+        'insight3.label': 'Главный урок игры:',
+        'insight3.text': 'Вы увидите фундаментальное различие между <span class="highlight">сетевым PSK</span> (общий ключ для всех узлов) и <span class="highlight-symmetric">парными ключами</span> (уникальный ключ для каждой пары). Первый подход достаточен для базовой защиты, но для чувствительных данных требуется второй — с чётким разграничением зон, централизованным контролем ключей и уникальными парными ключами для каждого туннеля.',
+        'advanced.summary': 'Для любознательных',
+        'advanced.compare.heading': 'Сравнение AES и "Кузнечика"',
+        'advanced.compare.text': 'Оба алгоритма — 128-битные блочные шифры, но с разной философией и регуляторной базой:',
+        'table.param': 'Параметр',
+        'table.row1.label': 'Страна разработки', 'table.row1.west': 'Бельгия/США', 'table.row1.ru': 'Россия',
+        'table.row2.label': 'Год принятия',
+        'table.row3.label': 'Архитектура', 'table.row3.val': 'SP-сеть',
+        'table.row4.label': 'Длина ключа', 'table.row4.west': '128, 192, 256 бит', 'table.row4.ru': '256 бит',
+        'table.row5.label': 'Размер блока', 'table.row5.val': '128 бит',
+        'table.row6.label': 'Регулятор', 'table.row6.west': 'NIST (США)',
+        'table.row7.label': 'Использование в РФ', 'table.row7.west': 'Международные системы, VPN, Wi-Fi (там, где не требуется соответствие 152-ФЗ)', 'table.row7.ru': 'Госсектор, банки, КИИ, системы защиты гостайны',
+        'table.row8.label': 'Особенности', 'table.row8.west': 'Открытый конкурс, прозрачная разработка, поддержка аппаратного ускорения на большинстве CPU', 'table.row8.ru': 'Оптимизирован для российского "железа", обязателен для систем, сертифицированных <span class="highlight-neon">ФСБ</span>',
+        'advanced.keydist.heading': 'Проблема распределения ключей',
+        'advanced.keydist.p1': 'Главная проблема симметричной криптографии — <strong>безопасная передача ключа</strong>. Если у вас есть защищённый канал для передачи ключа, зачем вам шифрование? Если канал не защищён, как передать ключ, чтобы его не перехватили?',
+        'advanced.keydist.p2': 'Эта дилемма породила целое направление — <span class="highlight">распределение ключей</span>. Именно для её решения были созданы:',
+        'topic1.title': 'Криптография с открытым ключом', 'topic1.desc': 'Асимметричная криптография (RSA, ECC) решает проблему распределения ключей, но медленнее симметричной',
+        'topic2.title': 'Протокол Диффи-Хеллмана', 'topic2.desc': 'Позволяет двум сторонам создать общий секретный ключ по открытому каналу',
+        'topic3.title': 'Квантовое распределение ключей', 'topic3.desc': 'Протоколы BB84 и E91 решают проблему на физическом уровне, используются в системах, требующих максимальной безопасности',
+        'advanced.hybrid.heading': 'Гибридные системы',
+        'advanced.hybrid.text': 'В реальных системах почти всегда используют <strong>комбинацию симметричной и асимметричной криптографии</strong>:',
+        'hybrid.li1': '<strong>Асимметричная часть</strong>: для безопасного обмена симметричным ключом (медленно, но решает проблему распределения)',
+        'hybrid.li2': '<strong>Симметричная часть</strong>: для шифрования самих данных (быстро и эффективно)',
+        'advanced.hybrid.outro': 'Так работают SSL/TLS (защита сайтов), PGP (шифрование почты), Signal/WhatsApp (мессенджеры).',
+        'advanced.attacks.heading': 'Атаки на симметричные шифры',
+        'advanced.attacks.text': 'Даже самые стойкие алгоритмы имеют уязвимости при неправильном использовании:',
+        'attacks.li1': '<strong>Атака по времени</strong>: измерение времени выполнения операций',
+        'attacks.li2': '<strong>Атака по сторонним каналам</strong>: анализ энергопотребления, электромагнитного излучения',
+        'attacks.li3': '<strong>Атака на реализацию</strong>: ошибки в программном или аппаратном коде',
+        'attacks.li4': '<strong>Социальная инженерия</strong>: самый старый и эффективный способ получить ключ',
+        'advanced.future.heading': 'Будущее симметричной криптографии',
+        'advanced.future.text': 'С развитием квантовых компьютеров некоторые симметричные алгоритмы окажутся под угрозой:',
+        'future.li1': '<strong>Алгоритм Гровера</strong> уменьшает сложность перебора с 2<sup>n</sup> до 2<sup>n/2</sup>',
+        'future.li2': '<strong>AES-256 и Кузнечик</strong> остаются стойкими (2<sup>128</sup> операций всё ещё недостижимо)',
+        'future.li3': '<strong>Разрабатываются постквантовые алгоритмы</strong>, стойкие к квантовым атакам',
+        'advanced.facts.heading': 'Интересные факты',
+        'facts.li1': 'Шифр Цезаря использовался российской армией в Первую мировую войну — и регулярно взламывался',
+        'facts.li2': 'Энигма — симметричный шифр нацистов — был взломан благодаря польским математикам и британскому компьютеру',
+        'facts.li3': 'AES выбран после 5 лет конкурса, в котором участвовали 15 алгоритмов со всего мира',
+        'facts.li4': 'Ключ AES-256 имеет 2<sup>256</sup> возможных значений — это больше, чем атомов в наблюдаемой Вселенной',
+        'facts.li5': 'ГОСТ 28147-89 ("Магма") использовался в советской и российской банковской системе более 25 лет',
+        'facts.li6': '"Кузнечик" полностью совместим с режимами работы AES, что упрощает переход с западных стандартов',
+        'advanced.regulatory.heading': 'Регуляторные особенности в России',
+        'advanced.regulatory.text': 'В Российской Федерации <span class="highlight-neon">Федеральная служба безопасности (ФСБ России)</span> является уполномоченным регулятором в области криптографической защиты информации. Это означает:',
+        'regulatory.li1': 'Все алгоритмы шифрования, используемые для защиты государственной тайны, должны быть сертифицированы ФСБ',
+        'regulatory.li2': 'Оборудование для шифрования (шифраторы) подлежит обязательной сертификации',
+        'regulatory.li3': 'Для определённых категорий информации (КИИ, персональные данные в госорганах) использование алгоритмов, не сертифицированных ФСБ, запрещено',
+        'regulatory.li4': 'Центры управления ключами (ЦУС) должны соответствовать требованиям регулятора',
+        'advanced.regulatory.outro': 'Вот почему в игре при выборе "Защита по требованиям РФ" доступны только российские алгоритмы и оборудование — это отражение реальных регуляторных требований.',
+        'insight4.label': 'Философский момент:',
+        'insight4.text': 'Симметричная криптография учит нас важному принципу: <span class="highlight-gold">чем проще концепция, тем надёжнее система</span>. Один ключ, две операции — и миллиарды защищённых транзакций каждый день. Иногда самые элегантные решения оказываются самыми мощными. А выбор между AES и "Кузнечиком" — это не только техническое решение, но и вопрос соответствия регуляторным требованиям, где <span class="highlight-neon">ФСБ России</span> устанавливает правила для отечественных систем.',
+        'actions.intro': 'Теперь вы понимаете разницу между сетевым PSK и парными ключами, а также почему для разных задач нужны разные алгоритмы — от международного AES до отечественного "Кузнечика"',
+        'actions.play': '🚀 Запустить симуляцию симметричной криптографии', 'actions.back': '← Вернуться к списку тем',
+        'actions.outro': 'В симуляции вы на практике увидите разницу между подходами и поймёте, почему выбор алгоритма — это не только техническое, но и стратегическое решение',
+        'footer.line1': '© 2025 Ludus Lab · Сложные вещи простыми играми',
+        'footer.line2': 'Эта статья — упрощённое объяснение принципов. Реальные системы используют более сложные комбинации алгоритмов и должны соответствовать требованиям регуляторов, включая <span class="highlight-neon">ФСБ России</span> для систем, используемых в РФ.',
+      },
+      en: {
+        'meta.title': 'Symmetric Cryptography: One Key for All Secrets | Ludus Lab',
+        'meta.description': 'How the oldest and fastest type of encryption works. From the Caesar cipher to AES and the Russian GOST standard — the path to modern data protection.',
+        'nav.home': 'Home', 'nav.play': 'Play',
+        'article.category': 'Cryptography basics',
+        'article.title': 'Symmetric Cryptography',
+        'article.subtitle': 'How a single key can both encrypt and decrypt a message. From ancient ciphers to modern algorithms',
+        'meta.readtime': '⏱️ 6 min read', 'meta.level': '📊 Beginner level', 'meta.security': '🔐 Foundation of security',
+        'block1.heading': 'Why "symmetric"?',
+        'block1.p1': 'Imagine you have a safe that locks and unlocks with <span class="highlight-symmetric">the same key</span>. That is the essence of symmetric cryptography: one key for every operation.',
+        'block1.p2': 'When <span class="highlight">Alice</span> wants to send a secret message to <span class="highlight">Bob</span>, she takes her key, puts it in the lock, turns it — and the message turns into unreadable mush. Bob takes <span class="highlight">the exact same key</span>, puts it in his lock, turns it — and the message becomes readable again.',
+        'scheme1.title': 'Symmetric encryption',
+        'scheme1.label.original': 'Original message',
+        'scheme1.label.key': 'Secret key',
+        'scheme1.label.cipher': 'Encrypted message',
+        'scheme1.label.samekey': 'Same key',
+        'scheme1.label.decrypted': 'Decrypted message',
+        'scheme1.note': 'The same key is used both for encryption and decryption — that\'s where the symmetry comes from.',
+        'insight1.label': 'Key takeaway:',
+        'insight1.text': 'Symmetric cryptography is the <span class="highlight-gold">fastest and most efficient</span> way to protect data, because it relies on simple mathematical operations (compared to asymmetric cryptography). It\'s used wherever speed matters: Wi-Fi, VPNs, disk encryption, messaging apps. But it has one big problem: <span class="highlight">how do you safely hand the key to the other party?</span>',
+        'block2.heading': 'From Caesar to today',
+        'block2.intro': 'Symmetric cryptography is older than you might think. Julius Caesar himself used it to correspond with his generals. Let\'s look at how ciphers evolved:',
+        'cipher1.title': 'The Caesar cipher (1st century BCE)',
+        'cipher1.text': 'Every letter is shifted by a fixed number of positions in the alphabet.',
+        'cipher1.example': 'ПРИВЕТ → СФНЕИХ<br>(shift of 3)',
+        'cipher1.key': 'Key: a number from 1 to 33',
+        'cipher2.title': 'The Vigenère cipher (16th century)',
+        'cipher2.text': 'Uses a keyword to shift letters by varying amounts.',
+        'cipher2.key': 'Key: any word or phrase',
+        'cipher3.title': 'The Vernam cipher (1917)',
+        'cipher3.text': 'Every letter is XORed with a letter of the key. When the key is as long as the message, it is provably unbreakable.',
+        'cipher3.key': 'Key: a random sequence of bits',
+        'block2.outro': 'All these ciphers share one idea: <span class="highlight">symmetry</span>. Encryption and decryption need the same key. But while ancient ciphers could be broken by hand, modern algorithms would take billions of years to crack even on the most powerful computers.',
+        'block3.heading': 'Modern algorithms',
+        'block3.intro': 'Today, symmetric cryptography means complex mathematical transformations that turn data into indistinguishable noise. Here are the best-known algorithms:',
+        'step1.title': 'AES — the West\'s gold standard',
+        'step1.text': 'Adopted in 2001 as the US government standard. Uses keys of 128, 192, or 256 bits. <span class="highlight">The backbone of security for the Western digital world</span> — from bank transactions to VPNs.',
+        'step1.note': '<strong>Worth noting for a Russian audience:</strong> AES is an excellent algorithm, but using it in systems subject to Russian regulation is often not allowed. The requirements of Federal Law 152-FZ and orders from <span class="highlight-neon">the FSB of Russia</span>, the country\'s cryptography regulator, mandate the use of domestic solutions.',
+        'step2.title': 'Block and stream ciphers',
+        'step2.text': '<span class="highlight">Block ciphers</span> (AES, DES, Kuznyechik) work on fixed blocks of data (typically 128 bits). <span class="highlight">Stream ciphers</span> (RC4, ChaCha20) encrypt data one bit or byte at a time, ideal for streaming.',
+        'step3.title': 'Modes of operation',
+        'step3.text': 'A single algorithm can run in different modes: ECB (simple), CBC (chained blocks), CTR (counter), GCM (with authentication). Each mode solves a different problem, from file encryption to secure communication.',
+        'block3.outro': 'Despite all this complexity, the principle stays the same: <span class="highlight-symmetric">one key to encrypt, the same key to decrypt</span>. The simplicity of the concept is the strength of symmetric cryptography.',
+        'block4.heading': 'Domestic standards',
+        'block4.subtitle': 'from Magma to Kuznyechik',
+        'block4.intro': 'While the Western world standardized on AES, Russia had its own cryptographic history. Russian algorithms aren\'t mere copies — they\'re independent designs with their own philosophy and advantages.',
+        'step4.title': '<span class="highlight-neon">GOST 28147-89 "Magma" — the Soviet foundation</span>',
+        'step4.text': 'Developed back in the USSR, adopted in 1989. A <span class="highlight-gold">64-bit block cipher</span> with a 256-bit key. Built on a Feistel network — the same architecture as the legendary DES.',
+        'step4.note': '<strong>Notable feature:</strong> Uses non-standard S-boxes (substitution tables) that can be swapped out, adding flexibility. It was used for a long time in government systems and banking.',
+        'step5.title': '<span class="highlight-neon">GOST R 34.12-2015 "Kuznyechik" — the modern standard</span>',
+        'step5.text': 'Adopted in 2015 as Magma\'s successor. A <span class="highlight">128-bit block cipher</span> with a 256-bit key. Built on an SP-network architecture (substitution-permutation), just like AES.',
+        'step5.note2': '<strong>Key advantage:</strong>',
+        'step5.benefit': '<span class="highlight-neon">Used in systems that must comply with Russian regulatory requirements</span>',
+        'step6.title': 'Why does this matter for Russia?',
+        'step6.text': '<span class="highlight-symmetric">Cryptographic sovereignty</span> is more than just words. Using domestic algorithms:',
+        'step6.li1': '<strong>Guarantees no hidden backdoors</strong> — every bit of the algorithm\'s behavior is known',
+        'step6.li2': '<strong>Allows optimization for domestic hardware</strong> — "KOT," "Zemlya," "Tekstil"',
+        'step6.li3': '<strong>Provides legal certainty</strong> — compliance with Federal Law 152-FZ and regulatory requirements',
+        'step6.li4': '<strong>Creates technological independence</strong> — systems keep working even under sanctions',
+        'scheme2.title': 'Evolution of Russian standards',
+        'scheme2.label.magma': '"Magma"<br>64-bit, since 1989',
+        'scheme2.box.transition': 'Transition',
+        'scheme2.label.transition': 'Need for a modern standard',
+        'scheme2.label.kuznyechik': '"Kuznyechik"<br>128-bit, since 2015',
+        'scheme2.note': 'From DES-compatible architecture to a modern SP-network. Evolution in response to technological challenges.',
+        'insight2.label': 'Right in the game:',
+        'insight2.text': 'When you choose protection that meets Russian requirements, only Russian hardware is available ("KOT," "Zemlya," "Tekstil"), and the algorithm is automatically set to <span class="highlight-neon">"Kuznyechik"</span>. You\'ll see why paired keys distributed via a key management center are mandatory for systems certified by <span class="highlight-neon">the FSB of Russia</span>.',
+        'block5.heading': 'Try symmetric encryption hands-on',
+        'block5.intro': 'In the symmetric cryptography simulation, you\'ll be able to:',
+        'action1': '<span><strong>Choose the type of data being protected</strong> — from trade secrets to information regulated under Russian, US, and EU standards</span>',
+        'action2': '<span><strong>Configure the hardware</strong> for Alice and Bob according to regulatory requirements and compatibility</span>',
+        'action3': '<span><strong>Choose a key-distribution method</strong> — from manually entering a PSK to quantum key distribution</span>',
+        'action4': '<span><strong>Watch a secure channel being established</strong> over the IKEv2/IPsec protocol, with different logic for network-wide and pairwise keys</span>',
+        'action5': '<span><strong>Run protected traffic</strong> and see how different key-acquisition methods affect security</span>',
+        'action6': '<span><strong>Watch Eve\'s attacks</strong> — see how she tries to intercept and decrypt messages, to understand the weaknesses of each approach</span>',
+        'insight3.label': 'The game\'s main lesson:',
+        'insight3.text': 'You\'ll see the fundamental difference between a <span class="highlight">network-wide PSK</span> (one shared key for every node) and <span class="highlight-symmetric">pairwise keys</span> (a unique key for every pair). The first approach is fine for basic protection, but sensitive data calls for the second — with clear zone separation, centralized key control, and a unique key for every tunnel.',
+        'advanced.summary': 'For the curious',
+        'advanced.compare.heading': 'Comparing AES and "Kuznyechik"',
+        'advanced.compare.text': 'Both algorithms are 128-bit block ciphers, but with different philosophies and regulatory backing:',
+        'table.param': 'Parameter',
+        'table.row1.label': 'Country of origin', 'table.row1.west': 'Belgium/USA', 'table.row1.ru': 'Russia',
+        'table.row2.label': 'Year adopted',
+        'table.row3.label': 'Architecture', 'table.row3.val': 'SP-network',
+        'table.row4.label': 'Key length', 'table.row4.west': '128, 192, 256 bits', 'table.row4.ru': '256 bits',
+        'table.row5.label': 'Block size', 'table.row5.val': '128 bits',
+        'table.row6.label': 'Regulator', 'table.row6.west': 'NIST (USA)',
+        'table.row7.label': 'Use in Russia', 'table.row7.west': 'International systems, VPNs, Wi-Fi (where 152-FZ compliance is not required)', 'table.row7.ru': 'Public sector, banks, critical infrastructure, state-secret protection systems',
+        'table.row8.label': 'Notable traits', 'table.row8.west': 'Open competition, transparent design, hardware acceleration support on most CPUs', 'table.row8.ru': 'Optimized for Russian hardware, mandatory for systems certified by <span class="highlight-neon">the FSB</span>',
+        'advanced.keydist.heading': 'The key-distribution problem',
+        'advanced.keydist.p1': 'The main problem with symmetric cryptography is <strong>safely delivering the key</strong>. If you already have a secure channel to send the key over, why do you need encryption at all? And if the channel isn\'t secure, how do you send the key without it being intercepted?',
+        'advanced.keydist.p2': 'This dilemma gave rise to an entire field — <span class="highlight">key distribution</span>. It is exactly what these were created to solve:',
+        'topic1.title': 'Public-key cryptography', 'topic1.desc': 'Asymmetric cryptography (RSA, ECC) solves the key-distribution problem, but is slower than symmetric cryptography',
+        'topic2.title': 'The Diffie-Hellman protocol', 'topic2.desc': 'Lets two parties create a shared secret key over an open channel',
+        'topic3.title': 'Quantum key distribution', 'topic3.desc': 'The BB84 and E91 protocols solve the problem at the physical level; used in systems that demand maximum security',
+        'advanced.hybrid.heading': 'Hybrid systems',
+        'advanced.hybrid.text': 'Real-world systems almost always use a <strong>combination of symmetric and asymmetric cryptography</strong>:',
+        'hybrid.li1': '<strong>The asymmetric part</strong>: for securely exchanging the symmetric key (slow, but solves the distribution problem)',
+        'hybrid.li2': '<strong>The symmetric part</strong>: for encrypting the actual data (fast and efficient)',
+        'advanced.hybrid.outro': 'This is how SSL/TLS (website security), PGP (email encryption), and Signal/WhatsApp (messaging) all work.',
+        'advanced.attacks.heading': 'Attacks on symmetric ciphers',
+        'advanced.attacks.text': 'Even the strongest algorithms have weaknesses when used incorrectly:',
+        'attacks.li1': '<strong>Timing attacks</strong>: measuring how long operations take to run',
+        'attacks.li2': '<strong>Side-channel attacks</strong>: analyzing power consumption or electromagnetic emissions',
+        'attacks.li3': '<strong>Implementation attacks</strong>: exploiting bugs in software or hardware',
+        'attacks.li4': '<strong>Social engineering</strong>: the oldest and most effective way to get a key',
+        'advanced.future.heading': 'The future of symmetric cryptography',
+        'advanced.future.text': 'As quantum computers advance, some symmetric algorithms will come under threat:',
+        'future.li1': '<strong>Grover\'s algorithm</strong> reduces brute-force complexity from 2<sup>n</sup> to 2<sup>n/2</sup>',
+        'future.li2': '<strong>AES-256 and Kuznyechik</strong> remain secure (2<sup>128</sup> operations is still out of reach)',
+        'future.li3': '<strong>Post-quantum algorithms</strong> resistant to quantum attacks are being developed',
+        'advanced.facts.heading': 'Fun facts',
+        'facts.li1': 'The Caesar cipher was used by the Russian army in World War I — and was regularly broken',
+        'facts.li2': 'Enigma, the Nazis\' symmetric cipher, was broken thanks to Polish mathematicians and a British computer',
+        'facts.li3': 'AES was selected after a 5-year competition with 15 algorithms from around the world',
+        'facts.li4': 'An AES-256 key has 2<sup>256</sup> possible values — more than the number of atoms in the observable universe',
+        'facts.li5': 'GOST 28147-89 ("Magma") was used in the Soviet and Russian banking system for over 25 years',
+        'facts.li6': '"Kuznyechik" is fully compatible with AES modes of operation, which simplifies migrating from Western standards',
+        'advanced.regulatory.heading': 'Regulatory specifics in Russia',
+        'advanced.regulatory.text': 'In the Russian Federation, the <span class="highlight-neon">Federal Security Service (FSB of Russia)</span> is the authorized regulator for cryptographic information protection. This means:',
+        'regulatory.li1': 'All encryption algorithms used to protect state secrets must be certified by the FSB',
+        'regulatory.li2': 'Encryption hardware (encryptors) is subject to mandatory certification',
+        'regulatory.li3': 'For certain categories of information (critical infrastructure, personal data in government bodies), using algorithms not certified by the FSB is prohibited',
+        'regulatory.li4': 'Key management centers must meet the regulator\'s requirements',
+        'advanced.regulatory.outro': 'That\'s why, in the game, choosing "Protection per Russian requirements" only makes Russian algorithms and hardware available — reflecting real-world regulatory requirements.',
+        'insight4.label': 'A philosophical moment:',
+        'insight4.text': 'Symmetric cryptography teaches us an important principle: <span class="highlight-gold">the simpler the concept, the more reliable the system</span>. One key, two operations — and billions of protected transactions every day. Sometimes the most elegant solutions turn out to be the most powerful. And choosing between AES and "Kuznyechik" isn\'t just a technical decision, but also a question of regulatory compliance, where <span class="highlight-neon">the FSB of Russia</span> sets the rules for domestic systems.',
+        'actions.intro': 'Now you understand the difference between a network-wide PSK and pairwise keys, and why different tasks call for different algorithms — from international AES to Russia\'s own "Kuznyechik"',
+        'actions.play': '🚀 Launch the symmetric cryptography simulation', 'actions.back': '← Back to the topic list',
+        'actions.outro': 'In the simulation you\'ll see the difference between these approaches firsthand, and understand why choosing an algorithm is not just a technical decision but a strategic one',
+        'footer.line1': '© 2025 Ludus Lab · Complex things through simple games',
+        'footer.line2': 'This article is a simplified explanation of the principles involved. Real systems use more complex combinations of algorithms and must comply with regulatory requirements, including <span class="highlight-neon">the FSB of Russia</span> for systems used in Russia.',
+      },
+      es: {
+        'meta.title': 'Criptografía simétrica: una sola clave para todos los secretos | Ludus Lab',
+        'meta.description': 'Cómo funciona el tipo de cifrado más antiguo y más rápido. Del cifrado César al AES y al estándar GOST ruso: el camino hacia la protección de datos moderna.',
+        'nav.home': 'Inicio', 'nav.play': 'Jugar',
+        'article.category': 'Fundamentos de la criptografía',
+        'article.title': 'Criptografía simétrica',
+        'article.subtitle': 'Cómo una sola clave puede cifrar y descifrar un mensaje. De los cifrados antiguos a los algoritmos modernos',
+        'meta.readtime': '⏱️ 6 min de lectura', 'meta.level': '📊 Nivel inicial', 'meta.security': '🔐 Base de la seguridad',
+        'block1.heading': '¿Por qué "simétrica"?',
+        'block1.p1': 'Imagina que tienes una caja fuerte que se cierra y se abre con <span class="highlight-symmetric">la misma clave</span>. Esa es la esencia de la criptografía simétrica: una sola clave para todas las operaciones.',
+        'block1.p2': 'Cuando <span class="highlight">Alicia</span> quiere enviarle un mensaje secreto a <span class="highlight">Roberto</span>, toma su clave, la inserta en la cerradura, la gira, y el mensaje se convierte en un revoltijo ilegible. Roberto toma <span class="highlight">exactamente la misma clave</span>, la inserta en su cerradura, la gira, y el mensaje vuelve a ser comprensible.',
+        'scheme1.title': 'Cifrado simétrico',
+        'scheme1.label.original': 'Mensaje original',
+        'scheme1.label.key': 'Clave secreta',
+        'scheme1.label.cipher': 'Mensaje cifrado',
+        'scheme1.label.samekey': 'La misma clave',
+        'scheme1.label.decrypted': 'Mensaje descifrado',
+        'scheme1.note': 'La misma clave se usa para cifrar y para descifrar — de ahí viene la simetría.',
+        'insight1.label': 'Idea clave:',
+        'insight1.text': 'La criptografía simétrica es la forma <span class="highlight-gold">más rápida y eficiente</span> de proteger datos, porque utiliza operaciones matemáticas sencillas (en comparación con la criptografía asimétrica). Se usa donde la velocidad importa: Wi-Fi, VPN, cifrado de discos, mensajería. Pero tiene un gran problema: <span class="highlight">¿cómo se entrega la clave de forma segura a la otra parte?</span>',
+        'block2.heading': 'De César a nuestros días',
+        'block2.intro': 'La criptografía simétrica es más antigua de lo que parece. El propio Julio César la usaba para comunicarse con sus generales. Veamos cómo evolucionaron los cifrados:',
+        'cipher1.title': 'El cifrado César (siglo I a.C.)',
+        'cipher1.text': 'Cada letra se desplaza un número fijo de posiciones en el alfabeto.',
+        'cipher1.example': 'ПРИВЕТ → СФНЕИХ<br>(desplazamiento de 3)',
+        'cipher1.key': 'Clave: un número del 1 al 33',
+        'cipher2.title': 'El cifrado Vigenère (siglo XVI)',
+        'cipher2.text': 'Usa una palabra clave para desplazar las letras en distintas cantidades.',
+        'cipher2.key': 'Clave: cualquier palabra o frase',
+        'cipher3.title': 'El cifrado Vernam (1917)',
+        'cipher3.text': 'Cada letra se combina con XOR con una letra de la clave. Si la clave tiene la misma longitud que el mensaje, es absolutamente seguro.',
+        'cipher3.key': 'Clave: una secuencia aleatoria de bits',
+        'block2.outro': 'Todos estos cifrados comparten una idea: la <span class="highlight">simetría</span>. Cifrar y descifrar requieren la misma clave. Pero si los cifrados antiguos podían romperse a mano, los algoritmos modernos tardarían miles de millones de años en romperse incluso con las computadoras más potentes.',
+        'block3.heading': 'Algoritmos modernos',
+        'block3.intro': 'Hoy, la criptografía simétrica consiste en transformaciones matemáticas complejas que convierten los datos en ruido indistinguible. Estos son los algoritmos más conocidos:',
+        'step1.title': 'AES, el estándar de oro de Occidente',
+        'step1.text': 'Adoptado en 2001 como estándar del gobierno de Estados Unidos. Usa claves de 128, 192 o 256 bits. <span class="highlight">La base de la seguridad del mundo digital occidental</span>, desde transacciones bancarias hasta VPN.',
+        'step1.note': '<strong>Importante para el público ruso:</strong> AES es un excelente algoritmo, pero su uso en sistemas sujetos a la regulación rusa suele no estar permitido. Los requisitos de la Ley Federal 152-FZ y las órdenes del <span class="highlight-neon">FSB de Rusia</span>, como regulador de la criptografía, exigen el uso de soluciones nacionales.',
+        'step2.title': 'Cifrados de bloque y de flujo',
+        'step2.text': 'Los <span class="highlight">cifrados de bloque</span> (AES, DES, Kuznyechik) operan con bloques de datos fijos (normalmente 128 bits). Los <span class="highlight">cifrados de flujo</span> (RC4, ChaCha20) cifran los datos bit a bit o byte a byte, ideales para la transmisión en flujo continuo.',
+        'step3.title': 'Modos de operación',
+        'step3.text': 'Un mismo algoritmo puede funcionar en distintos modos: ECB (simple), CBC (con encadenamiento de bloques), CTR (contador), GCM (con autenticación). Cada modo resuelve sus propios problemas, desde el cifrado de archivos hasta las comunicaciones seguras.',
+        'block3.outro': 'A pesar de toda esta complejidad, el principio sigue siendo el mismo: <span class="highlight-symmetric">una clave para cifrar, la misma clave para descifrar</span>. La sencillez del concepto es la fuerza de la criptografía simétrica.',
+        'block4.heading': 'Estándares nacionales rusos',
+        'block4.subtitle': 'de Magma a Kuznyechik',
+        'block4.intro': 'Mientras el mundo occidental estandarizaba el AES, Rusia escribía su propia historia criptográfica. Sus algoritmos no son simples copias, sino desarrollos propios con su propia filosofía y ventajas.',
+        'step4.title': '<span class="highlight-neon">GOST 28147-89 "Magma": el fundamento soviético</span>',
+        'step4.text': 'Desarrollado en la URSS y adoptado en 1989. Un <span class="highlight-gold">cifrado de bloque de 64 bits</span> con clave de 256 bits. Funciona sobre una red de Feistel, la misma arquitectura que el legendario DES.',
+        'step4.note': '<strong>Particularidad:</strong> Usa cajas S (tablas de sustitución) no estándar que se pueden cambiar, lo que añade flexibilidad. Se usó durante mucho tiempo en sistemas estatales y en el sector bancario.',
+        'step5.title': '<span class="highlight-neon">GOST R 34.12-2015 "Kuznyechik": el estándar moderno</span>',
+        'step5.text': 'Adoptado en 2015 como sucesor de Magma. Un <span class="highlight">cifrado de bloque de 128 bits</span> con clave de 256 bits. Funciona sobre una arquitectura de red SP (sustitución-permutación), igual que el AES.',
+        'step5.note2': '<strong>Ventaja clave:</strong>',
+        'step5.benefit': '<span class="highlight-neon">Se usa en sistemas que deben cumplir los requisitos de los reguladores rusos</span>',
+        'step6.title': '¿Por qué es importante para Rusia?',
+        'step6.text': 'La <span class="highlight-symmetric">soberanía criptográfica</span> no es solo una frase. El uso de algoritmos nacionales:',
+        'step6.li1': '<strong>Garantiza la ausencia de puertas traseras</strong> — se conoce el funcionamiento de cada bit del algoritmo',
+        'step6.li2': '<strong>Permite optimizar para el hardware nacional</strong> — "KOT", "Zemlia", "Tekstil"',
+        'step6.li3': '<strong>Aporta certeza jurídica</strong> — conformidad con la Ley 152-FZ y los requisitos de los reguladores',
+        'step6.li4': '<strong>Crea independencia tecnológica</strong> — los sistemas siguen funcionando incluso bajo sanciones',
+        'scheme2.title': 'Evolución de los estándares rusos',
+        'scheme2.label.magma': '"Magma"<br>64 bits, desde 1989',
+        'scheme2.box.transition': 'Transición',
+        'scheme2.label.transition': 'Necesidad de un estándar moderno',
+        'scheme2.label.kuznyechik': '"Kuznyechik"<br>128 bits, desde 2015',
+        'scheme2.note': 'De una arquitectura compatible con DES a una red SP moderna. Una evolución en respuesta a los retos tecnológicos.',
+        'insight2.label': 'Directamente en el juego:',
+        'insight2.text': 'Cuando eliges protección conforme a los requisitos rusos, solo está disponible hardware ruso ("KOT", "Zemlia", "Tekstil"), y el algoritmo se establece automáticamente como <span class="highlight-neon">"Kuznyechik"</span>. Verás por qué las claves por pares a través de un centro de gestión de claves son un requisito obligatorio para estos sistemas, certificados por el <span class="highlight-neon">FSB de Rusia</span>.',
+        'block5.heading': 'Pon en práctica el cifrado simétrico',
+        'block5.intro': 'En la simulación de criptografía simétrica podrás:',
+        'action1': '<span><strong>Elegir el tipo de datos a proteger</strong> — desde secretos comerciales hasta información regulada por normas de Rusia, EE. UU. y la UE</span>',
+        'action2': '<span><strong>Configurar el hardware</strong> de Alicia y Roberto conforme a los requisitos de los reguladores y la compatibilidad</span>',
+        'action3': '<span><strong>Elegir un método de distribución de claves</strong> — desde la introducción manual de una PSK hasta la distribución cuántica de claves</span>',
+        'action4': '<span><strong>Observar el establecimiento de un canal seguro</strong> mediante el protocolo IKEv2/IPsec, con lógicas distintas para claves de red y claves por pares</span>',
+        'action5': '<span><strong>Iniciar tráfico protegido</strong> y ver cómo los distintos métodos de obtención de claves afectan a la seguridad</span>',
+        'action6': '<span><strong>Observar los ataques de Eva</strong> — ver cómo intenta interceptar y descifrar los mensajes, para entender las debilidades de cada enfoque</span>',
+        'insight3.label': 'La lección principal del juego:',
+        'insight3.text': 'Verás la diferencia fundamental entre una <span class="highlight">PSK de red</span> (una clave compartida por todos los nodos) y <span class="highlight-symmetric">claves por pares</span> (una clave única para cada par). El primer enfoque basta para una protección básica, pero los datos sensibles requieren el segundo, con una separación clara de zonas, control centralizado de claves y una clave única por pares para cada túnel.',
+        'advanced.summary': 'Para los curiosos',
+        'advanced.compare.heading': 'Comparación entre AES y "Kuznyechik"',
+        'advanced.compare.text': 'Ambos algoritmos son cifrados de bloque de 128 bits, pero con filosofías y marcos regulatorios distintos:',
+        'table.param': 'Parámetro',
+        'table.row1.label': 'País de origen', 'table.row1.west': 'Bélgica/EE. UU.', 'table.row1.ru': 'Rusia',
+        'table.row2.label': 'Año de adopción',
+        'table.row3.label': 'Arquitectura', 'table.row3.val': 'Red SP',
+        'table.row4.label': 'Longitud de clave', 'table.row4.west': '128, 192, 256 bits', 'table.row4.ru': '256 bits',
+        'table.row5.label': 'Tamaño de bloque', 'table.row5.val': '128 bits',
+        'table.row6.label': 'Regulador', 'table.row6.west': 'NIST (EE. UU.)',
+        'table.row7.label': 'Uso en Rusia', 'table.row7.west': 'Sistemas internacionales, VPN, Wi-Fi (donde no se exige el cumplimiento de la Ley 152-FZ)', 'table.row7.ru': 'Sector público, bancos, infraestructuras críticas, sistemas de protección de secretos de Estado',
+        'table.row8.label': 'Particularidades', 'table.row8.west': 'Concurso abierto, desarrollo transparente, soporte de aceleración por hardware en la mayoría de las CPU', 'table.row8.ru': 'Optimizado para el hardware ruso, obligatorio para los sistemas certificados por el <span class="highlight-neon">FSB</span>',
+        'advanced.keydist.heading': 'El problema de la distribución de claves',
+        'advanced.keydist.p1': 'El principal problema de la criptografía simétrica es <strong>la entrega segura de la clave</strong>. Si ya tienes un canal seguro para enviar la clave, ¿para qué necesitas el cifrado? Y si el canal no es seguro, ¿cómo se envía la clave sin que la intercepten?',
+        'advanced.keydist.p2': 'Este dilema dio origen a todo un campo: la <span class="highlight">distribución de claves</span>. Precisamente para resolverlo se crearon:',
+        'topic1.title': 'Criptografía de clave pública', 'topic1.desc': 'La criptografía asimétrica (RSA, ECC) resuelve el problema de la distribución de claves, pero es más lenta que la simétrica',
+        'topic2.title': 'El protocolo Diffie-Hellman', 'topic2.desc': 'Permite a dos partes crear una clave secreta compartida a través de un canal abierto',
+        'topic3.title': 'Distribución cuántica de claves', 'topic3.desc': 'Los protocolos BB84 y E91 resuelven el problema a nivel físico; se usan en sistemas que exigen la máxima seguridad',
+        'advanced.hybrid.heading': 'Sistemas híbridos',
+        'advanced.hybrid.text': 'Los sistemas reales casi siempre usan una <strong>combinación de criptografía simétrica y asimétrica</strong>:',
+        'hybrid.li1': '<strong>La parte asimétrica</strong>: para intercambiar de forma segura la clave simétrica (lento, pero resuelve el problema de la distribución)',
+        'hybrid.li2': '<strong>La parte simétrica</strong>: para cifrar los datos en sí (rápido y eficiente)',
+        'advanced.hybrid.outro': 'Así funcionan SSL/TLS (protección de sitios web), PGP (cifrado de correo) y Signal/WhatsApp (mensajería).',
+        'advanced.attacks.heading': 'Ataques a los cifrados simétricos',
+        'advanced.attacks.text': 'Incluso los algoritmos más robustos tienen vulnerabilidades si se usan mal:',
+        'attacks.li1': '<strong>Ataque por temporización</strong>: medir el tiempo de ejecución de las operaciones',
+        'attacks.li2': '<strong>Ataque por canal lateral</strong>: análisis del consumo de energía o de la radiación electromagnética',
+        'attacks.li3': '<strong>Ataque a la implementación</strong>: errores en el código de software o hardware',
+        'attacks.li4': '<strong>Ingeniería social</strong>: la forma más antigua y eficaz de obtener una clave',
+        'advanced.future.heading': 'El futuro de la criptografía simétrica',
+        'advanced.future.text': 'Con el avance de las computadoras cuánticas, algunos algoritmos simétricos quedarán amenazados:',
+        'future.li1': 'El <strong>algoritmo de Grover</strong> reduce la complejidad de la búsqueda exhaustiva de 2<sup>n</sup> a 2<sup>n/2</sup>',
+        'future.li2': '<strong>AES-256 y Kuznyechik</strong> siguen siendo seguros (2<sup>128</sup> operaciones aún es inalcanzable)',
+        'future.li3': 'Se están desarrollando <strong>algoritmos postcuánticos</strong> resistentes a los ataques cuánticos',
+        'advanced.facts.heading': 'Datos curiosos',
+        'facts.li1': 'El cifrado César fue usado por el ejército ruso en la Primera Guerra Mundial, y se rompía con frecuencia',
+        'facts.li2': 'Enigma, el cifrado simétrico nazi, fue descifrado gracias a matemáticos polacos y a una computadora británica',
+        'facts.li3': 'El AES se eligió tras un concurso de 5 años en el que participaron 15 algoritmos de todo el mundo',
+        'facts.li4': 'Una clave AES-256 tiene 2<sup>256</sup> valores posibles: más que el número de átomos del universo observable',
+        'facts.li5': 'El GOST 28147-89 ("Magma") se usó en el sistema bancario soviético y ruso durante más de 25 años',
+        'facts.li6': '"Kuznyechik" es totalmente compatible con los modos de operación del AES, lo que facilita la migración desde estándares occidentales',
+        'advanced.regulatory.heading': 'Particularidades regulatorias en Rusia',
+        'advanced.regulatory.text': 'En la Federación de Rusia, el <span class="highlight-neon">Servicio Federal de Seguridad (FSB de Rusia)</span> es el regulador autorizado en materia de protección criptográfica de la información. Esto significa que:',
+        'regulatory.li1': 'Todos los algoritmos de cifrado usados para proteger secretos de Estado deben estar certificados por el FSB',
+        'regulatory.li2': 'El hardware de cifrado (cifradores) está sujeto a certificación obligatoria',
+        'regulatory.li3': 'Para ciertas categorías de información (infraestructuras críticas, datos personales en organismos estatales), está prohibido usar algoritmos no certificados por el FSB',
+        'regulatory.li4': 'Los centros de gestión de claves deben cumplir los requisitos del regulador',
+        'advanced.regulatory.outro': 'Por eso, en el juego, al elegir "Protección según los requisitos de Rusia" solo están disponibles los algoritmos y el hardware rusos: un reflejo de los requisitos regulatorios reales.',
+        'insight4.label': 'Un momento filosófico:',
+        'insight4.text': 'La criptografía simétrica nos enseña un principio importante: <span class="highlight-gold">cuanto más simple el concepto, más fiable el sistema</span>. Una clave, dos operaciones, y miles de millones de transacciones protegidas cada día. A veces las soluciones más elegantes resultan ser las más poderosas. Y elegir entre AES y "Kuznyechik" no es solo una decisión técnica, sino también una cuestión de cumplimiento regulatorio, donde el <span class="highlight-neon">FSB de Rusia</span> establece las reglas para los sistemas nacionales.',
+        'actions.intro': 'Ahora entiendes la diferencia entre una PSK de red y claves por pares, y por qué cada tarea requiere un algoritmo distinto, desde el AES internacional hasta el "Kuznyechik" ruso',
+        'actions.play': '🚀 Iniciar la simulación de criptografía simétrica', 'actions.back': '← Volver a la lista de temas',
+        'actions.outro': 'En la simulación verás de primera mano la diferencia entre estos enfoques y entenderás por qué elegir un algoritmo no es solo una decisión técnica, sino también estratégica',
+        'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
+        'footer.line2': 'Este artículo es una explicación simplificada de los principios. Los sistemas reales usan combinaciones de algoritmos mucho más complejas y deben cumplir los requisitos regulatorios, incluido el <span class="highlight-neon">FSB de Rusia</span> para los sistemas usados en Rusia.',
+      },
+    };
+
+    function applyLanguage(lang) {
+      if (!I18N[lang]) lang = 'ru';
+      const dict = I18N[lang];
+      document.documentElement.lang = lang;
+      document.title = dict['meta.title'];
+      const descTag = document.getElementById('pageDescription');
+      if (descTag) descTag.setAttribute('content', dict['meta.description']);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.langBtn === lang);
+      });
+      try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn));
+    });
+
+    (function initLanguage() {
+      let saved = null;
+      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      if (!saved) {
+        const browserLang = (navigator.language || 'ru').slice(0, 2);
+        saved = I18N[browserLang] ? browserLang : 'ru';
+      }
+      applyLanguage(saved);
+    })();
+  </script>
+  <script>
+// Плавная прокрутка для якорных ссылок
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+anchor.addEventListener('click', function(e) {
+e.preventDefault();
+const targetId = this.getAttribute('href');
+if (targetId === '#') return;
+const targetElement = document.querySelector(targetId);
+if (targetElement) {
+window.scrollTo({ top: targetElement.offsetTop - 20, behavior: 'smooth' });
+}
+});
+});
+// Исправление проблемы с кнопками при раскрытии details
+const detailsElement = document.querySelector('.advanced-section');
+const articleActions = document.getElementById('article-actions');
+if (detailsElement) {
+detailsElement.addEventListener('toggle', function() {
+setTimeout(() => { if (articleActions) { articleActions.style.marginTop = '40px'; } }, 10);
+});
+}
+// Анимация для визуализации шифрования
+document.addEventListener('DOMContentLoaded', function() {
+const schemeBoxes = document.querySelectorAll('.scheme-box');
+schemeBoxes.forEach((box, index) => {
+setTimeout(() => {
+box.style.opacity = '0.8'; box.style.transform = 'scale(0.95)';
+setTimeout(() => { box.style.opacity = '1'; box.style.transform = 'scale(1)'; }, 300);
+}, index * 200);
+});
+const arrows = document.querySelectorAll('.scheme-arrow');
+arrows.forEach((arrow, index) => {
+setTimeout(() => {
+arrow.style.opacity = '0.6'; arrow.style.transform = 'translateX(-3px)';
+setTimeout(() => { arrow.style.opacity = '1'; arrow.style.transform = 'translateX(0)'; }, 300);
+}, index * 200 + 100);
+});
+const ruBadge = document.querySelector('.ru-badge');
+if (ruBadge) {
+setTimeout(() => { ruBadge.style.transform = 'scale(1.05)'; setTimeout(() => { ruBadge.style.transform = 'scale(1)'; }, 500); }, 1000);
+}
+});
+</script>
+</body>
+</html>

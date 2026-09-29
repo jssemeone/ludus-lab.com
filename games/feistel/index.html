@@ -1,0 +1,2525 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сеть Фейстеля — рождение DES</title>
+<link rel="icon" href="../../favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function(m,e,t,r,i,k,a){
+m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+m[i].l=1*new Date();
+for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-dark: #0a1a2a; --bg-darker: #050d15;
+    --text-primary: #c5d5e0; --text-secondary: #8ab0c5; --text-muted: #557585;
+    --accent-gold: #d4af37; --accent-blue: #00a2ff; --accent-green: #48bb78; --accent-orange: #ffa500; --accent-red: #ff5566;
+    --card-bg: rgba(5, 20, 30, 0.6); --card-border: rgba(0, 162, 255, 0.3);
+    --glow-blue: 0 0 10px rgba(0, 162, 255, 0.7), 0 0 20px rgba(0, 162, 255, 0.4);
+    --glow-gold: 0 0 10px rgba(212, 175, 55, 0.7), 0 0 20px rgba(212, 175, 55, 0.4);
+  }
+
+  body {
+    background: linear-gradient(to bottom, var(--bg-dark), var(--bg-darker));
+    color: var(--text-primary); font-family: 'Roboto', sans-serif; line-height: 1.7;
+    text-align: center; padding: 40px 20px 80px; min-height: 100vh; position: relative; overflow-x: hidden;
+  }
+  body::before {
+    content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at 20% 50%, rgba(0, 162, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 128, 0.03) 0%, transparent 50%);
+    pointer-events: none; z-index: -1;
+  }
+  .container { max-width: 1120px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* One fixed-size "game window": the step card (left) and the encryption map (right) are
+     always exactly the same height, and the Back/Next row sits below BOTH of them, centered.
+     Whatever doesn't fit scrolls INSIDE its own card (the step panel / #mapBody) instead of
+     stretching it, so nothing ever moves when a step has more or less text. */
+  :root { --game-h: 660px; }
+  .main-layout {
+    display: grid; grid-template-columns: minmax(0, 1fr) 380px; grid-template-rows: var(--game-h) auto;
+    grid-template-areas: "step map" "nav nav"; gap: 16px 22px; text-align: left;
+  }
+  .left-panel { grid-area: step; min-width: 0; min-height: 0; }
+  .right-panel { grid-area: map; min-height: 0; }
+  #navRow { grid-area: nav; margin-top: 0; }
+  @media (max-width: 1050px) {
+    .main-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: 620px auto 360px; grid-template-areas: "step" "nav" "map"; }
+  }
+
+  .action-card { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+  #stepPanel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  /* the bordered card itself is what scrolls, so its border stays put while content moves */
+  #stepPanel > .panel { flex: 1; min-height: 0; margin: 0; overflow-y: auto; }
+
+  #stepPanel > .panel, #mapBody, .overlay-body { scrollbar-width: thin; scrollbar-color: rgba(0,162,255,0.35) transparent; }
+  #stepPanel > .panel::-webkit-scrollbar, #mapBody::-webkit-scrollbar, .overlay-body::-webkit-scrollbar { width: 6px; }
+  #stepPanel > .panel::-webkit-scrollbar-thumb, #mapBody::-webkit-scrollbar-thumb, .overlay-body::-webkit-scrollbar-thumb { background: rgba(0,162,255,0.35); border-radius: 3px; }
+
+  .map-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px 16px 12px; height: 100%; display: flex; flex-direction: column; }
+  .map-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex: none; }
+  .map-title { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-blue); font-size: 0.95rem; }
+  .map-expand {
+    display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; cursor: pointer;
+    font-family: 'Oswald', sans-serif; font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--accent-gold); background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.4); border-radius: 5px; transition: all 0.2s ease;
+  }
+  .map-expand:hover { border-color: var(--accent-gold); box-shadow: var(--glow-gold); }
+  #mapBody { flex: 1; min-height: 0; overflow-y: auto; position: relative; padding-right: 8px; margin-right: -8px; }
+  .map-node { display: flex; gap: 12px; }
+  .map-dot-col { display: flex; flex-direction: column; align-items: center; width: 15px; flex-shrink: 0; }
+  .map-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--card-border); background: var(--bg-darker); flex-shrink: 0; transition: all 0.25s ease; }
+  .map-dot-col .map-line { flex: 1; width: 2px; margin: 3px 0; background: var(--card-border); min-height: 10px; }
+  .map-node.done .map-dot { background: #00ff80; border-color: #00ff80; }
+  .map-node.done .map-dot-col .map-line { background: rgba(72, 187, 120, 0.45); }
+  .map-node.current .map-dot { background: var(--accent-gold); border-color: var(--accent-gold); box-shadow: var(--glow-gold); animation: pulseGold 1.4s ease-in-out infinite; }
+  .map-node.upcoming .map-dot { opacity: 0.45; }
+  .map-body { flex: 1; padding-bottom: 16px; min-width: 0; }
+  .map-node:last-child .map-body { padding-bottom: 0; }
+  .map-label { font-family: 'Oswald', sans-serif; font-size: 0.85rem; letter-spacing: 0.3px; color: var(--text-muted); text-transform: uppercase; line-height: 1.3; }
+  .map-node.current .map-label { color: var(--accent-gold); font-weight: 700; }
+  .map-node.done .map-label { color: var(--text-secondary); }
+  .map-detail { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; font-family: 'Oswald', sans-serif; letter-spacing: 0.3px; }
+  .map-node.current .map-detail { color: var(--text-secondary); }
+  .map-node.clickable { cursor: pointer; }
+  .map-node.clickable:hover .map-label { color: var(--accent-blue); }
+  .map-node.clickable:hover .map-dot { box-shadow: 0 0 8px rgba(0, 255, 128, 0.6); }
+
+  /* Mini byte / subkey / round-pip visuals used inside map nodes */
+  .mf-bits { display: flex; justify-content: flex-start; gap: 3px; margin-top: 7px; flex-wrap: wrap; }
+  .mf-bit { width: 19px; height: 23px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--card-border); border-radius: 3px; background: rgba(5,15,25,0.7); font-family: 'Oswald', sans-serif; font-size: 0.68rem; color: var(--text-primary); }
+  .mf-chip { font-family: 'Oswald', sans-serif; font-size: 0.66rem; padding: 3px 6px; border: 1px solid var(--card-border); border-radius: 4px; color: var(--text-muted); background: rgba(5,15,25,0.6); }
+  .mf-chip.known { color: var(--accent-gold); border-color: rgba(212,175,55,0.4); background: rgba(212,175,55,0.1); }
+  .mf-pip { width: 11px; height: 11px; border-radius: 50%; border: 1px solid var(--card-border); background: rgba(0,50,80,0.5); }
+  .mf-pip.done { background: #00ff80; border-color: #00ff80; }
+  .mf-pip.current { background: var(--accent-gold); border-color: var(--accent-gold); }
+
+  /* Mini Feistel-round diagram inside a round map node */
+  .mf { margin-top: 8px; padding: 8px 9px; background: rgba(5,15,25,0.5); border: 1px solid var(--card-border); border-radius: 6px; }
+  .mf.mf-upcoming { opacity: 0.4; }
+  .mf-row { display: flex; justify-content: space-between; gap: 6px; }
+  .mf-cell { flex: 1; text-align: center; font-family: 'Oswald', sans-serif; font-size: 0.7rem; color: var(--text-secondary); background: rgba(0,162,255,0.08); border: 1px solid var(--card-border); border-radius: 4px; padding: 3px 2px; }
+  .mf-cell.mf-hd { color: var(--text-muted); background: transparent; }
+  .mf-down { text-align: center; color: var(--text-muted); font-size: 0.75rem; line-height: 1; margin: 2px 0; }
+  .mf-step { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 2px 0; padding: 4px 6px; border-radius: 4px; border: 1px dashed var(--card-border); font-size: 0.7rem; }
+  .mf-step .mf-tag { font-family: 'Oswald', sans-serif; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .mf-step .mf-eq { color: var(--accent-gold); font-family: 'Oswald', sans-serif; }
+  .mf-step.active { border-style: solid; border-color: var(--accent-gold); background: rgba(212,175,55,0.12); box-shadow: 0 0 6px rgba(212,175,55,0.35); animation: pulseGold 1.3s ease-in-out infinite; }
+  .mf-step.active .mf-tag { color: var(--accent-gold); }
+  .mf.mf-done .mf-step { border-style: solid; border-color: rgba(72,187,120,0.4); background: rgba(72,187,120,0.08); }
+  .mf.mf-done .mf-step .mf-eq { color: #00ff80; }
+  .mf.mf-done .mf-cell { border-color: rgba(72,187,120,0.4); color: var(--text-primary); }
+
+  .lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+  .lang-btn { background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3); font-size: 0.7rem; letter-spacing: 0.5px; padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  .lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+  .lang-btn.active { background: rgba(255, 215, 0, 0.18); border-color: #ffd700; color: #ffd700; box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+  @media (max-width: 600px) { .lang-switch { top: 8px; right: 8px; } .lang-btn { font-size: 0.6rem; padding: 3px 7px; } }
+
+  header { margin-bottom: 18px; }
+  h1 {
+    font-family: 'Oswald', sans-serif; font-size: 2.4rem; color: var(--accent-blue);
+    text-shadow: 0 0 10px rgba(0, 162, 255, 0.3); letter-spacing: 2px; margin-bottom: 3px;
+    text-transform: uppercase; font-weight: 700;
+  }
+  .line { width: 150px; height: 2px; margin: 8px auto 10px; background: linear-gradient(90deg, transparent, var(--accent-gold), transparent); }
+  .tagline { color: var(--text-secondary); font-size: 1rem; font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; }
+
+  .info-toggle {
+    margin: 22px 0 0; padding: 14px 18px; background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Oswald', sans-serif; color: var(--accent-blue); font-size: 1rem; letter-spacing: 0.5px;
+    user-select: none; transition: all 0.25s ease; text-transform: uppercase;
+  }
+  .info-toggle:hover { border-color: var(--accent-blue); box-shadow: var(--glow-blue); }
+  .info-toggle .plus { font-size: 1.3rem; transition: transform 0.25s ease; }
+  .info-toggle.open .plus { transform: rotate(45deg); }
+  .info-body {
+    text-align: left; display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s ease;
+    background: rgba(5, 20, 30, 0.4); border: 1px solid var(--card-border); border-top: none;
+    border-radius: 0 0 8px 8px; margin-top: -1px;
+  }
+  .info-body-inner { padding: 0 18px; min-height: 0; overflow: hidden; }
+  .info-toggle.open + .info-body { grid-template-rows: 1fr; }
+  .info-toggle.open + .info-body .info-body-inner { padding: 6px 18px 12px; }
+  .info-body p { font-size: 0.95rem; color: var(--text-secondary); margin: 10px 0; }
+
+  .step-dots { display: flex; justify-content: center; gap: 10px; margin: 16px 0 2px; flex-wrap: wrap; }
+  .step-dot {
+    width: 11px; height: 11px; border-radius: 50%; background: rgba(0,162,255,0.15);
+    border: 1px solid var(--card-border); transition: all 0.3s ease;
+  }
+  .step-dot.done { background: #00ff80; border-color: #00ff80; }
+  .step-dot.current { background: var(--accent-blue); box-shadow: var(--glow-blue); transform: scale(1.3); }
+  .step-labels { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+
+  .panel {
+    margin: 0 0 12px; padding: 14px 24px; background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 10px; box-shadow: 0 0 20px rgba(0, 162, 255, 0.15), inset 0 0 15px rgba(0, 100, 150, 0.08);
+    text-align: left;
+  }
+  .panel.input-panel { border-color: rgba(212, 175, 55, 0.3); box-shadow: 0 0 15px rgba(212, 175, 55, 0.1); }
+
+  .text-input-wrap { text-align: center; margin: 12px 0; }
+  .text-input {
+    display: block; width: 100%; max-width: 480px; margin: 0 auto; padding: 12px 16px;
+    font-size: 1.05rem; line-height: 1.6; min-height: 112px; resize: vertical;
+    font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; text-align: center;
+    background: rgba(5,15,25,0.75); border: 1px solid rgba(212,175,55,0.4); border-radius: 6px;
+    color: var(--text-primary); outline: none; transition: all 0.2s ease;
+  }
+  .text-input::placeholder { color: var(--text-muted); }
+  .text-input:focus { border-color: var(--accent-gold); box-shadow: var(--glow-gold); }
+  .text-counter { text-align: center; color: var(--text-muted); font-size: 0.8rem; font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; margin-bottom: 10px; }
+
+  /* Character grid: each character and its UTF-8 byte(s) live together in one self-contained
+     card, so packing several per row (instead of one table column per byte) never loses the
+     "whose byte is this" link the way a wide multi-column table would. */
+  .char-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px;
+    width: 100%; max-width: 560px; margin: 14px auto 0; padding: 12px;
+    border: 1px solid var(--card-border); border-radius: 8px; background: rgba(5,15,25,0.5);
+    max-height: 200px; overflow-y: auto;
+  }
+  .char-card {
+    display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 8px 4px 7px;
+    border: 1px solid var(--card-border); border-radius: 6px; background: rgba(5,15,25,0.5);
+    cursor: default; transition: all 0.2s ease;
+  }
+  .char-card:hover { border-color: var(--accent-blue); }
+  .char-card.card-selected { border-color: var(--accent-gold); background: rgba(212,175,55,0.08); box-shadow: 0 0 8px rgba(212,175,55,0.25); }
+  .char-idx { font-size: 0.6rem; color: var(--text-muted); font-family: 'Oswald', sans-serif; }
+  .char-glyph { font-family: 'Oswald', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--text-primary); line-height: 1.2; min-height: 1.2em; }
+  .char-glyph.char-newline { color: var(--text-muted); font-style: italic; font-size: 0.95rem; font-weight: 400; }
+  .char-bytes { display: flex; gap: 3px; flex-wrap: wrap; justify-content: center; }
+  .utf8-byte {
+    min-width: 30px; height: 28px; padding: 0 3px; display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--card-border); border-radius: 4px; background: rgba(5,15,25,0.7);
+    font-family: 'Oswald', sans-serif; font-size: 0.72rem; color: var(--text-secondary); cursor: pointer; transition: all 0.2s ease;
+  }
+  .utf8-byte:hover { border-color: var(--accent-blue); }
+  .utf8-byte.selected { border-color: var(--accent-gold); background: rgba(212,175,55,0.18); color: #fff; box-shadow: var(--glow-gold); }
+  @media (max-width: 480px) { .char-grid { grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); } }
+
+  .selected-byte-card {
+    margin: 14px auto 0; max-width: 460px; padding: 12px 18px; text-align: center;
+    background: rgba(212, 175, 55, 0.08); border: 1px solid rgba(212, 175, 55, 0.5);
+    border-radius: 8px; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2), inset 0 0 15px rgba(212, 175, 55, 0.06);
+    animation: popIn 0.3s ease;
+  }
+  .selected-byte-label {
+    font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--accent-gold); font-size: 0.85rem; margin-bottom: 12px; text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+  }
+  .selected-byte-card .byte-row { margin: 0 0 10px; flex-wrap: nowrap; }
+  @media (max-width: 560px) {
+    .selected-byte-card .byte-row { gap: 4px; }
+    .selected-byte-card .bit-cell { width: 28px; height: 36px; font-size: 1rem; }
+  }
+  .selected-byte-value {
+    font-family: 'Oswald', sans-serif; color: var(--text-primary); font-size: 0.95rem; letter-spacing: 0.5px;
+  }
+  .panel h2 {
+    font-family: 'Oswald', sans-serif; font-size: 1.5rem; color: var(--accent-gold);
+    margin-bottom: 10px; text-shadow: 0 0 8px rgba(212, 175, 55, 0.4); letter-spacing: 1px; text-transform: uppercase;
+  }
+  .panel p { color: var(--text-secondary); margin: 8px 0; font-size: 1rem; }
+  .speaker { color: var(--accent-gold); font-weight: 700; }
+  .highlight { color: var(--accent-blue); font-weight: 700; }
+  .highlight-gold { color: var(--accent-gold); font-weight: 700; }
+  .highlight-green { color: var(--accent-green); font-weight: 700; }
+
+  .intro-panel p { font-size: 0.95rem; line-height: 1.6; margin: 6px 0; }
+  .half-pair.compact { margin: 6px 0; }
+  .half-pair.compact .bit-cell { width: 34px; height: 34px; font-size: 1.05rem; }
+  .half-pair.compact .byte-row { gap: 6px; }
+  .algo-title { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-blue); font-size: 0.9rem; margin: 12px 0 8px; }
+  .algo-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 5px 18px; }
+  .algo-list li { position: relative; padding-left: 14px; font-size: 0.86rem; line-height: 1.4; color: var(--text-secondary); }
+  .algo-list li::before { content: "▸"; position: absolute; left: 0; color: var(--accent-gold); }
+  .algo-list li b { color: var(--accent-gold); font-weight: 700; }
+  .algo-note { margin-top: 8px; font-size: 0.8rem; color: var(--text-muted); }
+  @media (max-width: 700px) { .algo-list { grid-template-columns: 1fr; } }
+
+  .stage-label { font-family: 'Oswald', sans-serif; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-gold); margin: 2px 0 8px; }
+
+  .disclaimer {
+    background: rgba(255, 165, 0, 0.1); border-left: 3px solid var(--accent-orange);
+    padding: 9px 14px; margin: 8px 0; border-radius: 0 4px 4px 0; font-style: italic;
+    color: #ffcc80; font-size: 0.92rem;
+  }
+  .disclaimer.info { background: rgba(0, 162, 255, 0.08); border-left-color: var(--accent-blue); color: var(--text-secondary); font-style: normal; }
+  .disclaimer.success { background: rgba(72,187,120,0.1); border-left-color: var(--accent-green); color: #b9e3c6; font-style: normal; }
+
+  /* Explanation accordion: collapsed row -> very short gist -> "more" reveals the full text.
+     Heights animate through grid-template-rows (0fr -> 1fr), so no fixed max-height guesses. */
+  .explain { margin: 8px 0; border-left: 3px solid var(--accent-blue); background: rgba(0,162,255,0.08); border-radius: 0 6px 6px 0; }
+  .explain.warn { border-left-color: var(--accent-orange); background: rgba(255,165,0,0.1); }
+  .explain-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 14px; cursor: pointer; user-select: none; font-size: 0.9rem; color: var(--text-secondary); }
+  .explain-head:hover { color: var(--text-primary); }
+  .explain.warn .explain-head { color: #ffcc80; font-style: italic; }
+  .explain-arrow { flex: none; font-size: 0.8rem; transition: transform 0.25s ease; }
+  .explain.open .explain-arrow { transform: rotate(90deg); }
+  .x-collapse { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
+  .x-collapse > .x-inner { min-height: 0; overflow: hidden; visibility: hidden; transition: visibility 0s linear 0.3s; }
+  .explain.open > .x-collapse { grid-template-rows: 1fr; }
+  .explain.open > .x-collapse > .x-inner { visibility: visible; transition-delay: 0s; }
+  .detail.full > .x-collapse { grid-template-rows: 1fr; }
+  .detail.full > .x-collapse > .x-inner { visibility: visible; transition-delay: 0s; }
+  .explain-body { padding: 0 14px 12px; font-size: 0.92rem; color: var(--text-secondary); font-style: normal; }
+  .explain-short { line-height: 1.6; }
+  .explain-more { background: none; border: none; padding: 6px 0 0; cursor: pointer; font-family: 'Oswald', sans-serif; font-size: 0.78rem; letter-spacing: 0.8px; text-transform: uppercase; color: var(--accent-blue); }
+  .explain-more:hover { color: var(--accent-gold); }
+  .explain-full { padding-top: 4px; }
+  .explain .explain-full p, .info-body .explain-full p { font-size: 0.88rem; margin: 8px 0; }
+  .info-body .explain-body { padding: 0; }
+
+  .byte-row { display: flex; justify-content: center; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+  .bit-cell {
+    width: 42px; height: 44px; display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--card-border); border-radius: 6px; background: rgba(5,15,25,0.7);
+    font-family: 'Oswald', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--text-primary);
+    cursor: pointer; transition: all 0.2s ease; user-select: none;
+  }
+  .bit-cell:not(.static):hover { border-color: var(--accent-gold); transform: translateY(-2px); }
+  .bit-cell.static { cursor: default; }
+  .bit-cell.pending { color: var(--text-muted); border-style: dashed; background: rgba(5,15,25,0.4); }
+  .bit-cell.bit-active { color: #fff; background: rgba(0,162,255,0.22); border-color: var(--accent-blue); box-shadow: var(--glow-blue); }
+  .bit-cell.bit-active.resolving { animation: resolvePulse 0.5s ease-in-out infinite; }
+  @keyframes resolvePulse { 0%, 100% { box-shadow: var(--glow-blue); } 50% { box-shadow: 0 0 16px rgba(0,162,255,0.9), 0 0 28px rgba(0,162,255,0.5); } }
+  .bit-cell.bit-worked { color: var(--text-primary); background: rgba(0,162,255,0.07); border-color: rgba(0,162,255,0.35); animation: dimBlink 1.8s ease-in-out infinite; }
+  .bit-cell.just-revealed { animation: popIn 0.35s ease; }
+  @keyframes dimBlink { 0%, 100% { box-shadow: 0 0 3px rgba(0,162,255,0.2); } 50% { box-shadow: 0 0 9px rgba(0,162,255,0.55); } }
+  .bit-cell.key-slice { border-color: var(--accent-gold) !important; box-shadow: var(--glow-gold) !important; color: #fff; }
+  .bit-cell.diff-bit { border-color: var(--accent-red) !important; box-shadow: 0 0 10px rgba(255,85,102,0.7), 0 0 20px rgba(255,85,102,0.35) !important; color: #fff; }
+  .bit-cell.idx-bit { flex-direction: column; gap: 2px; height: 58px; }
+  .bit-cell.idx-bit .idx-sub { font-size: 0.58rem; font-weight: 400; color: var(--text-muted); letter-spacing: 0; }
+  .bit-cell.idx-bit.key-slice .idx-sub { color: rgba(255,255,255,0.7); }
+  /* Avalanche-effect animation: flipping one S-box probe bit visibly ripples through the
+     output. The flipped input bit gets an immediate ring pulse, the S-box arrow it flows
+     through pulses a beat later, and each differing output bit lights up in a left-to-right
+     cascade (staggered animation-delay set per element) instead of just snapping to red. */
+  .bit-cell.flip-pulse { animation: flipPulse 0.6s ease-out; }
+  @keyframes flipPulse {
+    0% { transform: scale(1.35); box-shadow: 0 0 0 rgba(255,85,102,0); }
+    35% { box-shadow: 0 0 16px rgba(255,85,102,0.85), 0 0 30px rgba(255,85,102,0.5); }
+    100% { transform: scale(1); }
+  }
+  .swap-note.arrow-pulse { animation: arrowPulse 0.5s ease-out; }
+  @keyframes arrowPulse {
+    0%, 100% { text-shadow: none; }
+    50% { color: #fff; text-shadow: 0 0 10px rgba(212,175,55,0.9); }
+  }
+  .bit-cell.diff-bit.avalanche { animation: avalancheRipple 0.55s ease-out backwards; }
+  @keyframes avalancheRipple {
+    0% { transform: scale(1.4); box-shadow: 0 0 0 rgba(255,85,102,0); }
+    40% { box-shadow: 0 0 18px rgba(255,85,102,0.9), 0 0 34px rgba(255,85,102,0.5); }
+    100% { transform: scale(1); }
+  }
+  /* A small gold/red spark physically flies from the flipped P bit, via the S-box arrow, to
+     each output bit that changed — the same "watch it actually move" idea as the key-schedule
+     rotation arc, applied to the avalanche demo so cause -> effect reads as motion, not just
+     a color change. Positioned in JS (real screen coordinates), timed to land exactly when
+     that bit's ripple glow (.avalanche above) starts. */
+  .avalanche-spark {
+    position: fixed; width: 11px; height: 11px; border-radius: 50%; left: 0; top: 0;
+    background: radial-gradient(circle, #fff 0%, var(--accent-gold) 45%, var(--accent-red) 100%);
+    box-shadow: 0 0 8px rgba(255,85,102,0.85), 0 0 16px rgba(212,175,55,0.55);
+    pointer-events: none; z-index: 150;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bit-cell.flip-pulse, .swap-note.arrow-pulse, .bit-cell.diff-bit.avalanche { animation: none; }
+  }
+
+  .bit-cell.wrap-next { border-color: var(--accent-gold); animation: pulseGold 1.2s ease-in-out infinite; }
+  .bit-cell.wrap-arc { animation: wrapArc 0.55s cubic-bezier(.4,0,.2,1) both; position: relative; z-index: 5; }
+  @keyframes pulseGold { 0%, 100% { box-shadow: 0 0 0 rgba(212,175,55,0); } 50% { box-shadow: var(--glow-gold); } }
+  @keyframes popIn { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes wrapArc {
+    0%   { transform: translate(var(--dx), var(--dy)); }
+    45%  { transform: translate(calc(var(--dx) * 0.5), calc(var(--dy) * 0.5 - 34px)); }
+    100% { transform: translate(0, 0); }
+  }
+  .bit-readout { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: -4px; margin-bottom: 8px; }
+  .bit-readout span { color: var(--accent-gold); font-family: 'Oswald', sans-serif; }
+  .bit-equation { text-align: center; font-family: 'Oswald', sans-serif; color: var(--text-secondary); font-size: 0.95rem; margin: 8px 0 4px; letter-spacing: 0.5px; }
+  .bit-equation .num { color: var(--accent-gold); }
+  .bit-equation.done { color: var(--accent-green); }
+
+  .half-pair { display: flex; justify-content: center; gap: 30px; margin: 10px 0; align-items: flex-start; flex-wrap: wrap; }
+  .half-block { text-align: center; }
+  .half-block .byte-row { margin: 0; }
+  .half-label { font-family: 'Oswald', sans-serif; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; }
+  .half-block.left .half-label { color: var(--accent-green); }
+  .half-block.right .half-label { color: var(--accent-blue); }
+
+  .op-row { display: flex; justify-content: center; align-items: center; gap: 14px; margin: 14px 0; flex-wrap: wrap; }
+  .op-symbol { font-size: 1.6rem; color: var(--accent-gold); font-family: 'Oswald', sans-serif; }
+  .op-eq { font-size: 1.4rem; color: var(--text-muted); }
+
+  /* S-box as a matrix: row = the two high bits of the input, column = the two low bits,
+     the cell holds the output. Row/column headers light up for the entry being looked up. */
+  .sbox-matrix { display: grid; grid-template-columns: 38px repeat(4, minmax(0, 1fr)); gap: 4px; max-width: 440px; margin: 6px auto 4px; }
+  .sm-head { display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 0.78rem; letter-spacing: 0.8px; color: var(--text-muted); transition: all 0.3s ease; }
+  .sm-head.hl { color: var(--accent-gold); text-shadow: 0 0 8px rgba(212,175,55,0.6); }
+  .sm-corner { font-size: 0.6rem; line-height: 1.1; color: var(--text-muted); text-align: center; align-self: center; }
+  .sbox-cell { display: flex; align-items: baseline; justify-content: center; gap: 6px; padding: 4px 2px; border: 1px solid var(--card-border); border-radius: 6px; background: rgba(5,15,25,0.6); transition: all 0.3s ease; }
+  .sbox-cell .val { font-family: 'Oswald', sans-serif; font-size: 1.1rem; color: var(--text-secondary); }
+  .sbox-cell .bin { font-size: 0.62rem; color: var(--text-muted); letter-spacing: 0.5px; }
+  .sbox-cell.active { background: rgba(212,175,55,0.18); border-color: var(--accent-gold); box-shadow: var(--glow-gold); }
+  .sbox-cell.active .val { color: #fff; }
+  .sbox-cell.active .bin { color: rgba(255,255,255,0.75); }
+  .sbox-note { text-align: center; color: var(--text-muted); font-size: 0.8rem; line-height: 1.4; margin: 8px auto 2px; }
+  .sbox-note.ok { color: var(--accent-green); }
+  .sbox-note.bad { color: var(--accent-orange); }
+  /* In the avalanche demo, the matrix shows both the previous S-box lookup (dashed, muted —
+     "where P used to point") and the current one (solid gold, from the existing .hl/.active
+     rules) at once, so a bit flip visibly moves the lookup from one matrix cell to another. */
+  .sm-head.hl-prev { color: rgba(212,175,55,0.6); text-decoration: underline dashed rgba(212,175,55,0.6); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .sbox-cell.was { border-style: dashed; border-width: 2px; border-color: rgba(212,175,55,0.45); background: rgba(212,175,55,0.05); }
+  .sbox-cell.was .val { color: var(--text-primary); }
+  /* Small on-screen key so "solid gold = now, dashed = before" isn't only explained in prose. */
+  .sbox-legend { display: flex; gap: 18px; justify-content: center; align-items: center; margin: 2px 0 10px; font-family: 'Oswald', sans-serif; font-size: 0.72rem; letter-spacing: 0.5px; text-transform: uppercase; }
+  .sbox-legend-item { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
+  .sbox-legend-item .dot { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+  .sbox-legend-item.now { color: var(--accent-gold); }
+  .sbox-legend-item.now .dot { background: var(--accent-gold); box-shadow: var(--glow-gold); }
+  .sbox-legend-item.prev { color: rgba(212,175,55,0.75); }
+  .sbox-legend-item.prev .dot { background: transparent; border: 2px dashed rgba(212,175,55,0.6); }
+  .av-history { margin-top: 10px; border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; }
+  .av-hist-row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 12px; font-family: 'Oswald', sans-serif; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--card-border); }
+  .av-hist-row:first-child { border-top: none; }
+  .av-hist-row.latest { color: var(--accent-gold); background: rgba(212,175,55,0.08); }
+  .av-hist-diff { color: var(--text-secondary); flex: none; }
+  .av-hist-row.latest .av-hist-diff { color: var(--accent-gold); }
+
+  .round-track { display: flex; justify-content: center; gap: 6px; margin: 2px 0 10px; }
+  .round-pip {
+    width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-family: 'Oswald', sans-serif; border: 1px solid var(--card-border); color: var(--text-muted);
+  }
+  .round-pip.done { background: var(--accent-green); border-color: var(--accent-green); color: #04210f; }
+  .round-pip.current { background: var(--accent-gold); border-color: var(--accent-gold); color: #2a1d00; box-shadow: var(--glow-gold); }
+  .round-track.ks-tabs { gap: 14px; margin: 6px 0 12px; }
+  .round-track.ks-tabs .round-pip { width: 38px; height: 38px; font-size: 1.05rem; cursor: pointer; transition: all 0.2s ease; }
+  .round-track.ks-tabs .round-pip:hover { border-color: var(--accent-gold); }
+  .round-track.ks-tabs .round-pip.attention { border-color: var(--accent-gold); box-shadow: var(--glow-gold); animation: pipBounce 1.1s ease-in-out infinite; }
+  @keyframes pipBounce {
+    0%, 100% { transform: translateY(0); }
+    20% { transform: translateY(-10px); }
+    40% { transform: translateY(0); }
+    55% { transform: translateY(-5px); }
+    70% { transform: translateY(0); }
+  }
+
+  .swap-note { text-align: center; color: var(--accent-gold); font-family: 'Oswald', sans-serif; font-size: 0.95rem; margin: 5px 0; letter-spacing: 0.5px; }
+  .arrow-swap { display: inline-block; animation: swapPulse 1.4s infinite; }
+  @keyframes swapPulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+  .btn-row { display: flex; justify-content: center; gap: 14px; margin-top: 14px; flex-wrap: wrap; }
+  .btn {
+    font-family: 'Oswald', sans-serif; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 11px 22px; border-radius: 6px; cursor: pointer; border: 1px solid; transition: all 0.25s ease; background: transparent;
+  }
+  .btn-primary { color: var(--accent-blue); border-color: rgba(0,162,255,0.4); background: rgba(0,162,255,0.1); }
+  .btn-primary:hover { border-color: var(--accent-blue); box-shadow: var(--glow-blue); transform: translateY(-2px); }
+  .btn-gold { color: var(--accent-gold); border-color: rgba(212,175,55,0.4); background: rgba(212,175,55,0.1); }
+  .btn-gold:hover { border-color: var(--accent-gold); box-shadow: var(--glow-gold); transform: translateY(-2px); }
+  .btn-ghost { color: var(--text-muted); border-color: var(--card-border); }
+  .btn-ghost:hover { color: var(--text-secondary); border-color: var(--text-secondary); }
+  .nav-hint { flex: 0 0 100%; text-align: center; color: var(--accent-gold); font-size: 0.8rem; line-height: 1.4; }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+  /* Detailed-status overlay opened from the map's expand button */
+  .overlay { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(2, 8, 14, 0.78); backdrop-filter: blur(3px); animation: ovFade 0.2s ease; }
+  .overlay[hidden] { display: none; }
+  @keyframes ovFade { from { opacity: 0; } to { opacity: 1; } }
+  .overlay-card { width: 100%; max-width: 760px; max-height: min(86vh, 820px); display: flex; flex-direction: column; text-align: left; background: #08192a; border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 0 40px rgba(0,162,255,0.25); animation: popIn 0.25s ease; }
+  .overlay-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 16px 20px 10px; }
+  .overlay-title { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-blue); font-size: 1.1rem; }
+  .overlay-sub { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+  .overlay-close { flex: none; width: 34px; height: 34px; cursor: pointer; font-size: 1rem; color: var(--text-secondary); background: transparent; border: 1px solid var(--card-border); border-radius: 6px; transition: all 0.2s ease; }
+  .overlay-close:hover { color: var(--accent-gold); border-color: var(--accent-gold); }
+  .overlay-progress { height: 3px; margin: 0 20px 6px; background: rgba(0,162,255,0.15); border-radius: 2px; overflow: hidden; }
+  .overlay-progress > div { height: 100%; background: #00ff80; transition: width 0.3s ease; }
+  .overlay-body { flex: 1; min-height: 0; overflow-y: auto; padding: 10px 20px 20px; position: relative; }
+  .ov-step { display: flex; gap: 14px; padding: 13px 15px; margin-bottom: 10px; border: 1px solid var(--card-border); border-radius: 8px; background: rgba(5,15,25,0.55); }
+  .ov-step.done { border-color: rgba(72,187,120,0.4); }
+  .ov-step.current { border-color: var(--accent-gold); box-shadow: 0 0 12px rgba(212,175,55,0.25); }
+  .ov-step.upcoming { opacity: 0.72; }
+  .ov-step.clickable { cursor: pointer; }
+  .ov-step.clickable:hover { border-color: #00ff80; }
+  .ov-icon { flex: none; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; border: 2px solid var(--card-border); color: var(--text-muted); }
+  .ov-step.done .ov-icon { background: #00ff80; border-color: #00ff80; color: #04210f; }
+  .ov-step.current .ov-icon { background: var(--accent-gold); border-color: var(--accent-gold); color: #2a1d00; animation: pulseGold 1.4s ease-in-out infinite; }
+  .ov-main { flex: 1; min-width: 0; }
+  .ov-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .ov-name { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.95rem; color: var(--text-secondary); }
+  .ov-step.current .ov-name { color: var(--accent-gold); font-weight: 700; }
+  .ov-pill { font-family: 'Oswald', sans-serif; font-size: 0.66rem; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; border: 1px solid var(--card-border); color: var(--text-muted); }
+  .ov-step.done .ov-pill { color: #00ff80; border-color: rgba(0,255,128,0.4); }
+  .ov-step.current .ov-pill { color: var(--accent-gold); border-color: rgba(212,175,55,0.5); }
+  .ov-what { font-size: 0.86rem; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+  .ov-result { margin-top: 8px; font-family: 'Oswald', sans-serif; font-size: 0.88rem; letter-spacing: 0.4px; color: var(--accent-gold); word-break: break-word; }
+  .ov-main .mf-bits { margin-top: 6px; }
+  .ov-subs { margin-top: 8px; display: grid; gap: 4px; }
+  .ov-sub { display: flex; gap: 8px; align-items: baseline; font-size: 0.82rem; color: var(--text-muted); }
+  .ov-sub .ov-sub-ico { flex: none; width: 14px; text-align: center; }
+  .ov-sub.done { color: var(--text-secondary); }
+  .ov-sub.done .ov-sub-ico { color: #00ff80; }
+  .ov-sub.current { color: var(--accent-gold); }
+  .ov-sub .ov-sub-val { font-family: 'Oswald', sans-serif; color: var(--accent-gold); letter-spacing: 0.3px; }
+  .ov-goto { margin-top: 8px; font-family: 'Oswald', sans-serif; font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase; color: #00ff80; }
+
+  footer { margin-top: 50px; font-size: 0.85rem; color: var(--text-muted); }
+  footer a { color: var(--accent-blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 900px) { h1 { font-size: 2rem; } }
+  @media (max-width: 600px) {
+    h1 { font-size: 1.6rem; }
+    .bit-cell { width: 32px; height: 42px; font-size: 1.05rem; }
+    .panel { padding: 18px; }
+    .half-pair { gap: 16px; }
+    /* The 3-operand XOR equation (R ⊕ K = X) doesn't fit one line on a phone; instead of an
+       unpredictable mid-row wrap, stack operand / operator / operand / "=" / result top to
+       bottom so it still reads left-to-right as one sequence. */
+    .op-row { flex-direction: column; gap: 8px; }
+    .op-row .half-block { width: 100%; }
+    .algo-list { grid-template-columns: 1fr; }
+    .overlay { padding: 10px; }
+    .overlay-card { max-height: 92vh; }
+    .overlay-head { padding: 14px 16px 8px; }
+    .overlay-body { padding: 8px 16px 16px; }
+    .ov-step { padding: 11px 12px; gap: 10px; }
+  }
+  @media (max-width: 480px) { .bit-cell { width: 28px; height: 38px; } .byte-row { gap: 5px; } }
+</style>
+</head>
+<body>
+<div class="lang-switch" role="group" aria-label="Language">
+  <button class="lang-btn" data-lang-btn="ru">RU</button>
+  <button class="lang-btn" data-lang-btn="en">EN</button>
+  <button class="lang-btn" data-lang-btn="es">ES</button>
+</div>
+
+<div class="container">
+  <header>
+    <h1 data-i18n="game.title">Сеть Фейстеля</h1>
+    <div class="line"></div>
+    <p class="tagline" data-i18n="game.tagline">Как из одной идеи родился DES — и почти вся симметричная криптография</p>
+  </header>
+
+  <div class="info-toggle" id="infoToggle">
+    <span data-i18n="info.toggle">ℹ️ Как работает шифр?</span><span class="plus">+</span>
+  </div>
+  <div class="info-body">
+    <div class="info-body-inner" id="infoInner"></div>
+  </div>
+
+  <div class="step-dots" id="stepDots"></div>
+  <div class="step-labels" id="stepLabel"></div>
+
+  <div class="main-layout">
+    <div class="left-panel">
+      <div class="action-card">
+        <div id="stepPanel"></div>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="map-card">
+        <div class="map-head">
+          <div class="map-title" data-i18n="map.title">Карта шифрования</div>
+          <button class="map-expand" id="mapExpand" type="button"><span aria-hidden="true">⤢</span><span data-i18n="map.expand">Подробно</span></button>
+        </div>
+        <div id="mapBody"></div>
+      </div>
+    </div>
+    <div class="btn-row" id="navRow"></div>
+  </div>
+
+  <footer>
+    <div data-i18n="footer.note">Учебная демонстрация сети Фейстеля · упрощённый S-блок и расписание ключей</div>
+    <div style="margin-top:8px"><a href="https://ludus-lab.ru/" data-i18n="nav.home">Вернуться в лабораторию</a></div>
+  </footer>
+</div>
+
+<div class="overlay" id="mapOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="ovTitle">
+  <div class="overlay-card">
+    <div class="overlay-head">
+      <div>
+        <div class="overlay-title" id="ovTitle"></div>
+        <div class="overlay-sub" id="ovSub"></div>
+      </div>
+      <button class="overlay-close" id="ovClose" type="button">✕</button>
+    </div>
+    <div class="overlay-progress"><div id="ovBar"></div></div>
+    <div class="overlay-body" id="ovBody"></div>
+  </div>
+</div>
+
+<div class="overlay" id="avalancheOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="avTitle">
+  <div class="overlay-card">
+    <div class="overlay-head">
+      <div>
+        <div class="overlay-title" id="avTitle"></div>
+        <div class="overlay-sub" id="avSub"></div>
+      </div>
+      <button class="overlay-close" id="avClose" type="button">✕</button>
+    </div>
+    <div class="overlay-body" id="avBody"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ===== I18N =====
+  const I18N = {
+    ru: {
+      'meta.title': 'Сеть Фейстеля — рождение DES',
+      'game.title': 'Сеть Фейстеля',
+      'game.tagline': 'Как из одной идеи родился DES — и почти вся симметричная криптография',
+      'info.toggle': 'ℹ️ Как работает шифр?',
+      'info.p1': 'В 1971 году в IBM <span class="highlight-gold">Хорст Фейстель</span> придумал схему, которая решала странную проблему: как сделать шифр, который расшифровывается тем же способом, каким зашифровали, даже если внутренняя «функция перемешивания» сама по себе необратима?',
+      'info.p2': 'Решение: <span class="highlight">разрезать блок данных пополам</span>, перемешать одну половину с помощью ключа и подмешать результат в другую, а затем поменять половины местами. Повторить несколько раз — получится шифр. Проделать то же самое, но с ключами в обратном порядке — и шифр расшифруется сам.',
+      'info.p3': '<span class="highlight-gold">Дон Копперсмит</span> помог довести эту идею (через шифр Lucifer) до стандарта <span class="highlight">DES</span> — разработав S-блоки, устойчивые к атакам, о которых остальной мир узнал лишь спустя десятилетия. В СССР по тому же принципу построили собственный стандарт — <span class="highlight-gold">ГОСТ 28147-89</span>, ныне «Магма» (ГОСТ Р 34.12-2015): та же сеть Фейстеля, но с 32 раундами и 256-битным ключом.',
+      'footer.note': 'Учебная демонстрация сети Фейстеля · упрощённый S-блок и расписание ключей',
+      'nav.home': 'Вернуться в лабораторию',
+      'phase.0': 'Идея', 'phase.1': 'Текст', 'phase.2': 'Сообщение', 'phase.3': 'Ключ', 'phase.4': 'Расписание ключей', 'phase.5': 'S-блок', 'phase.6': 'Раунды', 'phase.7': 'Шифротекст', 'phase.8': 'Расшифровка', 'phase.9': 'Итоги',
+      'btn.back': '← Назад', 'btn.next': 'Далее →',
+      'btn.randKey': '🎲 Случайный ключ',
+      'btn.decrypt': '▶ Расшифровать по раундам', 'btn.nextRound': 'Следующий раунд ▶',
+      'btn.retry': '↺ Попробовать с другим сообщением',
+      'readout.bits': '= <span>{d}</span> (десятичное)',
+      'intro.h': 'Идея сети Фейстеля',
+      'intro.tip': '💡 Каждый шаг интерактивен: переключайте биты и наблюдайте, как меняется результат.',
+      'intro.p1': 'Сеть Фейстеля (Хорст Фейстель, IBM, начало 1970-х) — схема построения блочных шифров. Блок делится пополам на <span class="highlight-green">L</span> и <span class="highlight">R</span>; в каждом раунде R смешивается с подключом и проходит через функцию F, результат добавляется (⊕) к L, после чего половины меняются местами. Главное свойство: F не обязана быть обратимой — расшифровка идёт той же схемой с подключами в обратном порядке.',
+      'intro.base': 'Это прообраз и основа <span class="highlight">DES</span> и российской <span class="highlight-gold">Магмы</span> (ГОСТ 28147-89 / ГОСТ Р 34.12-2015): оба шифра — сети Фейстеля. Они различаются размером блока и ключа, числом раундов (16 у DES, 32 у Магмы), функцией F и S-блоками.',
+      'intro.algoTitle': 'Что построено на сети Фейстеля',
+      'intro.a1': '<b>Lucifer</b> (IBM, начало 1970-х) — прямой предок DES',
+      'intro.a2': '<b>DES</b> (1977) и <b>3DES</b> — блок 64 бита, 16 раундов',
+      'intro.a3': '<b>Магма</b> (ГОСТ 28147-89 → ГОСТ Р 34.12-2015) — блок 64 бита, ключ 256 бит, 32 раунда',
+      'intro.a4': '<b>Blowfish</b> (1993), <b>CAST-128</b>, <b>Twofish</b> — популярные открытые шифры 1990-х',
+      'intro.a5': '<b>Camellia</b> — международный стандарт (ISO/IEC), применяется в TLS',
+      'intro.a6': '<b>KASUMI</b> — шифр сотовой связи 3G',
+      'intro.a7': '<b>FF1 / FF3</b> (NIST SP 800-38G) — шифрование с сохранением формата данных',
+      'intro.notFeistel': 'Не сети Фейстеля: AES и российский «Кузнечик» (подстановочно-перестановочные сети).',
+      'textprep.h': 'Шаг 1 — подготовка текста',
+      'textprep.p1': 'Прежде чем что-то шифровать, это нужно подготовить: компьютер работает не с буквами, а с битами. Стандарт UTF-8 переводит каждый символ в один или несколько байт — введите слово или фразу и посмотрите, что из этого получится.',
+      'textprep.counter': '{chars} символов · {bytes} байт',
+      'textprep.p2': 'Кликните по любому байту ниже — именно с ним мы будем работать дальше, как с открытым текстом.',
+      'textprep.selectedLabel': '✅ Выбран байт символа «{ch}»', 'textprep.selectedValue': '{val} · двоично {bin}',
+      'textprep.empty': 'Введите текст',
+      'textprep.disclaimerTeaser': '⚠️ Настоящие шифры обрабатывают весь текст, а не один байт',
+      'textprep.disclaimer': 'Настоящие шифры обрабатывают все байты сообщения по очереди (или блоками), а не один-единственный байт. Здесь для наглядности мы возьмём только один выбранный байт из вашего текста и разберём на нём всю сеть Фейстеля целиком. Так же устроены и DES, и российская Магма (ГОСТ 28147-89 / ГОСТ Р 34.12-2015) — оба шифруют сообщение блоками по 8 байт (64 бита), а не побайтово.',
+      'msg.h': 'Шаг 2 — открытый текст',
+      'msg.p': 'Вот байт, который вы выбрали из своего текста, — это и есть открытый текст, который Алиса передаёт Бобу. Если нужен другой байт — вернитесь на шаг назад и выберите его в тексте.',
+      'msg.pManual': 'На прошлом шаге текст не был введён, так что выбирать байт не из чего. Выставьте открытый текст вручную — кликайте по битам ниже, чтобы переключать 0 и 1.',
+      'key.h': 'Шаг 3 — общий секретный ключ',
+      'key.p': 'Алиса и Боб заранее согласовали общий секретный ключ — тоже 8&nbsp;бит. На следующем шаге разберём, как из одного этого ключа для каждого раунда получается свой подключ.',
+      'ks.h': 'Шаг 4 — расписание ключей',
+      'ks.p1': 'Мастер-ключ не используется в раундах напрямую: для каждого раунда из него получают отдельный подключ. В настоящем DES это делают перестановки и сдвиги — из 56-битного ключа получают 16 разных 48-битных подключей. В российской Магме всё иначе: 256-битный ключ просто делят на восемь 32-битных кусков — подробнее ниже.',
+      'ks.p2': 'Здесь правило проще: для раунда r ключ поворачивается влево на (r × 3) mod 8 бит — у каждого раунда получается своё число бит сдвига, а младшие 4 бита результата становятся подключом K этого раунда.',
+      'ks.shiftOverview': 'Поэтому сдвиг у каждого раунда свой, хотя ключ один и тот же:',
+      'ks.shiftChip': 'Раунд {i}: {shift} бит',
+      'ks.shiftFixed': 'Сама эта формула — часть описания шифра, зафиксированная заранее, как и S-блок: она одна и та же для любого ключа. Возьмите другой мастер-ключ — сдвиги 3/6/1/4 останутся теми же самыми, изменятся только получившиеся числа K1..K4.',
+      'ks.shiftLine': 'Раунд {r}: ключ нужно повернуть влево на {shift} бит.',
+      'ks.stepHint': 'Каждый клик — это один шаг поворота на 1 бит: крайний левый бит переходит в конец, а все остальные сдвигаются на одну позицию влево.',
+      'ks.stepProgress': 'Шаг {step} из {shift}',
+      'ks.stepBtn': 'Сдвинуть на 1 бит →',
+      'ks.skipBtn': 'Показать результат сразу',
+      'ks.replayBtn': '↺ Повторить анимацию',
+      'ks.masterLabel': 'Мастер-ключ (8 бит)',
+      'ks.rotatedLabel': 'После поворота на {shift} бит',
+      'ks.result': 'Младшие 4 бита ({bin}) — подключ K{r} = {val}.',
+      'ks.wasPos': 'было {j}',
+      'ks.timing': 'Все четыре подключа можно вычислить заранее, ещё до первого раунда: они зависят только от мастер-ключа, а не от сообщения. Алиса и Боб получают одинаковые K1..K4 независимо друг от друга, потому что знают один и тот же ключ.',
+      'ks.tabsHint': 'Кнопки 1–4 переключают, для какого раунда показана анимация сдвига — у каждого раунда своё число бит сдвига. Подключ раунда считается определённым, только когда выполнен его собственный сдвиг, — чтобы продолжить, пройдите все четыре.',
+      'ks.disclaimerTeaser': '⚠️ В DES и Магме расписание ключей устроено сложнее',
+      'ks.disclaimer': 'В настоящем DES расписание ключей устроено сложнее: 56-битный ключ дважды переставляется (PC-1/PC-2), а на каждом из 16 раундов циклически сдвигается на 1–2 бита, давая 16 разных 48-битных подключей. Здесь — один поворот всего байта и младшие 4 бита, чтобы принцип «один ключ → разные подключи по раундам» было видно без лишней арифметики. В Магме ключ длиннее — 256 бит — и делится на восемь 32-битных кусков K1…K8: в раундах 1–24 они используются по кругу в этом же порядке, а в раундах 25–32 — в обратном; никаких сдвигов или перестановок самого ключа, в отличие от DES, здесь нет.',
+      'sboxprep.h': 'Шаг 5 — подготовка S-блока',
+      'sboxprep.p1': 'S-блок — часть описания самого шифра, а не секрет текущего сеанса связи. Его фиксируют один раз, когда шифр проектируют (для Lucifer/DES это сделали в IBM, для российской Магмы таблицы прописаны в тексте ГОСТ Р 34.12-2015), и с тех пор используют без изменений для любого ключа и любого сообщения — в отличие от подключей K1..K4, S-блок вообще не зависит от мастер-ключа.',
+      'sboxprep.p2': 'Хороший S-блок должен быть, во-первых, перестановкой: каждое из 16 возможных значений на выходе используется ровно один раз, иначе часть информации о входе терялась бы безвозвратно. Во-вторых — нелинейным: маленькое изменение входа (даже один бит) должно заметно и непредсказуемо менять выход. Это называют лавинным эффектом.',
+      'sboxprep.permYes': '✅ Проверено: это перестановка — все значения 0–15 встречаются по одному разу',
+      'sboxprep.permNo': '⚠️ В этой таблице встречаются повторы — такой S-блок терял бы информацию о входе.',
+      'sboxprep.avalancheIntro': 'Проверим это на пробном значении P: ниже есть демонстрация — кликами по биту P смотрим, как меняется F(P) и какая ячейка матрицы ищется.',
+      'sboxprep.arrow': '↓ S-блок',
+      'sboxprep.bridge': 'Эта уже готовая таблица используется без изменений в каждом раунде: там мы просто подставляем очередное значение X и читаем готовый результат F(X).',
+      'sboxprep.disclaimerTeaser': '⚠️ В DES и Магме S-блоки устроены сложнее',
+      'sboxprep.disclaimer': 'Настоящие S-блоки DES устроены сложнее: их восемь (по одному на каждый 6-битный кусок расширенного блока), каждый переводит 6 бит в 4, а критерии их подбора (устойчивость к дифференциальному криптоанализу) держались в секрете до конца 1980-х. Здесь — один блок 4→4, чтобы идею перестановки и лавинного эффекта было проще увидеть. В Магме тоже восемь S-блоков 4→4, но в оригинальном ГОСТ 28147-89 их конкретный набор не был частью стандарта — считался дополнительным секретом и мог отличаться у разных ведомств; современный ГОСТ Р 34.12-2015 («Магма») наконец зафиксировал единственный официальный набор.',
+      'rounds.h': 'Шаг 6 — раунд шифрования {r} из {tot}',
+      'rounds.intro': 'Каждый раунд состоит из трёх этапов: сложение правой половины с подключом, прогон результата через S-блок и сложение с левой половиной — после чего половины меняются местами.',
+      'rounds.stage.xor1': 'Этап 1 из 3 — сложение с подключом',
+      'rounds.stage.sbox': 'Этап 2 из 3 — S-блок',
+      'rounds.stage.xor2': 'Этап 3 из 3 — сложение с левой половиной',
+      'rounds.stage.done': 'Раунд завершён',
+      'rounds.a': 'Складываем правую половину <span class="highlight">R{p}</span> и подключ раунда <span class="highlight-gold">K{r}</span> по модулю 2 (операция ⊕, «исключающее ИЛИ») — бит за битом:',
+      'rounds.bitEq': 'Бит {i} из {tot}: {a} ⊕ {b} = ?',
+      'rounds.bitEqDone': '{label} готов: {val}',
+      'rounds.xor1.done': 'Результат: X = R{p} ⊕ K{r} = {x}.',
+      'rounds.sboxRecap': 'S-блок уже подготовлен на предыдущем шаге — здесь мы просто находим в матрице ячейку для входа X = {x} (строка — два старших бита, столбец — два младших):',
+      'rounds.gotF': 'Получили F = {f} (двоично {fbin}).',
+      'rounds.c': 'Складываем F с левой половиной <span class="highlight">L{p}</span> по тому же правилу, получая новую правую половину <span class="highlight">R{r}</span> — тоже бит за битом:',
+      'rounds.swap': '<span class="arrow-swap">⇄</span> Половины меняются местами: старое R{p} становится новым L{r}',
+      'rounds.last': 'Это был последний раунд. Дальше — финальный обмен половинами и готовый шифротекст.',
+      'cipher.h': 'Шаг 7 — шифротекст готов',
+      'cipher.p': 'После последнего раунда половины меняются местами в последний раз (это стандартный финальный обмен, как в настоящем DES; в Магме тот же эффект даёт то, что в последнем, 32-м раунде половины просто не меняют местами) — именно из-за него расшифровка использует тот же механизм, что и шифрование.',
+      'cipher.lAfter': 'L (после обмена)', 'cipher.rAfter': 'R (после обмена)',
+      'cipher.readout': 'Шифротекст = <span>{v}</span>',
+      'cipher.alice': '<span class="speaker">Алиса:</span> передаёт это число Бобу; без ключа оно не раскрывает исходное сообщение.',
+      'dec.h': 'Шаг 8 — Боб расшифровывает',
+      'dec.p': 'У Боба есть шифротекст <span class="highlight">{c}</span> и тот же секретный ключ. Он запускает ту же сеть Фейстеля, но берёт подключи в обратном порядке: K4, K3, K2, K1.',
+      'dec.round': 'Раунд расшифровки {r} из {tot} — используется подключ <span class="highlight-gold">K{k}</span> (тот же самый, что был на одноимённом раунде шифрования, просто очередь обратная).',
+      'dec.newHalves': '⇄ → новые половины',
+      'dec.final': 'После финального обмена половинами получаем восстановленный байт:',
+      'dec.readout': '= <span>{rec}</span>, исходное сообщение было <span>{orig}</span>',
+      'dec.ok': '✅ Совпадает! Сеть Фейстеля сама себя расшифровала — той же схемой, просто с обратным порядком подключей.',
+      'dec.bad': '⚠️ Не совпало — это сигнал ошибки в демо, а не в идее Фейстеля.',
+      'sum.h': '🎓 Что здесь главное',
+      'sum.p1': 'Главный фокус сети Фейстеля: <span class="highlight">функция F не обязана быть обратимой</span>. Внутри раунда S-блок можно использовать как угодно сложно и «однонаправленно» — расшифровка работает не потому, что F можно отменить, а потому что <em>сама структура</em> «раздели — перемешай — поменяй местами» обратима, если применить ключи в обратном порядке.',
+      'sum.p2': 'Эту идею Хорст Фейстель заложил в шифр <span class="highlight-gold">Lucifer</span> в IBM (конец 1960-х – начало 1970-х). Позже Дон Копперсмит помог переработать S-блоки так, чтобы шифр устоял перед дифференциальным криптоанализом — атакой, которую научное сообщество переоткрыло только в конце 1980-х. Доработанный Lucifer стал стандартом <span class="highlight">DES</span> (1977), а сама идея сети Фейстеля используется в десятках шифров до сих пор. В СССР по тому же принципу создали ГОСТ 28147-89 (принят в 1989 году); в 2015 году его шифр под названием «Магма» вошёл в ГОСТ Р 34.12-2015 — это российский аналог DES, действующий и сегодня.',
+      'sum.disclaimerTeaser': '⚠️ Реальные шифры (DES, Магма) устроены масштабнее',
+      'sum.disclaimer': 'Это очень упрощённая модель: настоящий Lucifer работал с блоками по 128 бит, несколькими взаимосвязанными S-блоками и куда более серьёзным расписанием ключей (DES — 64-битные блоки, 16 раундов). Здесь — один байт, один S-блок и 4 раунда, чтобы идею можно было увидеть глазами. Магма (ГОСТ 28147-89 / ГОСТ Р 34.12-2015) устроена по тому же принципу сети Фейстеля, что и в этой игре, — просто в куда большем масштабе: блок 64 бита, ключ 256 бит, 32 раунда. Есть и отличие: в Магме подключ прибавляется к правой половине не побитовым ⊕, а сложением по модулю 2³², после чего результат проходит через S-блоки и циклически сдвигается влево на 11 бит.',
+      'map.title': 'Карта шифрования',
+      'map.round': 'Раунд {r}',
+      'map.sboxReady': 'таблица готова',
+      'map.progress': 'раунд {r} из {tot}',
+      'map.match': '✅ совпало',
+      'map.mismatch': '⚠️ не совпало',
+      'sboxprep.demoBtn': '🌊 Демонстрация лавинного эффекта',
+      'sboxprep.demoTitle': 'Лавинный эффект',
+      'sboxprep.demoSub': 'Один изменённый бит входа — несколько изменённых бит выхода',
+      'sboxprep.demoWhy': 'Почему «лавинный»: как ком снега запускает целую лавину, так один перевёрнутый бит входа запускает большое, непредсказуемое изменение на выходе. Для шифра это хорошо: по маленькому изменению нельзя догадаться, что изменится в результате.',
+      'sboxprep.demoInstr': 'Кликните по любому биту P ниже. Матрица покажет, какая ячейка ищется сейчас (сплошная золотая подсветка) и какая искалась раньше (пунктир) — так видно, как переключение всего одного бита переносит поиск совсем в другую ячейку.',
+      'sboxprep.legendNow': 'Сейчас',
+      'sboxprep.legendPrev': 'Было',
+      'sboxprep.matrixAxes': 'Первые 2 бита P выбирают строку, последние 2 — столбец.',
+      'sboxprep.diffRow': 'Бит {bit} — из первой пары бит P, а она задаёт строку. Поэтому сдвинулась строка: {from} → {to}. У F(P) изменилось {n} из 4 бит.',
+      'sboxprep.diffCol': 'Бит {bit} — из второй пары бит P, а она задаёт столбец. Поэтому сдвинулся столбец: {from} → {to}. У F(P) изменилось {n} из 4 бит.',
+      'sboxprep.demoEmpty': 'P ещё не менялось — кликните по любому биту выше.',
+      'sboxprep.demoRandomBtn': '🎲 Перевернуть случайный бит',
+      'sboxprep.demoResetBtn': '↺ Сбросить',
+      'sboxprep.demoStats': 'Кликов: {n} · в среднем меняется {avg} из 4 бит выхода',
+      'rounds.bitBtn': 'Сложить следующий бит ⊕',
+      'rounds.autoBtn': '⏩ Досчитать автоматически',
+      'nav.lockKs': 'Подключи определены: {n} из {tot}. Чтобы продолжить, определите подключи всех раундов: выполните сдвиг для каждой вкладки 1–4 (или «Показать результат сразу»).',
+      'nav.lockXor': 'Чтобы продолжить, сложите все биты — кнопками внутри формы.',
+      'sboxprep.matrixHint': 'Как читать: строка — два старших бита входа x, столбец — два младших, в ячейке — результат S(x). Например, x = 0110 → строка 01, столбец 10 → S(x) = 11.',
+      'x.head': '💡 Что здесь происходит?',
+      'x.more': 'Подробнее ▾',
+      'x.less': 'Свернуть ▴',
+      'x.textprep': 'Шифр работает с битами, а не с буквами: UTF-8 превращает каждый символ в 1–4 байта. Один из них мы и зашифруем.',
+      'x.plain': 'Это байт, выбранный на шаге 1, — открытый текст, который Алиса передаёт Бобу.',
+      'x.key': 'Общий секретный ключ — 8 бит, известных только Алисе и Бобу. Из него получим подключи для раундов.',
+      'x.ks': 'Один ключ → разные подключи: для раунда r ключ поворачивается влево на (r × 3) mod 8 бит, младшие 4 бита — подключ Kr. Формула задана заранее и от ключа не зависит.',
+      'x.sbox': 'S-блок — фиксированная таблица замен 4→4 бита, часть самого шифра, а не ключа. Хороший S-блок — перестановка и даёт лавинный эффект: один изменённый бит входа меняет несколько бит выхода.',
+      'x.rounds': 'Раунд: R ⊕ K → S-блок → ⊕ L → обмен половинами. Проходим четыре раунда подряд.',
+      'x.roundsFormula': 'Формально: L<sub>r</sub> = R<sub>r−1</sub>, R<sub>r</sub> = L<sub>r−1</sub> ⊕ S(R<sub>r−1</sub> ⊕ K<sub>r</sub>).',
+      'x.cipher': 'После последнего раунда половины меняются местами ещё раз — поэтому расшифровка идёт той же схемой.',
+      'x.dec': 'Боб запускает ту же сеть, но берёт подключи в обратном порядке: K4, K3, K2, K1.',
+      'x.sumIdea': 'F не обязана быть обратимой: обратима сама структура «раздели — перемешай — поменяй местами».',
+      'x.sumHist': 'Фейстель (IBM, 1971) → Lucifer → DES (1977). В СССР по тому же принципу создан ГОСТ 28147-89, сегодня — «Магма».',
+      'x.headIdea': '🎓 Главная идея',
+      'x.headHist': '📜 Lucifer → DES → Магма',
+      'info.short': 'Схема Фейстеля (IBM, 1971): блок режем пополам и много раз перемешиваем половины с ключом. Отсюда выросли Lucifer, DES и российская Магма (ГОСТ).',
+      'dec.cipherLabel': 'Шифротекст, который получил Боб',
+      'textprep.disclaimerShort': 'Настоящие шифры (DES, Магма) обрабатывают весь текст блоками по 64 бита; для наглядности мы берём один байт.',
+      'ks.disclaimerShort': 'DES строит 16 подключей по 48 бит перестановками и сдвигами; Магма делит 256-битный ключ на восемь кусков K1…K8 — без сдвигов.',
+      'sboxprep.disclaimerShort': 'В DES восемь S-блоков 6→4, в Магме — восемь 4→4; здесь один блок 4→4.',
+      'sum.disclaimerShort': 'DES: блок 64 бита, 16 раундов. Магма: блок 64 бита, ключ 256 бит, 32 раунда. Здесь — 1 байт и 4 раунда.',
+      'map.expand': 'Подробно',
+      'map.expandTitle': 'Открыть подробный статус шагов',
+      'map.detailTitle': 'Подробный статус',
+      'map.progressAll': 'Выполнено {done} из {tot}',
+      'map.close': 'Закрыть',
+      'map.st.done': 'Выполнено',
+      'map.st.current': 'Сейчас',
+      'map.st.upcoming': 'Впереди',
+      'map.goto': '↩ Вернуться к шагу',
+      'map.d.1': 'Превращаем текст в байты UTF-8 и выбираем один из них для шифрования.',
+      'map.d.2': 'Выбранный байт становится открытым текстом Алисы.',
+      'map.d.3': 'Алиса и Боб согласуют общий 8-битный секретный ключ.',
+      'map.d.4': 'Из ключа получаем подключи K1…K4: поворот на (r × 3) mod 8 бит, берём младшие 4 бита.',
+      'map.d.5': 'Готовим фиксированную таблицу замен 4→4 бита и проверяем лавинный эффект.',
+      'map.d.round': 'R ⊕ K → S-блок → ⊕ L → обмен половинами.',
+      'map.d.7': 'Финальный обмен половинами — шифротекст готов.',
+      'map.d.8': 'Боб прогоняет шифротекст через ту же сеть с подключами K4…K1 и сверяет результат.',
+      'map.d.9': 'Итоги: почему это работает и как связано с DES и Магмой.',
+      'map.sub.xor1': 'Сложение с подключом',
+      'map.sub.sbox': 'S-блок',
+      'map.sub.xor2': 'Сложение с левой половиной',
+      'map.sub.swap': 'Обмен половинами',
+      'map.bitsProgress': 'готово бит: {i} из 4',
+      'map.noText': 'текст не введён',
+      'map.decNotStarted': 'ещё не запущено',
+    },
+    en: {
+      'meta.title': 'Feistel Network — the Birth of DES',
+      'game.title': 'Feistel Network',
+      'game.tagline': 'How one idea gave birth to DES — and to most of symmetric cryptography',
+      'info.toggle': 'ℹ️ How does the cipher work?',
+      'info.p1': 'In 1971 at IBM, <span class="highlight-gold">Horst Feistel</span> came up with a scheme that solved a strange problem: how do you build a cipher that decrypts the same way it encrypts, even if its inner "scrambling function" cannot be reversed at all?',
+      'info.p2': 'The solution: <span class="highlight">cut the data block in half</span>, scramble one half with a key and mix the result into the other, then swap the halves. Repeat a few times — that is a cipher. Run the very same thing with the keys in reverse order and it decrypts itself.',
+      'info.p3': '<span class="highlight-gold">Don Coppersmith</span> later helped bring this idea (through the Lucifer cipher) to the <span class="highlight">DES</span> standard — designing S-boxes resistant to attacks the rest of the world only discovered decades later. In the USSR the same principle was used to build its own standard — <span class="highlight-gold">GOST 28147-89</span>, today known as "Magma" (GOST R 34.12-2015): the same Feistel network, but with 32 rounds and a 256-bit key.',
+      'footer.note': 'Educational demo of a Feistel network · simplified S-box and key schedule',
+      'nav.home': 'Back to the lab',
+      'phase.0': 'Idea', 'phase.1': 'Text', 'phase.2': 'Message', 'phase.3': 'Key', 'phase.4': 'Key schedule', 'phase.5': 'S-box', 'phase.6': 'Rounds', 'phase.7': 'Ciphertext', 'phase.8': 'Decryption', 'phase.9': 'Summary',
+      'btn.back': '← Back', 'btn.next': 'Next →',
+      'btn.randKey': '🎲 Random key',
+      'btn.decrypt': '▶ Decrypt round by round', 'btn.nextRound': 'Next round ▶',
+      'btn.retry': '↺ Try another message',
+      'readout.bits': '= <span>{d}</span> (decimal)',
+      'intro.h': 'The idea behind a Feistel network',
+      'intro.tip': '💡 Every step is interactive: flip bits and watch how the result changes.',
+      'intro.p1': 'The Feistel network (Horst Feistel, IBM, early 1970s) is a way of building block ciphers. The block is split into halves <span class="highlight-green">L</span> and <span class="highlight">R</span>; in each round R is mixed with a subkey and passed through a function F, the result is added (⊕) to L, and then the halves are swapped. The key property: F does not have to be invertible — decryption runs the same scheme with the subkeys in reverse order.',
+      'intro.base': 'This is the prototype and basis of <span class="highlight">DES</span> and of Russia\'s <span class="highlight-gold">Magma</span> (GOST 28147-89 / GOST R 34.12-2015): both ciphers are Feistel networks. They differ in block and key size, number of rounds (16 for DES, 32 for Magma), the function F and the S-boxes.',
+      'intro.algoTitle': 'What is built on the Feistel network',
+      'intro.a1': '<b>Lucifer</b> (IBM, early 1970s) — the direct ancestor of DES',
+      'intro.a2': '<b>DES</b> (1977) and <b>3DES</b> — 64-bit block, 16 rounds',
+      'intro.a3': '<b>Magma</b> (GOST 28147-89 → GOST R 34.12-2015) — 64-bit block, 256-bit key, 32 rounds',
+      'intro.a4': '<b>Blowfish</b> (1993), <b>CAST-128</b>, <b>Twofish</b> — popular open ciphers of the 1990s',
+      'intro.a5': '<b>Camellia</b> — an international (ISO/IEC) standard, used in TLS',
+      'intro.a6': '<b>KASUMI</b> — the cipher of 3G mobile networks',
+      'intro.a7': '<b>FF1 / FF3</b> (NIST SP 800-38G) — format-preserving encryption',
+      'intro.notFeistel': 'Not Feistel networks: AES and Russia\'s "Kuznyechik" (substitution–permutation networks).',
+      'textprep.h': 'Step 1 — preparing the text',
+      'textprep.p1': 'Before anything can be encrypted, it has to be prepared: a computer doesn\'t work with letters, only with bits. The UTF-8 standard turns every character into one or more bytes — type a word or phrase and see what comes out of it.',
+      'textprep.counter': '{chars} characters · {bytes} bytes',
+      'textprep.p2': 'Click any byte below — that\'s the one we\'ll use as the plaintext from here on.',
+      'textprep.selectedLabel': '✅ Selected the byte for character "{ch}"', 'textprep.selectedValue': '{val} · binary {bin}',
+      'textprep.empty': 'Enter text',
+      'textprep.disclaimerTeaser': '⚠️ Real ciphers process the whole text, not just one byte',
+      'textprep.disclaimer': 'Real ciphers process every byte of a message in turn (or in blocks), not just a single byte. Here, for clarity, we take only the one byte you picked from your text and walk the whole Feistel network through it. DES and Russia\'s Magma (GOST 28147-89 / GOST R 34.12-2015) work the same way — both encrypt in 8-byte (64-bit) blocks, not byte by byte.',
+      'msg.h': 'Step 2 — plaintext',
+      'msg.p': 'Here is the byte you picked from your text — this is the plaintext Alice sends to Bob. Want a different byte? Go back a step and pick another one from the text.',
+      'msg.pManual': 'No text was typed on the previous step, so there is no byte to pick from. Set the plaintext by hand instead — click the bits below to toggle 0 and 1.',
+      'key.h': 'Step 3 — the shared secret key',
+      'key.p': 'Alice and Bob agreed in advance on a shared secret key — also 8&nbsp;bits. Next we\'ll see how a separate subkey for each round comes out of this one key.',
+      'ks.h': 'Step 4 — the key schedule',
+      'ks.p1': 'The master key is never used directly in a round: a separate subkey is derived from it for each round. In real DES this is done with permutations and shifts — a 56-bit key yields 16 different 48-bit subkeys. Russia\'s Magma does it differently: its 256-bit key is simply cut into eight 32-bit pieces — more below.',
+      'ks.p2': 'Here the rule is simpler: for round r, the key is rotated left by (r × 3) mod 8 bits — every round gets its own shift amount, and the low 4 bits of the result become that round\'s subkey K.',
+      'ks.shiftOverview': 'That is why every round has a different shift, even though the key itself is the same:',
+      'ks.shiftChip': 'Round {i}: {shift} bits',
+      'ks.shiftFixed': 'This formula itself is part of the cipher\'s specification, fixed in advance just like the S-box: it is the same for every key. Take a different master key and the shifts 3/6/1/4 stay exactly the same — only the resulting K1..K4 numbers change.',
+      'ks.shiftLine': 'Round {r}: the key needs to rotate left by {shift} bits.',
+      'ks.stepHint': 'Each click is one 1-bit rotation step: the leftmost bit moves to the end, and every other bit shifts one position to the left.',
+      'ks.stepProgress': 'Step {step} of {shift}',
+      'ks.stepBtn': 'Shift by 1 bit →',
+      'ks.skipBtn': 'Show the result right away',
+      'ks.replayBtn': '↺ Replay the animation',
+      'ks.masterLabel': 'Master key (8 bits)',
+      'ks.rotatedLabel': 'After rotating by {shift} bits',
+      'ks.result': 'The low 4 bits ({bin}) are subkey K{r} = {val}.',
+      'ks.wasPos': 'was {j}',
+      'ks.timing': 'All four subkeys can be computed in advance, before the first round even starts: they depend only on the master key, not on the message. Alice and Bob each get the same K1..K4 independently, because they know the same key.',
+      'ks.tabsHint': 'The 1–4 buttons switch which round\'s rotation animation is shown — each round has its own number of shift bits. A round\'s subkey counts as determined only once its own rotation is done — to continue, go through all four.',
+      'ks.disclaimerTeaser': '⚠️ DES and Magma key schedules are more elaborate',
+      'ks.disclaimer': 'In real DES the key schedule is more elaborate: a 56-bit key goes through two permutations (PC-1/PC-2) and is cyclically shifted by 1–2 bits on each of 16 rounds, giving 16 different 48-bit subkeys. Here it\'s one rotation of the whole byte and its low 4 bits, so the principle "one key → different subkeys per round" is visible without extra arithmetic. Magma\'s key is longer — 256 bits — split into eight 32-bit chunks K1…K8: rounds 1–24 cycle through them in that order, rounds 25–32 use the reverse order; unlike DES, the key itself is never shifted or permuted.',
+      'sboxprep.h': 'Step 5 — preparing the S-box',
+      'sboxprep.p1': 'The S-box is part of the cipher\'s specification, not a secret tied to this particular session. It is fixed once, when the cipher is designed (IBM did this for Lucifer/DES; for Russia\'s Magma the tables are written into the text of GOST R 34.12-2015), and used unchanged for every key and every message afterwards — unlike the subkeys K1..K4, the S-box does not depend on the master key at all.',
+      'sboxprep.p2': 'A good S-box first needs to be a permutation: each of the 16 possible outputs is used exactly once, otherwise some information about the input would be lost for good. Second, it needs to be nonlinear: a small change to the input (even one bit) should change the output noticeably and unpredictably. This is called the avalanche effect.',
+      'sboxprep.permYes': '✅ Checked: it is a permutation — every value 0–15 appears exactly once',
+      'sboxprep.permNo': '⚠️ This table has repeats — an S-box like that would lose information about its input.',
+      'sboxprep.avalancheIntro': 'Let\'s try it on a test value P: there is a demo below — click a bit of P to see how F(P) changes and which matrix cell gets looked up.',
+      'sboxprep.arrow': '↓ S-box',
+      'sboxprep.bridge': 'This table, already built, is used unchanged in every round: we just plug in the current value of X and read off F(X).',
+      'sboxprep.disclaimerTeaser': '⚠️ DES and Magma S-boxes are more elaborate too',
+      'sboxprep.disclaimer': 'Real DES S-boxes are more elaborate: there are eight of them (one per 6-bit chunk of the expanded block), each mapping 6 bits to 4, and the criteria behind their design (resistance to differential cryptanalysis) were kept secret until the late 1980s. Here it is one 4→4 box, so the ideas of permutation and avalanche are easier to see. Magma also has eight 4→4-bit S-boxes, but the original GOST 28147-89 standard didn\'t fix them — the exact set was treated as extra secret material and could differ between agencies; the modern GOST R 34.12-2015 ("Magma") standard finally fixed one official set.',
+      'rounds.h': 'Step 6 — encryption round {r} of {tot}',
+      'rounds.intro': 'Every round has three stages: add the right half to the subkey, run the result through the S-box, and add it to the left half — then the halves swap places.',
+      'rounds.stage.xor1': 'Stage 1 of 3 — add the subkey',
+      'rounds.stage.sbox': 'Stage 2 of 3 — the S-box',
+      'rounds.stage.xor2': 'Stage 3 of 3 — add the left half',
+      'rounds.stage.done': 'Round complete',
+      'rounds.a': 'Add the right half <span class="highlight">R{p}</span> and the round subkey <span class="highlight-gold">K{r}</span> modulo 2 (the ⊕ operation, "exclusive OR") — one bit at a time:',
+      'rounds.bitEq': 'Bit {i} of {tot}: {a} ⊕ {b} = ?',
+      'rounds.bitEqDone': '{label} complete: {val}',
+      'rounds.xor1.done': 'Result: X = R{p} ⊕ K{r} = {x}.',
+      'rounds.sboxRecap': 'The S-box was already prepared in the previous step — here we just find the cell for input X = {x} in the matrix (row = two high bits, column = two low bits):',
+      'rounds.gotF': 'We get F = {f} (binary {fbin}).',
+      'rounds.c': 'Add F to the left half <span class="highlight">L{p}</span> the same way, getting the new right half <span class="highlight">R{r}</span> — again one bit at a time:',
+      'rounds.swap': '<span class="arrow-swap">⇄</span> The halves swap places: the old R{p} becomes the new L{r}',
+      'rounds.last': 'That was the last round. Next comes the final swap of the halves and the finished ciphertext.',
+      'cipher.h': 'Step 7 — the ciphertext is ready',
+      'cipher.p': 'After the last round the halves are swapped one final time (the standard final swap, as in real DES; in Magma the same effect comes from simply not swapping the halves in the last, 32nd round) — this is exactly why decryption uses the same mechanism as encryption.',
+      'cipher.lAfter': 'L (after swap)', 'cipher.rAfter': 'R (after swap)',
+      'cipher.readout': 'Ciphertext = <span>{v}</span>',
+      'cipher.alice': '<span class="speaker">Alice</span> sends this number to Bob; on its own, without the key, it reveals nothing about the message.',
+      'dec.h': 'Step 8 — Bob decrypts',
+      'dec.p': 'Bob has the ciphertext <span class="highlight">{c}</span> and the same secret key. He runs the same Feistel network, but takes the subkeys in reverse order: K4, K3, K2, K1.',
+      'dec.round': 'Decryption round {r} of {tot} — using subkey <span class="highlight-gold">K{k}</span> (the very same one used in the matching encryption round, only the queue is reversed).',
+      'dec.newHalves': '⇄ → new halves',
+      'dec.final': 'After the final swap of the halves we get the recovered byte:',
+      'dec.readout': '= <span>{rec}</span>, the original message was <span>{orig}</span>',
+      'dec.ok': '✅ It matches! The Feistel network decrypted itself — with the same scheme, just with the subkeys in reverse order.',
+      'dec.bad': '⚠️ No match — that would signal a bug in the demo, not in Feistel\'s idea.',
+      'sum.h': '🎓 The key takeaway',
+      'sum.p1': 'The main trick of a Feistel network: <span class="highlight">the function F does not have to be reversible</span>. Inside a round the S-box can be as complex and "one-way" as you like — decryption works not because F can be undone, but because <em>the structure itself</em> — "split, scramble, swap" — is reversible when the keys are applied in reverse order.',
+      'sum.p2': 'Horst Feistel built this idea into the <span class="highlight-gold">Lucifer</span> cipher at IBM (late 1960s – early 1970s). Later Don Coppersmith helped rework the S-boxes so the cipher would withstand differential cryptanalysis — an attack the scientific community only rediscovered in the late 1980s. The refined Lucifer became the <span class="highlight">DES</span> standard (1977), and the Feistel network itself is still used in dozens of ciphers. In the USSR the same principle produced GOST 28147-89 (adopted in 1989); in 2015 its cipher, under the name "Magma", was included in GOST R 34.12-2015 — Russia\'s counterpart to DES, still a current standard there.',
+      'sum.disclaimerTeaser': '⚠️ Real ciphers (DES, Magma) are far bigger in scale',
+      'sum.disclaimer': 'This is a very simplified model: the real Lucifer worked on 128-bit blocks, with several interlinked S-boxes and a far more serious key schedule (DES uses 64-bit blocks and 16 rounds). Here it is one byte, one S-box and 4 rounds, so you can see the idea with your own eyes. Magma (Russia\'s GOST 28147-89 / GOST R 34.12-2015) uses this exact same Feistel-network idea, just at a much bigger scale: a 64-bit block, a 256-bit key, and 32 rounds. One difference: in Magma the subkey is added to the right half not with bitwise ⊕ but with addition modulo 2³²; the result then goes through the S-boxes and is rotated left by 11 bits.',
+      'map.title': 'Encryption map',
+      'map.round': 'Round {r}',
+      'map.sboxReady': 'table ready',
+      'map.progress': 'round {r} of {tot}',
+      'map.match': '✅ matches',
+      'map.mismatch': '⚠️ no match',
+      'sboxprep.demoBtn': '🌊 Avalanche effect demo',
+      'sboxprep.demoTitle': 'Avalanche effect',
+      'sboxprep.demoSub': 'One changed input bit — several changed output bits',
+      'sboxprep.demoWhy': 'Why \'avalanche\': like a small snowball setting off a whole avalanche, flipping one input bit triggers a large, unpredictable change in the output. That\'s a good sign for a cipher — a tiny change gives no hint about what changes in the result.',
+      'sboxprep.demoInstr': 'Click any bit of P below. The matrix shows which cell is looked up now (solid gold highlight) and which one was looked up before (dashed) — so flipping just one bit visibly moves the lookup to a whole different cell.',
+      'sboxprep.legendNow': 'Now',
+      'sboxprep.legendPrev': 'Before',
+      'sboxprep.matrixAxes': 'The first 2 bits of P pick the row, the last 2 pick the column.',
+      'sboxprep.diffRow': 'Bit {bit} is one of the first two bits of P, and those pick the row — that\'s why the row moved: {from} → {to}. F(P) changed {n} of 4 bits.',
+      'sboxprep.diffCol': 'Bit {bit} is one of the last two bits of P, and those pick the column — that\'s why the column moved: {from} → {to}. F(P) changed {n} of 4 bits.',
+      'sboxprep.demoEmpty': 'P hasn\'t changed yet — click any bit above.',
+      'sboxprep.demoRandomBtn': '🎲 Flip a random bit',
+      'sboxprep.demoResetBtn': '↺ Reset',
+      'sboxprep.demoStats': 'Clicks: {n} · on average {avg} of 4 output bits change',
+      'rounds.bitBtn': 'Add the next bit ⊕',
+      'rounds.autoBtn': '⏩ Finish automatically',
+      'nav.lockKs': 'Subkeys determined: {n} of {tot}. To continue, determine the subkeys of every round: do the rotation for each tab 1–4 (or press "Show the result right away").',
+      'nav.lockXor': 'To continue, add all the bits with the buttons inside the form.',
+      'sboxprep.matrixHint': 'How to read: the row is the two high bits of the input x, the column the two low bits, the cell holds S(x). E.g. x = 0110 → row 01, column 10 → S(x) = 11.',
+      'x.head': '💡 What is going on here?',
+      'x.more': 'More details ▾',
+      'x.less': 'Show less ▴',
+      'x.textprep': 'A cipher works on bits, not letters: UTF-8 turns each character into 1–4 bytes. We will encrypt one of them.',
+      'x.plain': 'This is the byte you picked in step 1 — the plaintext Alice sends to Bob.',
+      'x.key': 'The shared secret key is 8 bits known only to Alice and Bob. Round subkeys will be derived from it.',
+      'x.ks': 'One key → different subkeys: for round r the key is rotated left by (r × 3) mod 8 bits, and the low 4 bits become subkey Kr. The formula is fixed in advance and does not depend on the key.',
+      'x.sbox': 'The S-box is a fixed 4→4-bit substitution table — part of the cipher itself, not of the key. A good one is a permutation and shows the avalanche effect: flipping one input bit changes several output bits.',
+      'x.rounds': 'A round: R ⊕ K → S-box → ⊕ L → swap the halves. We run four rounds in a row.',
+      'x.roundsFormula': 'Formally: L<sub>r</sub> = R<sub>r−1</sub>, R<sub>r</sub> = L<sub>r−1</sub> ⊕ S(R<sub>r−1</sub> ⊕ K<sub>r</sub>).',
+      'x.cipher': 'After the last round the halves are swapped once more — that is why decryption uses the same scheme.',
+      'x.dec': 'Bob runs the same network but takes the subkeys in reverse order: K4, K3, K2, K1.',
+      'x.sumIdea': 'F does not have to be invertible: the structure itself — "split, mix, swap" — is.',
+      'x.sumHist': 'Feistel (IBM, 1971) → Lucifer → DES (1977). In the USSR the same principle gave GOST 28147-89, today "Magma".',
+      'x.headIdea': '🎓 The key idea',
+      'x.headHist': '📜 Lucifer → DES → Magma',
+      'info.short': 'The Feistel scheme (IBM, 1971): cut the block in half and repeatedly mix the halves with a key. Lucifer, DES and Russia\'s Magma (GOST) grew out of it.',
+      'dec.cipherLabel': 'Ciphertext Bob received',
+      'textprep.disclaimerShort': 'Real ciphers (DES, Magma) process the whole text in 64-bit blocks; for clarity we take just one byte.',
+      'ks.disclaimerShort': 'DES builds 16 48-bit subkeys with permutations and shifts; Magma cuts its 256-bit key into eight pieces K1…K8 — no shifts.',
+      'sboxprep.disclaimerShort': 'DES has eight 6→4 S-boxes, Magma eight 4→4 ones; here there is a single 4→4 box.',
+      'sum.disclaimerShort': 'DES: 64-bit block, 16 rounds. Magma: 64-bit block, 256-bit key, 32 rounds. Here: 1 byte and 4 rounds.',
+      'map.expand': 'Details',
+      'map.expandTitle': 'Open detailed step status',
+      'map.detailTitle': 'Detailed status',
+      'map.progressAll': 'Completed {done} of {tot}',
+      'map.close': 'Close',
+      'map.st.done': 'Done',
+      'map.st.current': 'Now',
+      'map.st.upcoming': 'Upcoming',
+      'map.goto': '↩ Back to this step',
+      'map.d.1': 'Turn the text into UTF-8 bytes and pick one of them to encrypt.',
+      'map.d.2': 'The picked byte becomes Alice\'s plaintext.',
+      'map.d.3': 'Alice and Bob agree on a shared 8-bit secret key.',
+      'map.d.4': 'Derive subkeys K1…K4 from the key: rotate by (r × 3) mod 8 bits and take the low 4 bits.',
+      'map.d.5': 'Prepare the fixed 4→4-bit substitution table and check the avalanche effect.',
+      'map.d.round': 'R ⊕ K → S-box → ⊕ L → swap the halves.',
+      'map.d.7': 'Final swap of the halves — the ciphertext is ready.',
+      'map.d.8': 'Bob runs the ciphertext through the same network with subkeys K4…K1 and compares.',
+      'map.d.9': 'Wrap-up: why it works and how it relates to DES and Magma.',
+      'map.sub.xor1': 'Add the subkey',
+      'map.sub.sbox': 'S-box',
+      'map.sub.xor2': 'Add the left half',
+      'map.sub.swap': 'Swap the halves',
+      'map.bitsProgress': 'bits done: {i} of 4',
+      'map.noText': 'no text entered',
+      'map.decNotStarted': 'not started yet',
+    },
+    es: {
+      'meta.title': 'Red de Feistel — el nacimiento de DES',
+      'game.title': 'Red de Feistel',
+      'game.tagline': 'Cómo una sola idea dio origen a DES — y a casi toda la criptografía simétrica',
+      'info.toggle': 'ℹ️ ¿Cómo funciona el cifrado?',
+      'info.p1': 'En 1971, en IBM, <span class="highlight-gold">Horst Feistel</span> ideó un esquema que resolvía un problema curioso: ¿cómo construir un cifrado que se descifre de la misma manera que se cifró, aunque su «función de mezcla» interna no sea reversible en absoluto?',
+      'info.p2': 'La solución: <span class="highlight">cortar el bloque de datos por la mitad</span>, mezclar una mitad con la clave y combinar el resultado con la otra, y luego intercambiar las mitades. Repetirlo varias veces — eso es un cifrado. Hacer lo mismo con las claves en orden inverso y se descifra solo.',
+      'info.p3': '<span class="highlight-gold">Don Coppersmith</span> ayudó después a llevar esta idea (a través del cifrado Lucifer) hasta el estándar <span class="highlight">DES</span>, diseñando S-boxes resistentes a ataques que el resto del mundo descubrió décadas más tarde. En la URSS, con el mismo principio se construyó un estándar propio — el <span class="highlight-gold">GOST 28147-89</span>, hoy conocido como «Magma» (GOST R 34.12-2015): la misma red de Feistel, pero con 32 rondas y una clave de 256 bits.',
+      'footer.note': 'Demostración educativa de una red de Feistel · S-box y calendario de claves simplificados',
+      'nav.home': 'Volver al laboratorio',
+      'phase.0': 'Idea', 'phase.1': 'Texto', 'phase.2': 'Mensaje', 'phase.3': 'Clave', 'phase.4': 'Calendario de claves', 'phase.5': 'S-box', 'phase.6': 'Rondas', 'phase.7': 'Texto cifrado', 'phase.8': 'Descifrado', 'phase.9': 'Resumen',
+      'btn.back': '← Atrás', 'btn.next': 'Siguiente →',
+      'btn.randKey': '🎲 Clave aleatoria',
+      'btn.decrypt': '▶ Descifrar ronda a ronda', 'btn.nextRound': 'Siguiente ronda ▶',
+      'btn.retry': '↺ Probar con otro mensaje',
+      'readout.bits': '= <span>{d}</span> (decimal)',
+      'intro.h': 'La idea de la red de Feistel',
+      'intro.tip': '💡 Cada paso es interactivo: cambia bits y observa cómo varía el resultado.',
+      'intro.p1': 'La red de Feistel (Horst Feistel, IBM, principios de los 70) es una forma de construir cifrados de bloque. El bloque se divide en dos mitades, <span class="highlight-green">L</span> y <span class="highlight">R</span>; en cada ronda R se mezcla con una subclave y pasa por una función F, el resultado se suma (⊕) a L y después las mitades se intercambian. La propiedad clave: F no tiene por qué ser invertible — el descifrado usa el mismo esquema con las subclaves en orden inverso.',
+      'intro.base': 'Es el prototipo y la base del <span class="highlight">DES</span> y del <span class="highlight-gold">Magma</span> ruso (GOST 28147-89 / GOST R 34.12-2015): ambos cifrados son redes de Feistel. Se distinguen por el tamaño de bloque y de clave, el número de rondas (16 en DES, 32 en Magma), la función F y las S-boxes.',
+      'intro.algoTitle': 'Qué se construye sobre la red de Feistel',
+      'intro.a1': '<b>Lucifer</b> (IBM, principios de los 70) — antecesor directo del DES',
+      'intro.a2': '<b>DES</b> (1977) y <b>3DES</b> — bloque de 64 bits, 16 rondas',
+      'intro.a3': '<b>Magma</b> (GOST 28147-89 → GOST R 34.12-2015) — bloque de 64 bits, clave de 256 bits, 32 rondas',
+      'intro.a4': '<b>Blowfish</b> (1993), <b>CAST-128</b>, <b>Twofish</b> — cifrados abiertos populares de los años 90',
+      'intro.a5': '<b>Camellia</b> — estándar internacional (ISO/IEC), usado en TLS',
+      'intro.a6': '<b>KASUMI</b> — el cifrado de las redes móviles 3G',
+      'intro.a7': '<b>FF1 / FF3</b> (NIST SP 800-38G) — cifrado que conserva el formato',
+      'intro.notFeistel': 'No son redes de Feistel: AES y el «Kuznyechik» ruso (redes de sustitución-permutación).',
+      'textprep.h': 'Paso 1 — preparación del texto',
+      'textprep.p1': 'Antes de cifrar algo hay que prepararlo: un ordenador no trabaja con letras, solo con bits. El estándar UTF-8 convierte cada carácter en uno o varios bytes — escribe una palabra o frase y mira qué sale.',
+      'textprep.counter': '{chars} caracteres · {bytes} bytes',
+      'textprep.p2': 'Haz clic en cualquier byte de abajo — ese es el que usaremos de aquí en adelante como texto en claro.',
+      'textprep.selectedLabel': '✅ Byte seleccionado del carácter «{ch}»', 'textprep.selectedValue': '{val} · binario {bin}',
+      'textprep.empty': 'Escribe el texto',
+      'textprep.disclaimerTeaser': '⚠️ Los cifrados reales procesan todo el texto, no solo un byte',
+      'textprep.disclaimer': 'Los cifrados reales procesan todos los bytes del mensaje uno tras otro (o en bloques), no un único byte. Aquí, para mayor claridad, tomamos solo el byte que elegiste de tu texto y recorremos con él toda la red de Feistel. El DES y el Magma ruso (GOST 28147-89 / GOST R 34.12-2015) funcionan igual: ambos cifran en bloques de 8 bytes (64 bits), no byte a byte.',
+      'msg.h': 'Paso 2 — texto en claro',
+      'msg.p': 'Aquí está el byte que elegiste de tu texto — este es el texto en claro que Alicia envía a Bob. ¿Quieres otro byte? Vuelve un paso atrás y elige otro en el texto.',
+      'msg.pManual': 'No escribiste texto en el paso anterior, así que no hay ningún byte que elegir. Ajusta el texto en claro a mano — haz clic en los bits de abajo para alternar 0 y 1.',
+      'key.h': 'Paso 3 — la clave secreta compartida',
+      'key.p': 'Alicia y Bob acordaron de antemano una clave secreta compartida, también de 8&nbsp;bits. En el siguiente paso veremos cómo de esta única clave sale una subclave distinta para cada ronda.',
+      'ks.h': 'Paso 4 — el calendario de claves',
+      'ks.p1': 'La clave maestra nunca se usa directamente en una ronda: de ella se deriva una subclave distinta para cada ronda. En el DES real esto se hace con permutaciones y desplazamientos — de una clave de 56 bits salen 16 subclaves distintas de 48 bits. El Magma ruso lo hace de otra forma: su clave de 256 bits simplemente se corta en ocho trozos de 32 bits — más detalles abajo.',
+      'ks.p2': 'Aquí la regla es más simple: para la ronda r, la clave se rota a la izquierda (r × 3) mod 8 bits — cada ronda tiene su propio desplazamiento, y los 4 bits menos significativos del resultado se convierten en la subclave K de esa ronda.',
+      'ks.shiftOverview': 'Por eso cada ronda tiene un desplazamiento distinto, aunque la clave sea la misma:',
+      'ks.shiftChip': 'Ronda {i}: {shift} bits',
+      'ks.shiftFixed': 'Esta fórmula en sí es parte de la especificación del cifrado, fijada de antemano igual que la S-box: es la misma para cualquier clave. Toma otra clave maestra y los desplazamientos 3/6/1/4 seguirán siendo los mismos — solo cambiarán los números K1..K4 resultantes.',
+      'ks.shiftLine': 'Ronda {r}: la clave debe rotar a la izquierda {shift} bits.',
+      'ks.stepHint': 'Cada clic es un paso de rotación de 1 bit: el bit más a la izquierda pasa al final, y todos los demás se desplazan una posición a la izquierda.',
+      'ks.stepProgress': 'Paso {step} de {shift}',
+      'ks.stepBtn': 'Desplazar 1 bit →',
+      'ks.skipBtn': 'Mostrar el resultado directamente',
+      'ks.replayBtn': '↺ Repetir la animación',
+      'ks.masterLabel': 'Clave maestra (8 bits)',
+      'ks.rotatedLabel': 'Tras rotar {shift} bits',
+      'ks.result': 'Los 4 bits menos significativos ({bin}) son la subclave K{r} = {val}.',
+      'ks.wasPos': 'era {j}',
+      'ks.timing': 'Las cuatro subclaves pueden calcularse de antemano, antes incluso de la primera ronda: dependen solo de la clave maestra, no del mensaje. Alicia y Bob obtienen las mismas K1..K4 de forma independiente, porque conocen la misma clave.',
+      'ks.tabsHint': 'Los botones 1–4 cambian de qué ronda se muestra la animación de rotación — cada ronda tiene su propio número de bits de desplazamiento. La subclave de una ronda solo se considera determinada cuando se hace su propio giro — para continuar, recorre las cuatro.',
+      'ks.disclaimerTeaser': '⚠️ En el DES y el Magma el calendario de claves es más elaborado',
+      'ks.disclaimer': 'En el DES real el calendario de claves es más elaborado: una clave de 56 bits pasa por dos permutaciones (PC-1/PC-2) y se desplaza cíclicamente 1–2 bits en cada una de las 16 rondas, dando 16 subclaves distintas de 48 bits. Aquí hay una sola rotación de todo el byte y sus 4 bits menos significativos, para que se vea el principio «una clave → subclaves distintas por ronda» sin aritmética adicional. La clave del Magma es más larga — 256 bits — dividida en ocho partes de 32 bits K1…K8: las rondas 1–24 las usan en ese mismo orden cíclico, y las rondas 25–32 en orden inverso; a diferencia del DES, aquí la propia clave nunca se rota ni se permuta.',
+      'sboxprep.h': 'Paso 5 — preparación de la S-box',
+      'sboxprep.p1': 'La S-box es parte de la especificación del propio cifrado, no un secreto de esta sesión concreta. Se fija una sola vez, cuando se diseña el cifrado (IBM lo hizo para Lucifer/DES; en el Magma ruso las tablas están escritas en el texto del GOST R 34.12-2015), y se usa sin cambios para cualquier clave y cualquier mensaje — a diferencia de las subclaves K1..K4, la S-box no depende en absoluto de la clave maestra.',
+      'sboxprep.p2': 'Una buena S-box debe ser, primero, una permutación: cada una de las 16 salidas posibles se usa exactamente una vez, o de lo contrario se perdería información sobre la entrada. Segundo, debe ser no lineal: un cambio pequeño en la entrada (incluso un bit) debe cambiar la salida de forma notable e impredecible. A esto se le llama efecto avalancha.',
+      'sboxprep.permYes': '✅ Comprobado: es una permutación — cada valor de 0 a 15 aparece una sola vez',
+      'sboxprep.permNo': '⚠️ Esta tabla tiene repeticiones — una S-box así perdería información sobre su entrada.',
+      'sboxprep.avalancheIntro': 'Probémoslo con un valor de prueba P: hay una demostración abajo — haz clic en un bit de P para ver cómo cambia F(P) y qué celda de la matriz se consulta.',
+      'sboxprep.arrow': '↓ S-box',
+      'sboxprep.bridge': 'Esta tabla, ya construida, se usa sin cambios en cada ronda: simplemente introducimos el valor actual de X y leemos F(X).',
+      'sboxprep.disclaimerTeaser': '⚠️ Las S-boxes del DES y el Magma también son más elaboradas',
+      'sboxprep.disclaimer': 'Las S-boxes reales del DES son más elaboradas: hay ocho (una por cada bloque de 6 bits del bloque expandido), cada una convierte 6 bits en 4, y los criterios de su diseño (resistencia al criptoanálisis diferencial) se mantuvieron en secreto hasta finales de los 80. Aquí hay una sola caja 4→4, para que las ideas de permutación y efecto avalancha se vean con más claridad. El Magma también tiene ocho S-boxes de 4→4 bits, pero el GOST 28147-89 original no las fijaba — el conjunto exacto se trataba como secreto adicional y podía variar entre organismos; el estándar moderno GOST R 34.12-2015 («Magma») finalmente fijó un único conjunto oficial.',
+      'rounds.h': 'Paso 6 — ronda de cifrado {r} de {tot}',
+      'rounds.intro': 'Cada ronda tiene tres etapas: sumar la mitad derecha con la subclave, pasar el resultado por la S-box y sumarlo con la mitad izquierda — después las mitades se intercambian.',
+      'rounds.stage.xor1': 'Etapa 1 de 3 — suma con la subclave',
+      'rounds.stage.sbox': 'Etapa 2 de 3 — la S-box',
+      'rounds.stage.xor2': 'Etapa 3 de 3 — suma con la mitad izquierda',
+      'rounds.stage.done': 'Ronda completada',
+      'rounds.a': 'Sumamos la mitad derecha <span class="highlight">R{p}</span> y la subclave de la ronda <span class="highlight-gold">K{r}</span> módulo 2 (la operación ⊕, «O exclusivo») — bit a bit:',
+      'rounds.bitEq': 'Bit {i} de {tot}: {a} ⊕ {b} = ?',
+      'rounds.bitEqDone': '{label} completo: {val}',
+      'rounds.xor1.done': 'Resultado: X = R{p} ⊕ K{r} = {x}.',
+      'rounds.sboxRecap': 'La S-box ya se preparó en el paso anterior — aquí solo buscamos en la matriz la celda de la entrada X = {x} (fila = 2 bits altos, columna = 2 bits bajos):',
+      'rounds.gotF': 'Obtenemos F = {f} (binario {fbin}).',
+      'rounds.c': 'Sumamos F con la mitad izquierda <span class="highlight">L{p}</span> de la misma manera, obteniendo la nueva mitad derecha <span class="highlight">R{r}</span> — de nuevo bit a bit:',
+      'rounds.swap': '<span class="arrow-swap">⇄</span> Las mitades se intercambian: el antiguo R{p} pasa a ser el nuevo L{r}',
+      'rounds.last': 'Esa fue la última ronda. Sigue el intercambio final de mitades y el texto cifrado listo.',
+      'cipher.h': 'Paso 7 — el texto cifrado está listo',
+      'cipher.p': 'Tras la última ronda las mitades se intercambian una vez más (el intercambio final estándar, como en el DES real; en el Magma el mismo efecto se logra no intercambiando las mitades en la última ronda, la 32) — precisamente por eso el descifrado usa el mismo mecanismo que el cifrado.',
+      'cipher.lAfter': 'L (tras el intercambio)', 'cipher.rAfter': 'R (tras el intercambio)',
+      'cipher.readout': 'Texto cifrado = <span>{v}</span>',
+      'cipher.alice': '<span class="speaker">Alicia</span> le envía este número a Bob; por sí solo, sin la clave, no revela nada del mensaje.',
+      'dec.h': 'Paso 8 — Bob descifra',
+      'dec.p': 'Bob tiene el texto cifrado <span class="highlight">{c}</span> y la misma clave secreta. Ejecuta la misma red de Feistel, pero toma las subclaves en orden inverso: K4, K3, K2, K1.',
+      'dec.round': 'Ronda de descifrado {r} de {tot} — se usa la subclave <span class="highlight-gold">K{k}</span> (la misma de la ronda de cifrado homónima, solo que el orden es inverso).',
+      'dec.newHalves': '⇄ → nuevas mitades',
+      'dec.final': 'Tras el intercambio final de las mitades obtenemos el byte recuperado:',
+      'dec.readout': '= <span>{rec}</span>, el mensaje original era <span>{orig}</span>',
+      'dec.ok': '✅ ¡Coincide! La red de Feistel se descifró a sí misma — con el mismo esquema, solo que con las subclaves en orden inverso.',
+      'dec.bad': '⚠️ No coincide — eso señalaría un error en la demo, no en la idea de Feistel.',
+      'sum.h': '🎓 Lo esencial',
+      'sum.p1': 'El truco central de la red de Feistel: <span class="highlight">la función F no tiene por qué ser reversible</span>. Dentro de una ronda la S-box puede ser tan compleja y «unidireccional» como se quiera — el descifrado funciona no porque F se pueda deshacer, sino porque <em>la propia estructura</em> — «divide, mezcla, intercambia» — es reversible si se aplican las claves en orden inverso.',
+      'sum.p2': 'Horst Feistel incorporó esta idea al cifrado <span class="highlight-gold">Lucifer</span> en IBM (finales de los 60 – principios de los 70). Más tarde, Don Coppersmith ayudó a rediseñar las S-boxes para que el cifrado resistiera el criptoanálisis diferencial — un ataque que la comunidad científica redescubrió solo a finales de los 80. El Lucifer refinado se convirtió en el estándar <span class="highlight">DES</span> (1977), y la red de Feistel se sigue usando en decenas de cifrados. En la URSS, con el mismo principio se creó el GOST 28147-89 (adoptado en 1989); en 2015 su cifrado, con el nombre «Magma», pasó a formar parte del GOST R 34.12-2015 — el equivalente ruso del DES, todavía vigente allí.',
+      'sum.disclaimerTeaser': '⚠️ Los cifrados reales (DES, Magma) son mucho más grandes',
+      'sum.disclaimer': 'Este es un modelo muy simplificado: el Lucifer real trabajaba con bloques de 128 bits, varias S-boxes interconectadas y un calendario de claves mucho más serio (DES usa bloques de 64 bits y 16 rondas). Aquí hay un byte, una S-box y 4 rondas, para que puedas ver la idea con tus propios ojos. El Magma (GOST 28147-89 / GOST R 34.12-2015 de Rusia) usa exactamente esta misma idea de red de Feistel, solo que a una escala mucho mayor: un bloque de 64 bits, una clave de 256 bits y 32 rondas. Hay una diferencia: en el Magma la subclave se suma a la mitad derecha no con ⊕ bit a bit sino con una suma módulo 2³²; el resultado pasa por las S-boxes y se rota 11 bits a la izquierda.',
+      'map.title': 'Mapa del cifrado',
+      'map.round': 'Ronda {r}',
+      'map.sboxReady': 'tabla lista',
+      'map.progress': 'ronda {r} de {tot}',
+      'map.match': '✅ coincide',
+      'map.mismatch': '⚠️ no coincide',
+      'sboxprep.demoBtn': '🌊 Demostración del efecto avalancha',
+      'sboxprep.demoTitle': 'Efecto avalancha',
+      'sboxprep.demoSub': 'Un bit de entrada cambiado — varios bits de salida cambiados',
+      'sboxprep.demoWhy': 'Por qué «avalancha»: igual que una bola de nieve pequeña puede desatar una avalancha entera, cambiar un solo bit de entrada dispara un cambio grande e impredecible en la salida. Eso es bueno para un cifrado: un cambio mínimo no da ninguna pista sobre qué cambiará en el resultado.',
+      'sboxprep.demoInstr': 'Haz clic en cualquier bit de P abajo. La matriz muestra qué celda se consulta ahora (resaltado dorado sólido) y cuál se consultaba antes (punteado) — así se ve cómo cambiar un solo bit mueve la búsqueda a una celda completamente distinta.',
+      'sboxprep.legendNow': 'Ahora',
+      'sboxprep.legendPrev': 'Antes',
+      'sboxprep.matrixAxes': 'Los primeros 2 bits de P eligen la fila, los últimos 2 la columna.',
+      'sboxprep.diffRow': 'El bit {bit} es uno de los dos primeros bits de P, y esos eligen la fila — por eso se movió la fila: {from} → {to}. F(P) cambió {n} de 4 bits.',
+      'sboxprep.diffCol': 'El bit {bit} es uno de los dos últimos bits de P, y esos eligen la columna — por eso se movió la columna: {from} → {to}. F(P) cambió {n} de 4 bits.',
+      'sboxprep.demoEmpty': 'P todavía no ha cambiado — haz clic en cualquier bit de arriba.',
+      'sboxprep.demoRandomBtn': '🎲 Cambiar un bit al azar',
+      'sboxprep.demoResetBtn': '↺ Reiniciar',
+      'sboxprep.demoStats': 'Clics: {n} · en promedio cambian {avg} de 4 bits de salida',
+      'rounds.bitBtn': 'Sumar el siguiente bit ⊕',
+      'rounds.autoBtn': '⏩ Completar automáticamente',
+      'nav.lockKs': 'Subclaves determinadas: {n} de {tot}. Para continuar, determina las subclaves de todas las rondas: haz el giro en cada pestaña 1–4 (o pulsa «Mostrar el resultado directamente»).',
+      'nav.lockXor': 'Para continuar, suma todos los bits con los botones del formulario.',
+      'sboxprep.matrixHint': 'Cómo leerla: la fila son los 2 bits altos de la entrada x, la columna los 2 bajos y la celda contiene S(x). Ej.: x = 0110 → fila 01, columna 10 → S(x) = 11.',
+      'x.head': '💡 ¿Qué está pasando aquí?',
+      'x.more': 'Más detalles ▾',
+      'x.less': 'Ver menos ▴',
+      'x.textprep': 'Un cifrado trabaja con bits, no con letras: UTF-8 convierte cada carácter en 1–4 bytes. Ciframos uno de ellos.',
+      'x.plain': 'Este es el byte que elegiste en el paso 1: el texto en claro que Alice envía a Bob.',
+      'x.key': 'La clave secreta compartida son 8 bits que solo conocen Alice y Bob. De ella saldrán las subclaves de las rondas.',
+      'x.ks': 'Una clave → subclaves distintas: en la ronda r la clave se gira a la izquierda (r × 3) mod 8 bits y los 4 bits bajos son la subclave Kr. La fórmula está fijada de antemano y no depende de la clave.',
+      'x.sbox': 'La S-box es una tabla fija de sustitución de 4→4 bits: parte del cifrado, no de la clave. Una buena es una permutación y muestra el efecto avalancha: cambiar un bit de entrada cambia varios bits de salida.',
+      'x.rounds': 'Una ronda: R ⊕ K → S-box → ⊕ L → intercambio de mitades. Hacemos cuatro rondas seguidas.',
+      'x.roundsFormula': 'Formalmente: L<sub>r</sub> = R<sub>r−1</sub>, R<sub>r</sub> = L<sub>r−1</sub> ⊕ S(R<sub>r−1</sub> ⊕ K<sub>r</sub>).',
+      'x.cipher': 'Tras la última ronda las mitades se intercambian una vez más — por eso el descifrado usa el mismo esquema.',
+      'x.dec': 'Bob ejecuta la misma red, pero toma las subclaves en orden inverso: K4, K3, K2, K1.',
+      'x.sumIdea': 'F no tiene por qué ser invertible: lo es la estructura misma — «divide, mezcla, intercambia».',
+      'x.sumHist': 'Feistel (IBM, 1971) → Lucifer → DES (1977). En la URSS, con el mismo principio nació el GOST 28147-89, hoy «Magma».',
+      'x.headIdea': '🎓 La idea clave',
+      'x.headHist': '📜 Lucifer → DES → Magma',
+      'info.short': 'El esquema de Feistel (IBM, 1971): se parte el bloque por la mitad y se mezclan las mitades con una clave una y otra vez. De él salieron Lucifer, DES y el Magma ruso (GOST).',
+      'dec.cipherLabel': 'Texto cifrado que recibió Bob',
+      'textprep.disclaimerShort': 'Los cifrados reales (DES, Magma) procesan todo el texto en bloques de 64 bits; aquí, por claridad, tomamos un solo byte.',
+      'ks.disclaimerShort': 'DES construye 16 subclaves de 48 bits con permutaciones y desplazamientos; el Magma corta su clave de 256 bits en ocho trozos K1…K8, sin desplazamientos.',
+      'sboxprep.disclaimerShort': 'DES tiene ocho S-boxes 6→4 y el Magma ocho 4→4; aquí hay una sola de 4→4.',
+      'sum.disclaimerShort': 'DES: bloque de 64 bits, 16 rondas. Magma: bloque de 64 bits, clave de 256 bits, 32 rondas. Aquí: 1 byte y 4 rondas.',
+      'map.expand': 'Detalles',
+      'map.expandTitle': 'Abrir el estado detallado de los pasos',
+      'map.detailTitle': 'Estado detallado',
+      'map.progressAll': 'Completado {done} de {tot}',
+      'map.close': 'Cerrar',
+      'map.st.done': 'Hecho',
+      'map.st.current': 'Ahora',
+      'map.st.upcoming': 'Pendiente',
+      'map.goto': '↩ Volver a este paso',
+      'map.d.1': 'Convertimos el texto en bytes UTF-8 y elegimos uno para cifrar.',
+      'map.d.2': 'El byte elegido se convierte en el texto en claro de Alice.',
+      'map.d.3': 'Alice y Bob acuerdan una clave secreta compartida de 8 bits.',
+      'map.d.4': 'Derivamos las subclaves K1…K4: giro de (r × 3) mod 8 bits y se toman los 4 bits bajos.',
+      'map.d.5': 'Preparamos la tabla fija de sustitución de 4→4 bits y comprobamos el efecto avalancha.',
+      'map.d.round': 'R ⊕ K → S-box → ⊕ L → intercambio de mitades.',
+      'map.d.7': 'Intercambio final de mitades: el texto cifrado está listo.',
+      'map.d.8': 'Bob pasa el texto cifrado por la misma red con las subclaves K4…K1 y compara.',
+      'map.d.9': 'Resumen: por qué funciona y cómo se relaciona con DES y el Magma.',
+      'map.sub.xor1': 'Suma con la subclave',
+      'map.sub.sbox': 'S-box',
+      'map.sub.xor2': 'Suma con la mitad izquierda',
+      'map.sub.swap': 'Intercambio de mitades',
+      'map.bitsProgress': 'bits listos: {i} de 4',
+      'map.noText': 'sin texto',
+      'map.decNotStarted': 'aún sin iniciar',
+    },
+  };
+  let currentLang = 'ru';
+  function t(key, vars) {
+    const dict = I18N[currentLang] || I18N.ru;
+    let str = dict[key] !== undefined ? dict[key] : (I18N.ru[key] !== undefined ? I18N.ru[key] : key);
+    if (vars) for (const k in vars) str = str.replace(new RegExp('\\{' + k + '\\}', 'g'), vars[k]);
+    return str;
+  }
+  function applyLanguage(lang) {
+    if (!I18N[lang]) lang = 'ru';
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.title = t('meta.title');
+    document.querySelectorAll('[data-i18n]').forEach(e => { e.innerHTML = t(e.getAttribute('data-i18n')); });
+    document.querySelectorAll('.lang-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.langBtn === lang); });
+    try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+    const expandBtn = document.getElementById('mapExpand');
+    expandBtn.title = t('map.expandTitle'); expandBtn.setAttribute('aria-label', t('map.expandTitle'));
+    renderInfo();
+    render();
+  }
+  function initLanguage() {
+    let saved = null;
+    try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+    if (!saved) { const browserLang = (navigator.language || 'ru').slice(0, 2); saved = I18N[browserLang] ? browserLang : 'ru'; }
+    applyLanguage(saved);
+  }
+
+  // ===== Crypto core (Feistel network with final swap, DES-style) =====
+  // Bijective 4-bit S-box inspired by the first row of DES S1, kept simple so the
+  // encrypt/decrypt round trip is easy to verify by eye.
+  const SBOX = [14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7];
+  const ROUNDS = 4;
+
+  function rotl8(x, n) { n = ((n % 8) + 8) % 8; return ((x << n) | (x >>> (8 - n))) & 0xFF; }
+  function roundKeyNibble(masterKey, r) { return rotl8(masterKey, (r * 3) % 8) & 0xF; }
+  function F(R4, K4) { return SBOX[(R4 ^ K4) & 0xF]; }
+
+  // keyOrder: round numbers used to pull subkeys — [1,2,3,4] to encrypt, [4,3,2,1] to decrypt.
+  function runFeistel(blockByte, masterKey, keyOrder) {
+    let L = (blockByte >> 4) & 0xF;
+    let R = blockByte & 0xF;
+    const trace = [{ round: 0, L, R }];
+    keyOrder.forEach((ri, idx) => {
+      const K = roundKeyNibble(masterKey, ri);
+      const X = (R ^ K) & 0xF;
+      const Fv = F(R, K);
+      const newL = R;
+      const newR = (L ^ Fv) & 0xF;
+      trace.push({ round: idx + 1, usedKeyIndex: ri, prevL: L, prevR: R, K, X, Fv, L: newL, R: newR });
+      L = newL; R = newR;
+    });
+    const outByte = ((R << 4) | L) & 0xFF;
+    return { outByte, trace, finalSwapped: { L: R, R: L } };
+  }
+
+  function bits8(byte) { return byte.toString(2).padStart(8, "0").split("").map(Number); }
+  function bits4(nibble) { return nibble.toString(2).padStart(4, "0").split("").map(Number); }
+  function bitsToByte(arr) { return arr.reduce((acc, b) => (acc << 1) | b, 0); }
+  function bin4(n) { return n.toString(2).padStart(4, "0"); }
+  function bin8(n) { return n.toString(2).padStart(8, "0"); }
+
+  // Splits text into its UTF-8 bytes, grouped by character (so a byte can always be traced
+  // back to the letter it came from) — Array.from() so multi-code-unit characters (emoji,
+  // combining marks) stay a single "character" instead of splitting into surrogate halves.
+  const utf8Encoder = new TextEncoder();
+  function utf8Groups(text) {
+    return Array.from(text).map(ch => ({ ch, bytes: Array.from(utf8Encoder.encode(ch)) }));
+  }
+  function utf8FlatBytes(groups) {
+    const flat = [];
+    groups.forEach((g, gi) => g.bytes.forEach(b => flat.push({ value: b, gi })));
+    return flat;
+  }
+  // Pulls whichever byte is currently selected out of the typed text and makes it the
+  // plaintext byte the rest of the demo works with.
+  function syncPlaintextFromText() {
+    const flat = utf8FlatBytes(utf8Groups(state.textInput));
+    if (flat.length === 0) return;
+    state.textByteIndex = Math.min(state.textByteIndex, flat.length - 1);
+    state.plaintextBits = bits8(flat[state.textByteIndex].value);
+  }
+
+  // Rotates an 8-element bit array (index 0 = MSB) left by `shift` positions,
+  // matching rotl8() on the equivalent byte — used only to visualize the key schedule.
+  function rotateLeftBits(bitsArr, shift) {
+    const n = bitsArr.length;
+    const s = ((shift % n) + n) % n;
+    return bitsArr.map((_, i) => bitsArr[(i + s) % n]);
+  }
+  function shiftFor(round) { return (round * 3) % 8; }
+
+  // ===== State =====
+  const state = {
+    textInput: '',
+    textByteIndex: 0,
+    plaintextBits: bits8(0), // stays all-zero until a byte is actually picked from typed text
+    keyBits: bits8(105),
+    phase: 0,
+    round: 1,
+    roundStage: 'xor1',   // 'xor1' -> 'sbox' -> 'xor2' -> 'done'
+    revealed: 0,          // bits revealed so far in the current xor1/xor2 stage (0..4)
+    xorPending: false,    // true for the suspense between asking for a bit and its value appearing
+    xorAuto: false,       // true while the "finish automatically" button is running the remaining bits
+    ksRound: 1,
+    ksRevealed: { 1: false, 2: false, 3: false, 4: false },
+    ksStep: { 1: 0, 2: 0, 3: 0, 4: 0 },
+    avP: [0, 0, 0, 0],       // avalanche-demo probe value (modal opened from Step 5)
+    avHistory: [],           // [{from, to, bit, diff}, ...] newest first, capped — one entry per flip
+    avJustFlipped: false,    // one-shot: true only for the render right after a probe-bit click
+    decRunning: false,
+    decRound: 0,
+    explain: {},          // accordion open/closed, keyed by 'phase:id' — survives re-renders
+    more: {},             // whether an accordion's "more details" part is open
+  };
+  syncPlaintextFromText(); // the starting plaintext byte comes from the default text, not a magic number
+  const PHASES = ["intro", "textprep", "plaintext", "key", "keyschedule", "sboxprep", "rounds", "cipher", "decrypt", "summary"];
+
+  function plaintextByte() { return bitsToByte(state.plaintextBits); }
+  function keyByte() { return bitsToByte(state.keyBits); }
+  function encryptionTrace() { return runFeistel(plaintextByte(), keyByte(), [1,2,3,4]); }
+  function decryptionTrace(cipherByte) { return runFeistel(cipherByte, keyByte(), [4,3,2,1]); }
+  function resetRoundStage() { state.roundStage = 'xor1'; state.revealed = 0; state.xorPending = false; state.xorAuto = false; }
+
+  // ===== Rendering helpers =====
+  function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
+
+  function esc(str) {
+    return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  // One-line, HTML-safe preview of user-typed text (newlines shown as ↵, long text truncated).
+  function textPreview(text, max) {
+    const chars = Array.from(text.replace(/\n/g, "↵"));
+    return esc(chars.length > max ? chars.slice(0, max).join("") + "…" : chars.join(""));
+  }
+
+  // After an accordion grows, scroll the step card just enough to keep its bottom in view.
+  function ensureVisible(node) {
+    setTimeout(() => {
+      const holder = node.closest(".panel");
+      if (!holder) return;
+      const h = holder.getBoundingClientRect(), n = node.getBoundingClientRect();
+      if (n.bottom > h.bottom) holder.scrollTop += n.bottom - h.bottom + 8;
+    }, 320);
+  }
+
+  // The short gist plus an optional "more details" toggle that reveals the full text in place.
+  function detailBlock(shortHtml, fullList, key) {
+    const body = el("div", "explain-body");
+    body.appendChild(el("div", "explain-short", shortHtml));
+    if (!fullList || !fullList.length) return body;
+    const wrap = el("div", "detail" + (state.more[key] ? " full" : ""));
+    const more = el("button", "explain-more", t(state.more[key] ? 'x.less' : 'x.more'));
+    more.type = "button";
+    const coll = el("div", "x-collapse"), inner = el("div", "x-inner"), full = el("div", "explain-full");
+    fullList.forEach(h => full.appendChild(el("p", null, h)));
+    inner.appendChild(full); coll.appendChild(inner);
+    more.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const on = wrap.classList.toggle("full");
+      state.more[key] = on;
+      more.textContent = t(on ? 'x.less' : 'x.more');
+      if (on) ensureVisible(wrap);
+    });
+    wrap.appendChild(more); wrap.appendChild(coll);
+    body.appendChild(wrap);
+    return body;
+  }
+
+  // Every explanation starts as one collapsed row. Opening it shows a very short gist; "more
+  // details" inside shows the full text. Open/closed state is remembered per step, so a
+  // re-render (each click rebuilds the panel) doesn't slam it shut again.
+  // opts: { head, short, full: [html...], kind: 'info' | 'warn' }
+  function renderExplain(panel, id, opts) {
+    const key = PHASES[state.phase] + ":" + id;
+    const box = el("div", "explain" + (opts.kind === "warn" ? " warn" : "") + (state.explain[key] ? " open" : ""));
+    const head = el("div", "explain-head");
+    head.setAttribute("role", "button"); head.tabIndex = 0;
+    head.setAttribute("aria-expanded", state.explain[key] ? "true" : "false");
+    head.appendChild(el("span", null, opts.head));
+    head.appendChild(el("span", "explain-arrow", "▸"));
+    const coll = el("div", "x-collapse"), inner = el("div", "x-inner");
+    inner.appendChild(detailBlock(opts.short, opts.full, key + ":more"));
+    coll.appendChild(inner);
+    const toggle = () => {
+      const on = box.classList.toggle("open");
+      state.explain[key] = on;
+      head.setAttribute("aria-expanded", on ? "true" : "false");
+      if (on) ensureVisible(box);
+    };
+    head.addEventListener("click", toggle);
+    head.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
+    box.appendChild(head); box.appendChild(coll);
+    panel.appendChild(box);
+  }
+
+  // The "How does the cipher work?" block under the page title uses the same short/more pattern.
+  function renderInfo() {
+    const inner = document.getElementById("infoInner");
+    inner.innerHTML = "";
+    inner.appendChild(detailBlock(t('info.short'), [t('info.p1'), t('info.p2'), t('info.p3')], "info"));
+  }
+
+  function renderByteToggle(container, bitsArray, onToggle) {
+    const row = el("div", "byte-row");
+    bitsArray.forEach((b, i) => {
+      const cell = el("div", "bit-cell" + (b ? " on" : ""), String(b));
+      cell.addEventListener("click", () => { bitsArray[i] = bitsArray[i] ? 0 : 1; onToggle(); });
+      row.appendChild(cell);
+    });
+    container.appendChild(row);
+    const v = bitsToByte(bitsArray);
+    container.appendChild(el("div", "bit-readout", t('readout.bits', { d: v })));
+  }
+
+  function staticByte(container, byte) {
+    const row = el("div", "byte-row");
+    bits8(byte).forEach(b => row.appendChild(el("div", "bit-cell static" + (b ? " on" : ""), String(b))));
+    container.appendChild(row);
+  }
+
+  function renderHalf(container, label, side, nibbleBits) {
+    const block = el("div", "half-block " + side);
+    block.appendChild(el("div", "half-label", label));
+    const row = el("div", "byte-row");
+    nibbleBits.forEach(b => row.appendChild(el("div", "bit-cell static" + (b ? " on" : ""), String(b))));
+    block.appendChild(row);
+    container.appendChild(block);
+  }
+
+  // Like renderHalf, but shows each bit's role in the running XOR: the one at index
+  // `revealed` only lights up (bright, pulsing glow) while its 1s reveal is actually
+  // counting down (`pending`) — it doesn't jump ahead to highlight the next pair the
+  // instant the previous one finishes, so the spotlight only moves on a real click.
+  // Bits before it were already used (dim blinking glow), bits after are untouched.
+  function renderHalfHL(container, label, side, nibbleBits, revealed, pending) {
+    const block = el("div", "half-block " + side);
+    block.appendChild(el("div", "half-label", label));
+    const row = el("div", "byte-row");
+    nibbleBits.forEach((b, i) => {
+      const cls = i < revealed ? " bit-worked" : (i === revealed && pending) ? " bit-active resolving" : "";
+      row.appendChild(el("div", "bit-cell static" + cls, String(b)));
+    });
+    block.appendChild(row);
+    container.appendChild(block);
+  }
+
+  // Like renderHalf, but each cell also carries a small sub-label (a position index) —
+  // used to show exactly which bit moved where during the key-schedule rotation.
+  function renderIndexedByte(container, bitsArr, subLabels, extraClassFn) {
+    const row = el("div", "byte-row");
+    bitsArr.forEach((b, i) => {
+      const extra = extraClassFn ? extraClassFn(i) : "";
+      const cell = el("div", "bit-cell static idx-bit" + (b ? " on" : "") + extra);
+      cell.innerHTML = `<span class="idx-sub">${subLabels[i]}</span><span class="bit-val">${b}</span>`;
+      row.appendChild(cell);
+    });
+    container.appendChild(row);
+  }
+
+  // Like renderHalf, but bits at positions listed in diffMask are highlighted as "changed".
+  function renderHalfDiff(container, label, side, nibbleBits, diffMask) {
+    const block = el("div", "half-block " + side);
+    block.appendChild(el("div", "half-label", label));
+    const row = el("div", "byte-row");
+    nibbleBits.forEach((b, i) => {
+      const cls = "bit-cell static" + (b ? " on" : "") + (diffMask && diffMask[i] ? " diff-bit" : "");
+      row.appendChild(el("div", cls, String(b)));
+    });
+    block.appendChild(row);
+    container.appendChild(block);
+  }
+
+  // Renders the running result of an XOR: cells before `revealed` show the computed bit,
+  // the rest show a dashed placeholder — makes the bit-by-bit build-up visible.
+  function renderResultHalf(container, label, leftBits, rightBits, revealed, pending) {
+    const block = el("div", "half-block right");
+    block.appendChild(el("div", "half-label", label));
+    const row = el("div", "byte-row");
+    for (let i = 0; i < 4; i++) {
+      if (i < revealed) {
+        // Already computed: settle into the same dim "worked" look as the operand bits that
+        // produced it (with a one-off pop-in the instant it's revealed).
+        const v = leftBits[i] ^ rightBits[i];
+        const cls = "bit-cell static bit-worked" + (i === revealed - 1 ? " just-revealed" : "");
+        row.appendChild(el("div", cls, String(v)));
+      } else if (i === revealed && pending) {
+        // Actually mid-countdown right now (the ~1s window after clicking Next, or right
+        // after auto-starting on entry) — glows and pulses in step with the operand cells.
+        row.appendChild(el("div", "bit-cell pending bit-active resolving", "?"));
+      } else {
+        row.appendChild(el("div", "bit-cell pending", "?"));
+      }
+    }
+    block.appendChild(row);
+    container.appendChild(block);
+  }
+
+  function renderBitStepper(container, leftLabel, leftBits, rightLabel, rightBits, resultLabel, revealed, pending) {
+    const op = el("div", "op-row");
+    renderHalfHL(op, leftLabel, "left", leftBits, revealed, pending);
+    op.appendChild(el("div", "op-symbol", "⊕"));
+    renderHalfHL(op, rightLabel, "right", rightBits, revealed, pending);
+    op.appendChild(el("div", "op-eq", "="));
+    renderResultHalf(op, resultLabel, leftBits, rightBits, revealed, pending);
+    container.appendChild(op);
+    if (revealed < 4) {
+      const i = revealed;
+      container.appendChild(el("div", "bit-equation", t('rounds.bitEq', { i: i + 1, tot: 4, a: leftBits[i], b: rightBits[i] })));
+    } else {
+      const val = bitsToByte(leftBits.map((b, i) => b ^ rightBits[i]));
+      container.appendChild(el("div", "bit-equation done", t('rounds.bitEqDone', { label: resultLabel, val })));
+    }
+    // The action for this stage lives here, inside the form — not on the nav "Next".
+    if (revealed < 4) {
+      const busy = pending || state.xorAuto;
+      const row = el("div", "btn-row xor-actions");
+      const one = el("button", "btn btn-gold xor-bit-btn", t('rounds.bitBtn'));
+      one.disabled = busy;
+      one.addEventListener("click", revealNextXorBit);
+      const all = el("button", "btn btn-primary xor-auto-btn", t('rounds.autoBtn'));
+      all.disabled = busy;
+      all.addEventListener("click", autoRevealXor);
+      row.appendChild(one); row.appendChild(all);
+      container.appendChild(row);
+    }
+  }
+
+  // The S-box as a 4x4 matrix: the row is the input's two high bits, the column its two low
+  // bits (index = 4*row + col), and the cell is the output. `activeIndex` lights up one entry
+  // together with its row and column headers.
+  function bin2(n) { return n.toString(2).padStart(2, "0"); }
+  // `prevIndex` (optional) marks a second, muted "this is where the lookup used to be" cell —
+  // used by the avalanche demo so a bit flip visibly moves the lookup from one matrix cell to
+  // another instead of just swapping a single highlight in place.
+  function renderSbox(container, activeIndex, withBinary, prevIndex) {
+    const grid = el("div", "sbox-matrix");
+    const hasPrev = prevIndex != null && prevIndex >= 0 && prevIndex !== activeIndex;
+    const ar = activeIndex >= 0 ? activeIndex >> 2 : -1, ac = activeIndex >= 0 ? activeIndex & 3 : -1;
+    const pr = hasPrev ? prevIndex >> 2 : -1, pc = hasPrev ? prevIndex & 3 : -1;
+    grid.appendChild(el("div", "sm-corner", "x → S"));
+    for (let c = 0; c < 4; c++) grid.appendChild(el("div", "sm-head" + (c === ac ? " hl" : c === pc ? " hl-prev" : ""), bin2(c)));
+    for (let r = 0; r < 4; r++) {
+      grid.appendChild(el("div", "sm-head" + (r === ar ? " hl" : r === pr ? " hl-prev" : ""), bin2(r)));
+      for (let c = 0; c < 4; c++) {
+        const i = r * 4 + c;
+        const html = `<span class="val">${SBOX[i]}</span>` + (withBinary ? `<span class="bin">${bin4(SBOX[i])}</span>` : "");
+        const cell = el("div", "sbox-cell" + (i === activeIndex ? " active" : hasPrev && i === prevIndex ? " was" : ""), html);
+        cell.title = `x = ${bin4(i)} (${i}) → ${SBOX[i]}`;
+        grid.appendChild(cell);
+      }
+    }
+    container.appendChild(grid);
+  }
+
+  function roundTrack(container, currentRound, totalRounds) {
+    const track = el("div", "round-track");
+    for (let i = 1; i <= totalRounds; i++) {
+      track.appendChild(el("div", "round-pip" + (i < currentRound ? " done" : i === currentRound ? " current" : ""), String(i)));
+    }
+    container.appendChild(track);
+  }
+
+  function randomBtn(labelKey, onClick) {
+    const btnRow = el("div", "btn-row", "");
+    const b = el("button", "btn btn-ghost", t(labelKey));
+    b.addEventListener("click", onClick);
+    btnRow.appendChild(b);
+    return btnRow;
+  }
+
+  // ===== Phase renderers =====
+  function renderIntro(panel) {
+    panel.classList.add("intro-panel");
+    panel.appendChild(el("h2", null, t('intro.h')));
+    panel.appendChild(el("p", null, t('intro.p1')));
+    // A sample block cut in half.
+    const halves = el("div", "half-pair compact");
+    renderHalf(halves, "L", "left", [1, 0, 1, 1]);
+    renderHalf(halves, "R", "right", [0, 1, 0, 0]);
+    panel.appendChild(halves);
+    panel.appendChild(el("p", null, t('intro.base')));
+    panel.appendChild(el("div", "algo-title", t('intro.algoTitle')));
+    const list = el("ul", "algo-list");
+    for (let i = 1; i <= 7; i++) list.appendChild(el("li", null, t('intro.a' + i)));
+    panel.appendChild(list);
+    panel.appendChild(el("div", "algo-note", t('intro.notFeistel')));
+    panel.appendChild(el("div", "disclaimer info", t('intro.tip')));
+  }
+
+  function renderTextPrep(panel) {
+    panel.classList.add("input-panel");
+    panel.appendChild(el("h2", null, t('textprep.h')));
+    renderExplain(panel, "why", { head: t('x.head'), short: t('x.textprep'), full: [t('textprep.p1')] });
+
+    // A <textarea> (not an <input>) so a whole few-line quatrain can be typed or pasted in
+    // and stays visible as actual lines. Created once and never touched again while typing —
+    // only the results box below gets its children swapped out. Rebuilding the whole panel
+    // (as render() does) on every keystroke would tear it down mid-word, dropping focus/caret.
+    const inputWrap = el("div", "text-input-wrap");
+    const input = document.createElement("textarea");
+    input.rows = 4;
+    input.maxLength = 200;
+    input.className = "text-input";
+    input.value = state.textInput;
+    input.placeholder = t('textprep.empty');
+    inputWrap.appendChild(input);
+    panel.appendChild(inputWrap);
+
+    const results = el("div", "textprep-results");
+    panel.appendChild(results);
+    renderExplain(panel, "real", { head: t('textprep.disclaimerTeaser'), short: t('textprep.disclaimerShort'), full: [t('textprep.disclaimer')], kind: "warn" });
+
+    function refreshResults() {
+      results.innerHTML = "";
+      const groups = utf8Groups(state.textInput);
+      const flat = utf8FlatBytes(groups);
+      if (flat.length === 0) return;
+      state.textByteIndex = Math.min(state.textByteIndex, flat.length - 1);
+      results.appendChild(el("div", "text-counter", t('textprep.counter', { chars: groups.length, bytes: flat.length })));
+      results.appendChild(el("p", null, t('textprep.p2')));
+
+      // One self-contained card per character (index, glyph, its byte chips) packed into a
+      // wrapping grid — reads like several columns without the risk of losing track of which
+      // byte belongs to which character, the way splitting them into separate table columns would.
+      const grid = el("div", "char-grid");
+      let flatIdx = 0;
+      groups.forEach((g, gi) => {
+        const startIdx = flatIdx;
+        const endIdx = flatIdx + g.bytes.length - 1;
+        const isNewline = g.ch === "\n";
+        const card = el("div", "char-card" + (state.textByteIndex >= startIdx && state.textByteIndex <= endIdx ? " card-selected" : ""));
+        card.appendChild(el("div", "char-idx", String(gi + 1)));
+        card.appendChild(el("div", "char-glyph" + (isNewline ? " char-newline" : ""), isNewline ? "↵" : g.ch));
+        const bytesRow = el("div", "char-bytes");
+        g.bytes.forEach((b) => {
+          const idx = flatIdx++;
+          const cell = el("div", "utf8-byte" + (idx === state.textByteIndex ? " selected" : ""), String(b));
+          cell.addEventListener("click", () => {
+            state.textByteIndex = idx;
+            syncPlaintextFromText();
+            refreshResults();
+            renderMap();
+          });
+          bytesRow.appendChild(cell);
+        });
+        card.appendChild(bytesRow);
+        grid.appendChild(card);
+      });
+      results.appendChild(grid);
+
+      const sel = flat[state.textByteIndex];
+      const selCh = groups[sel.gi].ch === "\n" ? "↵" : groups[sel.gi].ch;
+      const selCard = el("div", "selected-byte-card");
+      selCard.appendChild(el("div", "selected-byte-label", t('textprep.selectedLabel', { ch: selCh })));
+      staticByte(selCard, sel.value);
+      selCard.appendChild(el("div", "selected-byte-value", t('textprep.selectedValue', { val: sel.value, bin: bin8(sel.value) })));
+      results.appendChild(selCard);
+    }
+
+    input.addEventListener("input", (e) => {
+      state.textInput = e.target.value;
+      state.textByteIndex = 0;
+      syncPlaintextFromText();
+      refreshResults();
+      renderMap();
+    });
+
+    refreshResults();
+  }
+
+  function renderPlaintext(panel) {
+    panel.classList.add("input-panel");
+    panel.appendChild(el("h2", null, t('msg.h')));
+    const noByteChosen = utf8FlatBytes(utf8Groups(state.textInput)).length === 0;
+    if (noByteChosen) {
+      // No text was typed on the previous step, so there's no picked byte to show here —
+      // let the user set the plaintext byte by hand instead of silently using a made-up one.
+      panel.appendChild(el("p", null, t('msg.pManual')));
+      renderByteToggle(panel, state.plaintextBits, render);
+    } else {
+      renderExplain(panel, "src", { head: t('x.head'), short: t('x.plain'), full: [t('msg.p')] });
+      staticByte(panel, plaintextByte());
+      panel.appendChild(el("div", "bit-readout", t('readout.bits', { d: plaintextByte() })));
+    }
+  }
+
+  function renderKey(panel) {
+    panel.classList.add("input-panel");
+    panel.appendChild(el("h2", null, t('key.h')));
+    renderExplain(panel, "key", { head: t('x.head'), short: t('x.key'), full: [t('key.p')] });
+    renderByteToggle(panel, state.keyBits, render);
+    panel.appendChild(randomBtn('btn.randKey', () => { state.keyBits = bits8(Math.floor(Math.random() * 256)); render(); }));
+  }
+
+  // A round's subkey counts as determined only once that round's own rotation has been carried
+  // out (all its 1-bit steps, or "Show the result right away") — one round never reveals the
+  // others, and "Next" on this screen waits for all four.
+  function markKeyRevealed(round) { state.ksRevealed[round] = true; }
+  function keysDeterminedCount() {
+    let n = 0;
+    for (let i = 1; i <= ROUNDS; i++) if (state.ksRevealed[i]) n++;
+    return n;
+  }
+
+  // Animates exactly one "rotate left by 1 bit" step for the currently selected round:
+  // the leftmost bit arcs over the row to land at the end, everything else slides one cell
+  // to the left. Uses FLIP (measure old position, apply the state change, measure new
+  // position, animate the delta) since the whole panel is torn down and rebuilt on render().
+  function stepKeySchedule() {
+    const r = state.ksRound;
+    const shift = shiftFor(r);
+    const s0 = state.ksStep[r];
+    if (s0 >= shift) return;
+    const wrapId = String(s0 % 8); // original key-bit index that wraps to the back on this step
+
+    const row = document.getElementById("ksRotateRow");
+    const beforeRects = {};
+    if (row) {
+      row.querySelectorAll(".bit-cell").forEach(cell => { beforeRects[cell.dataset.orig] = cell.getBoundingClientRect(); });
+    }
+
+    state.ksStep[r] = s0 + 1;
+    if (state.ksStep[r] >= shift) markKeyRevealed(r);
+    render();
+
+    requestAnimationFrame(() => {
+      const newRow = document.getElementById("ksRotateRow");
+      if (!newRow) return;
+      newRow.querySelectorAll(".bit-cell").forEach(cell => {
+        const before = beforeRects[cell.dataset.orig];
+        if (!before) return;
+        const after = cell.getBoundingClientRect();
+        const dx = before.left - after.left, dy = before.top - after.top;
+        if (!dx && !dy) return;
+        if (cell.dataset.orig === wrapId) {
+          cell.style.setProperty("--dx", dx + "px");
+          cell.style.setProperty("--dy", dy + "px");
+          cell.classList.add("wrap-arc");
+        } else {
+          cell.style.transition = "none";
+          cell.style.transform = `translate(${dx}px, ${dy}px)`;
+          cell.getBoundingClientRect(); // force reflow so the next line animates
+          cell.style.transition = "transform 0.4s ease";
+          cell.style.transform = "translate(0px, 0px)";
+        }
+      });
+    });
+  }
+
+  // Flies one small spark from the flipped P bit through the S-box arrow to each output bit
+  // that changed, arriving exactly when that bit's own ripple glow starts (read off the inline
+  // animation-delay renderSboxPrep already stamped on it) — a physical "watch the change
+  // travel" complement to the color-only pulse, in the same spirit as stepKeySchedule's arc.
+  function animateAvalancheSparks() {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const source = document.querySelector("#avBody .flip-pulse");
+    const arrow = document.querySelector("#avBody .arrow-pulse");
+    const targets = document.querySelectorAll("#avBody .avalanche");
+    if (!source || !arrow || !targets.length || typeof source.animate !== "function") return;
+    const center = (r) => ({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+    const src = center(source.getBoundingClientRect());
+    const via = center(arrow.getBoundingClientRect());
+    targets.forEach((target) => {
+      const dst = center(target.getBoundingClientRect());
+      const arrival = parseFloat(target.style.animationDelay) || 0; // ms, set by renderSboxPrep
+      const duration = Math.min(380, Math.max(200, arrival));
+      const delay = Math.max(0, arrival - duration);
+      const spark = document.createElement("div");
+      spark.className = "avalanche-spark";
+      spark.style.left = src.x + "px";
+      spark.style.top = src.y + "px";
+      document.body.appendChild(spark);
+      let anim;
+      try {
+        anim = spark.animate([
+          { transform: "translate(-50%, -50%) scale(0.5)", opacity: 0.9 },
+          { transform: `translate(calc(-50% + ${via.x - src.x}px), calc(-50% + ${via.y - src.y}px)) scale(1.1)`, opacity: 1, offset: 0.55 },
+          { transform: `translate(calc(-50% + ${dst.x - src.x}px), calc(-50% + ${dst.y - src.y}px)) scale(0.35)`, opacity: 0 },
+        ], { duration, delay, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" });
+      } catch (e) { spark.remove(); return; }
+      anim.onfinish = () => spark.remove();
+      anim.oncancel = () => spark.remove();
+    });
+  }
+
+  function renderKeySchedule(panel) {
+    panel.appendChild(el("h2", null, t('ks.h')));
+    renderExplain(panel, "how", { head: t('x.head'), short: t('x.ks'), full: [t('ks.p1'), t('ks.p2'), t('ks.timing'), t('ks.shiftFixed'), t('ks.tabsHint'), t('ks.stepHint')] });
+
+    let nextToVisit = null;
+    for (let i = 1; i <= ROUNDS; i++) {
+      if (state.ksStep[i] < shiftFor(i)) { nextToVisit = i; break; }
+    }
+    const tabs = el("div", "round-track ks-tabs");
+    for (let i = 1; i <= ROUNDS; i++) {
+      const isDone = state.ksStep[i] >= shiftFor(i);
+      const isAttention = i === nextToVisit && i !== state.ksRound;
+      const pip = el("div", "round-pip" + (i === state.ksRound ? " current" : "") + (isDone ? " done" : "") + (isAttention ? " attention" : ""), String(i));
+      pip.addEventListener("click", () => { state.ksRound = i; render(); });
+      tabs.appendChild(pip);
+    }
+    panel.appendChild(tabs);
+
+    const shiftRow = el("div", "mf-bits");
+    for (let i = 1; i <= ROUNDS; i++) {
+      shiftRow.appendChild(el("div", "mf-chip" + (i === state.ksRound ? " known" : ""), t('ks.shiftChip', { i, shift: shiftFor(i) })));
+    }
+    panel.appendChild(shiftRow);
+
+    const r = state.ksRound, shift = shiftFor(r), step = state.ksStep[r], done = step >= shift;
+    panel.appendChild(el("p", null, t('ks.shiftLine', { r, shift })));
+
+    panel.appendChild(el("div", "half-label", t('ks.masterLabel')));
+    renderIndexedByte(panel, state.keyBits, [0, 1, 2, 3, 4, 5, 6, 7]);
+
+    const current = rotateLeftBits(state.keyBits, step);
+    const sourceOf = current.map((_, i) => (i + step) % 8);
+    panel.appendChild(el("div", "half-label", done ? t('ks.rotatedLabel', { shift }) : t('ks.stepProgress', { step, shift })));
+    const row = el("div", "byte-row");
+    row.id = "ksRotateRow";
+    current.forEach((b, i) => {
+      const cls = "bit-cell static idx-bit" + (done && i >= 4 ? " key-slice" : "") + (!done && i === 0 ? " wrap-next" : "");
+      const cell = el("div", cls);
+      cell.dataset.orig = String(sourceOf[i]);
+      cell.innerHTML = `<span class="idx-sub">${t('ks.wasPos', { j: sourceOf[i] })}</span><span class="bit-val">${b}</span>`;
+      row.appendChild(cell);
+    });
+    panel.appendChild(row);
+
+    const btnRow = el("div", "btn-row");
+    if (!done) {
+      const stepBtn = el("button", "btn btn-gold", t('ks.stepBtn'));
+      stepBtn.addEventListener("click", stepKeySchedule);
+      btnRow.appendChild(stepBtn);
+      const skipBtn = el("button", "btn btn-ghost", t('ks.skipBtn'));
+      skipBtn.addEventListener("click", () => { state.ksStep[r] = shift; markKeyRevealed(r); render(); });
+      btnRow.appendChild(skipBtn);
+    } else {
+      const kBits = current.slice(4);
+      panel.appendChild(el("div", "bit-readout", t('ks.result', { r, val: bitsToByte(kBits), bin: kBits.join('') })));
+      const replayBtn = el("button", "btn btn-ghost", t('ks.replayBtn'));
+      replayBtn.addEventListener("click", () => { state.ksStep[r] = 0; render(); });
+      btnRow.appendChild(replayBtn);
+    }
+    panel.appendChild(btnRow);
+
+    panel.appendChild(el("div", "bit-equation", ksSummaryText()));
+    renderExplain(panel, "real", { head: t('ks.disclaimerTeaser'), short: t('ks.disclaimerShort'), full: [t('ks.disclaimer')], kind: "warn" });
+  }
+
+  // K-values summary string, e.g. "K1=11   K2=?   K3=2   K4=6" — shared by the key-schedule
+  // screen and the side map, so both always agree on what's been revealed.
+  function ksSummaryText() {
+    const parts = [];
+    for (let i = 1; i <= ROUNDS; i++) {
+      parts.push(state.ksRevealed[i] ? `K${i}=${subkeyValue(i)}` : `K${i}=?`);
+    }
+    return parts.join('   ');
+  }
+  function subkeyValue(round) {
+    return bitsToByte(rotateLeftBits(state.keyBits, (round * 3) % 8).slice(4));
+  }
+
+  function renderSboxPrep(panel) {
+    panel.appendChild(el("h2", null, t('sboxprep.h')));
+    renderExplain(panel, "what", { head: t('x.head'), short: t('x.sbox'), full: [t('sboxprep.p1'), t('sboxprep.p2'), t('sboxprep.matrixHint'), t('sboxprep.avalancheIntro'), t('sboxprep.bridge')] });
+
+    const isPerm = new Set(SBOX).size === 16;
+    panel.appendChild(el("div", "sbox-note " + (isPerm ? "ok" : "bad"), t(isPerm ? 'sboxprep.permYes' : 'sboxprep.permNo')));
+    renderSbox(panel, -1, true);
+
+    const demoRow = el("div", "btn-row");
+    const demoBtn = el("button", "btn btn-gold", t('sboxprep.demoBtn'));
+    demoBtn.addEventListener("click", openAvalancheOverlay);
+    demoRow.appendChild(demoBtn);
+    panel.appendChild(demoRow);
+
+    renderExplain(panel, "real", { head: t('sboxprep.disclaimerTeaser'), short: t('sboxprep.disclaimerShort'), full: [t('sboxprep.disclaimer')], kind: "warn" });
+  }
+
+  // ===== Avalanche-effect demo (a modal opened from Step 5, same pattern as the map's
+  // "Detailed status" overlay): flip one bit of a probe value P and watch, in one bigger
+  // view, which matrix cell gets looked up and how many output bits F(P) that moves. =====
+  function flipAvalancheBit(i) {
+    const from = bitsToByte(state.avP);
+    state.avP[i] = state.avP[i] ? 0 : 1;
+    const to = bitsToByte(state.avP);
+    const diff = bits4(SBOX[from]).filter((b, k) => b !== bits4(SBOX[to])[k]).length;
+    state.avHistory.unshift({ from, to, bit: i, diff });
+    if (state.avHistory.length > 10) state.avHistory.length = 10;
+    state.avJustFlipped = true;
+    renderAvalancheOverlay();
+    requestAnimationFrame(animateAvalancheSparks);
+  }
+
+  function renderAvalancheOverlay() {
+    // Consumed once: only the render right after a flip gets the animation, so a language
+    // switch or any other re-render while the modal is open never replays it.
+    const justFlipped = state.avJustFlipped;
+    state.avJustFlipped = false;
+
+    const body = document.getElementById("avBody");
+    body.innerHTML = "";
+
+    const curVal = bitsToByte(state.avP);
+    const last = state.avHistory[0];
+    const prevVal = last ? last.from : curVal;
+    const flippedIdx = last ? last.bit : -1;
+    const fCurBits = bits4(SBOX[curVal]);
+    const fPrevBits = bits4(SBOX[prevVal]);
+    const fDiffMask = fCurBits.map((b, i) => b !== fPrevBits[i]);
+
+    body.appendChild(el("div", "disclaimer info", t('sboxprep.demoWhy')));
+    body.appendChild(el("p", null, t('sboxprep.demoInstr')));
+
+    // A small on-screen key: "solid gold = current lookup" vs "dashed = previous lookup" —
+    // shown as swatches, not just described in prose, so it's easy to check the matrix against.
+    const legend = el("div", "sbox-legend");
+    const legendNow = el("span", "sbox-legend-item now");
+    legendNow.appendChild(el("span", "dot")); legendNow.appendChild(document.createTextNode(t('sboxprep.legendNow')));
+    legend.appendChild(legendNow);
+    const legendPrev = el("span", "sbox-legend-item prev");
+    legendPrev.appendChild(el("span", "dot")); legendPrev.appendChild(document.createTextNode(t('sboxprep.legendPrev')));
+    legend.appendChild(legendPrev);
+    body.appendChild(legend);
+    // Where to look, spelled out once, short: which half of P picks the row vs the column —
+    // this is the rule the per-flip sentence below always refers back to.
+    body.appendChild(el("div", "sbox-axis-hint", t('sboxprep.matrixAxes')));
+
+    // The matrix itself is the main visual: it shows both where P's old value used to look up
+    // (dashed, dim gold) and where it looks up now (solid gold) — a bit flip literally moves the
+    // highlight from one cell to another, on the same table already introduced in Step 5.
+    renderSbox(body, curVal, true, last ? last.from : -1);
+
+    const flow = el("div", "half-pair");
+
+    const pBlock = el("div", "half-block");
+    pBlock.appendChild(el("div", "half-label", "P"));
+    const pRow = el("div", "byte-row");
+    state.avP.forEach((b, i) => {
+      const isLast = i === flippedIdx;
+      const cell = el("div", "bit-cell" + (isLast ? " diff-bit" : "") + (justFlipped && isLast ? " flip-pulse" : ""), String(b));
+      cell.addEventListener("click", () => flipAvalancheBit(i));
+      pRow.appendChild(cell);
+    });
+    pBlock.appendChild(pRow);
+    pBlock.appendChild(el("div", "swap-note" + (justFlipped ? " arrow-pulse" : ""), t('sboxprep.arrow')));
+    flow.appendChild(pBlock);
+
+    const fBlock = el("div", "half-block");
+    fBlock.appendChild(el("div", "half-label", "F(P)"));
+    const fRow = el("div", "byte-row");
+    // The differing output bits ripple in one after another, left to right, so a single
+    // flipped input bit visibly cascades into several changed output bits over time. They
+    // then stay highlighted (persistent, not just mid-animation) until the next flip.
+    let ripple = 0;
+    fCurBits.forEach((b, i) => {
+      const isDiff = fDiffMask[i];
+      const cell = el("div", "bit-cell static" + (isDiff ? " diff-bit" : ""), String(b));
+      if (justFlipped && isDiff) {
+        cell.classList.add("avalanche");
+        cell.style.animationDelay = (250 + ripple * 160) + "ms";
+        ripple++;
+      }
+      fRow.appendChild(cell);
+    });
+    fBlock.appendChild(fRow);
+    flow.appendChild(fBlock);
+    body.appendChild(flow);
+
+    if (last) {
+      // Which axis actually moved: bits 0-1 are the matrix ROW (the high half of P), bits 2-3
+      // are the COLUMN (the low half) — this is the concrete "why the dashed mark is exactly
+      // there" answer for the flip that was just made, not just an abstract rule.
+      const axisKey = last.bit < 2 ? 'sboxprep.diffRow' : 'sboxprep.diffCol';
+      body.appendChild(el("div", "bit-equation done", t(axisKey, { bit: last.bit + 1, from: bin4(last.from), to: bin4(last.to), n: last.diff })));
+    } else {
+      body.appendChild(el("div", "bit-readout", t('sboxprep.demoEmpty')));
+    }
+
+    const btnRow = el("div", "btn-row");
+    const randBtn = el("button", "btn btn-ghost", t('sboxprep.demoRandomBtn'));
+    randBtn.addEventListener("click", () => flipAvalancheBit(Math.floor(Math.random() * 4)));
+    btnRow.appendChild(randBtn);
+    if (state.avHistory.length) {
+      const resetBtn = el("button", "btn btn-ghost", t('sboxprep.demoResetBtn'));
+      resetBtn.addEventListener("click", () => { state.avP = [0, 0, 0, 0]; state.avHistory = []; state.avJustFlipped = false; renderAvalancheOverlay(); });
+      btnRow.appendChild(resetBtn);
+    }
+    body.appendChild(btnRow);
+
+    if (state.avHistory.length) {
+      const avg = (state.avHistory.reduce((sum, h) => sum + h.diff, 0) / state.avHistory.length).toFixed(1);
+      body.appendChild(el("div", "map-detail", t('sboxprep.demoStats', { n: state.avHistory.length, avg })));
+
+      const hist = el("div", "av-history");
+      state.avHistory.forEach((h, i) => {
+        const row = el("div", "av-hist-row" + (i === 0 ? " latest" : ""));
+        row.appendChild(el("span", null, `${bin4(h.from)} → ${bin4(h.to)}`));
+        row.appendChild(el("span", "av-hist-diff", `${h.diff}/4`));
+        hist.appendChild(row);
+      });
+      body.appendChild(hist);
+    }
+
+    document.getElementById("avTitle").textContent = t('sboxprep.demoTitle');
+    document.getElementById("avSub").textContent = t('sboxprep.demoSub');
+    const avCloseBtn = document.getElementById("avClose");
+    avCloseBtn.title = t('map.close');
+    avCloseBtn.setAttribute("aria-label", t('map.close'));
+  }
+
+  let avOpen = false, avReturnFocus = null;
+  function openAvalancheOverlay() {
+    avOpen = true;
+    avReturnFocus = document.activeElement;
+    document.getElementById("avalancheOverlay").hidden = false;
+    document.body.style.overflow = "hidden";
+    renderAvalancheOverlay();
+    document.getElementById("avClose").focus();
+  }
+  function closeAvalancheOverlay() {
+    if (!avOpen) return;
+    avOpen = false;
+    document.getElementById("avalancheOverlay").hidden = true;
+    document.body.style.overflow = "";
+    if (avReturnFocus && avReturnFocus.focus) avReturnFocus.focus();
+  }
+
+
+  function renderRounds(panel) {
+    const trace = encryptionTrace();
+    const r = state.round, p = r - 1;
+    const step = trace.trace[r];
+    const prev = trace.trace[p];
+    const Rp = bits4(step.prevR), Kr = bits4(step.K), Lp = bits4(step.prevL), Fv = bits4(step.Fv);
+
+    panel.appendChild(el("h2", null, t('rounds.h', { r, tot: ROUNDS })));
+    roundTrack(panel, r, ROUNDS);
+    renderExplain(panel, "round", { head: t('x.head'), short: t('x.rounds'), full: [t('rounds.intro'), t('x.roundsFormula')] });
+
+    const halves = el("div", "half-pair");
+    renderHalf(halves, `L${p}`, "left", bits4(prev.L));
+    renderHalf(halves, `R${p}`, "right", bits4(prev.R));
+    panel.appendChild(halves);
+
+    panel.appendChild(el("div", "stage-label", t('rounds.stage.' + state.roundStage)));
+
+    if (state.roundStage === 'xor1') {
+      panel.appendChild(el("p", null, t('rounds.a', { r, p })));
+      renderBitStepper(panel, `R${p}`, Rp, `K${r}`, Kr, "X", state.revealed, state.xorPending);
+    } else if (state.roundStage === 'sbox') {
+      panel.appendChild(el("p", null, t('rounds.xor1.done', { p, r, x: step.X })));
+      panel.appendChild(el("p", null, t('rounds.sboxRecap', { x: step.X })));
+      renderSbox(panel, step.X, true);
+      panel.appendChild(el("p", null, t('rounds.gotF', { f: step.Fv, fbin: bin4(step.Fv) })));
+    } else if (state.roundStage === 'xor2') {
+      panel.appendChild(el("p", null, t('rounds.c', { p, r })));
+      renderBitStepper(panel, `L${p}`, Lp, "F", Fv, `R${r}`, state.revealed, state.xorPending);
+    } else {
+      panel.appendChild(el("div", "swap-note", t('rounds.swap', { r, p })));
+      const halves2 = el("div", "half-pair");
+      renderHalf(halves2, `L${r}`, "left", bits4(step.L));
+      renderHalf(halves2, `R${r}`, "right", bits4(step.R));
+      panel.appendChild(halves2);
+      if (r === ROUNDS) panel.appendChild(el("div", "disclaimer info", t('rounds.last')));
+    }
+  }
+
+  function renderCipher(panel) {
+    const trace = encryptionTrace();
+    panel.appendChild(el("h2", null, t('cipher.h')));
+    renderExplain(panel, "swap", { head: t('x.head'), short: t('x.cipher'), full: [t('cipher.p')] });
+
+    const halves = el("div", "half-pair");
+    renderHalf(halves, t('cipher.lAfter'), "left", bits4(trace.finalSwapped.L));
+    renderHalf(halves, t('cipher.rAfter'), "right", bits4(trace.finalSwapped.R));
+    panel.appendChild(halves);
+
+    staticByte(panel, trace.outByte);
+    panel.appendChild(el("div", "bit-readout", t('cipher.readout', { v: trace.outByte })));
+    panel.appendChild(el("p", null, t('cipher.alice')));
+  }
+
+  function renderDecrypt(panel) {
+    const cipherByte = encryptionTrace().outByte;
+    panel.appendChild(el("h2", null, t('dec.h')));
+    renderExplain(panel, "bob", { head: t('x.head'), short: t('x.dec'), full: [t('dec.p', { c: cipherByte })] });
+
+    if (!state.decRunning && state.decRound === 0) {
+      panel.appendChild(el("div", "half-label", t('dec.cipherLabel')));
+      staticByte(panel, cipherByte);
+      const btnRow = el("div", "btn-row", "");
+      const playBtn = el("button", "btn btn-gold", t('btn.decrypt'));
+      playBtn.addEventListener("click", () => { state.decRunning = true; state.decRound = 1; render(); });
+      btnRow.appendChild(playBtn);
+      panel.appendChild(btnRow);
+      return;
+    }
+
+    const dec = decryptionTrace(cipherByte);
+    const r = Math.min(state.decRound, ROUNDS);
+    const step = dec.trace[r];
+    const prev = dec.trace[r - 1];
+
+    roundTrack(panel, r, ROUNDS);
+    panel.appendChild(el("p", null, t('dec.round', { r, tot: ROUNDS, k: step.usedKeyIndex })));
+
+    const halves = el("div", "half-pair");
+    renderHalf(halves, "L", "left", bits4(prev.L));
+    renderHalf(halves, "R", "right", bits4(prev.R));
+    panel.appendChild(halves);
+    panel.appendChild(el("div", "swap-note", t('dec.newHalves')));
+    const halves2 = el("div", "half-pair");
+    renderHalf(halves2, "L", "left", bits4(step.L));
+    renderHalf(halves2, "R", "right", bits4(step.R));
+    panel.appendChild(halves2);
+
+    if (r < ROUNDS) {
+      const btnRow = el("div", "btn-row", "");
+      const nextBtn = el("button", "btn btn-gold", t('btn.nextRound'));
+      nextBtn.addEventListener("click", () => { state.decRound++; render(); });
+      btnRow.appendChild(nextBtn);
+      panel.appendChild(btnRow);
+    } else {
+      const recovered = dec.outByte, original = plaintextByte();
+      panel.appendChild(el("p", null, t('dec.final')));
+      staticByte(panel, recovered);
+      panel.appendChild(el("div", "bit-readout", t('dec.readout', { rec: recovered, orig: original })));
+      const match = recovered === original;
+      panel.appendChild(el("div", "disclaimer " + (match ? "success" : "info"), t(match ? 'dec.ok' : 'dec.bad')));
+    }
+  }
+
+  function renderSummary(panel) {
+    panel.appendChild(el("h2", null, t('sum.h')));
+    renderExplain(panel, "idea", { head: t('x.headIdea'), short: t('x.sumIdea'), full: [t('sum.p1')] });
+    renderExplain(panel, "history", { head: t('x.headHist'), short: t('x.sumHist'), full: [t('sum.p2')] });
+    renderExplain(panel, "real", { head: t('sum.disclaimerTeaser'), short: t('sum.disclaimerShort'), full: [t('sum.disclaimer')], kind: "warn" });
+    const btnRow = el("div", "btn-row", "");
+    const restartBtn = el("button", "btn btn-primary", t('btn.retry'));
+    restartBtn.addEventListener("click", () => {
+      state.phase = PHASES.indexOf('textprep'); state.round = 1; resetRoundStage();
+      state.decRunning = false; state.decRound = 0;
+      render();
+    });
+    btnRow.appendChild(restartBtn);
+    panel.appendChild(btnRow);
+  }
+
+  const RENDERERS = [renderIntro, renderTextPrep, renderPlaintext, renderKey, renderKeySchedule, renderSboxPrep, renderRounds, renderCipher, renderDecrypt, renderSummary];
+  const ROUNDS_PHASE_IDX = PHASES.indexOf("rounds");
+
+  // ===== Navigation =====
+  function enterPhase(name) {
+    if (name === 'rounds') { state.round = 1; resetRoundStage(); revealNextXorBit(); }
+    if (name === 'decrypt') { state.decRunning = false; state.decRound = 0; }
+  }
+  function enterPhaseFromBack(name) {
+    if (name === 'rounds') { state.round = ROUNDS; state.roundStage = 'done'; state.revealed = 4; }
+  }
+
+  // Advances the bit-by-bit XOR reveal by one step, but not instantly: the slot stays a
+  // glowing "?" for a beat after the request before the computed bit appears, so the reveal
+  // reads as a small suspenseful "combine these two bits..." moment rather than a flat toggle.
+  // While the automatic mode is on, the beat is shorter and the next bit follows by itself.
+  function revealNextXorBit() {
+    if (state.xorPending) return;
+    const expect = { phase: state.phase, round: state.round, stage: state.roundStage, revealed: state.revealed };
+    state.xorPending = true;
+    render();
+    setTimeout(() => {
+      // If the user navigated away during the delay (e.g. jumped back via the map), drop it.
+      if (state.phase !== expect.phase || state.round !== expect.round || state.roundStage !== expect.stage || state.revealed !== expect.revealed) { state.xorAuto = false; return; }
+      state.xorPending = false;
+      state.revealed++;
+      if (state.xorAuto && state.revealed >= 4) state.xorAuto = false;
+      render();
+      if (state.xorAuto) revealNextXorBit();
+    }, state.xorAuto ? 380 : 1000);
+  }
+
+  // "Finish automatically": runs every remaining bit of the current sum one after another.
+  function autoRevealXor() {
+    if (state.revealed >= 4) return;
+    state.xorAuto = true;
+    if (state.xorPending) return; // the in-flight bit will chain into the rest when it lands
+    revealNextXorBit();
+  }
+
+  // Why the nav "Next" is currently disabled, or null if it can be used. The bit-by-bit sums are
+  // advanced by their own buttons inside the form, and the key schedule has to actually be done.
+  function nextLock() {
+    const name = PHASES[state.phase];
+    if (name === "keyschedule") {
+      if (keysDeterminedCount() < ROUNDS) return "ks";
+    }
+    if (name === "rounds" && (state.roundStage === "xor1" || state.roundStage === "xor2") && (state.revealed < 4 || state.xorPending)) return "xor";
+    return null;
+  }
+
+  function goNext() {
+    if (nextLock()) return;
+    const name = PHASES[state.phase];
+    if (name === "rounds") {
+      if (state.roundStage === 'xor1') { state.roundStage = 'sbox'; render(); return; }
+      if (state.roundStage === 'sbox') { state.roundStage = 'xor2'; state.revealed = 0; revealNextXorBit(); return; }
+      if (state.roundStage === 'xor2') { state.roundStage = 'done'; render(); return; }
+      // roundStage === 'done'
+      if (state.round < ROUNDS) { state.round++; resetRoundStage(); revealNextXorBit(); return; }
+      // else fall through and advance to the next phase
+    }
+    if (state.phase < PHASES.length - 1) {
+      state.phase++;
+      enterPhase(PHASES[state.phase]);
+      render();
+    }
+  }
+
+  function goBack() {
+    if (state.xorPending || state.xorAuto) return; // ignore Back while a bit's reveal is mid-suspense
+    const name = PHASES[state.phase];
+    if (name === "rounds") {
+      if (state.roundStage === 'done') { state.roundStage = 'xor2'; state.revealed = 4; render(); return; }
+      if (state.roundStage === 'xor2') {
+        if (state.revealed > 0) { state.revealed--; render(); return; }
+        state.roundStage = 'sbox'; render(); return;
+      }
+      if (state.roundStage === 'sbox') { state.roundStage = 'xor1'; state.revealed = 4; render(); return; }
+      // roundStage === 'xor1'
+      if (state.revealed > 0) { state.revealed--; render(); return; }
+      if (state.round > 1) { state.round--; state.roundStage = 'done'; state.revealed = 4; render(); return; }
+      // else round === 1 and revealed === 0: fall through to the previous phase
+    }
+    if (state.phase > 0) {
+      state.phase--;
+      enterPhaseFromBack(PHASES[state.phase]);
+      render();
+    }
+  }
+
+  function renderNav(nav) {
+    nav.innerHTML = "";
+    const backBtn = el("button", "btn btn-ghost nav-back", t('btn.back'));
+    backBtn.disabled = state.phase === 0 || state.xorPending || state.xorAuto;
+    backBtn.addEventListener("click", goBack);
+    nav.appendChild(backBtn);
+
+    const isLast = state.phase === PHASES.length - 1;
+    const isDecryptPhase = PHASES[state.phase] === "decrypt";
+    const decryptDone = state.decRunning && state.decRound >= ROUNDS;
+    if (!isLast && (!isDecryptPhase || decryptDone)) {
+      const nextBtn = el("button", "btn btn-primary nav-next", t('btn.next'));
+      const lock = nextLock();
+      nextBtn.disabled = state.xorPending || !!lock;
+      nextBtn.addEventListener("click", () => { goNext(); document.querySelector(".main-layout").scrollIntoView({ behavior: "smooth", block: "nearest" }); });
+      nav.appendChild(nextBtn);
+      if (lock) nav.appendChild(el("div", "nav-hint", t(lock === "ks" ? 'nav.lockKs' : 'nav.lockXor', { n: keysDeterminedCount(), tot: ROUNDS })));
+    }
+  }
+
+  function renderDots() {
+    const dots = document.getElementById("stepDots");
+    dots.innerHTML = "";
+    PHASES.forEach((_, i) => dots.appendChild(el("div", "step-dot" + (i < state.phase ? " done" : i === state.phase ? " current" : ""))));
+    document.getElementById("stepLabel").textContent = t('phase.' + state.phase);
+  }
+
+  // ===== Side map: the whole pipeline at a glance, with what's done, current and upcoming =====
+  // Jumping is only ever allowed onto an already-"done" node — you can go back and review
+  // any earlier result, but you can't skip ahead of where Next has actually taken you.
+  function jumpToPhase(idx) {
+    if (idx === state.phase || state.xorPending || state.xorAuto) return;
+    state.phase = idx;
+    enterPhaseFromBack(PHASES[state.phase]);
+    render();
+  }
+  function jumpToRound(round) {
+    if (state.xorPending || state.xorAuto) return;
+    state.phase = ROUNDS_PHASE_IDX;
+    state.round = round;
+    state.roundStage = 'done';
+    state.revealed = 4;
+    render();
+  }
+  function statusOfPhaseNode(idx) {
+    return state.phase < idx ? 'upcoming' : state.phase > idx ? 'done' : 'current';
+  }
+  function statusOfRoundNode(round) {
+    if (state.phase < ROUNDS_PHASE_IDX) return 'upcoming';
+    if (state.phase > ROUNDS_PHASE_IDX) return 'done';
+    if (round < state.round) return 'done';
+    if (round > state.round) return 'upcoming';
+    return state.roundStage === 'done' ? 'done' : 'current';
+  }
+
+  const MAP_NODES = [
+    { type: 'phase', idx: 1 }, { type: 'phase', idx: 2 }, { type: 'phase', idx: 3 }, { type: 'phase', idx: 4 }, { type: 'phase', idx: 5 },
+    { type: 'round', round: 1 }, { type: 'round', round: 2 }, { type: 'round', round: 3 }, { type: 'round', round: 4 },
+    { type: 'phase', idx: 7 }, { type: 'phase', idx: 8 }, { type: 'phase', idx: 9 },
+  ];
+
+  // Small bit-cell row, e.g. for showing the plaintext/key/ciphertext byte inside the map.
+  function miniBits(bitsArray) {
+    const row = el("div", "mf-bits");
+    bitsArray.forEach(b => row.appendChild(el("div", "mf-bit" + (b ? " on" : ""), String(b))));
+    return row;
+  }
+
+  // K1..K4 as small chips — gold once that round's subkey has been revealed, dim otherwise.
+  function miniSubkeys() {
+    const row = el("div", "mf-bits");
+    for (let i = 1; i <= ROUNDS; i++) {
+      const known = state.ksRevealed[i];
+      row.appendChild(el("div", "mf-chip" + (known ? " known" : ""), known ? `K${i}=${subkeyValue(i)}` : `K${i}=?`));
+    }
+    return row;
+  }
+
+  function miniPips(current, total) {
+    const row = el("div", "mf-bits");
+    for (let i = 1; i <= total; i++) {
+      row.appendChild(el("div", "mf-pip" + (i < current ? " done" : i === current ? " current" : "")));
+    }
+    return row;
+  }
+
+  // Compact schematic of one Feistel round: R⊕K -> S-box -> ⊕L, with the active stage
+  // highlighted, and numbers filled in only as far as the main panel has already revealed
+  // them (so the map never spoils a bit-by-bit reveal in progress).
+  function miniFeistelDiagram(round, status) {
+    const box = el("div", "mf mf-" + status);
+    const p = round - 1;
+    if (status === "upcoming") {
+      box.innerHTML =
+        `<div class="mf-row"><div class="mf-cell mf-hd">L${p}</div><div class="mf-cell mf-hd">R${p}</div></div>` +
+        `<div class="mf-down">↓</div><div class="mf-step"><span class="mf-tag">⊕ K${round}</span></div>` +
+        '<div class="mf-down">↓</div><div class="mf-step"><span class="mf-tag">S-box</span></div>' +
+        `<div class="mf-down">↓</div><div class="mf-step"><span class="mf-tag">⊕ L${p}</span></div>` +
+        `<div class="mf-down">↓</div><div class="mf-row"><div class="mf-cell mf-hd">L${round}</div><div class="mf-cell mf-hd">R${round}</div></div>`;
+      return box;
+    }
+    const step = encryptionTrace().trace[round];
+    const stage = status === "done" ? "done" : state.roundStage;
+    const knowXF = stage !== "xor1";
+    const knowDone = stage === "done";
+    // K's own value is never a spoiler here: the round's main panel already shows K's bits
+    // directly as soon as this round starts, regardless of the key-schedule screen.
+    box.innerHTML =
+      `<div class="mf-row"><div class="mf-cell">L${p}=${step.prevL}</div><div class="mf-cell">R${p}=${step.prevR}</div></div>` +
+      '<div class="mf-down">↓</div>' +
+      `<div class="mf-step${stage === "xor1" ? " active" : ""}"><span class="mf-tag">⊕ K${round}=${step.K}</span>${knowXF ? `<span class="mf-eq">= ${step.X}</span>` : ""}</div>` +
+      '<div class="mf-down">↓</div>' +
+      `<div class="mf-step${stage === "sbox" ? " active" : ""}"><span class="mf-tag">S-box</span>${knowXF ? `<span class="mf-eq">= ${step.Fv}</span>` : ""}</div>` +
+      '<div class="mf-down">↓</div>' +
+      `<div class="mf-step${stage === "xor2" ? " active" : ""}"><span class="mf-tag">⊕ L${p}</span>${knowDone ? `<span class="mf-eq">= ${step.R}</span>` : ""}</div>` +
+      '<div class="mf-down">↓</div>' +
+      `<div class="mf-row"><div class="mf-cell">${knowDone ? `L${round}=${step.L}` : "?"}</div><div class="mf-cell">${knowDone ? `R${round}=${step.R}` : "?"}</div></div>`;
+    return box;
+  }
+
+  // Appends whatever rich visual (and short text) belongs inside a given map node's body.
+  function appendMapVisual(bodyEl, node, status) {
+    if (node.type === "round") {
+      bodyEl.appendChild(miniFeistelDiagram(node.round, status));
+      return;
+    }
+    if (status === "upcoming") return;
+    switch (node.idx) {
+      case 1: {
+        const flat = utf8FlatBytes(utf8Groups(state.textInput));
+        const sel = flat[Math.min(state.textByteIndex, Math.max(flat.length - 1, 0))];
+        const shown = textPreview(state.textInput, 22);
+        bodyEl.appendChild(el("div", "map-detail", !state.textInput ? t('map.noText') : sel ? `"${shown}" → ${sel.value}` : `"${shown}"`));
+        return;
+      }
+      case 2: bodyEl.appendChild(miniBits(state.plaintextBits)); return;
+      case 3: bodyEl.appendChild(miniBits(state.keyBits)); return;
+      case 4: bodyEl.appendChild(miniSubkeys()); return;
+      case 5: bodyEl.appendChild(el("div", "map-detail", t('map.sboxReady'))); return;
+      case 7: bodyEl.appendChild(miniBits(bits8(encryptionTrace().outByte))); return;
+      case 8: {
+        if (!state.decRunning) return;
+        bodyEl.appendChild(miniPips(state.decRound >= ROUNDS ? ROUNDS + 1 : state.decRound, ROUNDS));
+        if (state.decRound < ROUNDS) {
+          bodyEl.appendChild(el("div", "map-detail", t('map.progress', { r: state.decRound, tot: ROUNDS })));
+        } else {
+          const dec = decryptionTrace(encryptionTrace().outByte);
+          bodyEl.appendChild(el("div", "map-detail", dec.outByte === plaintextByte() ? t('map.match') : t('map.mismatch')));
+        }
+        return;
+      }
+      default: return;
+    }
+  }
+
+  // The map scrolls inside its card. Re-rendering rebuilds it from scratch, so the scroll
+  // position is restored each time, and only glides to the current node when that node changes.
+  let lastMapFocus = -1, mapGlideUntil = 0;
+  function renderMap() {
+    const body = document.getElementById("mapBody");
+    const prevTop = body.scrollTop;
+    body.innerHTML = "";
+    let focusRow = null, focusIdx = -1;
+    MAP_NODES.forEach((node, i) => {
+      const status = nodeStatus(node);
+      const label = node.type === 'round' ? t('map.round', { r: node.round }) : t('phase.' + node.idx);
+
+      const row = el("div", "map-node " + status);
+      const dotCol = el("div", "map-dot-col");
+      dotCol.appendChild(el("div", "map-dot"));
+      if (i < MAP_NODES.length - 1) dotCol.appendChild(el("div", "map-line"));
+      row.appendChild(dotCol);
+
+      const body_ = el("div", "map-body");
+      body_.appendChild(el("div", "map-label", label));
+      appendMapVisual(body_, node, status);
+      row.appendChild(body_);
+
+      if (status === 'done') {
+        row.classList.add("clickable");
+        row.addEventListener("click", () => node.type === 'round' ? jumpToRound(node.round) : jumpToPhase(node.idx));
+      }
+      if (status === 'current') { focusRow = row; focusIdx = i; }
+      body.appendChild(row);
+    });
+    body.scrollTop = prevTop;
+    if (focusRow && focusIdx !== lastMapFocus) { lastMapFocus = focusIdx; mapGlideUntil = performance.now() + 700; }
+    // Navigation can trigger several renders back-to-back, and each rebuild cancels a smooth scroll
+    // in flight — so for a moment after the current node changes, every render re-issues the glide.
+    if (focusRow && performance.now() < mapGlideUntil) {
+      // Centre it (not pin it to the top), so the steps already done stay visible above.
+      const centred = focusRow.offsetTop + focusRow.offsetHeight / 2 - body.clientHeight / 2;
+      body.scrollTo({ top: Math.max(0, centred), behavior: "smooth" });
+    }
+  }
+
+  // ===== Detailed-status overlay (the map's expand button) =====
+  // A floating window over the page: every step with its status, what it does, and — once it's
+  // done — what it produced. Upcoming steps only say what they will do (no spoilers).
+  const overlayEl = document.getElementById("mapOverlay");
+  let overlayOpen = false, overlayReturnFocus = null;
+
+  function nodeStatus(node) { return node.type === 'round' ? statusOfRoundNode(node.round) : statusOfPhaseNode(node.idx); }
+  function bytePreview(byte) { return t('textprep.selectedValue', { val: byte, bin: bin8(byte) }); }
+
+  function appendOverlayDetail(main, node, status) {
+    if (node.type === "round") {
+      const r = node.round, p = r - 1, step = encryptionTrace().trace[r];
+      const stageIdx = status === "done" ? 4 : status === "upcoming" ? -1 : ["xor1", "sbox", "xor2", "done"].indexOf(state.roundStage);
+      const subs = [
+        ["xor1", `R${p} ⊕ K${r} = ${bin4(step.X)} (${step.X})`],
+        ["sbox", `S(${step.X}) = ${bin4(step.Fv)} (${step.Fv})`],
+        ["xor2", `L${p} ⊕ F = ${bin4(step.R)} → R${r} = ${step.R}`],
+        ["swap", `L${r} = ${step.L}, R${r} = ${step.R}`],
+      ];
+      const list = el("div", "ov-subs");
+      subs.forEach(([key, val], i) => {
+        const st = i < stageIdx ? "done" : i === stageIdx ? "current" : "upcoming";
+        const row = el("div", "ov-sub " + st);
+        row.appendChild(el("span", "ov-sub-ico", st === "done" ? "✓" : st === "current" ? "▶" : "○"));
+        row.appendChild(el("span", null, t('map.sub.' + key)));
+        if (st === "done") row.appendChild(el("span", "ov-sub-val", val));
+        else if (st === "current" && (key === "xor1" || key === "xor2")) row.appendChild(el("span", "ov-sub-val", t('map.bitsProgress', { i: state.revealed })));
+        list.appendChild(row);
+      });
+      main.appendChild(list);
+      return;
+    }
+    if (status === "upcoming") return;
+    switch (node.idx) {
+      case 1: {
+        const flat = utf8FlatBytes(utf8Groups(state.textInput));
+        const sel = flat[Math.min(state.textByteIndex, Math.max(flat.length - 1, 0))];
+        main.appendChild(el("div", "ov-result", sel ? `«${textPreview(state.textInput, 40)}» → ${bytePreview(sel.value)}` : t('map.noText')));
+        return;
+      }
+      case 2: main.appendChild(miniBits(state.plaintextBits)); main.appendChild(el("div", "ov-result", bytePreview(plaintextByte()))); return;
+      case 3: main.appendChild(miniBits(state.keyBits)); main.appendChild(el("div", "ov-result", bytePreview(keyByte()))); return;
+      case 4: appendMapVisual(main, node, status); return;
+      case 5: main.appendChild(el("div", "ov-result", t('map.sboxReady'))); return;
+      case 7: { const c = encryptionTrace().outByte; main.appendChild(miniBits(bits8(c))); main.appendChild(el("div", "ov-result", bytePreview(c))); return; }
+      case 8:
+        if (state.decRunning) appendMapVisual(main, node, status);
+        else main.appendChild(el("div", "map-detail", t('map.decNotStarted')));
+        return;
+      default: return;
+    }
+  }
+
+  function renderOverlay(scrollToCurrent) {
+    const body = document.getElementById("ovBody");
+    const prevTop = body.scrollTop;
+    body.innerHTML = "";
+    let done = 0, currentEl = null;
+    MAP_NODES.forEach((node, i) => {
+      const status = nodeStatus(node);
+      if (status === "done") done++;
+      const label = node.type === 'round' ? t('map.round', { r: node.round }) : t('phase.' + node.idx);
+      const card = el("div", "ov-step " + status);
+      card.appendChild(el("div", "ov-icon", status === "done" ? "✓" : status === "current" ? "▶" : String(i + 1)));
+      const main = el("div", "ov-main");
+      const top = el("div", "ov-top");
+      top.appendChild(el("div", "ov-name", `${i + 1}. ${label}`));
+      top.appendChild(el("div", "ov-pill", t('map.st.' + status)));
+      main.appendChild(top);
+      main.appendChild(el("div", "ov-what", t(node.type === 'round' ? 'map.d.round' : 'map.d.' + node.idx)));
+      appendOverlayDetail(main, node, status);
+      if (status === "done") {
+        main.appendChild(el("div", "ov-goto", t('map.goto')));
+        card.classList.add("clickable");
+        card.tabIndex = 0; card.setAttribute("role", "button");
+        const go = () => { closeOverlay(); if (node.type === 'round') jumpToRound(node.round); else jumpToPhase(node.idx); };
+        card.addEventListener("click", go);
+        card.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+      }
+      card.appendChild(main);
+      if (status === "current") currentEl = card;
+      body.appendChild(card);
+    });
+    document.getElementById("ovTitle").textContent = t('map.detailTitle');
+    document.getElementById("ovSub").textContent = t('map.progressAll', { done, tot: MAP_NODES.length });
+    document.getElementById("ovBar").style.width = Math.round(done / MAP_NODES.length * 100) + "%";
+    const closeBtn = document.getElementById("ovClose");
+    closeBtn.title = t('map.close'); closeBtn.setAttribute("aria-label", t('map.close'));
+    body.scrollTop = prevTop;
+    if (scrollToCurrent && currentEl) body.scrollTop = Math.max(0, currentEl.offsetTop - 70);
+  }
+
+  function openOverlay() {
+    overlayOpen = true;
+    overlayReturnFocus = document.activeElement;
+    overlayEl.hidden = false;
+    document.body.style.overflow = "hidden";
+    renderOverlay(true);
+    document.getElementById("ovClose").focus();
+  }
+  function closeOverlay() {
+    if (!overlayOpen) return;
+    overlayOpen = false;
+    overlayEl.hidden = true;
+    document.body.style.overflow = "";
+    if (overlayReturnFocus && overlayReturnFocus.focus) overlayReturnFocus.focus();
+  }
+
+  function render() {
+    renderDots();
+    const panel = el("div", "panel");
+    RENDERERS[state.phase](panel);
+    const holder = document.getElementById("stepPanel");
+    const prevScroll = holder.firstElementChild ? holder.firstElementChild.scrollTop : 0;
+    holder.innerHTML = "";
+    holder.appendChild(panel);
+    // A new step starts at the top of the card; re-renders inside a step (clicking a bit,
+    // switching a tab) keep whatever the player had scrolled to.
+    const stepKey = [state.phase, state.round, state.roundStage, state.decRunning ? state.decRound : -1].join(":");
+    panel.scrollTop = stepKey === lastStepKey ? prevScroll : 0;
+    lastStepKey = stepKey;
+    renderNav(document.getElementById("navRow"));
+    renderMap();
+    if (overlayOpen) renderOverlay(false);
+    if (avOpen) renderAvalancheOverlay();
+  }
+  let lastStepKey = "";
+
+  document.getElementById("infoToggle").addEventListener("click", function () { this.classList.toggle("open"); });
+  document.getElementById("mapExpand").addEventListener("click", openOverlay);
+  document.getElementById("ovClose").addEventListener("click", closeOverlay);
+  overlayEl.addEventListener("click", (e) => { if (e.target === overlayEl) closeOverlay(); });
+  document.addEventListener("keydown", (e) => {
+    if (!overlayOpen) return;
+    if (e.key === "Escape") { closeOverlay(); return; }
+    if (e.key !== "Tab") return;
+    const f = Array.from(overlayEl.querySelectorAll('button:not([disabled]), [tabindex="0"]'));
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+
+  const avalancheOverlayEl = document.getElementById("avalancheOverlay");
+  document.getElementById("avClose").addEventListener("click", closeAvalancheOverlay);
+  avalancheOverlayEl.addEventListener("click", (e) => { if (e.target === avalancheOverlayEl) closeAvalancheOverlay(); });
+  document.addEventListener("keydown", (e) => {
+    if (!avOpen) return;
+    if (e.key === "Escape") { closeAvalancheOverlay(); return; }
+    if (e.key !== "Tab") return;
+    const f = Array.from(avalancheOverlayEl.querySelectorAll('button:not([disabled]), [tabindex="0"]'));
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn)));
+  initLanguage();
+})();
+</script>
+</body>
+</html>

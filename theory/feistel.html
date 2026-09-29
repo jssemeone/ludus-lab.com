@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title id="pageTitle">Сеть Фейстеля: как родился DES | Ludus Lab</title>
+<meta id="pageDescription" name="description" content="Как сеть Фейстеля решает проблему обратимости шифра и почему на этой структуре построены DES и российская Магма. Разбор для тех, кто хочет понять принцип, а не только формулы.">
+<!-- Favicon -->
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function(m,e,t,r,i,k,a){
+m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+m[i].l=1*new Date();
+for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { height: 100%; }
+body {
+background: #0a1a2a;
+color: #c5d5e0;
+font-family: 'Roboto', sans-serif;
+line-height: 1.8;
+padding: 0;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
+
+/* Language switch */
+.lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+.lang-btn {
+background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3);
+font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.5px;
+padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease;
+}
+.lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+.lang-btn.active {
+background: rgba(212, 175, 55, 0.18); border-color: #d4af37; color: #d4af37;
+box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+/* Навигация */
+.theory-nav {
+max-width: 900px;
+margin: 0 auto;
+padding: 20px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 1px solid rgba(0, 162, 255, 0.3);
+flex-shrink: 0;
+}
+.nav-logo {
+font-family: 'Oswald', sans-serif;
+font-size: 1.8rem;
+color: #d4af37;
+text-decoration: none;
+text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+}
+.nav-links { display: flex; gap: 20px; }
+.nav-link {
+color: #8ab0c5;
+text-decoration: none;
+font-family: 'Oswald', sans-serif;
+text-transform: uppercase;
+font-size: 0.9rem;
+letter-spacing: 1px;
+transition: all 0.3s;
+padding: 8px 15px;
+border-radius: 4px;
+border: 1px solid transparent;
+white-space: nowrap;
+}
+.nav-link:hover {
+color: #00a2ff;
+border-color: rgba(0, 162, 255, 0.3);
+background: rgba(0, 162, 255, 0.1);
+}
+/* Основной контент */
+.theory-container {
+max-width: 900px;
+margin: 0 auto;
+padding: 40px 20px;
+flex: 1 0 auto;
+}
+/* Заголовок статьи */
+.article-header {
+margin-bottom: 40px;
+text-align: center;
+}
+.article-category {
+display: inline-block;
+background: rgba(0, 162, 255, 0.2);
+color: #00a2ff;
+padding: 5px 15px;
+border-radius: 20px;
+font-size: 0.9rem;
+margin-bottom: 15px;
+border: 1px solid rgba(0, 162, 255, 0.3);
+}
+.article-title {
+font-family: 'Oswald', sans-serif;
+font-size: 3rem;
+color: #d4af37;
+text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+margin-bottom: 20px;
+text-transform: uppercase;
+letter-spacing: 2px;
+}
+.article-subtitle {
+font-size: 1.3rem;
+color: #8ab0c5;
+max-width: 700px;
+margin: 0 auto;
+line-height: 1.6;
+}
+/* Мета-информация */
+.article-meta {
+display: flex;
+justify-content: center;
+gap: 30px;
+margin-top: 20px;
+font-size: 0.9rem;
+color: #557585;
+}
+.meta-item { display: flex; align-items: center; gap: 8px; }
+/* Контентные блоки */
+.content-block {
+margin: 60px 0;
+padding: 30px;
+background: rgba(10, 30, 45, 0.6);
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 8px;
+box-shadow: 0 0 20px rgba(0, 162, 255, 0.1);
+}
+.content-block h2 {
+font-family: 'Oswald', sans-serif;
+font-size: 2rem;
+color: #00a2ff;
+margin-bottom: 25px;
+padding-bottom: 10px;
+border-bottom: 2px solid rgba(0, 162, 255, 0.3);
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+.content-block p {
+font-size: 1.1rem;
+line-height: 1.8;
+margin-bottom: 20px;
+color: #a0c0d0;
+}
+.highlight { color: #00a2ff; font-weight: 500; text-shadow: 0 0 5px rgba(0, 162, 255, 0.3); }
+.highlight-gold { color: #d4af37; font-weight: 500; text-shadow: 0 0 5px rgba(212, 175, 55, 0.3); }
+.highlight-symmetric { color: #9b59b6; font-weight: 500; text-shadow: 0 0 5px rgba(155, 89, 182, 0.3); }
+.highlight-neon {
+color: #e6f0ff;
+font-weight: 500;
+text-shadow: 0 0 3px rgba(255, 255, 255, 0.7), 0 0 6px rgba(100, 200, 255, 0.4), 0 0 9px rgba(100, 200, 255, 0.2);
+position: relative;
+padding: 0 2px;
+}
+.highlight-neon::after {
+content: '';
+position: absolute;
+bottom: -1px;
+left: 0;
+width: 100%;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(100, 200, 255, 0.5), transparent);
+}
+/* Шаги объяснения */
+.explanation-steps { margin: 30px 0; }
+.step {
+display: flex;
+align-items: flex-start;
+gap: 20px;
+margin: 25px 0;
+padding: 20px;
+background: rgba(5, 20, 30, 0.8);
+border-left: 4px solid #00a2ff;
+border-radius: 0 8px 8px 0;
+}
+.step-number {
+flex-shrink: 0;
+width: 40px;
+height: 40px;
+background: #00a2ff;
+color: #fff;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: 'Oswald', sans-serif;
+font-size: 1.2rem;
+font-weight: bold;
+box-shadow: 0 0 10px rgba(0, 162, 255, 0.5);
+}
+.step-content h3 { color: #d4af37; margin-bottom: 10px; font-family: 'Oswald', sans-serif; font-size: 1.3rem; }
+/* Ключевая идея */
+.key-insight {
+background: rgba(212, 175, 55, 0.1);
+border-left: 4px solid #d4af37;
+padding: 20px;
+margin: 30px 0;
+border-radius: 0 8px 8px 0;
+}
+.key-insight strong { color: #d4af37; font-family: 'Oswald', sans-serif; display: block; margin-bottom: 10px; font-size: 1.1rem; }
+/* Список действий */
+.action-list { list-style: none; margin: 30px 0; }
+.action-list li {
+display: flex;
+align-items: flex-start;
+gap: 15px;
+margin: 15px 0;
+padding: 15px;
+background: rgba(0, 162, 255, 0.05);
+border-radius: 6px;
+border-left: 3px solid #00a2ff;
+}
+.action-icon { font-size: 1.5rem; width: 40px; text-align: center; flex-shrink: 0; margin-top: 2px; }
+.action-text { flex: 1; }
+.action-text strong { color: #00a2ff; font-family: 'Oswald', sans-serif; }
+/* УПРОЩЕННАЯ СХЕМА ШИФРОВАНИЯ */
+.simple-encryption-scheme {
+margin: 40px auto;
+padding: 25px;
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(155, 89, 182, 0.3);
+border-radius: 12px;
+text-align: center;
+max-width: 700px;
+position: relative;
+}
+.simple-encryption-scheme::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 1px;
+background: linear-gradient(90deg, transparent, #9b59b6, transparent);
+}
+.scheme-title { color: #9b59b6; font-family: 'Oswald', sans-serif; margin-bottom: 25px; font-size: 1.2rem; letter-spacing: 1px; }
+.scheme-flow { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+.scheme-item { display: flex; flex-direction: column; align-items: center; min-width: 120px; }
+.scheme-box {
+width: 110px; height: 70px; border-radius: 8px;
+display: flex; align-items: center; justify-content: center;
+font-family: 'Courier New', monospace; font-size: 1rem; font-weight: bold;
+padding: 8px; text-align: center; margin-bottom: 8px;
+}
+.scheme-original { background: rgba(0, 162, 255, 0.1); border: 1px solid #00a2ff; color: #00a2ff; }
+.scheme-key { background: rgba(212, 175, 55, 0.1); border: 1px solid #d4af37; color: #d4af37; font-size: 0.9rem; }
+.scheme-cipher { background: rgba(155, 89, 182, 0.1); border: 1px solid #9b59b6; color: #9b59b6; font-size: 0.95em; }
+.scheme-label { font-size: 0.75rem; color: #8ab0c5; text-align: center; line-height: 1.3; max-width: 100px; }
+.scheme-arrow { font-size: 1.2rem; color: #9b59b6; margin: 0 5px; }
+.scheme-note { color: #8ab0c5; margin-top: 20px; font-size: 0.9rem; padding-top: 15px; border-top: 1px solid rgba(155, 89, 182, 0.2); font-style: italic; }
+@media (max-width: 768px) {
+.scheme-flow { gap: 8px; }
+.scheme-item { min-width: 100px; }
+.scheme-box { width: 90px; height: 60px; font-size: 0.9rem; }
+.scheme-arrow { font-size: 1rem; margin: 0 3px; }
+.scheme-label { font-size: 0.7rem; max-width: 80px; }
+}
+/* Исторические шифры */
+.historical-ciphers { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0; }
+.cipher-card {
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(155, 89, 182, 0.3);
+border-radius: 8px;
+padding: 20px;
+text-align: center;
+}
+.cipher-card h4 { color: #9b59b6; margin-bottom: 15px; font-family: 'Oswald', sans-serif; }
+.cipher-example {
+font-family: monospace; font-size: 1.1rem; margin: 15px 0;
+padding: 10px; background: rgba(10, 30, 45, 0.6);
+border-radius: 4px; border-left: 3px solid #d4af37;
+}
+/* Современные алгоритмы */
+.modern-algorithms { display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0; justify-content: center; }
+.algorithm-tag {
+background: rgba(155, 89, 182, 0.1);
+border: 1px solid rgba(155, 89, 182, 0.3);
+padding: 8px 15px; border-radius: 20px;
+font-size: 0.9rem; color: #9b59b6;
+transition: all 0.3s;
+}
+.algorithm-tag:hover {
+background: rgba(155, 89, 182, 0.2);
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(155, 89, 182, 0.2);
+}
+.algorithm-tag.important {
+background: rgba(212, 175, 55, 0.1);
+border-color: rgba(212, 175, 55, 0.3);
+color: #d4af37;
+}
+.algorithm-tag.russian {
+background: rgba(255, 255, 255, 0.05);
+border-color: rgba(255, 255, 255, 0.2);
+color: #e6f0ff;
+position: relative; overflow: hidden;
+}
+.algorithm-tag.russian::before {
+content: ''; position: absolute; top: -50%; left: -60%;
+width: 20px; height: 200%; background: rgba(255, 255, 255, 0.1);
+transform: rotate(30deg); transition: all 0.6s; opacity: 0;
+}
+.algorithm-tag.russian:hover::before { left: 120%; opacity: 1; }
+/* Кнопки действий */
+.article-actions {
+text-align: center; margin: 60px 0; padding: 30px;
+background: rgba(10, 30, 45, 0.4);
+border-radius: 8px; border: 1px solid rgba(0, 162, 255, 0.2);
+}
+.action-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 30px; flex-wrap: wrap; }
+.btn-primary, .btn-secondary, .btn-disabled {
+padding: 15px 30px; font-family: 'Oswald', sans-serif;
+text-transform: uppercase; letter-spacing: 1px;
+text-decoration: none; border-radius: 6px; font-size: 1rem;
+transition: all 0.3s; border: 1px solid; text-align: center; min-width: 180px;
+}
+.btn-primary {
+background: linear-gradient(to bottom, #006ba6, #004d7a);
+color: #e6f0ff; border-color: #00a2ff;
+}
+.btn-primary:hover {
+background: linear-gradient(to bottom, #0088cc, #006ba6);
+box-shadow: 0 0 20px rgba(0, 162, 255, 0.4);
+transform: translateY(-3px);
+}
+.btn-secondary {
+background: transparent; color: #8ab0c5;
+border-color: rgba(138, 176, 197, 0.4);
+}
+.btn-secondary:hover { border-color: #8ab0c5; color: #a0c0d0; }
+.btn-disabled {
+background: rgba(100, 100, 100, 0.3); color: #666;
+border-color: rgba(100, 100, 100, 0.5); cursor: not-allowed; opacity: 0.7;
+}
+/* Блок предупреждения */
+.warning-box {
+background: rgba(255, 165, 0, 0.1);
+border-left: 4px solid #ffa500;
+padding: 20px; margin: 30px 0;
+border-radius: 0 8px 8px 0;
+}
+.warning-box strong { color: #ffa500; font-family: 'Oswald', sans-serif; display: block; margin-bottom: 10px; font-size: 1.1rem; }
+/* Дополнительный материал */
+.advanced-section {
+margin: 40px 0; padding: 20px;
+border: 1px solid rgba(212, 175, 55, 0.3);
+border-radius: 8px; background: rgba(212, 175, 55, 0.05);
+}
+.advanced-section summary {
+cursor: pointer; color: #d4af37;
+font-family: 'Oswald', sans-serif; font-size: 1.1rem;
+list-style: none; padding: 10px;
+}
+.advanced-section summary::before {
+content: '▶'; margin-right: 10px;
+display: inline-block; transition: transform 0.3s;
+}
+.advanced-section[open] summary::before { transform: rotate(90deg); }
+.advanced-content {
+margin-top: 20px; padding-top: 20px;
+border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+.advanced-content h3 { color: #d4af37; margin: 15px 0 10px; font-family: 'Oswald', sans-serif; }
+/* Темы для углубления */
+.topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0; }
+.topic-card {
+background: rgba(5, 20, 30, 0.6);
+border: 1px solid rgba(212, 175, 55, 0.2);
+border-radius: 6px; padding: 15px; text-align: left;
+}
+.topic-card h4 { color: #d4af37; margin-bottom: 8px; font-family: 'Oswald', sans-serif; font-size: 1.1rem; }
+.topic-card p { font-size: 0.9rem; color: #8ab0c5; margin: 0; line-height: 1.5; }
+/* Футер */
+.theory-footer {
+text-align: center; margin-top: auto;
+padding: 30px 20px; border-top: 1px solid rgba(0, 162, 255, 0.2);
+color: #557585; font-size: 0.9rem; flex-shrink: 0; background: #0a1a2a;
+}
+/* Таблицы сравнения */
+.comparison-table { width: 100%; border-collapse: collapse; margin: 20px 0; color: #a0c0d0; }
+.comparison-table th {
+padding: 12px; border: 1px solid rgba(0,162,255,0.3);
+text-align: left; background: rgba(0, 30, 60, 0.3);
+color: #00a2ff; font-family: 'Oswald', sans-serif; font-weight: normal;
+}
+.comparison-table td { padding: 10px; border: 1px solid rgba(0,162,255,0.2); vertical-align: top; }
+.comparison-table tr:nth-child(even) { background: rgba(0, 30, 60, 0.2); }
+.comparison-table .russian-cell { border-left: 2px solid rgba(255, 255, 255, 0.3); }
+.comparison-table .western-cell { border-left: 3px solid #00a2ff; }
+/* ЭЛЕГАНТНЫЙ ЗАГОЛОВОК ДЛЯ РОССИЙСКИХ СТАНДАРТОВ */
+.russian-header {
+display: flex; align-items: center; gap: 15px;
+margin-bottom: 30px; padding-bottom: 15px;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+position: relative;
+}
+.russian-header::after {
+content: ''; position: absolute; bottom: -1px; left: 0;
+width: 100px; height: 2px;
+background: linear-gradient(90deg, rgba(100, 200, 255, 0.8), transparent);
+}
+.ru-badge {
+display: flex; align-items: center; justify-content: center;
+width: 45px; height: 45px;
+background: rgba(255, 255, 255, 0.05);
+color: #e6f0ff; font-family: 'Oswald', sans-serif;
+font-size: 1.1rem; font-weight: bold; border-radius: 50%;
+border: 1px solid rgba(255, 255, 255, 0.2);
+box-shadow: 0 0 8px rgba(255, 255, 255, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.05);
+position: relative; overflow: hidden;
+}
+.ru-badge::before {
+content: ''; position: absolute; top: -50%; left: -50%;
+width: 200%; height: 200%;
+background: radial-gradient(circle, rgba(100, 200, 255, 0.1) 0%, transparent 70%);
+}
+.russian-title {
+font-family: 'Oswald', sans-serif; font-size: 1.8rem;
+color: #e6f0ff; text-transform: uppercase; letter-spacing: 1px; position: relative;
+}
+.russian-subtitle { font-size: 1rem; color: #8ab0c5; margin-top: 5px; font-style: italic; }
+/* Схема эволюции российских стандартов */
+.evolution-flow { display: flex; align-items: center; justify-content: space-between; margin: 40px 0; position: relative; }
+.evolution-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+.evolution-box {
+width: 140px; height: 140px; border-radius: 12px;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+padding: 20px; text-align: center; margin-bottom: 15px;
+position: relative; overflow: hidden; transition: transform 0.3s ease;
+}
+.evolution-box:hover { transform: translateY(-3px); }
+.evolution-box.magma {
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+.evolution-box.transition {
+background: rgba(212, 175, 55, 0.05);
+border: 1px solid rgba(212, 175, 55, 0.2);
+box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+width: 100px; height: 100px;
+}
+.evolution-box.kuznyechik {
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+.evolution-title { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: bold; margin-bottom: 8px; color: #ffffff; }
+.evolution-subtitle { font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 5px; font-style: italic; }
+.evolution-details { font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); line-height: 1.4; }
+.evolution-arrow { font-size: 1.8rem; color: #8ab0c5; margin: 0 15px; position: relative; z-index: 2; opacity: 0.7; }
+.evolution-label { font-size: 0.85rem; color: #8ab0c5; margin-top: 10px; text-align: center; max-width: 140px; line-height: 1.4; }
+/* Адаптивность */
+@media (max-width: 768px) {
+.theory-container { padding: 20px 15px; margin-bottom: 40px; }
+.article-title { font-size: 2.2rem; }
+.content-block { padding: 20px; margin: 40px 0; }
+.step { flex-direction: column; gap: 15px; }
+.action-buttons { flex-direction: column; align-items: center; gap: 15px; }
+.btn-primary, .btn-secondary, .btn-disabled { width: 100%; max-width: 300px; padding: 12px 20px; }
+.evolution-flow { flex-direction: column; gap: 30px; }
+.evolution-arrow { transform: rotate(90deg); margin: 15px 0; }
+.historical-ciphers { grid-template-columns: 1fr; }
+.nav-links { flex-direction: row; gap: 15px; flex-wrap: wrap; justify-content: center; }
+.article-actions { margin: 40px 0 20px; padding: 20px 15px; }
+.article-meta { flex-direction: column; gap: 10px; }
+.topics-grid { grid-template-columns: 1fr; }
+.theory-nav { flex-direction: column; gap: 15px; padding: 15px; }
+.comparison-table { font-size: 0.9rem; }
+.comparison-table th, .comparison-table td { padding: 8px; }
+.russian-header { flex-direction: column; gap: 10px; text-align: center; align-items: center; }
+.ru-badge { width: 40px; height: 40px; font-size: 1rem; }
+.evolution-step { width: 100%; }
+.evolution-box { width: 180px; }
+}
+@media (max-width: 480px) {
+.article-title { font-size: 1.8rem; }
+.article-subtitle { font-size: 1.1rem; }
+.content-block h2 { font-size: 1.5rem; }
+.nav-logo { font-size: 1.5rem; }
+.nav-links { width: 100%; justify-content: space-between; }
+.nav-link { padding: 6px 10px; font-size: 0.8rem; flex: 1; text-align: center; }
+.btn-primary, .btn-secondary, .btn-disabled { min-width: auto; padding: 12px 15px; font-size: 0.9rem; }
+.theory-footer { padding: 20px 15px; font-size: 0.8rem; }
+.nav-links { justify-content: center; gap: 10px; }
+.nav-link { padding: 8px 12px; }
+.comparison-table { font-size: 0.8rem; }
+.evolution-box { width: 140px; height: 120px; }
+.evolution-box.transition { width: 90px; height: 90px; }
+.lang-switch { top: 8px; right: 8px; }
+.lang-btn { font-size: 0.65rem; padding: 3px 7px; }
+}
+@media (max-width: 320px) {
+.article-title { font-size: 1.5rem; }
+.article-subtitle { font-size: 1rem; }
+.content-block h2 { font-size: 1.3rem; }
+.btn-primary, .btn-secondary, .btn-disabled { padding: 10px 12px; font-size: 0.85rem; }
+.nav-links { flex-direction: column; width: 100%; }
+.nav-link { width: 100%; margin-bottom: 5px; }
+.evolution-box { width: 120px; height: 110px; }
+}
+</style>
+
+</head>
+<body>
+<div class="lang-switch" role="group" aria-label="Language">
+<button class="lang-btn" data-lang-btn="ru">RU</button>
+<button class="lang-btn" data-lang-btn="en">EN</button>
+<button class="lang-btn" data-lang-btn="es">ES</button>
+</div>
+
+<!-- Навигация -->
+<nav class="theory-nav">
+<a href="https://ludus-lab.ru/" class="nav-logo">LUDUS LAB</a>
+<div class="nav-links">
+<a href="https://ludus-lab.ru/" class="nav-link" data-i18n="nav.home">Главная</a>
+<a href="https://ludus-lab.ru/games/feistel/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+</div>
+</nav>
+
+<!-- Основной контент -->
+<div class="theory-container">
+<!-- Заголовок статьи -->
+<header class="article-header">
+<div class="article-category" data-i18n="article.category">Современная криптография</div>
+<h1 class="article-title" data-i18n="article.title">Сеть Фейстеля</h1>
+<p class="article-subtitle" data-i18n="article.subtitle">Как одна конструкция решила старую проблему шифрования — и легла в основу DES, российской Магмы и десятков других алгоритмов</p>
+<div class="article-meta">
+<div class="meta-item" data-i18n="meta.readtime">⏱️ 5 мин чтения</div>
+<div class="meta-item" data-i18n="meta.level">📊 Средний уровень</div>
+<div class="meta-item" data-i18n="meta.security">🔑 Фундамент DES и Магмы</div>
+</div>
+</header>
+
+<!-- Блок 1: проблема -->
+<section class="content-block">
+<h2 data-i18n="block1.heading">Проблема, которую решал Фейстель</h2>
+<p data-i18n="block1.p1">Чтобы расшифровать блочный шифр, нужно каким-то образом отменить то перемешивание, которым его зашифровали. Придумать одну хорошую перемешивающую функцию — уже непростая задача. А придумать вдобавок к ней чистую математическую <span class="highlight">обратную функцию</span> и реализовать обе —вдвое больше работы, и вдвое больше шансов ошибиться.</p>
+<p data-i18n="block1.p2">В начале 1970-х в IBM <span class="highlight-gold">Хорст Фейстель</span> предложил структурный трюк: разрезать блок данных пополам на <span class="highlight-symmetric">L</span> и <span class="highlight-symmetric">R</span>, прогнать одну половину — вместе с подключом раунда — через функцию F, которая может быть сколь угодно сложной и необратимой, сложить результат с другой половиной, а затем поменять половины местами. Повторить несколько раз.</p>
+<div class="key-insight">
+<strong data-i18n="insight1.label">Ключевая мысль:</strong>
+<span data-i18n="insight1.text">Хитрость не в функции F, а в самой <span class="highlight-gold">структуре</span>. Сложение по модулю 2 (XOR) само себя отменяет, а обмен половинами тривиально обратим. Поэтому весь раунд целиком обратим — даже если функция F необратима сама по себе. Расшифровка — это тот же самый алгоритм, только подключи применяются в обратном порядке.</span>
+</div>
+</section>
+
+<!-- Блок 2: как устроена -->
+<section class="content-block">
+<h2 data-i18n="block2.heading">Как устроена сеть Фейстеля</h2>
+<p data-i18n="block2.intro">Если разобрать раунд на шаги, вся конструкция окажется на удивление простой:</p>
+<div class="explanation-steps">
+<div class="step">
+<div class="step-number">1</div>
+<div class="step-content">
+<h3 data-i18n="step1.title">Разбиение блока</h3>
+<p data-i18n="step1.text">Блок данных делится пополам на левую половину <span class="highlight-symmetric">L</span> и правую <span class="highlight-symmetric">R</span>. В DES это 32 и 32 бита от 64-битного блока, в игре Ludus Lab — 4 и 4 бита от одного байта.</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">2</div>
+<div class="step-content">
+<h3 data-i18n="step2.title">Функция раунда</h3>
+<p data-i18n="step2.text">Правая половина <span class="highlight-symmetric">R</span> складывается с подключом этого раунда и проходит через функцию F — в DES и Магме это набор <span class="highlight">S-блоков</span>, таблиц замен, которые и дают шифру нелинейность.</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">3</div>
+<div class="step-content">
+<h3 data-i18n="step3.title">Сложение и обмен</h3>
+<p data-i18n="step3.text">Результат F складывается по модулю 2 с левой половиной <span class="highlight-symmetric">L</span> — так получается новая правая половина. После этого половины меняются местами.</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">4</div>
+<div class="step-content">
+<h3 data-i18n="step4.title">Повтор на много раундов</h3>
+<p data-i18n="step4.text">Всё повторяется снова и снова, каждый раз с новым подключом: 16 раз в DES, 32 раза в Магме. Чем больше раундов, тем труднее найти закономерность между открытым текстом и шифротекстом.</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">5</div>
+<div class="step-content">
+<h3 data-i18n="step5.title">Финальный обмен и расшифровка</h3>
+<p data-i18n="step5.text">После последнего раунда половины меняются местами ещё раз — это и даёт главное свойство сети Фейстеля: чтобы расшифровать, Боб запускает <span class="highlight">точно такой же алгоритм</span>, но подаёт подключи в обратном порядке.</p>
+</div>
+</div>
+</div>
+<div class="simple-encryption-scheme">
+<div class="scheme-title" data-i18n="scheme1.title">Один раунд сети Фейстеля</div>
+<div class="scheme-flow">
+<div class="scheme-item"><div class="scheme-box scheme-original">L, R</div><div class="scheme-label" data-i18n="scheme1.label.halves">Половины блока</div></div>
+<div class="scheme-arrow">→</div>
+<div class="scheme-item"><div class="scheme-box scheme-key">F(R, K)</div><div class="scheme-label" data-i18n="scheme1.label.func">R + подключ → S-блоки</div></div>
+<div class="scheme-arrow">→</div>
+<div class="scheme-item"><div class="scheme-box scheme-cipher">L ⊕ F</div><div class="scheme-label" data-i18n="scheme1.label.xor">Складываем с L</div></div>
+<div class="scheme-arrow">→</div>
+<div class="scheme-item"><div class="scheme-box scheme-original">R, L'</div><div class="scheme-label" data-i18n="scheme1.label.swap">Половины меняются местами</div></div>
+</div>
+<p class="scheme-note" data-i18n="scheme1.note">F может быть какой угодно сложной и необратимой — обратима сама схема "раздели, перемешай, поменяй местами".</p>
+</div>
+</section>
+
+<!-- Блок 3: история -->
+<section class="content-block">
+<h2 data-i18n="block3.heading">От Lucifer до наших дней</h2>
+<p data-i18n="block3.intro">Идея Фейстеля не осталась теорией — на ней построена значительная часть симметричной криптографии XX века:</p>
+<div class="historical-ciphers">
+<div class="cipher-card">
+<h4 data-i18n="cipher1.title">Lucifer (IBM, начало 1970-х)</h4>
+<p data-i18n="cipher1.text">Первый шифр на структуре Фейстеля, созданный самим Хорстом Фейстелем и его командой в IBM.</p>
+<p data-i18n="cipher1.key">Прямой предок DES</p>
+</div>
+<div class="cipher-card">
+<h4 data-i18n="cipher2.title">DES (NBS, 1977)</h4>
+<p data-i18n="cipher2.text">Доработанный Lucifer стал стандартом США на четверть века — 64-битный блок, 56-битный ключ, 16 раундов.</p>
+<p data-i18n="cipher2.key">Ключ: 56 бит — сегодня этого мало</p>
+</div>
+<div class="cipher-card">
+<h4 data-i18n="cipher3.title">ГОСТ 28147-89 «Магма» (СССР, 1989)</h4>
+<p data-i18n="cipher3.text">Независимая советская разработка на той же идее: 64-битный блок, но ключ 256 бит и 32 раунда.</p>
+<p data-i18n="cipher3.key">Сегодня — ГОСТ Р 34.12-2015</p>
+</div>
+</div>
+<p data-i18n="block3.mid">Схема Фейстеля оказалась настолько удачной, что легла в основу ещё нескольких поколений шифров:</p>
+<div class="modern-algorithms">
+<span class="algorithm-tag important">DES</span>
+<span class="algorithm-tag important">3DES</span>
+<span class="algorithm-tag russian">МАГМА (ГОСТ)</span>
+<span class="algorithm-tag">Blowfish</span>
+<span class="algorithm-tag">CAST-128</span>
+<span class="algorithm-tag">Twofish</span>
+<span class="algorithm-tag">Camellia</span>
+<span class="algorithm-tag">KASUMI</span>
+</div>
+<div class="warning-box">
+<strong data-i18n="warning1.label">А что не Фейстель?</strong>
+<span data-i18n="warning1.text">AES и российский «Кузнечик» устроены иначе — это <span class="highlight">подстановочно-перестановочные сети</span> (SP-сети), не сети Фейстеля. Обе идеи решают одну задачу, но по-разному.</span>
+</div>
+</section>
+
+<!-- Блок 4: практика -->
+<section class="content-block">
+<h2 data-i18n="block4.heading">Испытайте сеть Фейстеля на практике</h2>
+<p data-i18n="block4.intro">В интерактивной демонстрации Ludus Lab вы сможете:</p>
+<ul class="action-list">
+<li><span class="action-icon">🔤</span><div class="action-text" data-i18n="action1"><span><strong>Превратить текст в биты</strong> — увидеть, как UTF-8 разбивает ваше сообщение на байты, и выбрать один для шифрования</span></div></li>
+<li><span class="action-icon">🔑</span><div class="action-text" data-i18n="action2"><span><strong>Задать общий ключ</strong> и посмотреть, как из него по шагам получаются четыре разных подключа раундов</span></div></li>
+<li><span class="action-icon">🌊</span><div class="action-text" data-i18n="action3"><span><strong>Проверить лавинный эффект</strong> S-блока — увидеть, как один изменённый бит входа меняет сразу несколько бит результата</span></div></li>
+<li><span class="action-icon">🔄</span><div class="action-text" data-i18n="action4"><span><strong>Пройти все 4 раунда шифрования</strong> бит за битом — со сложением по модулю 2, S-блоком и обменом половинами</span></div></li>
+<li><span class="action-icon">✅</span><div class="action-text" data-i18n="action5"><span><strong>Расшифровать результат</strong> тем же алгоритмом с подключами в обратном порядке — и убедиться, что сообщение восстановилось</span></div></li>
+</ul>
+<div class="key-insight">
+<strong data-i18n="insight2.label">Главный урок игры:</strong>
+<span data-i18n="insight2.text">Расшифровка работает не потому, что кто-то отменяет функцию F, а потому что <span class="highlight-gold">сама структура</span> сети Фейстеля симметрична относительно порядка подключей. Разберитесь в этом на одном байте — и принцип DES, Магмы и десятков других шифров станет понятен.</span>
+</div>
+</section>
+
+<!-- Дополнительный материал -->
+<details class="advanced-section">
+<summary data-i18n="advanced.summary">Для любознательных</summary>
+<div class="advanced-content">
+<h3 data-i18n="advanced.compare.heading">DES и Магма рядом</h3>
+<p data-i18n="advanced.compare.text">Оба алгоритма — сети Фейстеля, но с разным масштабом и разной судьбой:</p>
+<table class="comparison-table">
+<tr><th style="width: 25%;" data-i18n="table.param">Параметр</th><th class="western-cell">DES</th><th class="russian-cell">Магма (ГОСТ 28147-89)</th></tr>
+<tr><td data-i18n="table.row1.label">Страна разработки</td><td class="western-cell" data-i18n="table.row1.west">США</td><td class="russian-cell" data-i18n="table.row1.ru">СССР / Россия</td></tr>
+<tr><td data-i18n="table.row2.label">Год принятия</td><td class="western-cell">1977</td><td class="russian-cell">1989 (сегодня — ГОСТ Р 34.12-2015)</td></tr>
+<tr><td data-i18n="table.row3.label">Архитектура</td><td class="western-cell" data-i18n="table.row3.val">Сеть Фейстеля</td><td class="russian-cell" data-i18n="table.row3.val">Сеть Фейстеля</td></tr>
+<tr><td data-i18n="table.row4.label">Размер блока</td><td class="western-cell">64 бита</td><td class="russian-cell">64 бита</td></tr>
+<tr><td data-i18n="table.row5.label">Длина ключа</td><td class="western-cell">56 бит</td><td class="russian-cell">256 бит</td></tr>
+<tr><td data-i18n="table.row6.label">Число раундов</td><td class="western-cell">16</td><td class="russian-cell">32</td></tr>
+<tr><td data-i18n="table.row7.label">S-блоки</td><td class="western-cell" data-i18n="table.row7.west">Зафиксированы стандартом с 1977 года</td><td class="russian-cell" data-i18n="table.row7.ru">Изначально ведомственный секрет; единый набор закреплён лишь в 2015-м</td></tr>
+<tr><td data-i18n="table.row8.label">Регулятор</td><td class="western-cell" data-i18n="table.row8.west">NIST (США)</td><td class="russian-cell"><span class="highlight-neon">ФСБ России</span></td></tr>
+</table>
+<h3 data-i18n="advanced.diff.heading">Тайна S-блоков и дифференциальный криптоанализ</h3>
+<p data-i18n="advanced.diff.p1">В 1990 году криптографы <strong>Эли Бихам</strong> и <strong>Ади Шамир</strong> опубликовали <span class="highlight">дифференциальный криптоанализ</span> — мощную атаку на блочные шифры. Публика была поражена: оказалось, что S-блоки DES на удивление хорошо устойчивы именно к этой атаке.</p>
+<p data-i18n="advanced.diff.p2">Ответ нашёлся позже: по словам одного из инженеров IBM, <span class="highlight-gold">Дона Копперсмита</span>, команда IBM знала о дифференциальном криптоанализе ещё в начале 1970-х и намеренно спроектировала S-блоки DES так, чтобы противостоять ему — но по требованию АНБ держала это в секрете почти два десятилетия.</p>
+<h3 data-i18n="advanced.brute.heading">Конец DES: взлом перебором</h3>
+<p data-i18n="advanced.brute.p1">56-битный ключ DES даёт около 7×10<sup>16</sup> вариантов — в 1977 году этого хватало. К 1998 году фонд <span class="highlight">Electronic Frontier Foundation</span> построил специализированную машину «Deep Crack» стоимостью около 250 000 долларов, которая перебрала ключ примерно за 56 часов.</p>
+<p data-i18n="advanced.brute.p2">Это публично доказало, что 56 бит недостаточно. На замену пришёл переходный <strong>3DES</strong> (тройное применение DES), а затем, в 2001 году, — <strong>AES</strong>, выбранный по итогам открытого международного конкурса.</p>
+<div class="topics-grid">
+<div class="topic-card"><h4 data-i18n="topic1.title">Blowfish и Twofish</h4><p data-i18n="topic1.desc">Открытые альтернативы DES без патентных ограничений, разработанные Брюсом Шнайером в 1990-х</p></div>
+<div class="topic-card"><h4 data-i18n="topic2.title">Camellia</h4><p data-i18n="topic2.desc">Совместная разработка японских компаний, международный стандарт ISO/IEC, используется в TLS</p></div>
+<div class="topic-card"><h4 data-i18n="topic3.title">KASUMI</h4><p data-i18n="topic3.desc">Сеть Фейстеля в основе алгоритмов конфиденциальности сетей 3G/UMTS</p></div>
+</div>
+<h3 data-i18n="advanced.facts.heading">Интересные факты</h3>
+<ul style="margin-left: 20px; color: #a0c0d0;">
+<li data-i18n="facts.li1">Оригинальный Lucifer работал со 128-битным ключом; АНБ настояло на сокращении до 56 бит перед принятием DES</li>
+<li data-i18n="facts.li2">DES оставался официальным стандартом США более 20 лет, пока в 2001 году его не сменил AES</li>
+<li data-i18n="facts.li3">S-блоки исходного ГОСТ 28147-89 не были частью открытого стандарта — их могли задавать разные ведомства</li>
+<li data-i18n="facts.li4">AES и «Кузнечик» — не сети Фейстеля, а подстановочно-перестановочные сети (SP-сети)</li>
+<li data-i18n="facts.li5">Расшифровка в сети Фейстеля использует ту же самую схему, что и шифрование, — только подключи идут в обратном порядке</li>
+</ul>
+<div class="key-insight" style="margin-top: 20px;">
+<strong data-i18n="insight3.label">Философский момент:</strong>
+<span data-i18n="insight3.text">Сеть Фейстеля — редкий случай, когда простая структурная идея оказалась мощнее сложной математики. За полвека она пережила смену эпох: от механических шифровальных машин до постквантовой криптографии — и до сих пор используется там, где нужна проверенная временем конструкция.</span>
+</div>
+</div>
+</details>
+
+<!-- Кнопки действий -->
+<div class="article-actions" id="article-actions">
+<p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Теперь вы понимаете, почему функция F не обязана быть обратимой, и как из этой идеи выросли DES, Магма и десятки других шифров</p>
+<div class="action-buttons">
+<a href="https://ludus-lab.ru/games/feistel/index.html" class="btn-primary" data-i18n="actions.play">🚀 Запустить демонстрацию сети Фейстеля</a>
+<a href="https://ludus-lab.ru/#theory-section" class="btn-secondary" data-i18n="actions.back">← Вернуться к списку тем</a>
+</div>
+<p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">В демонстрации вы на одном байте пройдёте весь путь от открытого текста до шифротекста и обратно — и увидите, почему эта структура работает</p>
+</div>
+</div>
+
+<!-- Футер -->
+<footer class="theory-footer">
+<p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
+<p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Эта статья — упрощённое объяснение принципов. Реальные DES и Магма используют более сложные перестановки, расширения и расписания ключей, чем показано в интерактивной демонстрации.</p>
+</footer>
+
+<script>
+    const I18N = {
+      ru: {
+        'meta.title': 'Сеть Фейстеля: как родился DES | Ludus Lab',
+        'meta.description': 'Как сеть Фейстеля решает проблему обратимости шифра и почему на этой структуре построены DES и российская Магма. Разбор для тех, кто хочет понять принцип, а не только формулы.',
+        'nav.home': 'Главная',
+        'nav.play': 'Играть',
+        'article.category': 'Современная криптография',
+        'article.title': 'Сеть Фейстеля',
+        'article.subtitle': 'Как одна конструкция решила старую проблему шифрования — и легла в основу DES, российской Магмы и десятков других алгоритмов',
+        'meta.readtime': '⏱️ 5 мин чтения',
+        'meta.level': '📊 Средний уровень',
+        'meta.security': '🔑 Фундамент DES и Магмы',
+        'block1.heading': 'Проблема, которую решал Фейстель',
+        'block1.p1': 'Чтобы расшифровать блочный шифр, нужно каким-то образом отменить то перемешивание, которым его зашифровали. Придумать одну хорошую перемешивающую функцию — уже непростая задача. А придумать вдобавок к ней чистую математическую <span class="highlight">обратную функцию</span> и реализовать обе — вдвое больше работы, и вдвое больше шансов ошибиться.',
+        'block1.p2': 'В начале 1970-х в IBM <span class="highlight-gold">Хорст Фейстель</span> предложил структурный трюк: разрезать блок данных пополам на <span class="highlight-symmetric">L</span> и <span class="highlight-symmetric">R</span>, прогнать одну половину — вместе с подключом раунда — через функцию F, которая может быть сколь угодно сложной и необратимой, сложить результат с другой половиной, а затем поменять половины местами. Повторить несколько раз.',
+        'insight1.label': 'Ключевая мысль:',
+        'insight1.text': 'Хитрость не в функции F, а в самой <span class="highlight-gold">структуре</span>. Сложение по модулю 2 (XOR) само себя отменяет, а обмен половинами тривиально обратим. Поэтому весь раунд целиком обратим — даже если функция F необратима сама по себе. Расшифровка — это тот же самый алгоритм, только подключи применяются в обратном порядке.',
+        'block2.heading': 'Как устроена сеть Фейстеля',
+        'block2.intro': 'Если разобрать раунд на шаги, вся конструкция окажется на удивление простой:',
+        'step1.title': 'Разбиение блока',
+        'step1.text': 'Блок данных делится пополам на левую половину <span class="highlight-symmetric">L</span> и правую <span class="highlight-symmetric">R</span>. В DES это 32 и 32 бита от 64-битного блока, в игре Ludus Lab — 4 и 4 бита от одного байта.',
+        'step2.title': 'Функция раунда',
+        'step2.text': 'Правая половина <span class="highlight-symmetric">R</span> складывается с подключом этого раунда и проходит через функцию F — в DES и Магме это набор <span class="highlight">S-блоков</span>, таблиц замен, которые и дают шифру нелинейность.',
+        'step3.title': 'Сложение и обмен',
+        'step3.text': 'Результат F складывается по модулю 2 с левой половиной <span class="highlight-symmetric">L</span> — так получается новая правая половина. После этого половины меняются местами.',
+        'step4.title': 'Повтор на много раундов',
+        'step4.text': 'Всё повторяется снова и снова, каждый раз с новым подключом: 16 раз в DES, 32 раза в Магме. Чем больше раундов, тем труднее найти закономерность между открытым текстом и шифротекстом.',
+        'step5.title': 'Финальный обмен и расшифровка',
+        'step5.text': 'После последнего раунда половины меняются местами ещё раз — это и даёт главное свойство сети Фейстеля: чтобы расшифровать, Боб запускает <span class="highlight">точно такой же алгоритм</span>, но подаёт подключи в обратном порядке.',
+        'scheme1.title': 'Один раунд сети Фейстеля',
+        'scheme1.label.halves': 'Половины блока',
+        'scheme1.label.func': 'R + подключ → S-блоки',
+        'scheme1.label.xor': 'Складываем с L',
+        'scheme1.label.swap': 'Половины меняются местами',
+        'scheme1.note': 'F может быть какой угодно сложной и необратимой — обратима сама схема «раздели, перемешай, поменяй местами».',
+        'block3.heading': 'От Lucifer до наших дней',
+        'block3.intro': 'Идея Фейстеля не осталась теорией — на ней построена значительная часть симметричной криптографии XX века:',
+        'cipher1.title': 'Lucifer (IBM, начало 1970-х)',
+        'cipher1.text': 'Первый шифр на структуре Фейстеля, созданный самим Хорстом Фейстелем и его командой в IBM.',
+        'cipher1.key': 'Прямой предок DES',
+        'cipher2.title': 'DES (NBS, 1977)',
+        'cipher2.text': 'Доработанный Lucifer стал стандартом США на четверть века — 64-битный блок, 56-битный ключ, 16 раундов.',
+        'cipher2.key': 'Ключ: 56 бит — сегодня этого мало',
+        'cipher3.title': 'ГОСТ 28147-89 «Магма» (СССР, 1989)',
+        'cipher3.text': 'Независимая советская разработка на той же идее: 64-битный блок, но ключ 256 бит и 32 раунда.',
+        'cipher3.key': 'Сегодня — ГОСТ Р 34.12-2015',
+        'block3.mid': 'Схема Фейстеля оказалась настолько удачной, что легла в основу ещё нескольких поколений шифров:',
+        'warning1.label': 'А что не Фейстель?',
+        'warning1.text': 'AES и российский «Кузнечик» устроены иначе — это <span class="highlight">подстановочно-перестановочные сети</span> (SP-сети), не сети Фейстеля. Обе идеи решают одну задачу, но по-разному.',
+        'block4.heading': 'Испытайте сеть Фейстеля на практике',
+        'block4.intro': 'В интерактивной демонстрации Ludus Lab вы сможете:',
+        'action1': '<span><strong>Превратить текст в биты</strong> — увидеть, как UTF-8 разбивает ваше сообщение на байты, и выбрать один для шифрования</span>',
+        'action2': '<span><strong>Задать общий ключ</strong> и посмотреть, как из него по шагам получаются четыре разных подключа раундов</span>',
+        'action3': '<span><strong>Проверить лавинный эффект</strong> S-блока — увидеть, как один изменённый бит входа меняет сразу несколько бит результата</span>',
+        'action4': '<span><strong>Пройти все 4 раунда шифрования</strong> бит за битом — со сложением по модулю 2, S-блоком и обменом половинами</span>',
+        'action5': '<span><strong>Расшифровать результат</strong> тем же алгоритмом с подключами в обратном порядке — и убедиться, что сообщение восстановилось</span>',
+        'insight2.label': 'Главный урок игры:',
+        'insight2.text': 'Расшифровка работает не потому, что кто-то отменяет функцию F, а потому что <span class="highlight-gold">сама структура</span> сети Фейстеля симметрична относительно порядка подключей. Разберитесь в этом на одном байте — и принцип DES, Магмы и десятков других шифров станет понятен.',
+        'advanced.summary': 'Для любознательных',
+        'advanced.compare.heading': 'DES и Магма рядом',
+        'advanced.compare.text': 'Оба алгоритма — сети Фейстеля, но с разным масштабом и разной судьбой:',
+        'table.param': 'Параметр',
+        'table.row1.label': 'Страна разработки',
+        'table.row1.west': 'США',
+        'table.row1.ru': 'СССР / Россия',
+        'table.row2.label': 'Год принятия',
+        'table.row3.label': 'Архитектура',
+        'table.row3.val': 'Сеть Фейстеля',
+        'table.row4.label': 'Размер блока',
+        'table.row5.label': 'Длина ключа',
+        'table.row6.label': 'Число раундов',
+        'table.row7.label': 'S-блоки',
+        'table.row7.west': 'Зафиксированы стандартом с 1977 года',
+        'table.row7.ru': 'Изначально ведомственный секрет; единый набор закреплён лишь в 2015-м',
+        'table.row8.label': 'Регулятор',
+        'table.row8.west': 'NIST (США)',
+        'advanced.diff.heading': 'Тайна S-блоков и дифференциальный криптоанализ',
+        'advanced.diff.p1': 'В 1990 году криптографы <strong>Эли Бихам</strong> и <strong>Ади Шамир</strong> опубликовали <span class="highlight">дифференциальный криптоанализ</span> — мощную атаку на блочные шифры. Публика была поражена: оказалось, что S-блоки DES на удивление хорошо устойчивы именно к этой атаке.',
+        'advanced.diff.p2': 'Ответ нашёлся позже: по словам одного из инженеров IBM, <span class="highlight-gold">Дона Копперсмита</span>, команда IBM знала о дифференциальном криптоанализе ещё в начале 1970-х и намеренно спроектировала S-блоки DES так, чтобы противостоять ему — но по требованию АНБ держала это в секрете почти два десятилетия.',
+        'advanced.brute.heading': 'Конец DES: взлом перебором',
+        'advanced.brute.p1': '56-битный ключ DES даёт около 7×10<sup>16</sup> вариантов — в 1977 году этого хватало. К 1998 году фонд <span class="highlight">Electronic Frontier Foundation</span> построил специализированную машину «Deep Crack» стоимостью около 250 000 долларов, которая перебрала ключ примерно за 56 часов.',
+        'advanced.brute.p2': 'Это публично доказало, что 56 бит недостаточно. На замену пришёл переходный <strong>3DES</strong> (тройное применение DES), а затем, в 2001 году, — <strong>AES</strong>, выбранный по итогам открытого международного конкурса.',
+        'topic1.title': 'Blowfish и Twofish',
+        'topic1.desc': 'Открытые альтернативы DES без патентных ограничений, разработанные Брюсом Шнайером в 1990-х',
+        'topic2.title': 'Camellia',
+        'topic2.desc': 'Совместная разработка японских компаний, международный стандарт ISO/IEC, используется в TLS',
+        'topic3.title': 'KASUMI',
+        'topic3.desc': 'Сеть Фейстеля в основе алгоритмов конфиденциальности сетей 3G/UMTS',
+        'advanced.facts.heading': 'Интересные факты',
+        'facts.li1': 'Оригинальный Lucifer работал со 128-битным ключом; АНБ настояло на сокращении до 56 бит перед принятием DES',
+        'facts.li2': 'DES оставался официальным стандартом США более 20 лет, пока в 2001 году его не сменил AES',
+        'facts.li3': 'S-блоки исходного ГОСТ 28147-89 не были частью открытого стандарта — их могли задавать разные ведомства',
+        'facts.li4': 'AES и «Кузнечик» — не сети Фейстеля, а подстановочно-перестановочные сети (SP-сети)',
+        'facts.li5': 'Расшифровка в сети Фейстеля использует ту же самую схему, что и шифрование, — только подключи идут в обратном порядке',
+        'insight3.label': 'Философский момент:',
+        'insight3.text': 'Сеть Фейстеля — редкий случай, когда простая структурная идея оказалась мощнее сложной математики. За полвека она пережила смену эпох: от механических шифровальных машин до постквантовой криптографии — и до сих пор используется там, где нужна проверенная временем конструкция.',
+        'actions.intro': 'Теперь вы понимаете, почему функция F не обязана быть обратимой, и как из этой идеи выросли DES, Магма и десятки других шифров',
+        'actions.play': '🚀 Запустить демонстрацию сети Фейстеля',
+        'actions.back': '← Вернуться к списку тем',
+        'actions.outro': 'В демонстрации вы на одном байте пройдёте весь путь от открытого текста до шифротекста и обратно — и увидите, почему эта структура работает',
+        'footer.line1': '© 2025 Ludus Lab · Сложные вещи простыми играми',
+        'footer.line2': 'Эта статья — упрощённое объяснение принципов. Реальные DES и Магма используют более сложные перестановки, расширения и расписания ключей, чем показано в интерактивной демонстрации.',
+      },
+      en: {
+        'meta.title': 'The Feistel Network: How DES Was Born | Ludus Lab',
+        'meta.description': 'How a Feistel network solves the reversibility problem of a cipher, and why DES and Russia’s Magma are built on this structure. A walkthrough for people who want the idea, not just the formulas.',
+        'nav.home': 'Home',
+        'nav.play': 'Play',
+        'article.category': 'Modern cryptography',
+        'article.title': 'The Feistel Network',
+        'article.subtitle': 'How one construction solved an old encryption problem — and became the basis of DES, Russia’s Magma, and dozens of other algorithms',
+        'meta.readtime': '⏱️ 5 min read',
+        'meta.level': '📊 Intermediate level',
+        'meta.security': '🔑 Foundation of DES and Magma',
+        'block1.heading': 'The problem Feistel solved',
+        'block1.p1': 'To decrypt a block cipher you have to somehow undo whatever scrambling encrypted it. Coming up with one good scrambling function is hard enough. Coming up with a clean mathematical <span class="highlight">inverse</span> as well, and implementing both, doubles the work — and doubles the chances of getting something wrong.',
+        'block1.p2': 'In the early 1970s at IBM, <span class="highlight-gold">Horst Feistel</span> proposed a structural trick: cut the data block in half into <span class="highlight-symmetric">L</span> and <span class="highlight-symmetric">R</span>, run one half — together with a round key — through a function F that can be as complicated and irreversible as you like, add the result to the other half, then swap the halves. Repeat several times.',
+        'insight1.label': 'Key takeaway:',
+        'insight1.text': 'The trick isn’t in the function F, it’s in the <span class="highlight-gold">structure</span> itself. XOR undoes itself, and swapping halves is trivially reversible. So the whole round is reversible — even when F itself isn’t. Decryption is the exact same algorithm, just with the round keys applied in reverse order.',
+        'block2.heading': 'How a Feistel network is built',
+        'block2.intro': 'Broken down into steps, the whole construction turns out to be surprisingly simple:',
+        'step1.title': 'Splitting the block',
+        'step1.text': 'The data block is cut in half into a left half <span class="highlight-symmetric">L</span> and a right half <span class="highlight-symmetric">R</span>. In DES that’s 32 and 32 bits out of a 64-bit block; in the Ludus Lab game it’s 4 and 4 bits out of a single byte.',
+        'step2.title': 'The round function',
+        'step2.text': 'The right half <span class="highlight-symmetric">R</span> is combined with this round’s subkey and run through function F — in DES and Magma that’s a set of <span class="highlight">S-boxes</span>, substitution tables, which give the cipher its non-linearity.',
+        'step3.title': 'Adding and swapping',
+        'step3.text': 'F’s result is XORed with the left half <span class="highlight-symmetric">L</span>, producing the new right half. Then the halves are swapped.',
+        'step4.title': 'Repeat for many rounds',
+        'step4.text': 'The whole thing repeats over and over, each time with a new subkey: 16 times in DES, 32 times in Magma. More rounds make it harder to find any pattern between plaintext and ciphertext.',
+        'step5.title': 'Final swap and decryption',
+        'step5.text': 'After the last round the halves are swapped one more time — and this is what gives a Feistel network its main property: to decrypt, Bob runs <span class="highlight">the exact same algorithm</span>, just feeding in the subkeys in reverse order.',
+        'scheme1.title': 'One round of a Feistel network',
+        'scheme1.label.halves': 'The block’s halves',
+        'scheme1.label.func': 'R + subkey → S-boxes',
+        'scheme1.label.xor': 'Add to L',
+        'scheme1.label.swap': 'Halves are swapped',
+        'scheme1.note': 'F can be as complicated and irreversible as you like — it’s the "split, mix, swap" scheme itself that is reversible.',
+        'block3.heading': 'From Lucifer to today',
+        'block3.intro': 'Feistel’s idea didn’t stay theoretical — a large share of 20th-century symmetric cryptography is built on it:',
+        'cipher1.title': 'Lucifer (IBM, early 1970s)',
+        'cipher1.text': 'The first cipher built on a Feistel structure, created by Horst Feistel and his team at IBM.',
+        'cipher1.key': 'The direct ancestor of DES',
+        'cipher2.title': 'DES (NBS, 1977)',
+        'cipher2.text': 'A refined Lucifer became the US standard for a quarter century — a 64-bit block, a 56-bit key, 16 rounds.',
+        'cipher2.key': 'Key: 56 bits — not enough today',
+        'cipher3.title': 'GOST 28147-89 "Magma" (USSR, 1989)',
+        'cipher3.text': 'An independent Soviet design on the same idea: a 64-bit block, but a 256-bit key and 32 rounds.',
+        'cipher3.key': 'Today: GOST R 34.12-2015',
+        'block3.mid': 'The Feistel scheme turned out to be so successful that it became the basis of several more generations of ciphers:',
+        'warning1.label': 'What ISN’T a Feistel network?',
+        'warning1.text': 'AES and Russia’s "Kuznyechik" are built differently — they’re <span class="highlight">substitution-permutation networks</span> (SP-networks), not Feistel networks. Both ideas solve the same problem, just in different ways.',
+        'block4.heading': 'Try a Feistel network yourself',
+        'block4.intro': 'In the Ludus Lab interactive demo you can:',
+        'action1': '<span><strong>Turn text into bits</strong> — see how UTF-8 splits your message into bytes, and pick one to encrypt</span>',
+        'action2': '<span><strong>Set a shared key</strong> and watch, step by step, how it produces four different round subkeys</span>',
+        'action3': '<span><strong>Check the avalanche effect</strong> of the S-box — see how one changed input bit changes several output bits at once</span>',
+        'action4': '<span><strong>Walk through all 4 encryption rounds</strong> bit by bit — with XOR, the S-box, and swapping halves</span>',
+        'action5': '<span><strong>Decrypt the result</strong> with the same algorithm and the subkeys in reverse order — and confirm the message comes back intact</span>',
+        'insight2.label': 'The game’s main lesson:',
+        'insight2.text': 'Decryption works not because someone undoes the function F, but because the <span class="highlight-gold">structure itself</span> of a Feistel network is symmetric with respect to the order of the subkeys. Work through it on a single byte, and the principle behind DES, Magma, and dozens of other ciphers becomes clear.',
+        'advanced.summary': 'For the curious',
+        'advanced.compare.heading': 'DES and Magma side by side',
+        'advanced.compare.text': 'Both algorithms are Feistel networks, but at very different scales and with very different fates:',
+        'table.param': 'Parameter',
+        'table.row1.label': 'Country of origin',
+        'table.row1.west': 'USA',
+        'table.row1.ru': 'USSR / Russia',
+        'table.row2.label': 'Year adopted',
+        'table.row3.label': 'Architecture',
+        'table.row3.val': 'Feistel network',
+        'table.row4.label': 'Block size',
+        'table.row5.label': 'Key length',
+        'table.row6.label': 'Number of rounds',
+        'table.row7.label': 'S-boxes',
+        'table.row7.west': 'Fixed by the standard since 1977',
+        'table.row7.ru': 'Originally an agency secret; a single fixed set only arrived in 2015',
+        'table.row8.label': 'Regulator',
+        'table.row8.west': 'NIST (USA)',
+        'advanced.diff.heading': 'The secret of the S-boxes and differential cryptanalysis',
+        'advanced.diff.p1': 'In 1990, cryptographers <strong>Eli Biham</strong> and <strong>Adi Shamir</strong> published <span class="highlight">differential cryptanalysis</span>, a powerful attack on block ciphers. The community was stunned: DES’s S-boxes turned out to already be remarkably resistant to exactly this attack.',
+        'advanced.diff.p2': 'The explanation came later: according to IBM engineer <span class="highlight-gold">Don Coppersmith</span>, IBM’s team had known about differential cryptanalysis since the early 1970s and deliberately designed DES’s S-boxes to resist it — but at the NSA’s request kept it secret for nearly two decades.',
+        'advanced.brute.heading': 'The end of DES: cracked by brute force',
+        'advanced.brute.p1': 'A 56-bit DES key has about 7×10<sup>16</sup> possible values — plenty in 1977. By 1998 the <span class="highlight">Electronic Frontier Foundation</span> had built a dedicated machine, "Deep Crack," costing about $250,000, that found a key by brute force in roughly 56 hours.',
+        'advanced.brute.p2': 'That publicly proved 56 bits was no longer enough. The stopgap was <strong>3DES</strong> (DES applied three times), followed in 2001 by <strong>AES</strong>, chosen through an open international competition.',
+        'topic1.title': 'Blowfish and Twofish',
+        'topic1.desc': 'Open, patent-free alternatives to DES, designed by Bruce Schneier in the 1990s',
+        'topic2.title': 'Camellia',
+        'topic2.desc': 'A joint development by Japanese companies, an international ISO/IEC standard, used in TLS',
+        'topic3.title': 'KASUMI',
+        'topic3.desc': 'A Feistel network at the core of the 3G/UMTS confidentiality algorithms',
+        'advanced.facts.heading': 'Interesting facts',
+        'facts.li1': 'The original Lucifer used a 128-bit key; the NSA insisted on shrinking it to 56 bits before DES was adopted',
+        'facts.li2': 'DES remained the official US standard for over 20 years, until AES replaced it in 2001',
+        'facts.li3': 'The S-boxes of the original GOST 28147-89 weren’t part of the public standard — different agencies could set their own',
+        'facts.li4': 'AES and "Kuznyechik" are not Feistel networks — they are substitution-permutation networks (SP-networks)',
+        'facts.li5': 'Decryption in a Feistel network uses the exact same scheme as encryption — just with the subkeys in reverse order',
+        'insight3.label': 'A philosophical note:',
+        'insight3.text': 'The Feistel network is a rare case where a simple structural idea turned out to be more powerful than complex mathematics. Over half a century it has outlived entire eras — from mechanical cipher machines to the dawn of post-quantum cryptography — and it’s still used wherever a time-tested construction is needed.',
+        'actions.intro': 'Now you understand why the function F doesn’t have to be invertible, and how that one idea grew into DES, Magma, and dozens of other ciphers',
+        'actions.play': '🚀 Launch the Feistel network demo',
+        'actions.back': '← Back to the topic list',
+        'actions.outro': 'In the demo you’ll walk a single byte all the way from plaintext to ciphertext and back — and see exactly why this structure works',
+        'footer.line1': '© 2025 Ludus Lab · Complex things through simple games',
+        'footer.line2': 'This article is a simplified explanation of the principles. Real DES and Magma use more elaborate permutations, expansions, and key schedules than the interactive demo shows.',
+      },
+      es: {
+        'meta.title': 'La red de Feistel: cómo nació el DES | Ludus Lab',
+        'meta.description': 'Cómo una red de Feistel resuelve el problema de la reversibilidad de un cifrado, y por qué el DES y el Magma ruso se construyen sobre esta estructura. Una explicación para quien quiere entender la idea, no solo las fórmulas.',
+        'nav.home': 'Inicio',
+        'nav.play': 'Jugar',
+        'article.category': 'Criptografía moderna',
+        'article.title': 'La red de Feistel',
+        'article.subtitle': 'Cómo una sola construcción resolvió un viejo problema del cifrado — y se convirtió en la base del DES, el Magma ruso y decenas de otros algoritmos',
+        'meta.readtime': '⏱️ 5 min de lectura',
+        'meta.level': '📊 Nivel intermedio',
+        'meta.security': '🔑 Base del DES y el Magma',
+        'block1.heading': 'El problema que resolvió Feistel',
+        'block1.p1': 'Para descifrar un cifrado de bloque hay que deshacer de algún modo la mezcla con la que se cifró. Diseñar una buena función de mezcla ya es difícil. Diseñar además una <span class="highlight">función inversa</span> matemáticamente limpia, e implementar ambas, duplica el trabajo — y duplica las probabilidades de cometer un error.',
+        'block1.p2': 'A principios de los años 70, en IBM, <span class="highlight-gold">Horst Feistel</span> propuso un truco estructural: cortar el bloque de datos por la mitad en <span class="highlight-symmetric">L</span> y <span class="highlight-symmetric">R</span>, hacer pasar una mitad — junto con una subclave de ronda — por una función F que puede ser tan compleja e irreversible como se quiera, sumar el resultado a la otra mitad y luego intercambiar las mitades. Repetir varias veces.',
+        'insight1.label': 'Idea clave:',
+        'insight1.text': 'El truco no está en la función F, sino en la <span class="highlight-gold">estructura</span> misma. La suma módulo 2 (XOR) se deshace a sí misma, y el intercambio de mitades es trivialmente reversible. Por eso toda la ronda es reversible — aunque F en sí no lo sea. Descifrar es exactamente el mismo algoritmo, solo que las subclaves se aplican en orden inverso.',
+        'block2.heading': 'Cómo se construye una red de Feistel',
+        'block2.intro': 'Desglosada en pasos, toda la construcción resulta sorprendentemente simple:',
+        'step1.title': 'División del bloque',
+        'step1.text': 'El bloque de datos se corta por la mitad en una mitad izquierda <span class="highlight-symmetric">L</span> y una derecha <span class="highlight-symmetric">R</span>. En el DES son 32 y 32 bits de un bloque de 64 bits; en el juego de Ludus Lab son 4 y 4 bits de un solo byte.',
+        'step2.title': 'La función de ronda',
+        'step2.text': 'La mitad derecha <span class="highlight-symmetric">R</span> se combina con la subclave de esta ronda y pasa por la función F — en el DES y el Magma es un conjunto de <span class="highlight">S-boxes</span>, tablas de sustitución que le dan al cifrado su no linealidad.',
+        'step3.title': 'Suma e intercambio',
+        'step3.text': 'El resultado de F se suma con XOR a la mitad izquierda <span class="highlight-symmetric">L</span>, produciendo la nueva mitad derecha. Después las mitades se intercambian.',
+        'step4.title': 'Repetir durante muchas rondas',
+        'step4.text': 'Todo se repite una y otra vez, cada vez con una subclave nueva: 16 veces en el DES, 32 en el Magma. Cuantas más rondas, más difícil es encontrar un patrón entre el texto claro y el cifrado.',
+        'step5.title': 'Intercambio final y descifrado',
+        'step5.text': 'Tras la última ronda las mitades se intercambian una vez más — y esto es lo que da a una red de Feistel su propiedad principal: para descifrar, Bob ejecuta <span class="highlight">exactamente el mismo algoritmo</span>, solo que con las subclaves en orden inverso.',
+        'scheme1.title': 'Una ronda de una red de Feistel',
+        'scheme1.label.halves': 'Las mitades del bloque',
+        'scheme1.label.func': 'R + subclave → S-boxes',
+        'scheme1.label.xor': 'Se suma a L',
+        'scheme1.label.swap': 'Las mitades se intercambian',
+        'scheme1.note': 'F puede ser tan compleja e irreversible como se quiera — lo reversible es el propio esquema «divide, mezcla, intercambia».',
+        'block3.heading': 'De Lucifer a nuestros días',
+        'block3.intro': 'La idea de Feistel no se quedó en teoría — buena parte de la criptografía simétrica del siglo XX se construyó sobre ella:',
+        'cipher1.title': 'Lucifer (IBM, principios de los 70)',
+        'cipher1.text': 'El primer cifrado con estructura de Feistel, creado por el propio Horst Feistel y su equipo en IBM.',
+        'cipher1.key': 'Antecesor directo del DES',
+        'cipher2.title': 'DES (NBS, 1977)',
+        'cipher2.text': 'Un Lucifer perfeccionado se convirtió en el estándar de EE. UU. durante un cuarto de siglo — bloque de 64 bits, clave de 56 bits, 16 rondas.',
+        'cipher2.key': 'Clave: 56 bits — hoy insuficiente',
+        'cipher3.title': 'GOST 28147-89 «Magma» (URSS, 1989)',
+        'cipher3.text': 'Un diseño soviético independiente sobre la misma idea: bloque de 64 bits, pero clave de 256 bits y 32 rondas.',
+        'cipher3.key': 'Hoy: GOST R 34.12-2015',
+        'block3.mid': 'El esquema de Feistel resultó tan exitoso que se convirtió en la base de varias generaciones más de cifrados:',
+        'warning1.label': '¿Qué NO es Feistel?',
+        'warning1.text': 'El AES y el «Kuznyechik» ruso están construidos de otra forma — son <span class="highlight">redes de sustitución-permutación</span> (redes SP), no redes de Feistel. Ambas ideas resuelven el mismo problema, pero de forma distinta.',
+        'block4.heading': 'Prueba una red de Feistel tú mismo',
+        'block4.intro': 'En la demostración interactiva de Ludus Lab podrás:',
+        'action1': '<span><strong>Convertir texto en bits</strong> — ver cómo UTF-8 divide tu mensaje en bytes, y elegir uno para cifrar</span>',
+        'action2': '<span><strong>Definir una clave compartida</strong> y ver, paso a paso, cómo de ella salen cuatro subclaves de ronda distintas</span>',
+        'action3': '<span><strong>Comprobar el efecto avalancha</strong> de la S-box — ver cómo un solo bit de entrada cambiado modifica varios bits de salida a la vez</span>',
+        'action4': '<span><strong>Recorrer las 4 rondas de cifrado</strong> bit a bit — con XOR, la S-box y el intercambio de mitades</span>',
+        'action5': '<span><strong>Descifrar el resultado</strong> con el mismo algoritmo y las subclaves en orden inverso — y comprobar que el mensaje se recupera intacto</span>',
+        'insight2.label': 'La lección principal del juego:',
+        'insight2.text': 'El descifrado funciona no porque alguien deshaga la función F, sino porque la <span class="highlight-gold">estructura misma</span> de la red de Feistel es simétrica respecto al orden de las subclaves. Entiéndelo con un solo byte, y el principio detrás del DES, el Magma y decenas de otros cifrados quedará claro.',
+        'advanced.summary': 'Para los curiosos',
+        'advanced.compare.heading': 'El DES y el Magma, lado a lado',
+        'advanced.compare.text': 'Ambos algoritmos son redes de Feistel, pero a escalas y con destinos muy distintos:',
+        'table.param': 'Parámetro',
+        'table.row1.label': 'País de origen',
+        'table.row1.west': 'EE. UU.',
+        'table.row1.ru': 'URSS / Rusia',
+        'table.row2.label': 'Año de adopción',
+        'table.row3.label': 'Arquitectura',
+        'table.row3.val': 'Red de Feistel',
+        'table.row4.label': 'Tamaño del bloque',
+        'table.row5.label': 'Longitud de la clave',
+        'table.row6.label': 'Número de rondas',
+        'table.row7.label': 'S-boxes',
+        'table.row7.west': 'Fijadas por el estándar desde 1977',
+        'table.row7.ru': 'Al principio era un secreto de cada organismo; un único conjunto fijo llegó recién en 2015',
+        'table.row8.label': 'Regulador',
+        'table.row8.west': 'NIST (EE. UU.)',
+        'advanced.diff.heading': 'El secreto de las S-boxes y el criptoanálisis diferencial',
+        'advanced.diff.p1': 'En 1990, los criptógrafos <strong>Eli Biham</strong> y <strong>Adi Shamir</strong> publicaron el <span class="highlight">criptoanálisis diferencial</span>, un potente ataque contra los cifrados de bloque. La comunidad quedó asombrada: las S-boxes del DES resultaron ser sorprendentemente resistentes justo a ese ataque.',
+        'advanced.diff.p2': 'La explicación llegó después: según el ingeniero de IBM <span class="highlight-gold">Don Coppersmith</span>, el equipo de IBM conocía el criptoanálisis diferencial desde principios de los 70 y diseñó deliberadamente las S-boxes del DES para resistirlo — pero, a petición de la NSA, lo mantuvo en secreto durante casi dos décadas.',
+        'advanced.brute.heading': 'El fin del DES: roto por fuerza bruta',
+        'advanced.brute.p1': 'Una clave DES de 56 bits tiene unos 7×10<sup>16</sup> valores posibles — de sobra en 1977. Para 1998, la <span class="highlight">Electronic Frontier Foundation</span> había construido una máquina dedicada, «Deep Crack», de unos 250 000 dólares, que encontró una clave por fuerza bruta en unas 56 horas.',
+        'advanced.brute.p2': 'Eso demostró públicamente que 56 bits ya no bastaban. El parche fue el <strong>3DES</strong> (DES aplicado tres veces), seguido en 2001 por el <strong>AES</strong>, elegido tras un concurso internacional abierto.',
+        'topic1.title': 'Blowfish y Twofish',
+        'topic1.desc': 'Alternativas abiertas al DES, sin restricciones de patente, diseñadas por Bruce Schneier en los años 90',
+        'topic2.title': 'Camellia',
+        'topic2.desc': 'Desarrollo conjunto de empresas japonesas, estándar internacional ISO/IEC, usado en TLS',
+        'topic3.title': 'KASUMI',
+        'topic3.desc': 'Una red de Feistel en el corazón de los algoritmos de confidencialidad de las redes 3G/UMTS',
+        'advanced.facts.heading': 'Datos curiosos',
+        'facts.li1': 'El Lucifer original usaba una clave de 128 bits; la NSA insistió en reducirla a 56 bits antes de adoptar el DES',
+        'facts.li2': 'El DES fue el estándar oficial de EE. UU. durante más de 20 años, hasta que el AES lo sustituyó en 2001',
+        'facts.li3': 'Las S-boxes del GOST 28147-89 original no formaban parte del estándar público — cada organismo podía definir las suyas',
+        'facts.li4': 'El AES y el «Kuznyechik» no son redes de Feistel, sino redes de sustitución-permutación (redes SP)',
+        'facts.li5': 'El descifrado en una red de Feistel usa exactamente el mismo esquema que el cifrado — solo que con las subclaves en orden inverso',
+        'insight3.label': 'Un momento filosófico:',
+        'insight3.text': 'La red de Feistel es un caso raro en el que una idea estructural simple resultó más poderosa que una matemática compleja. Durante medio siglo ha sobrevivido a varias eras — de las máquinas de cifrado mecánicas a los albores de la criptografía postcuántica — y todavía se usa donde hace falta una construcción probada por el tiempo.',
+        'actions.intro': 'Ahora entiendes por qué la función F no tiene que ser invertible, y cómo de esa sola idea salieron el DES, el Magma y decenas de otros cifrados',
+        'actions.play': '🚀 Iniciar la demostración de la red de Feistel',
+        'actions.back': '← Volver a la lista de temas',
+        'actions.outro': 'En la demostración recorrerás un solo byte desde el texto claro hasta el cifrado y de vuelta — y verás exactamente por qué funciona esta estructura',
+        'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
+        'footer.line2': 'Este artículo es una explicación simplificada de los principios. El DES y el Magma reales usan permutaciones, expansiones y calendarios de claves más elaborados que los que muestra la demostración interactiva.',
+      },
+    };
+
+    function applyLanguage(lang) {
+      if (!I18N[lang]) lang = 'ru';
+      const dict = I18N[lang];
+      document.documentElement.lang = lang;
+      document.title = dict['meta.title'];
+      const descTag = document.getElementById('pageDescription');
+      if (descTag) descTag.setAttribute('content', dict['meta.description']);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.langBtn === lang);
+      });
+      try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn));
+    });
+
+    (function initLanguage() {
+      let saved = null;
+      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      if (!saved) {
+        const browserLang = (navigator.language || 'ru').slice(0, 2);
+        saved = I18N[browserLang] ? browserLang : 'ru';
+      }
+      applyLanguage(saved);
+    })();
+  </script>
+  <script>
+// Плавная прокрутка для якорных ссылок
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+anchor.addEventListener('click', function(e) {
+e.preventDefault();
+const targetId = this.getAttribute('href');
+if (targetId === '#') return;
+const targetElement = document.querySelector(targetId);
+if (targetElement) {
+window.scrollTo({ top: targetElement.offsetTop - 20, behavior: 'smooth' });
+}
+});
+});
+// Исправление проблемы с кнопками при раскрытии details
+const detailsElement = document.querySelector('.advanced-section');
+const articleActions = document.getElementById('article-actions');
+if (detailsElement) {
+detailsElement.addEventListener('toggle', function() {
+setTimeout(() => { if (articleActions) { articleActions.style.marginTop = '40px'; } }, 10);
+});
+}
+// Анимация для визуализации шифрования
+document.addEventListener('DOMContentLoaded', function() {
+const schemeBoxes = document.querySelectorAll('.scheme-box');
+schemeBoxes.forEach((box, index) => {
+setTimeout(() => {
+box.style.opacity = '0.8'; box.style.transform = 'scale(0.95)';
+setTimeout(() => { box.style.opacity = '1'; box.style.transform = 'scale(1)'; }, 300);
+}, index * 200);
+});
+const arrows = document.querySelectorAll('.scheme-arrow');
+arrows.forEach((arrow, index) => {
+setTimeout(() => {
+arrow.style.opacity = '0.6'; arrow.style.transform = 'translateX(-3px)';
+setTimeout(() => { arrow.style.opacity = '1'; arrow.style.transform = 'translateX(0)'; }, 300);
+}, index * 200 + 100);
+});
+const ruBadge = document.querySelector('.ru-badge');
+if (ruBadge) {
+setTimeout(() => { ruBadge.style.transform = 'scale(1.05)'; setTimeout(() => { ruBadge.style.transform = 'scale(1)'; }, 500); }, 1000);
+}
+});
+</script>
+
+</body>
+</html>

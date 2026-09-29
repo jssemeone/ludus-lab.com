@@ -353,7 +353,7 @@
     <!-- GAME TABS (3 tabs only) -->
     <nav class="tabs-nav" role="tablist">
       <button class="tab-btn active" data-tab="basics" role="tab" aria-selected="true" data-i18n="tabs.basics">🔐 Основы</button>
-      <button class="tab-btn" data-tab="modern" role="tab" aria-selected="false" data-i18n="tabs.modern">⚙️ Современная</button>
+      <button class="tab-btn" data-tab="modern" role="tab" aria-selected="false" data-i18n="tabs.modern">⚙️ Симметричная</button>
       <button class="tab-btn" data-tab="quantum" role="tab" aria-selected="false" data-i18n="tabs.quantum">⚛️ Квантовая</button>
     </nav>
 
@@ -425,7 +425,7 @@
 
     <!-- ===== TAB 2: СОВРЕМЕННАЯ КРИПТОГРАФИЯ ===== -->
     <section id="tab-modern" class="section" role="tabpanel">
-      <h2 data-i18n="modern.heading">⚙️ Современная криптография</h2>
+      <h2 data-i18n="modern.heading">⚙️ Симметричная криптография</h2>
       <p data-i18n="modern.desc">Алгоритмы, которые защищают нас сегодня</p>
       <div class="section-content">
         <div class="theory-grid">
@@ -441,16 +441,16 @@
               <a href="games/cvk/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
             </div>
           </article>
-          <!-- Symmetric Crypto -->
+          <!-- Feistel Network -->
           <article class="theory-card">
-            <h3 data-i18n="card.symmetric.title">Симметричная криптография</h3>
-            <p class="theory-excerpt" data-i18n="card.symmetric.excerpt">Как один ключ может и шифровать, и расшифровывать сообщения?</p>
+            <h3 data-i18n="card.feistel.title">Сеть Фейстеля</h3>
+            <p class="theory-excerpt" data-i18n="card.feistel.excerpt">Как из одной идеи родился DES и почти вся симметричная криптография?</p>
             <div class="theory-meta">
-              <span class="theory-time" data-i18n="card.symmetric.time">6 мин</span><span class="theory-level" data-i18n="card.symmetric.level">Криптография</span>
+              <span class="theory-time" data-i18n="card.feistel.time">5 мин</span><span class="theory-level" data-i18n="card.feistel.level">1971 г.</span>
             </div>
             <div class="theory-actions">
-              <a href="/theory/symmetric.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
-              <a href="games/symmetric/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+              <a href="/theory/feistel.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
+              <a href="games/feistel/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
             </div>
           </article>
         </div>
@@ -567,7 +567,7 @@
         'header.tagline': 'Сложные вещи простыми играми',
         'nav.about': 'О проекте', 'nav.aboutme': 'Обо мне',
         'category.crypto': '📚 Криптография',
-        'tabs.basics': '🔐 Основы', 'tabs.modern': '⚙️ Современная', 'tabs.quantum': '⚛️ Квантовая',
+        'tabs.basics': '🔐 Основы', 'tabs.modern': '⚙️ Симметричная', 'tabs.quantum': '⚛️ Квантовая',
         'basics.heading': '🔐 Основы криптографии',
         'basics.desc': 'Классические шифры, с которых начиналась наука о защите информации',
         'card.polybius.title': 'Квадрат Полибия',
@@ -583,14 +583,14 @@
         'card.vernam.excerpt': 'Шифр Вернама: победил криптоанализ </br>и проиграл реальности',
         'card.vernam.time': '4 мин', 'card.vernam.level': '1917 г.',
         'basics.tip': '💡 <strong>Совет:</strong> Проходите шифры по порядку — от Полибия к Вернаму, чтобы увидеть эволюцию криптографии!',
-        'modern.heading': '⚙️ Современная криптография',
+        'modern.heading': '⚙️ Симметричная криптография',
         'modern.desc': 'Алгоритмы, которые защищают нас сегодня',
         'card.keygen.title': 'Энтропия и ключи',
         'card.keygen.excerpt': 'Откуда берётся настоящая случайность и почему её нельзя подделать?',
         'card.keygen.time': '4 мин', 'card.keygen.level': 'Криптография',
-        'card.symmetric.title': 'Симметричная криптография',
-        'card.symmetric.excerpt': 'Как один ключ может и шифровать, и расшифровывать сообщения?',
-        'card.symmetric.time': '6 мин', 'card.symmetric.level': 'Криптография',
+        'card.feistel.title': 'Сеть Фейстеля',
+        'card.feistel.excerpt': 'Как из одной идеи родился DES и почти вся симметричная криптография?',
+        'card.feistel.time': '5 мин', 'card.feistel.level': '1971 г.',
         'modern.disclaimer': '⚠️ Наши игры упрощают реальные алгоритмы. Мы фокусируемся на <span class="highlight">принципах работы</span>, а не на математических деталях.',
         'quantum.heading': '⚛️ Квантовые коммуникации',
         'quantum.desc': 'Будущее защиты данных: законы физики вместо математики',
@@ -633,7 +633,7 @@
         'header.tagline': 'Complex things through simple games',
         'nav.about': 'About', 'nav.aboutme': 'About me',
         'category.crypto': '📚 Cryptography',
-        'tabs.basics': '🔐 Basics', 'tabs.modern': '⚙️ Modern', 'tabs.quantum': '⚛️ Quantum',
+        'tabs.basics': '🔐 Basics', 'tabs.modern': '⚙️ Symmetric', 'tabs.quantum': '⚛️ Quantum',
         'basics.heading': '🔐 Cryptography Basics',
         'basics.desc': 'Classical ciphers that started the science of protecting information',
         'card.polybius.title': 'Polybius Square',
@@ -649,14 +649,14 @@
         'card.vernam.excerpt': 'The Vernam cipher: it beat cryptanalysis </br>but lost to reality',
         'card.vernam.time': '4 min', 'card.vernam.level': '1917 CE',
         'basics.tip': '💡 <strong>Tip:</strong> Go through the ciphers in order — from Polybius to Vernam — to see cryptography evolve!',
-        'modern.heading': '⚙️ Modern Cryptography',
+        'modern.heading': '⚙️ Symmetric Cryptography',
         'modern.desc': 'The algorithms that protect us today',
         'card.keygen.title': 'Entropy and Keys',
         'card.keygen.excerpt': "Where does true randomness come from, and why can't it be faked?",
         'card.keygen.time': '4 min', 'card.keygen.level': 'Cryptography',
-        'card.symmetric.title': 'Symmetric Cryptography',
-        'card.symmetric.excerpt': 'How can one key both encrypt and decrypt a message?',
-        'card.symmetric.time': '6 min', 'card.symmetric.level': 'Cryptography',
+        'card.feistel.title': 'Feistel Network',
+        'card.feistel.excerpt': 'How did one idea give birth to DES and most of symmetric cryptography?',
+        'card.feistel.time': '5 min', 'card.feistel.level': '1971',
         'modern.disclaimer': '⚠️ Our games simplify the real algorithms. We focus on <span class="highlight">how things work</span>, not the mathematical details.',
         'quantum.heading': '⚛️ Quantum Communications',
         'quantum.desc': 'The future of data protection: the laws of physics instead of math',
@@ -699,7 +699,7 @@
         'header.tagline': 'Cosas complejas a través de juegos simples',
         'nav.about': 'Sobre el proyecto', 'nav.aboutme': 'Sobre mí',
         'category.crypto': '📚 Criptografía',
-        'tabs.basics': '🔐 Fundamentos', 'tabs.modern': '⚙️ Moderna', 'tabs.quantum': '⚛️ Cuántica',
+        'tabs.basics': '🔐 Fundamentos', 'tabs.modern': '⚙️ Simétrica', 'tabs.quantum': '⚛️ Cuántica',
         'basics.heading': '🔐 Fundamentos de criptografía',
         'basics.desc': 'Cifrados clásicos con los que comenzó la ciencia de la protección de la información',
         'card.polybius.title': 'Cuadrado de Polibio',
@@ -715,14 +715,14 @@
         'card.vernam.excerpt': 'El cifrado Vernam: venció al criptoanálisis </br>y perdió ante la realidad',
         'card.vernam.time': '4 min', 'card.vernam.level': '1917',
         'basics.tip': '💡 <strong>Consejo:</strong> Recorre los cifrados en orden — de Polibio a Vernam — ¡para ver la evolución de la criptografía!',
-        'modern.heading': '⚙️ Criptografía moderna',
+        'modern.heading': '⚙️ Criptografía simétrica',
         'modern.desc': 'Los algoritmos que nos protegen hoy',
         'card.keygen.title': 'Entropía y claves',
         'card.keygen.excerpt': '¿De dónde viene la verdadera aleatoriedad y por qué no se puede falsificar?',
         'card.keygen.time': '4 min', 'card.keygen.level': 'Criptografía',
-        'card.symmetric.title': 'Criptografía simétrica',
-        'card.symmetric.excerpt': '¿Cómo puede una sola clave cifrar y descifrar un mensaje?',
-        'card.symmetric.time': '6 min', 'card.symmetric.level': 'Criptografía',
+        'card.feistel.title': 'Red de Feistel',
+        'card.feistel.excerpt': '¿Cómo una sola idea dio origen a DES y a casi toda la criptografía simétrica?',
+        'card.feistel.time': '5 min', 'card.feistel.level': '1971',
         'modern.disclaimer': '⚠️ Nuestros juegos simplifican los algoritmos reales. Nos centramos en <span class="highlight">cómo funcionan</span>, no en los detalles matemáticos.',
         'quantum.heading': '⚛️ Comunicaciones cuánticas',
         'quantum.desc': 'El futuro de la protección de datos: las leyes de la física en lugar de las matemáticas',

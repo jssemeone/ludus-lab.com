@@ -506,6 +506,57 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
     .ov-step { padding: 11px 12px; gap: 10px; }
   }
   @media (max-width: 480px) { .bit-cell { width: 28px; height: 38px; } .byte-row { gap: 5px; } }
+
+  /* ===== Key centre & channels (same component in the Feistel and SPN games) =====
+     Three parties on one diagram: the key centre on top hands the key to Alice and Bob over
+     protected (gold, dashed) channels; Alice and Bob are joined by the open (blue) channel,
+     which Eve listens to from below. Packets fly between the nodes like in the other lab games. */
+  .net { position: relative; height: 340px; margin: 8px 0 4px; border: 1px solid var(--card-border); border-radius: 10px; overflow: hidden;
+    background: radial-gradient(circle at 50% 25%, rgba(212,175,55,0.08) 0%, transparent 38%), radial-gradient(circle at 50% 82%, rgba(255,85,102,0.06) 0%, transparent 30%), rgba(5,15,25,0.45); }
+  .net-lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .net-lines .ln { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .net-lines .ln-key { stroke: rgba(212,175,55,0.75); stroke-dasharray: 7 5; }
+  .net-lines .ln-open { stroke: rgba(0,162,255,0.75); }
+  .net-lines .ln-eve { stroke: rgba(255,85,102,0.45); stroke-dasharray: 3 4; }
+  .net-key .ln-key { stroke-width: 3; animation: netDash 1.1s linear infinite; }
+  .net-cipher .ln-open { stroke-width: 3; }
+  .net-cipher .ln-key { opacity: 0.45; }
+  @keyframes netDash { to { stroke-dashoffset: -24; } }
+  .net-lbl { position: absolute; transform: translate(-50%, -50%); z-index: 1; padding: 1px 7px; border-radius: 4px; background: rgba(5,15,25,0.9);
+    font-family: 'Oswald', sans-serif; font-size: 0.66rem; letter-spacing: 0.6px; text-transform: uppercase; white-space: nowrap; }
+  .net-lbl.key { color: var(--accent-gold); }
+  .net-lbl.open { color: var(--accent-blue); }
+  .net-node { position: absolute; transform: translate(-50%, -50%); z-index: 2; width: 132px; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+  .nn-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--accent-blue); color: var(--accent-blue);
+    background: rgba(5,20,30,0.95); font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 1.25rem; box-shadow: var(--glow-blue); }
+  .nn-kc .nn-icon { width: 62px; height: 52px; border-radius: 12px; border-color: var(--accent-gold); color: var(--accent-gold); box-shadow: var(--glow-gold); font-size: 0.95rem; letter-spacing: 0.5px; }
+  .nn-eve .nn-icon { width: 38px; height: 38px; font-size: 0.95rem; border-color: var(--accent-red); color: var(--accent-red); box-shadow: 0 0 10px rgba(255,85,102,0.45); }
+  .nn-name { font-family: 'Oswald', sans-serif; font-size: 0.78rem; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-primary); line-height: 1.2; }
+  .nn-sub { font-size: 0.62rem; color: var(--text-muted); line-height: 1.15; }
+  .nn-name, .nn-sub { text-shadow: 0 0 4px rgba(5,15,25,0.95), 0 0 2px rgba(5,15,25,0.95); }
+  .nn-slots { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; min-height: 19px; }
+  .nn-chip { font-family: 'Oswald', sans-serif; font-size: 0.68rem; letter-spacing: 0.3px; padding: 1px 6px; border-radius: 4px; border: 1px solid; white-space: nowrap; }
+  .nn-chip.k { color: var(--accent-gold); border-color: rgba(212,175,55,0.6); background: rgba(212,175,55,0.12); }
+  .nn-chip.c { color: #7fd0ff; border-color: rgba(0,162,255,0.6); background: rgba(0,162,255,0.12); }
+  .nn-chip.none { color: var(--text-muted); border-color: var(--card-border); border-style: dashed; }
+  .nn-chip.no { color: #ff8a98; border-color: rgba(255,85,102,0.5); background: rgba(255,85,102,0.08); }
+  .nn-chip.pop { animation: popIn 0.4s ease; }
+  .net-packet { position: absolute; left: 0; top: 0; z-index: 3; width: 30px; height: 30px; border-radius: 50%; pointer-events: none;
+    display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 0.9rem; }
+  .net-packet.k { background: #d4af37; color: #1a0c00; border: 2px solid #ffd700; box-shadow: 0 0 14px rgba(212,175,55,0.9); }
+  .net-packet.c { background: #00a2ff; color: #001a2d; border: 2px solid #00c2ff; box-shadow: 0 0 14px rgba(0,162,255,0.9); }
+  .net-packet.ghost { width: 24px; height: 24px; font-size: 0.75rem; background: rgba(255,85,102,0.9); border-color: #ff8a98; color: #2a0008; box-shadow: 0 0 12px rgba(255,85,102,0.8); }
+  @media (prefers-reduced-motion: reduce) { .net-key .ln-key, .nn-chip.pop { animation: none; } }
+  @media (max-width: 600px) {
+    .net { height: 310px; }
+    .net-node { width: 98px; }
+    .nn-icon { width: 40px; height: 40px; font-size: 1rem; }
+    .nn-kc .nn-icon { width: 50px; height: 42px; font-size: 0.78rem; }
+    .nn-name { font-size: 0.66rem; }
+    .nn-sub { display: none; }
+    .nn-chip { font-size: 0.6rem; padding: 1px 4px; }
+    .net-lbl { font-size: 0.55rem; padding: 1px 4px; }
+  }
 </style>
 </head>
 <body>
@@ -599,7 +650,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'info.p3': '<span class="highlight-gold">Дон Копперсмит</span> помог довести эту идею (через шифр Lucifer) до стандарта <span class="highlight">DES</span> — разработав S-блоки, устойчивые к атакам, о которых остальной мир узнал лишь спустя десятилетия. В СССР по тому же принципу построили собственный стандарт — <span class="highlight-gold">ГОСТ 28147-89</span>, ныне «Магма» (ГОСТ Р 34.12-2015): та же сеть Фейстеля, но с 32 раундами и 256-битным ключом.',
       'footer.note': 'Учебная демонстрация сети Фейстеля · упрощённый S-блок и расписание ключей',
       'nav.home': 'Вернуться в лабораторию',
-      'phase.0': 'Идея', 'phase.1': 'Текст', 'phase.2': 'Сообщение', 'phase.3': 'Ключ', 'phase.4': 'Расписание ключей', 'phase.5': 'S-блок', 'phase.6': 'Раунды', 'phase.7': 'Шифротекст', 'phase.8': 'Расшифровка', 'phase.9': 'Итоги',
+      'phase.intro': 'Идея', 'phase.textprep': 'Текст', 'phase.plaintext': 'Сообщение', 'phase.key': 'Ключ', 'phase.keyschedule': 'Расписание ключей', 'phase.sboxprep': 'S-блок', 'phase.rounds': 'Раунды', 'phase.cipher': 'Шифротекст', 'phase.decrypt': 'Расшифровка', 'phase.summary': 'Итоги',
       'btn.back': '← Назад', 'btn.next': 'Далее →',
       'btn.randKey': '🎲 Случайный ключ',
       'btn.decrypt': '▶ Расшифровать по раундам', 'btn.nextRound': 'Следующий раунд ▶',
@@ -630,8 +681,8 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'msg.p': 'Вот байт, который вы выбрали из своего текста, — это и есть открытый текст, который Алиса передаёт Бобу. Если нужен другой байт — вернитесь на шаг назад и выберите его в тексте.',
       'msg.pManual': 'На прошлом шаге текст не был введён, так что выбирать байт не из чего. Выставьте открытый текст вручную — кликайте по битам ниже, чтобы переключать 0 и 1.',
       'key.h': 'Шаг 3 — общий секретный ключ',
-      'key.p': 'Алиса и Боб заранее согласовали общий секретный ключ — тоже 8&nbsp;бит. На следующем шаге разберём, как из одного этого ключа для каждого раунда получается свой подключ.',
-      'ks.h': 'Шаг 4 — расписание ключей',
+      'key.p': 'Общий секретный ключ — тоже 8&nbsp;бит. Его вырабатывают не Алиса и не Боб, а третья сторона — ключевой центр (ЦУС). На следующем шаге он разошлёт ключ обоим, а затем разберём, как из этого ключа получается свой подключ для каждого раунда. Кликайте по битам, чтобы задать ключ.',
+      'ks.h': 'Шаг 5 — расписание ключей',
       'ks.p1': 'Мастер-ключ не используется в раундах напрямую: для каждого раунда из него получают отдельный подключ. В настоящем DES это делают перестановки и сдвиги — из 56-битного ключа получают 16 разных 48-битных подключей. В российской Магме всё иначе: 256-битный ключ просто делят на восемь 32-битных кусков — подробнее ниже.',
       'ks.p2': 'Здесь правило проще: для раунда r ключ поворачивается влево на (r × 3) mod 8 бит — у каждого раунда получается своё число бит сдвига, а младшие 4 бита результата становятся подключом K этого раунда.',
       'ks.shiftOverview': 'Поэтому сдвиг у каждого раунда свой, хотя ключ один и тот же:',
@@ -651,7 +702,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'ks.tabsHint': 'Кнопки 1–4 переключают, для какого раунда показана анимация сдвига — у каждого раунда своё число бит сдвига. Подключ раунда считается определённым, только когда выполнен его собственный сдвиг, — чтобы продолжить, пройдите все четыре.',
       'ks.disclaimerTeaser': '⚠️ В DES и Магме расписание ключей устроено сложнее',
       'ks.disclaimer': 'В настоящем DES расписание ключей устроено сложнее: 56-битный ключ дважды переставляется (PC-1/PC-2), а на каждом из 16 раундов циклически сдвигается на 1–2 бита, давая 16 разных 48-битных подключей. Здесь — один поворот всего байта и младшие 4 бита, чтобы принцип «один ключ → разные подключи по раундам» было видно без лишней арифметики. В Магме ключ длиннее — 256 бит — и делится на восемь 32-битных кусков K1…K8: в раундах 1–24 они используются по кругу в этом же порядке, а в раундах 25–32 — в обратном; никаких сдвигов или перестановок самого ключа, в отличие от DES, здесь нет.',
-      'sboxprep.h': 'Шаг 5 — подготовка S-блока',
+      'sboxprep.h': 'Шаг 6 — подготовка S-блока',
       'sboxprep.p1': 'S-блок — часть описания самого шифра, а не секрет текущего сеанса связи. Его фиксируют один раз, когда шифр проектируют (для Lucifer/DES это сделали в IBM, для российской Магмы таблицы прописаны в тексте ГОСТ Р 34.12-2015), и с тех пор используют без изменений для любого ключа и любого сообщения — в отличие от подключей K1..K4, S-блок вообще не зависит от мастер-ключа.',
       'sboxprep.p2': 'Хороший S-блок должен быть, во-первых, перестановкой: каждое из 16 возможных значений на выходе используется ровно один раз, иначе часть информации о входе терялась бы безвозвратно. Во-вторых — нелинейным: маленькое изменение входа (даже один бит) должно заметно и непредсказуемо менять выход. Это называют лавинным эффектом.',
       'sboxprep.permYes': '✅ Проверено: это перестановка — все значения 0–15 встречаются по одному разу',
@@ -661,7 +712,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'sboxprep.bridge': 'Эта уже готовая таблица используется без изменений в каждом раунде: там мы просто подставляем очередное значение X и читаем готовый результат F(X).',
       'sboxprep.disclaimerTeaser': '⚠️ В DES и Магме S-блоки устроены сложнее',
       'sboxprep.disclaimer': 'Настоящие S-блоки DES устроены сложнее: их восемь (по одному на каждый 6-битный кусок расширенного блока), каждый переводит 6 бит в 4, а критерии их подбора (устойчивость к дифференциальному криптоанализу) держались в секрете до конца 1980-х. Здесь — один блок 4→4, чтобы идею перестановки и лавинного эффекта было проще увидеть. В Магме тоже восемь S-блоков 4→4, но в оригинальном ГОСТ 28147-89 их конкретный набор не был частью стандарта — считался дополнительным секретом и мог отличаться у разных ведомств; современный ГОСТ Р 34.12-2015 («Магма») наконец зафиксировал единственный официальный набор.',
-      'rounds.h': 'Шаг 6 — раунд шифрования {r} из {tot}',
+      'rounds.h': 'Шаг 7 — раунд шифрования {r} из {tot}',
       'rounds.intro': 'Каждый раунд состоит из трёх этапов: сложение правой половины с подключом, прогон результата через S-блок и сложение с левой половиной — после чего половины меняются местами.',
       'rounds.stage.xor1': 'Этап 1 из 3 — сложение с подключом',
       'rounds.stage.sbox': 'Этап 2 из 3 — S-блок',
@@ -676,12 +727,12 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'rounds.c': 'Складываем F с левой половиной <span class="highlight">L{p}</span> по тому же правилу, получая новую правую половину <span class="highlight">R{r}</span> — тоже бит за битом:',
       'rounds.swap': '<span class="arrow-swap">⇄</span> Половины меняются местами: старое R{p} становится новым L{r}',
       'rounds.last': 'Это был последний раунд. Дальше — финальный обмен половинами и готовый шифротекст.',
-      'cipher.h': 'Шаг 7 — шифротекст готов',
+      'cipher.h': 'Шаг 8 — шифротекст готов',
       'cipher.p': 'После последнего раунда половины меняются местами в последний раз (это стандартный финальный обмен, как в настоящем DES; в Магме тот же эффект даёт то, что в последнем, 32-м раунде половины просто не меняют местами) — именно из-за него расшифровка использует тот же механизм, что и шифрование.',
       'cipher.lAfter': 'L (после обмена)', 'cipher.rAfter': 'R (после обмена)',
       'cipher.readout': 'Шифротекст = <span>{v}</span>',
-      'cipher.alice': '<span class="speaker">Алиса:</span> передаёт это число Бобу; без ключа оно не раскрывает исходное сообщение.',
-      'dec.h': 'Шаг 8 — Боб расшифровывает',
+      'cipher.alice': 'Дальше Алиса отправит это число Бобу по открытому каналу — это следующий шаг. Без ключа оно ничего не говорит об исходном сообщении.',
+      'dec.h': 'Шаг 10 — Боб расшифровывает',
       'dec.p': 'У Боба есть шифротекст <span class="highlight">{c}</span> и тот же секретный ключ. Он запускает ту же сеть Фейстеля, но берёт подключи в обратном порядке: K4, K3, K2, K1.',
       'dec.round': 'Раунд расшифровки {r} из {tot} — используется подключ <span class="highlight-gold">K{k}</span> (тот же самый, что был на одноимённом раунде шифрования, просто очередь обратная).',
       'dec.newHalves': '⇄ → новые половины',
@@ -724,7 +775,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'x.less': 'Свернуть ▴',
       'x.textprep': 'Шифр работает с битами, а не с буквами: UTF-8 превращает каждый символ в 1–4 байта. Один из них мы и зашифруем.',
       'x.plain': 'Это байт, выбранный на шаге 1, — открытый текст, который Алиса передаёт Бобу.',
-      'x.key': 'Общий секретный ключ — 8 бит, известных только Алисе и Бобу. Из него получим подключи для раундов.',
+      'x.key': 'Общий секретный ключ — 8 бит. Его вырабатывает ключевой центр (ЦУС) и рассылает Алисе и Бобу. Из ключа получим подключи для раундов.',
       'x.ks': 'Один ключ → разные подключи: для раунда r ключ поворачивается влево на (r × 3) mod 8 бит, младшие 4 бита — подключ Kr. Формула задана заранее и от ключа не зависит.',
       'x.sbox': 'S-блок — фиксированная таблица замен 4→4 бита, часть самого шифра, а не ключа. Хороший S-блок — перестановка и даёт лавинный эффект: один изменённый бит входа меняет несколько бит выхода.',
       'x.rounds': 'Раунд: R ⊕ K → S-блок → ⊕ L → обмен половинами. Проходим четыре раунда подряд.',
@@ -750,15 +801,15 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'map.st.current': 'Сейчас',
       'map.st.upcoming': 'Впереди',
       'map.goto': '↩ Вернуться к шагу',
-      'map.d.1': 'Превращаем текст в байты UTF-8 и выбираем один из них для шифрования.',
-      'map.d.2': 'Выбранный байт становится открытым текстом Алисы.',
-      'map.d.3': 'Алиса и Боб согласуют общий 8-битный секретный ключ.',
-      'map.d.4': 'Из ключа получаем подключи K1…K4: поворот на (r × 3) mod 8 бит, берём младшие 4 бита.',
-      'map.d.5': 'Готовим фиксированную таблицу замен 4→4 бита и проверяем лавинный эффект.',
+      'map.d.textprep': 'Превращаем текст в байты UTF-8 и выбираем один из них для шифрования.',
+      'map.d.plaintext': 'Выбранный байт становится открытым текстом Алисы.',
+      'map.d.key': 'Ключевой центр вырабатывает общий 8-битный секретный ключ.',
+      'map.d.keyschedule': 'Из ключа получаем подключи K1…K4: поворот на (r × 3) mod 8 бит, берём младшие 4 бита.',
+      'map.d.sboxprep': 'Готовим фиксированную таблицу замен 4→4 бита и проверяем лавинный эффект.',
       'map.d.round': 'R ⊕ K → S-блок → ⊕ L → обмен половинами.',
-      'map.d.7': 'Финальный обмен половинами — шифротекст готов.',
-      'map.d.8': 'Боб прогоняет шифротекст через ту же сеть с подключами K4…K1 и сверяет результат.',
-      'map.d.9': 'Итоги: почему это работает и как связано с DES и Магмой.',
+      'map.d.cipher': 'Финальный обмен половинами — шифротекст готов.',
+      'map.d.decrypt': 'Боб прогоняет шифротекст через ту же сеть с подключами K4…K1 и сверяет результат.',
+      'map.d.summary': 'Итоги: почему это работает и как связано с DES и Магмой.',
       'map.sub.xor1': 'Сложение с подключом',
       'map.sub.sbox': 'S-блок',
       'map.sub.xor2': 'Сложение с левой половиной',
@@ -766,6 +817,49 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'map.bitsProgress': 'готово бит: {i} из 4',
       'map.noText': 'текст не введён',
       'map.decNotStarted': 'ещё не запущено',
+      'phase.keydelivery': 'Доставка ключа',
+      'phase.transmit': 'Передача',
+      'btn.netReplay': '↺ Повторить анимацию',
+      'net.kc': 'Ключевой центр',
+      'net.kcIcon': 'ЦУС',
+      'net.kcSub': 'орган криптографической защиты',
+      'net.alice': 'Алиса',
+      'net.bob': 'Боб',
+      'net.eve': 'Ева',
+      'net.aliceIcon': 'А',
+      'net.bobIcon': 'Б',
+      'net.eveIcon': 'Е',
+      'net.keyCh': 'защищённая доставка',
+      'net.openCh': 'открытый канал',
+      'kd.h': 'Шаг 4 — доставка ключа',
+      'x.kd': 'Ключ вырабатывает и рассылает третья сторона — ключевой центр; отвечает за ключи орган криптографической защиты. Алиса и Боб получают одинаковый ключ защищённым путём и никогда не пересылают его друг другу.',
+      'kd.p1': 'Самое уязвимое место симметричного шифра — не алгоритм, а ключ: у отправителя и получателя он должен быть одинаковым, а больше ни у кого его быть не должно. Передать ключ тем же каналом, что и сообщение, нельзя: перехватчик получит и то, и другое.',
+      'kd.p2': 'В России порядок задан Инструкцией ФАПСИ № 152 (2001) — для СКЗИ, которыми защищают информацию ограниченного доступа, не составляющую гостайну. Ключи вырабатывает и рассылает <b>орган криптографической защиты</b> (ОКЗ): подразделение организации, организация-лицензиат ФСБ или даже один назначенный человек. ОКЗ изготавливает ключевые документы, ведёт их поэкземплярный учёт и доставляет абонентам на ключевых носителях — фельдъегерской или специальной связью либо с нарочным. Вводит ключ в СКЗИ допущенный человек: сотрудник ОКЗ или обученный пользователь. Технически ключи может готовить программа — ключевой центр или ЦУС защищённой сети, — но отвечают за них люди. Как ключ вырабатывается из случайности, показано в игре <a class="highlight" href="../cvk/index.html">«Центр выработки ключей»</a>.',
+      'kd.p3': 'Обратите внимание: между Алисой и Бобом ключ не идёт вообще. Позже по открытому каналу пойдёт только шифротекст, и Ева, даже перехватив его, ключа не получит.',
+      'kd.waiting': 'Ключ пока есть только в ключевом центре.',
+      'kd.flying': 'Ключ в пути — защищённой доставкой…',
+      'kd.done': '✅ Ключ загружен в шифраторы Алисы и Боба. По открытому каналу он не передавался — Еве перехватывать нечего.',
+      'kd.btn': '▶ Разослать ключ',
+      'tx.h': 'Шаг 9 — передача шифротекста',
+      'x.tx': 'Алиса отправляет Бобу только шифротекст — по открытому каналу. Ева может снять копию, но без ключа это просто число.',
+      'tx.p1': 'Открытый канал — это интернет, радиоэфир, телефонная линия: всё, что по нему идёт, может увидеть посторонний. Поэтому по нему передают только шифротекст. Ключ у Боба уже есть: его заранее прислал ключевой центр.',
+      'tx.p2': 'Стойкость шифра как раз и означает, что Ева, видя шифротекст и даже зная устройство шифра, без ключа не может восстановить открытый текст.',
+      'tx.waiting': 'Шифротекст пока только у Алисы.',
+      'tx.flying': 'Шифротекст идёт по открытому каналу — Ева снимает копию…',
+      'tx.done': '✅ Боб получил шифротекст. У Евы есть копия, но нет ключа.',
+      'tx.btn': '▶ Отправить шифротекст Бобу',
+      'nav.lockKd': 'Чтобы продолжить, разошлите ключ Алисе и Бобу.',
+      'nav.lockTx': 'Чтобы продолжить, отправьте шифротекст Бобу.',
+      'map.kdDone': 'у Алисы ✓ · у Боба ✓',
+      'map.kdWait': 'ещё не разослан',
+      'map.txDone': 'доставлен Бобу ✓',
+      'map.txWait': 'ещё не отправлен',
+      'map.d.keydelivery': 'Ключевой центр рассылает ключ Алисе и Бобу защищённым путём; за ключи отвечает орган криптографической защиты.',
+      'map.d.transmit': 'Алиса отправляет шифротекст Бобу по открытому каналу; Ева видит только шифротекст.',
+      'kd.realTeaser': '⚠️ Как ключи доставляли для DES и доставляют для Магмы',
+      'kd.realShort': 'DES в банках: ключевой центр по стандарту ANSI X9.17 рассылал ключи, зашифрованные на ключах шифрования ключей, а те вводили вручную доверенные сотрудники. Магма: ключи изготавливает, учитывает и доставляет орган криптографической защиты, в СКЗИ их вводит допущенный человек.',
+      'kd.real1': '<b>DES.</b> Банковский стандарт ANSI X9.17 (1985; в США — FIPS 171) описывал управление ключами DES как раз через ключевой центр (key distribution centre, KDC). Рабочие ключи центр рассылал по сети, но в зашифрованном виде — на «ключах шифрования ключей». Сами ключи шифрования ключей по сети не передавали: их вручную устанавливали в оборудование доверенные сотрудники.',
+      'kd.real2': '<b>Магма</b> (ГОСТ 28147-89 / ГОСТ Р 34.12-2015). Шифр работает внутри сертифицированных СКЗИ, а обращение с ключами регулирует Инструкция ФАПСИ № 152: ключевые документы изготавливает и учитывает орган криптографической защиты, на ключевых носителях их доставляют фельдъегерской или специальной связью либо с нарочным, в СКЗИ ключ вводит допущенный человек. Сам стандарт шифра этот порядок не описывает — это правила эксплуатации.',
     },
     en: {
       'meta.title': 'Feistel Network — the Birth of DES',
@@ -777,7 +871,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'info.p3': '<span class="highlight-gold">Don Coppersmith</span> later helped bring this idea (through the Lucifer cipher) to the <span class="highlight">DES</span> standard — designing S-boxes resistant to attacks the rest of the world only discovered decades later. In the USSR the same principle was used to build its own standard — <span class="highlight-gold">GOST 28147-89</span>, today known as "Magma" (GOST R 34.12-2015): the same Feistel network, but with 32 rounds and a 256-bit key.',
       'footer.note': 'Educational demo of a Feistel network · simplified S-box and key schedule',
       'nav.home': 'Back to the lab',
-      'phase.0': 'Idea', 'phase.1': 'Text', 'phase.2': 'Message', 'phase.3': 'Key', 'phase.4': 'Key schedule', 'phase.5': 'S-box', 'phase.6': 'Rounds', 'phase.7': 'Ciphertext', 'phase.8': 'Decryption', 'phase.9': 'Summary',
+      'phase.intro': 'Idea', 'phase.textprep': 'Text', 'phase.plaintext': 'Message', 'phase.key': 'Key', 'phase.keyschedule': 'Key schedule', 'phase.sboxprep': 'S-box', 'phase.rounds': 'Rounds', 'phase.cipher': 'Ciphertext', 'phase.decrypt': 'Decryption', 'phase.summary': 'Summary',
       'btn.back': '← Back', 'btn.next': 'Next →',
       'btn.randKey': '🎲 Random key',
       'btn.decrypt': '▶ Decrypt round by round', 'btn.nextRound': 'Next round ▶',
@@ -808,8 +902,8 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'msg.p': 'Here is the byte you picked from your text — this is the plaintext Alice sends to Bob. Want a different byte? Go back a step and pick another one from the text.',
       'msg.pManual': 'No text was typed on the previous step, so there is no byte to pick from. Set the plaintext by hand instead — click the bits below to toggle 0 and 1.',
       'key.h': 'Step 3 — the shared secret key',
-      'key.p': 'Alice and Bob agreed in advance on a shared secret key — also 8&nbsp;bits. Next we\'ll see how a separate subkey for each round comes out of this one key.',
-      'ks.h': 'Step 4 — the key schedule',
+      'key.p': 'The shared secret key is also 8&nbsp;bits. It’s generated not by Alice or Bob but by a third party — the key centre. In the next step it sends the key to both of them, and after that we’ll see how a separate subkey for every round comes from this one key. Click the bits to set the key.',
+      'ks.h': 'Step 5 — the key schedule',
       'ks.p1': 'The master key is never used directly in a round: a separate subkey is derived from it for each round. In real DES this is done with permutations and shifts — a 56-bit key yields 16 different 48-bit subkeys. Russia\'s Magma does it differently: its 256-bit key is simply cut into eight 32-bit pieces — more below.',
       'ks.p2': 'Here the rule is simpler: for round r, the key is rotated left by (r × 3) mod 8 bits — every round gets its own shift amount, and the low 4 bits of the result become that round\'s subkey K.',
       'ks.shiftOverview': 'That is why every round has a different shift, even though the key itself is the same:',
@@ -829,7 +923,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'ks.tabsHint': 'The 1–4 buttons switch which round\'s rotation animation is shown — each round has its own number of shift bits. A round\'s subkey counts as determined only once its own rotation is done — to continue, go through all four.',
       'ks.disclaimerTeaser': '⚠️ DES and Magma key schedules are more elaborate',
       'ks.disclaimer': 'In real DES the key schedule is more elaborate: a 56-bit key goes through two permutations (PC-1/PC-2) and is cyclically shifted by 1–2 bits on each of 16 rounds, giving 16 different 48-bit subkeys. Here it\'s one rotation of the whole byte and its low 4 bits, so the principle "one key → different subkeys per round" is visible without extra arithmetic. Magma\'s key is longer — 256 bits — split into eight 32-bit chunks K1…K8: rounds 1–24 cycle through them in that order, rounds 25–32 use the reverse order; unlike DES, the key itself is never shifted or permuted.',
-      'sboxprep.h': 'Step 5 — preparing the S-box',
+      'sboxprep.h': 'Step 6 — preparing the S-box',
       'sboxprep.p1': 'The S-box is part of the cipher\'s specification, not a secret tied to this particular session. It is fixed once, when the cipher is designed (IBM did this for Lucifer/DES; for Russia\'s Magma the tables are written into the text of GOST R 34.12-2015), and used unchanged for every key and every message afterwards — unlike the subkeys K1..K4, the S-box does not depend on the master key at all.',
       'sboxprep.p2': 'A good S-box first needs to be a permutation: each of the 16 possible outputs is used exactly once, otherwise some information about the input would be lost for good. Second, it needs to be nonlinear: a small change to the input (even one bit) should change the output noticeably and unpredictably. This is called the avalanche effect.',
       'sboxprep.permYes': '✅ Checked: it is a permutation — every value 0–15 appears exactly once',
@@ -839,7 +933,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'sboxprep.bridge': 'This table, already built, is used unchanged in every round: we just plug in the current value of X and read off F(X).',
       'sboxprep.disclaimerTeaser': '⚠️ DES and Magma S-boxes are more elaborate too',
       'sboxprep.disclaimer': 'Real DES S-boxes are more elaborate: there are eight of them (one per 6-bit chunk of the expanded block), each mapping 6 bits to 4, and the criteria behind their design (resistance to differential cryptanalysis) were kept secret until the late 1980s. Here it is one 4→4 box, so the ideas of permutation and avalanche are easier to see. Magma also has eight 4→4-bit S-boxes, but the original GOST 28147-89 standard didn\'t fix them — the exact set was treated as extra secret material and could differ between agencies; the modern GOST R 34.12-2015 ("Magma") standard finally fixed one official set.',
-      'rounds.h': 'Step 6 — encryption round {r} of {tot}',
+      'rounds.h': 'Step 7 — encryption round {r} of {tot}',
       'rounds.intro': 'Every round has three stages: add the right half to the subkey, run the result through the S-box, and add it to the left half — then the halves swap places.',
       'rounds.stage.xor1': 'Stage 1 of 3 — add the subkey',
       'rounds.stage.sbox': 'Stage 2 of 3 — the S-box',
@@ -854,12 +948,12 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'rounds.c': 'Add F to the left half <span class="highlight">L{p}</span> the same way, getting the new right half <span class="highlight">R{r}</span> — again one bit at a time:',
       'rounds.swap': '<span class="arrow-swap">⇄</span> The halves swap places: the old R{p} becomes the new L{r}',
       'rounds.last': 'That was the last round. Next comes the final swap of the halves and the finished ciphertext.',
-      'cipher.h': 'Step 7 — the ciphertext is ready',
+      'cipher.h': 'Step 8 — the ciphertext is ready',
       'cipher.p': 'After the last round the halves are swapped one final time (the standard final swap, as in real DES; in Magma the same effect comes from simply not swapping the halves in the last, 32nd round) — this is exactly why decryption uses the same mechanism as encryption.',
       'cipher.lAfter': 'L (after swap)', 'cipher.rAfter': 'R (after swap)',
       'cipher.readout': 'Ciphertext = <span>{v}</span>',
-      'cipher.alice': '<span class="speaker">Alice</span> sends this number to Bob; on its own, without the key, it reveals nothing about the message.',
-      'dec.h': 'Step 8 — Bob decrypts',
+      'cipher.alice': 'Next, Alice sends this number to Bob over the open channel — that’s the next step. Without the key it reveals nothing about the message.',
+      'dec.h': 'Step 10 — Bob decrypts',
       'dec.p': 'Bob has the ciphertext <span class="highlight">{c}</span> and the same secret key. He runs the same Feistel network, but takes the subkeys in reverse order: K4, K3, K2, K1.',
       'dec.round': 'Decryption round {r} of {tot} — using subkey <span class="highlight-gold">K{k}</span> (the very same one used in the matching encryption round, only the queue is reversed).',
       'dec.newHalves': '⇄ → new halves',
@@ -902,7 +996,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'x.less': 'Show less ▴',
       'x.textprep': 'A cipher works on bits, not letters: UTF-8 turns each character into 1–4 bytes. We will encrypt one of them.',
       'x.plain': 'This is the byte you picked in step 1 — the plaintext Alice sends to Bob.',
-      'x.key': 'The shared secret key is 8 bits known only to Alice and Bob. Round subkeys will be derived from it.',
+      'x.key': 'The shared secret key is 8 bits. The key centre generates it and sends it to Alice and Bob. The round subkeys will be derived from it.',
       'x.ks': 'One key → different subkeys: for round r the key is rotated left by (r × 3) mod 8 bits, and the low 4 bits become subkey Kr. The formula is fixed in advance and does not depend on the key.',
       'x.sbox': 'The S-box is a fixed 4→4-bit substitution table — part of the cipher itself, not of the key. A good one is a permutation and shows the avalanche effect: flipping one input bit changes several output bits.',
       'x.rounds': 'A round: R ⊕ K → S-box → ⊕ L → swap the halves. We run four rounds in a row.',
@@ -928,15 +1022,15 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'map.st.current': 'Now',
       'map.st.upcoming': 'Upcoming',
       'map.goto': '↩ Back to this step',
-      'map.d.1': 'Turn the text into UTF-8 bytes and pick one of them to encrypt.',
-      'map.d.2': 'The picked byte becomes Alice\'s plaintext.',
-      'map.d.3': 'Alice and Bob agree on a shared 8-bit secret key.',
-      'map.d.4': 'Derive subkeys K1…K4 from the key: rotate by (r × 3) mod 8 bits and take the low 4 bits.',
-      'map.d.5': 'Prepare the fixed 4→4-bit substitution table and check the avalanche effect.',
+      'map.d.textprep': 'Turn the text into UTF-8 bytes and pick one of them to encrypt.',
+      'map.d.plaintext': 'The picked byte becomes Alice\'s plaintext.',
+      'map.d.key': 'The key centre generates the shared 8-bit secret key.',
+      'map.d.keyschedule': 'Derive subkeys K1…K4 from the key: rotate by (r × 3) mod 8 bits and take the low 4 bits.',
+      'map.d.sboxprep': 'Prepare the fixed 4→4-bit substitution table and check the avalanche effect.',
       'map.d.round': 'R ⊕ K → S-box → ⊕ L → swap the halves.',
-      'map.d.7': 'Final swap of the halves — the ciphertext is ready.',
-      'map.d.8': 'Bob runs the ciphertext through the same network with subkeys K4…K1 and compares.',
-      'map.d.9': 'Wrap-up: why it works and how it relates to DES and Magma.',
+      'map.d.cipher': 'Final swap of the halves — the ciphertext is ready.',
+      'map.d.decrypt': 'Bob runs the ciphertext through the same network with subkeys K4…K1 and compares.',
+      'map.d.summary': 'Wrap-up: why it works and how it relates to DES and Magma.',
       'map.sub.xor1': 'Add the subkey',
       'map.sub.sbox': 'S-box',
       'map.sub.xor2': 'Add the left half',
@@ -944,6 +1038,49 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'map.bitsProgress': 'bits done: {i} of 4',
       'map.noText': 'no text entered',
       'map.decNotStarted': 'not started yet',
+      'phase.keydelivery': 'Key delivery',
+      'phase.transmit': 'Transmission',
+      'btn.netReplay': '↺ Replay the animation',
+      'net.kc': 'Key centre',
+      'net.kcIcon': 'KDC',
+      'net.kcSub': 'cryptographic authority',
+      'net.alice': 'Alice',
+      'net.bob': 'Bob',
+      'net.eve': 'Eve',
+      'net.aliceIcon': 'A',
+      'net.bobIcon': 'B',
+      'net.eveIcon': 'E',
+      'net.keyCh': 'protected delivery',
+      'net.openCh': 'open channel',
+      'kd.h': 'Step 4 — key delivery',
+      'x.kd': 'The key is generated and distributed by a third party — the key centre; a cryptographic protection body is responsible for the keys. Alice and Bob receive the same key by a protected route and never send it to each other.',
+      'kd.p1': 'The weakest point of a symmetric cipher isn’t the algorithm but the key: the sender and the receiver must have the same one, and nobody else may have it. The key can’t be sent over the same channel as the message — an eavesdropper would get both.',
+      'kd.p2': 'In Russia the procedure is set by FAPSI Instruction No. 152 (2001), for cryptographic protection tools (SKZI) that protect restricted information other than state secrets. Keys are generated and distributed by a <b>cryptographic protection body</b> (OKZ): a unit of the organisation, an FSB-licensed company, or even a single appointed person. The OKZ produces the key documents, keeps a per-copy register of them and delivers them to the users on key media — by state courier or a special communication service, or by hand. The key is loaded into the device by an authorised person: an OKZ employee or a trained user. Technically the keys may be prepared by software — the key centre or the network control centre of a protected network — but people are responsible for them. How a key is generated from randomness is shown in the <a class="highlight" href="../cvk/index.html">“Key Generation Center”</a> game.',
+      'kd.p3': 'Note that no key travels between Alice and Bob at all. Later only the ciphertext goes over the open channel — and even if Eve intercepts it, she won’t get the key.',
+      'kd.waiting': 'So far only the key centre has the key.',
+      'kd.flying': 'The key is on its way by protected delivery…',
+      'kd.done': '✅ The key is loaded into Alice’s and Bob’s cipher devices. It never went over the open channel — Eve has nothing to intercept.',
+      'kd.btn': '▶ Send out the key',
+      'tx.h': 'Step 9 — sending the ciphertext',
+      'x.tx': 'Alice sends Bob only the ciphertext — over the open channel. Eve can take a copy, but without the key it’s just a number.',
+      'tx.p1': 'An open channel is the internet, the radio, a phone line — anything sent over it can be seen by outsiders. So only the ciphertext goes over it. Bob already has the key: the key centre sent it in advance.',
+      'tx.p2': 'That’s exactly what a cipher’s strength means: seeing the ciphertext, and even knowing how the cipher works, Eve can’t recover the plaintext without the key.',
+      'tx.waiting': 'So far only Alice has the ciphertext.',
+      'tx.flying': 'The ciphertext travels over the open channel — Eve takes a copy…',
+      'tx.done': '✅ Bob has received the ciphertext. Eve has a copy, but no key.',
+      'tx.btn': '▶ Send the ciphertext to Bob',
+      'nav.lockKd': 'To continue, send the key out to Alice and Bob.',
+      'nav.lockTx': 'To continue, send the ciphertext to Bob.',
+      'map.kdDone': 'Alice ✓ · Bob ✓',
+      'map.kdWait': 'not sent out yet',
+      'map.txDone': 'delivered to Bob ✓',
+      'map.txWait': 'not sent yet',
+      'map.d.keydelivery': 'The key centre sends the key to Alice and Bob by a protected route; a cryptographic protection body is responsible for the keys.',
+      'map.d.transmit': 'Alice sends the ciphertext to Bob over the open channel; Eve sees only the ciphertext.',
+      'kd.realTeaser': '⚠️ How keys were delivered for DES and are delivered for Magma',
+      'kd.realShort': 'DES in banking: under ANSI X9.17 a key centre sent out keys encrypted under key-encrypting keys, which trusted staff loaded by hand. Magma: keys are produced, registered and delivered by a cryptographic protection body and loaded into the device by an authorised person.',
+      'kd.real1': '<b>DES.</b> The banking standard ANSI X9.17 (1985; FIPS 171 in the US) described DES key management through exactly such a key centre (key distribution centre, KDC). The centre sent working keys over the network, but encrypted — under “key-encrypting keys”. The key-encrypting keys themselves never went over the network: trusted staff installed them in the equipment by hand.',
+      'kd.real2': '<b>Magma</b> (GOST 28147-89 / GOST R 34.12-2015). The cipher runs inside certified cryptographic devices (SKZI), and key handling is governed by FAPSI Instruction No. 152: key documents are produced and registered by a cryptographic protection body, delivered on key media by state courier, a special communication service or by hand, and the key is loaded into the device by an authorised person. The cipher standard itself doesn’t describe this — these are operating rules.',
     },
     es: {
       'meta.title': 'Red de Feistel — el nacimiento de DES',
@@ -955,7 +1092,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'info.p3': '<span class="highlight-gold">Don Coppersmith</span> ayudó después a llevar esta idea (a través del cifrado Lucifer) hasta el estándar <span class="highlight">DES</span>, diseñando S-boxes resistentes a ataques que el resto del mundo descubrió décadas más tarde. En la URSS, con el mismo principio se construyó un estándar propio — el <span class="highlight-gold">GOST 28147-89</span>, hoy conocido como «Magma» (GOST R 34.12-2015): la misma red de Feistel, pero con 32 rondas y una clave de 256 bits.',
       'footer.note': 'Demostración educativa de una red de Feistel · S-box y calendario de claves simplificados',
       'nav.home': 'Volver al laboratorio',
-      'phase.0': 'Idea', 'phase.1': 'Texto', 'phase.2': 'Mensaje', 'phase.3': 'Clave', 'phase.4': 'Calendario de claves', 'phase.5': 'S-box', 'phase.6': 'Rondas', 'phase.7': 'Texto cifrado', 'phase.8': 'Descifrado', 'phase.9': 'Resumen',
+      'phase.intro': 'Idea', 'phase.textprep': 'Texto', 'phase.plaintext': 'Mensaje', 'phase.key': 'Clave', 'phase.keyschedule': 'Calendario de claves', 'phase.sboxprep': 'S-box', 'phase.rounds': 'Rondas', 'phase.cipher': 'Texto cifrado', 'phase.decrypt': 'Descifrado', 'phase.summary': 'Resumen',
       'btn.back': '← Atrás', 'btn.next': 'Siguiente →',
       'btn.randKey': '🎲 Clave aleatoria',
       'btn.decrypt': '▶ Descifrar ronda a ronda', 'btn.nextRound': 'Siguiente ronda ▶',
@@ -986,8 +1123,8 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'msg.p': 'Aquí está el byte que elegiste de tu texto — este es el texto en claro que Alicia envía a Bob. ¿Quieres otro byte? Vuelve un paso atrás y elige otro en el texto.',
       'msg.pManual': 'No escribiste texto en el paso anterior, así que no hay ningún byte que elegir. Ajusta el texto en claro a mano — haz clic en los bits de abajo para alternar 0 y 1.',
       'key.h': 'Paso 3 — la clave secreta compartida',
-      'key.p': 'Alicia y Bob acordaron de antemano una clave secreta compartida, también de 8&nbsp;bits. En el siguiente paso veremos cómo de esta única clave sale una subclave distinta para cada ronda.',
-      'ks.h': 'Paso 4 — el calendario de claves',
+      'key.p': 'La clave secreta compartida también tiene 8&nbsp;bits. No la generan ni Alicia ni Bob, sino un tercero: el centro de claves. En el siguiente paso se la enviará a ambos, y después veremos cómo de esta única clave sale una subclave distinta para cada ronda. Haz clic en los bits para fijar la clave.',
+      'ks.h': 'Paso 5 — el calendario de claves',
       'ks.p1': 'La clave maestra nunca se usa directamente en una ronda: de ella se deriva una subclave distinta para cada ronda. En el DES real esto se hace con permutaciones y desplazamientos — de una clave de 56 bits salen 16 subclaves distintas de 48 bits. El Magma ruso lo hace de otra forma: su clave de 256 bits simplemente se corta en ocho trozos de 32 bits — más detalles abajo.',
       'ks.p2': 'Aquí la regla es más simple: para la ronda r, la clave se rota a la izquierda (r × 3) mod 8 bits — cada ronda tiene su propio desplazamiento, y los 4 bits menos significativos del resultado se convierten en la subclave K de esa ronda.',
       'ks.shiftOverview': 'Por eso cada ronda tiene un desplazamiento distinto, aunque la clave sea la misma:',
@@ -1007,7 +1144,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'ks.tabsHint': 'Los botones 1–4 cambian de qué ronda se muestra la animación de rotación — cada ronda tiene su propio número de bits de desplazamiento. La subclave de una ronda solo se considera determinada cuando se hace su propio giro — para continuar, recorre las cuatro.',
       'ks.disclaimerTeaser': '⚠️ En el DES y el Magma el calendario de claves es más elaborado',
       'ks.disclaimer': 'En el DES real el calendario de claves es más elaborado: una clave de 56 bits pasa por dos permutaciones (PC-1/PC-2) y se desplaza cíclicamente 1–2 bits en cada una de las 16 rondas, dando 16 subclaves distintas de 48 bits. Aquí hay una sola rotación de todo el byte y sus 4 bits menos significativos, para que se vea el principio «una clave → subclaves distintas por ronda» sin aritmética adicional. La clave del Magma es más larga — 256 bits — dividida en ocho partes de 32 bits K1…K8: las rondas 1–24 las usan en ese mismo orden cíclico, y las rondas 25–32 en orden inverso; a diferencia del DES, aquí la propia clave nunca se rota ni se permuta.',
-      'sboxprep.h': 'Paso 5 — preparación de la S-box',
+      'sboxprep.h': 'Paso 6 — preparación de la S-box',
       'sboxprep.p1': 'La S-box es parte de la especificación del propio cifrado, no un secreto de esta sesión concreta. Se fija una sola vez, cuando se diseña el cifrado (IBM lo hizo para Lucifer/DES; en el Magma ruso las tablas están escritas en el texto del GOST R 34.12-2015), y se usa sin cambios para cualquier clave y cualquier mensaje — a diferencia de las subclaves K1..K4, la S-box no depende en absoluto de la clave maestra.',
       'sboxprep.p2': 'Una buena S-box debe ser, primero, una permutación: cada una de las 16 salidas posibles se usa exactamente una vez, o de lo contrario se perdería información sobre la entrada. Segundo, debe ser no lineal: un cambio pequeño en la entrada (incluso un bit) debe cambiar la salida de forma notable e impredecible. A esto se le llama efecto avalancha.',
       'sboxprep.permYes': '✅ Comprobado: es una permutación — cada valor de 0 a 15 aparece una sola vez',
@@ -1017,7 +1154,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'sboxprep.bridge': 'Esta tabla, ya construida, se usa sin cambios en cada ronda: simplemente introducimos el valor actual de X y leemos F(X).',
       'sboxprep.disclaimerTeaser': '⚠️ Las S-boxes del DES y el Magma también son más elaboradas',
       'sboxprep.disclaimer': 'Las S-boxes reales del DES son más elaboradas: hay ocho (una por cada bloque de 6 bits del bloque expandido), cada una convierte 6 bits en 4, y los criterios de su diseño (resistencia al criptoanálisis diferencial) se mantuvieron en secreto hasta finales de los 80. Aquí hay una sola caja 4→4, para que las ideas de permutación y efecto avalancha se vean con más claridad. El Magma también tiene ocho S-boxes de 4→4 bits, pero el GOST 28147-89 original no las fijaba — el conjunto exacto se trataba como secreto adicional y podía variar entre organismos; el estándar moderno GOST R 34.12-2015 («Magma») finalmente fijó un único conjunto oficial.',
-      'rounds.h': 'Paso 6 — ronda de cifrado {r} de {tot}',
+      'rounds.h': 'Paso 7 — ronda de cifrado {r} de {tot}',
       'rounds.intro': 'Cada ronda tiene tres etapas: sumar la mitad derecha con la subclave, pasar el resultado por la S-box y sumarlo con la mitad izquierda — después las mitades se intercambian.',
       'rounds.stage.xor1': 'Etapa 1 de 3 — suma con la subclave',
       'rounds.stage.sbox': 'Etapa 2 de 3 — la S-box',
@@ -1032,12 +1169,12 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'rounds.c': 'Sumamos F con la mitad izquierda <span class="highlight">L{p}</span> de la misma manera, obteniendo la nueva mitad derecha <span class="highlight">R{r}</span> — de nuevo bit a bit:',
       'rounds.swap': '<span class="arrow-swap">⇄</span> Las mitades se intercambian: el antiguo R{p} pasa a ser el nuevo L{r}',
       'rounds.last': 'Esa fue la última ronda. Sigue el intercambio final de mitades y el texto cifrado listo.',
-      'cipher.h': 'Paso 7 — el texto cifrado está listo',
+      'cipher.h': 'Paso 8 — el texto cifrado está listo',
       'cipher.p': 'Tras la última ronda las mitades se intercambian una vez más (el intercambio final estándar, como en el DES real; en el Magma el mismo efecto se logra no intercambiando las mitades en la última ronda, la 32) — precisamente por eso el descifrado usa el mismo mecanismo que el cifrado.',
       'cipher.lAfter': 'L (tras el intercambio)', 'cipher.rAfter': 'R (tras el intercambio)',
       'cipher.readout': 'Texto cifrado = <span>{v}</span>',
-      'cipher.alice': '<span class="speaker">Alicia</span> le envía este número a Bob; por sí solo, sin la clave, no revela nada del mensaje.',
-      'dec.h': 'Paso 8 — Bob descifra',
+      'cipher.alice': 'A continuación, Alicia enviará este número a Bob por el canal abierto: es el siguiente paso. Sin la clave no revela nada del mensaje.',
+      'dec.h': 'Paso 10 — Bob descifra',
       'dec.p': 'Bob tiene el texto cifrado <span class="highlight">{c}</span> y la misma clave secreta. Ejecuta la misma red de Feistel, pero toma las subclaves en orden inverso: K4, K3, K2, K1.',
       'dec.round': 'Ronda de descifrado {r} de {tot} — se usa la subclave <span class="highlight-gold">K{k}</span> (la misma de la ronda de cifrado homónima, solo que el orden es inverso).',
       'dec.newHalves': '⇄ → nuevas mitades',
@@ -1080,7 +1217,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'x.less': 'Ver menos ▴',
       'x.textprep': 'Un cifrado trabaja con bits, no con letras: UTF-8 convierte cada carácter en 1–4 bytes. Ciframos uno de ellos.',
       'x.plain': 'Este es el byte que elegiste en el paso 1: el texto en claro que Alice envía a Bob.',
-      'x.key': 'La clave secreta compartida son 8 bits que solo conocen Alice y Bob. De ella saldrán las subclaves de las rondas.',
+      'x.key': 'La clave secreta compartida tiene 8 bits. La genera el centro de claves y la envía a Alicia y a Bob. De ella saldrán las subclaves de las rondas.',
       'x.ks': 'Una clave → subclaves distintas: en la ronda r la clave se gira a la izquierda (r × 3) mod 8 bits y los 4 bits bajos son la subclave Kr. La fórmula está fijada de antemano y no depende de la clave.',
       'x.sbox': 'La S-box es una tabla fija de sustitución de 4→4 bits: parte del cifrado, no de la clave. Una buena es una permutación y muestra el efecto avalancha: cambiar un bit de entrada cambia varios bits de salida.',
       'x.rounds': 'Una ronda: R ⊕ K → S-box → ⊕ L → intercambio de mitades. Hacemos cuatro rondas seguidas.',
@@ -1106,15 +1243,15 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'map.st.current': 'Ahora',
       'map.st.upcoming': 'Pendiente',
       'map.goto': '↩ Volver a este paso',
-      'map.d.1': 'Convertimos el texto en bytes UTF-8 y elegimos uno para cifrar.',
-      'map.d.2': 'El byte elegido se convierte en el texto en claro de Alice.',
-      'map.d.3': 'Alice y Bob acuerdan una clave secreta compartida de 8 bits.',
-      'map.d.4': 'Derivamos las subclaves K1…K4: giro de (r × 3) mod 8 bits y se toman los 4 bits bajos.',
-      'map.d.5': 'Preparamos la tabla fija de sustitución de 4→4 bits y comprobamos el efecto avalancha.',
+      'map.d.textprep': 'Convertimos el texto en bytes UTF-8 y elegimos uno para cifrar.',
+      'map.d.plaintext': 'El byte elegido se convierte en el texto en claro de Alice.',
+      'map.d.key': 'El centro de claves genera la clave secreta compartida de 8 bits.',
+      'map.d.keyschedule': 'Derivamos las subclaves K1…K4: giro de (r × 3) mod 8 bits y se toman los 4 bits bajos.',
+      'map.d.sboxprep': 'Preparamos la tabla fija de sustitución de 4→4 bits y comprobamos el efecto avalancha.',
       'map.d.round': 'R ⊕ K → S-box → ⊕ L → intercambio de mitades.',
-      'map.d.7': 'Intercambio final de mitades: el texto cifrado está listo.',
-      'map.d.8': 'Bob pasa el texto cifrado por la misma red con las subclaves K4…K1 y compara.',
-      'map.d.9': 'Resumen: por qué funciona y cómo se relaciona con DES y el Magma.',
+      'map.d.cipher': 'Intercambio final de mitades: el texto cifrado está listo.',
+      'map.d.decrypt': 'Bob pasa el texto cifrado por la misma red con las subclaves K4…K1 y compara.',
+      'map.d.summary': 'Resumen: por qué funciona y cómo se relaciona con DES y el Magma.',
       'map.sub.xor1': 'Suma con la subclave',
       'map.sub.sbox': 'S-box',
       'map.sub.xor2': 'Suma con la mitad izquierda',
@@ -1122,6 +1259,49 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'map.bitsProgress': 'bits listos: {i} de 4',
       'map.noText': 'sin texto',
       'map.decNotStarted': 'aún sin iniciar',
+      'phase.keydelivery': 'Entrega de la clave',
+      'phase.transmit': 'Transmisión',
+      'btn.netReplay': '↺ Repetir la animación',
+      'net.kc': 'Centro de claves',
+      'net.kcIcon': 'KDC',
+      'net.kcSub': 'autoridad criptográfica',
+      'net.alice': 'Alicia',
+      'net.bob': 'Bob',
+      'net.eve': 'Eva',
+      'net.aliceIcon': 'A',
+      'net.bobIcon': 'B',
+      'net.eveIcon': 'E',
+      'net.keyCh': 'entrega protegida',
+      'net.openCh': 'canal abierto',
+      'kd.h': 'Paso 4 — entrega de la clave',
+      'x.kd': 'La clave la genera y la distribuye un tercero: el centro de claves; de las claves responde un órgano de protección criptográfica. Alicia y Bob reciben la misma clave por una vía protegida y nunca se la envían entre ellos.',
+      'kd.p1': 'El punto más débil de un cifrado simétrico no es el algoritmo, sino la clave: el emisor y el receptor deben tener la misma, y nadie más debe tenerla. La clave no puede enviarse por el mismo canal que el mensaje: un espía obtendría ambas cosas.',
+      'kd.p2': 'En Rusia el procedimiento lo fija la Instrucción n.º 152 de la FAPSI (2001), para los medios de protección criptográfica (SKZI) que protegen información de acceso restringido que no es secreto de Estado. Las claves las genera y distribuye un <b>órgano de protección criptográfica</b> (OKZ): una unidad de la organización, una empresa con licencia del FSB o incluso una sola persona designada. El OKZ elabora los documentos de clave, lleva un registro de cada ejemplar y los entrega a los usuarios en soportes de clave, por correo de valija oficial o servicio especial de comunicaciones, o en mano. La clave la carga en el equipo una persona autorizada: un empleado del OKZ o un usuario formado. Técnicamente las claves puede prepararlas un programa —el centro de claves o el centro de gestión de una red protegida—, pero de ellas responden personas. Cómo se genera una clave a partir del azar se muestra en el juego <a class="highlight" href="../cvk/index.html">«Centro de generación de claves»</a>.',
+      'kd.p3': 'Fíjate en que entre Alicia y Bob no viaja ninguna clave. Más tarde por el canal abierto solo irá el texto cifrado, y aunque Eva lo intercepte, no obtendrá la clave.',
+      'kd.waiting': 'Por ahora solo el centro de claves tiene la clave.',
+      'kd.flying': 'La clave va de camino por entrega protegida…',
+      'kd.done': '✅ La clave está cargada en los equipos de cifrado de Alicia y de Bob. No pasó por el canal abierto: Eva no tiene nada que interceptar.',
+      'kd.btn': '▶ Enviar la clave',
+      'tx.h': 'Paso 9 — envío del texto cifrado',
+      'x.tx': 'Alicia envía a Bob solo el texto cifrado, por el canal abierto. Eva puede hacer una copia, pero sin la clave es solo un número.',
+      'tx.p1': 'Un canal abierto es internet, la radio, una línea telefónica: todo lo que pasa por él lo pueden ver otros. Por eso por él solo se envía el texto cifrado. Bob ya tiene la clave: se la envió de antemano el centro de claves.',
+      'tx.p2': 'Eso es precisamente lo que significa la robustez de un cifrado: viendo el texto cifrado, e incluso sabiendo cómo funciona el cifrado, Eva no puede recuperar el texto plano sin la clave.',
+      'tx.waiting': 'Por ahora solo Alicia tiene el texto cifrado.',
+      'tx.flying': 'El texto cifrado viaja por el canal abierto: Eva hace una copia…',
+      'tx.done': '✅ Bob ha recibido el texto cifrado. Eva tiene una copia, pero no la clave.',
+      'tx.btn': '▶ Enviar el texto cifrado a Bob',
+      'nav.lockKd': 'Para continuar, envía la clave a Alicia y a Bob.',
+      'nav.lockTx': 'Para continuar, envía el texto cifrado a Bob.',
+      'map.kdDone': 'Alicia ✓ · Bob ✓',
+      'map.kdWait': 'aún sin enviar',
+      'map.txDone': 'entregado a Bob ✓',
+      'map.txWait': 'aún sin enviar',
+      'map.d.keydelivery': 'El centro de claves envía la clave a Alicia y a Bob por una vía protegida; de las claves responde un órgano de protección criptográfica.',
+      'map.d.transmit': 'Alicia envía el texto cifrado a Bob por el canal abierto; Eva solo ve el texto cifrado.',
+      'kd.realTeaser': '⚠️ Cómo se entregaban las claves de DES y se entregan las de Magma',
+      'kd.realShort': 'DES en la banca: según ANSI X9.17, un centro de claves enviaba claves cifradas con claves de cifrado de claves, que el personal de confianza cargaba a mano. Magma: las claves las elabora, registra y entrega un órgano de protección criptográfica, y las carga en el equipo una persona autorizada.',
+      'kd.real1': '<b>DES.</b> La norma bancaria ANSI X9.17 (1985; FIPS 171 en EE. UU.) describía la gestión de claves de DES precisamente mediante un centro de claves (key distribution centre, KDC). El centro enviaba las claves de trabajo por la red, pero cifradas con «claves de cifrado de claves». Estas nunca viajaban por la red: el personal de confianza las instalaba a mano en los equipos.',
+      'kd.real2': '<b>Magma</b> (GOST 28147-89 / GOST R 34.12-2015). El cifrado funciona dentro de medios criptográficos certificados (SKZI), y el manejo de las claves lo regula la Instrucción n.º 152 de la FAPSI: los documentos de clave los elabora y registra un órgano de protección criptográfica, se entregan en soportes de clave por correo de valija, servicio especial o en mano, y la clave la carga en el equipo una persona autorizada. La norma del cifrado no describe este procedimiento: son reglas de explotación.',
     },
   };
   let currentLang = 'ru';
@@ -1235,11 +1415,15 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
     avJustFlipped: false,    // one-shot: true only for the render right after a probe-bit click
     decRunning: false,
     decRound: 0,
+    netBusy: false,       // a key / ciphertext packet is flying on the key-centre diagram
+    netPop: false,        // one-shot: the chips that just received something pop in
+    kdFor: null,          // which key value the key centre has delivered to Alice and Bob
+    txFor: null,          // which ciphertext value Alice has sent to Bob
     explain: {},          // accordion open/closed, keyed by 'phase:id' — survives re-renders
     more: {},             // whether an accordion's "more details" part is open
   };
   syncPlaintextFromText(); // the starting plaintext byte comes from the default text, not a magic number
-  const PHASES = ["intro", "textprep", "plaintext", "key", "keyschedule", "sboxprep", "rounds", "cipher", "decrypt", "summary"];
+  const PHASES = ["intro", "textprep", "plaintext", "key", "keydelivery", "keyschedule", "sboxprep", "rounds", "cipher", "transmit", "decrypt", "summary"];
 
   function plaintextByte() { return bitsToByte(state.plaintextBits); }
   function keyByte() { return bitsToByte(state.keyBits); }
@@ -2074,8 +2258,137 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
     panel.appendChild(btnRow);
   }
 
-  const RENDERERS = [renderIntro, renderTextPrep, renderPlaintext, renderKey, renderKeySchedule, renderSboxPrep, renderRounds, renderCipher, renderDecrypt, renderSummary];
+  const RENDERERS = [renderIntro, renderTextPrep, renderPlaintext, renderKey, renderKeyDelivery, renderKeySchedule, renderSboxPrep, renderRounds, renderCipher, renderTransmit, renderDecrypt, renderSummary];
   const ROUNDS_PHASE_IDX = PHASES.indexOf("rounds");
+
+
+  // ===== Key centre & channels (same component in the Feistel and SPN games) =====
+  // The key is never sent between Alice and Bob: a third party, the key centre, hands the
+  // same key to both of them over protected channels before any message is exchanged. Only
+  // the ciphertext travels over the open channel, where Eve can copy it but can't use it.
+  // Each game supplies netKeyValue() / netCipherValue() — short display strings that also
+  // tell whether what was delivered still matches the current key / ciphertext.
+  const NET_POS = { kc: [50, 25], alice: [15, 60], bob: [85, 60], eve: [50, 82] };
+  function netReduced() { return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
+  function keyDelivered() { return state.kdFor === netKeyValue(); }
+  function cipherSent() { return state.txFor === netCipherValue(); }
+
+  // o: { focus: 'key' | 'cipher', kc|alice|bob|eve: [{ cls, text }, ...] }
+  function renderNet(container, o) {
+    const net = el("div", "net net-" + o.focus);
+    const line = (a, b, cls) => `<line class="ln ${cls}" x1="${NET_POS[a][0]}" y1="${NET_POS[a][1]}" x2="${NET_POS[b][0]}" y2="${NET_POS[b][1]}"/>`;
+    net.innerHTML = '<svg class="net-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
+      line("kc", "alice", "ln-key") + line("kc", "bob", "ln-key") + line("alice", "bob", "ln-open") +
+      `<line class="ln ln-eve" x1="50" y1="${NET_POS.alice[1]}" x2="50" y2="${NET_POS.eve[1]}"/></svg>`;
+    const label = (text, x, y, cls) => { const l = el("div", "net-lbl " + cls, text); l.style.left = x + "%"; l.style.top = y + "%"; net.appendChild(l); };
+    label(t('net.keyCh'), (NET_POS.kc[0] + NET_POS.alice[0]) / 2, (NET_POS.kc[1] + NET_POS.alice[1]) / 2, "key");
+    label(t('net.keyCh'), (NET_POS.kc[0] + NET_POS.bob[0]) / 2, (NET_POS.kc[1] + NET_POS.bob[1]) / 2, "key");
+    label(t('net.openCh'), 50, NET_POS.alice[1] - 6, "open");
+    const node = (id, icon, name, sub) => {
+      const n = el("div", "net-node nn-" + id);
+      n.dataset.node = id;
+      n.style.left = NET_POS[id][0] + "%"; n.style.top = NET_POS[id][1] + "%";
+      n.innerHTML = `<div class="nn-icon">${icon}</div><div class="nn-name">${name}</div>` + (sub ? `<div class="nn-sub">${sub}</div>` : "");
+      const slots = el("div", "nn-slots");
+      (o[id] || []).forEach(c => slots.appendChild(el("span", "nn-chip " + c.cls, c.text)));
+      n.appendChild(slots);
+      net.appendChild(n);
+    };
+    node("kc", t('net.kcIcon'), t('net.kc'), t('net.kcSub'));
+    node("alice", t('net.aliceIcon'), t('net.alice'));
+    node("bob", t('net.bobIcon'), t('net.bob'));
+    node("eve", t('net.eveIcon'), t('net.eve'));
+    container.appendChild(net);
+    return net;
+  }
+
+  // Flies packets between node icons (or from a point on the open channel, for Eve's copy).
+  function netFly(list, onDone) {
+    const net = document.querySelector(".net");
+    let end = 0;
+    if (net && !netReduced()) {
+      const r0 = net.getBoundingClientRect();
+      const at = id => { const r = net.querySelector(`[data-node="${id}"] .nn-icon`).getBoundingClientRect(); return { x: r.left + r.width / 2 - r0.left, y: r.top + r.height / 2 - r0.top }; };
+      list.forEach(p => {
+        const a = p.fromMid ? { x: r0.width * 0.5, y: r0.height * NET_POS.alice[1] / 100 } : at(p.from), b = at(p.to);
+        const d = el("div", "net-packet " + p.cls, p.label);
+        d.style.left = a.x + "px"; d.style.top = a.y + "px";
+        net.appendChild(d);
+        end = Math.max(end, (p.delay || 0) + p.dur);
+        if (typeof d.animate !== "function") { d.remove(); return; }
+        const move = `translate(calc(-50% + ${b.x - a.x}px), calc(-50% + ${b.y - a.y}px))`;
+        const anim = d.animate([
+          { transform: "translate(-50%, -50%) scale(0.5)", opacity: 0 },
+          { transform: "translate(-50%, -50%) scale(1)", opacity: 1, offset: 0.12 },
+          { transform: move + " scale(1)", opacity: 1, offset: 0.9 },
+          { transform: move + " scale(0.4)", opacity: 0 },
+        ], { duration: p.dur, delay: p.delay || 0, easing: "ease-in-out", fill: "forwards" });
+        anim.onfinish = anim.oncancel = () => d.remove();
+      });
+    }
+    setTimeout(onDone, end + 60);
+  }
+  function netSend(phaseName, packets, onArrive) {
+    if (state.netBusy) return;
+    state.netBusy = true;
+    render();
+    requestAnimationFrame(() => netFly(packets, () => {
+      state.netBusy = false;
+      if (PHASES[state.phase] === phaseName) { onArrive(); state.netPop = true; }
+      render();
+    }));
+  }
+  function deliverKey() {
+    netSend("keydelivery", [
+      { from: "kc", to: "alice", cls: "k", label: "K", dur: 1500 },
+      { from: "kc", to: "bob", cls: "k", label: "K", dur: 1500 },
+    ], () => { state.kdFor = netKeyValue(); });
+  }
+  function sendCipher() {
+    netSend("transmit", [
+      { from: "alice", to: "bob", cls: "c", label: "C", dur: 2000 },
+      { fromMid: true, to: "eve", cls: "c ghost", label: "C", dur: 700, delay: 1000 },
+    ], () => { state.txFor = netCipherValue(); });
+  }
+  function netButtons(panel, done, btnKey, action) {
+    const row = el("div", "btn-row");
+    const b = el("button", "btn " + (done ? "btn-ghost net-replay" : "btn-gold net-send"), t(done ? 'btn.netReplay' : btnKey));
+    b.disabled = state.netBusy;
+    b.addEventListener("click", action);
+    row.appendChild(b);
+    panel.appendChild(row);
+  }
+
+  function renderKeyDelivery(panel) {
+    const pop = state.netPop ? " pop" : "";
+    state.netPop = false;
+    panel.appendChild(el("h2", null, t('kd.h')));
+    renderExplain(panel, "why", { head: t('x.head'), short: t('x.kd'), full: [t('kd.p1'), t('kd.p2'), t('kd.p3')] });
+    const k = netKeyValue(), done = keyDelivered() && !state.netBusy;
+    const got = done ? { cls: "k" + pop, text: `K = ${k}` } : { cls: "none", text: "K = ?" };
+    renderNet(panel, { focus: "key", kc: [{ cls: "k", text: `K = ${k}` }], alice: [got], bob: [got], eve: [{ cls: "no", text: "K = ?" }] });
+    panel.appendChild(el("div", "bit-equation" + (done ? " done" : ""), t(done ? 'kd.done' : state.netBusy ? 'kd.flying' : 'kd.waiting')));
+    renderExplain(panel, "real", { head: t('kd.realTeaser'), short: t('kd.realShort'), full: ['kd.real1', 'kd.real2', 'kd.real3'].filter(k => I18N.ru[k]).map(k => t(k)), kind: "warn" });
+    netButtons(panel, done, 'kd.btn', deliverKey);
+  }
+  function renderTransmit(panel) {
+    const pop = state.netPop ? " pop" : "";
+    state.netPop = false;
+    panel.appendChild(el("h2", null, t('tx.h')));
+    renderExplain(panel, "why", { head: t('x.head'), short: t('x.tx'), full: [t('tx.p1'), t('tx.p2')] });
+    const k = netKeyValue(), c = netCipherValue(), done = cipherSent() && !state.netBusy;
+    const got = done ? { cls: "c" + pop, text: `C = ${c}` } : { cls: "none", text: "C = ?" };
+    renderNet(panel, { focus: "cipher",
+      kc: [{ cls: "k", text: `K = ${k}` }],
+      alice: [{ cls: "k", text: "K" }, { cls: "c", text: `C = ${c}` }],
+      bob: [{ cls: "k", text: "K" }, got],
+      eve: [got, { cls: "no", text: "K = ?" }] });
+    panel.appendChild(el("div", "bit-equation" + (done ? " done" : ""), t(done ? 'tx.done' : state.netBusy ? 'tx.flying' : 'tx.waiting')));
+    netButtons(panel, done, 'tx.btn', sendCipher);
+  }
+
+  function netKeyValue() { return String(keyByte()); }
+  function netCipherValue() { return String(encryptionTrace().outByte); }
 
   // ===== Navigation =====
   function enterPhase(name) {
@@ -2118,6 +2431,9 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
   // advanced by their own buttons inside the form, and the key schedule has to actually be done.
   function nextLock() {
     const name = PHASES[state.phase];
+    if (state.netBusy) return "busy";
+    if (name === "keydelivery" && !keyDelivered()) return "kd";
+    if (name === "transmit" && !cipherSent()) return "tx";
     if (name === "keyschedule") {
       if (keysDeterminedCount() < ROUNDS) return "ks";
     }
@@ -2144,7 +2460,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
   }
 
   function goBack() {
-    if (state.xorPending || state.xorAuto) return; // ignore Back while a bit's reveal is mid-suspense
+    if (state.xorPending || state.xorAuto || state.netBusy) return; // ignore Back while something is mid-animation
     const name = PHASES[state.phase];
     if (name === "rounds") {
       if (state.roundStage === 'done') { state.roundStage = 'xor2'; state.revealed = 4; render(); return; }
@@ -2168,7 +2484,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
   function renderNav(nav) {
     nav.innerHTML = "";
     const backBtn = el("button", "btn btn-ghost nav-back", t('btn.back'));
-    backBtn.disabled = state.phase === 0 || state.xorPending || state.xorAuto;
+    backBtn.disabled = state.phase === 0 || state.xorPending || state.xorAuto || state.netBusy;
     backBtn.addEventListener("click", goBack);
     nav.appendChild(backBtn);
 
@@ -2181,7 +2497,8 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       nextBtn.disabled = state.xorPending || !!lock;
       nextBtn.addEventListener("click", () => { goNext(); document.querySelector(".main-layout").scrollIntoView({ behavior: "smooth", block: "nearest" }); });
       nav.appendChild(nextBtn);
-      if (lock) nav.appendChild(el("div", "nav-hint", t(lock === "ks" ? 'nav.lockKs' : 'nav.lockXor', { n: keysDeterminedCount(), tot: ROUNDS })));
+      const hint = { ks: 'nav.lockKs', xor: 'nav.lockXor', kd: 'nav.lockKd', tx: 'nav.lockTx' }[lock];
+      if (hint) nav.appendChild(el("div", "nav-hint", t(hint, { n: keysDeterminedCount(), tot: ROUNDS })));
     }
   }
 
@@ -2189,20 +2506,20 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
     const dots = document.getElementById("stepDots");
     dots.innerHTML = "";
     PHASES.forEach((_, i) => dots.appendChild(el("div", "step-dot" + (i < state.phase ? " done" : i === state.phase ? " current" : ""))));
-    document.getElementById("stepLabel").textContent = t('phase.' + state.phase);
+    document.getElementById("stepLabel").textContent = t('phase.' + PHASES[state.phase]);
   }
 
   // ===== Side map: the whole pipeline at a glance, with what's done, current and upcoming =====
   // Jumping is only ever allowed onto an already-"done" node — you can go back and review
   // any earlier result, but you can't skip ahead of where Next has actually taken you.
   function jumpToPhase(idx) {
-    if (idx === state.phase || state.xorPending || state.xorAuto) return;
+    if (idx === state.phase || state.xorPending || state.xorAuto || state.netBusy) return;
     state.phase = idx;
     enterPhaseFromBack(PHASES[state.phase]);
     render();
   }
   function jumpToRound(round) {
-    if (state.xorPending || state.xorAuto) return;
+    if (state.xorPending || state.xorAuto || state.netBusy) return;
     state.phase = ROUNDS_PHASE_IDX;
     state.round = round;
     state.roundStage = 'done';
@@ -2221,10 +2538,12 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
   }
 
   const MAP_NODES = [
-    { type: 'phase', idx: 1 }, { type: 'phase', idx: 2 }, { type: 'phase', idx: 3 }, { type: 'phase', idx: 4 }, { type: 'phase', idx: 5 },
+    { type: 'phase', name: 'textprep' }, { type: 'phase', name: 'plaintext' }, { type: 'phase', name: 'key' }, { type: 'phase', name: 'keydelivery' },
+    { type: 'phase', name: 'keyschedule' }, { type: 'phase', name: 'sboxprep' },
     { type: 'round', round: 1 }, { type: 'round', round: 2 }, { type: 'round', round: 3 }, { type: 'round', round: 4 },
-    { type: 'phase', idx: 7 }, { type: 'phase', idx: 8 }, { type: 'phase', idx: 9 },
+    { type: 'phase', name: 'cipher' }, { type: 'phase', name: 'transmit' }, { type: 'phase', name: 'decrypt' }, { type: 'phase', name: 'summary' },
   ];
+  MAP_NODES.forEach(n => { if (n.type === 'phase') n.idx = PHASES.indexOf(n.name); });
 
   // Small bit-cell row, e.g. for showing the plaintext/key/ciphertext byte inside the map.
   function miniBits(bitsArray) {
@@ -2292,20 +2611,22 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       return;
     }
     if (status === "upcoming") return;
-    switch (node.idx) {
-      case 1: {
+    switch (node.name) {
+      case 'textprep': {
         const flat = utf8FlatBytes(utf8Groups(state.textInput));
         const sel = flat[Math.min(state.textByteIndex, Math.max(flat.length - 1, 0))];
         const shown = textPreview(state.textInput, 22);
         bodyEl.appendChild(el("div", "map-detail", !state.textInput ? t('map.noText') : sel ? `"${shown}" → ${sel.value}` : `"${shown}"`));
         return;
       }
-      case 2: bodyEl.appendChild(miniBits(state.plaintextBits)); return;
-      case 3: bodyEl.appendChild(miniBits(state.keyBits)); return;
-      case 4: bodyEl.appendChild(miniSubkeys()); return;
-      case 5: bodyEl.appendChild(el("div", "map-detail", t('map.sboxReady'))); return;
-      case 7: bodyEl.appendChild(miniBits(bits8(encryptionTrace().outByte))); return;
-      case 8: {
+      case 'plaintext': bodyEl.appendChild(miniBits(state.plaintextBits)); return;
+      case 'key': bodyEl.appendChild(miniBits(state.keyBits)); return;
+      case 'keyschedule': bodyEl.appendChild(miniSubkeys()); return;
+      case 'sboxprep': bodyEl.appendChild(el("div", "map-detail", t('map.sboxReady'))); return;
+      case 'cipher': bodyEl.appendChild(miniBits(bits8(encryptionTrace().outByte))); return;
+      case 'keydelivery': bodyEl.appendChild(el("div", "map-detail", t(keyDelivered() ? 'map.kdDone' : 'map.kdWait'))); return;
+      case 'transmit': bodyEl.appendChild(el("div", "map-detail", cipherSent() ? `C = ${netCipherValue()} → ${t('map.txDone')}` : t('map.txWait'))); return;
+      case 'decrypt': {
         if (!state.decRunning) return;
         bodyEl.appendChild(miniPips(state.decRound >= ROUNDS ? ROUNDS + 1 : state.decRound, ROUNDS));
         if (state.decRound < ROUNDS) {
@@ -2330,7 +2651,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
     let focusRow = null, focusIdx = -1;
     MAP_NODES.forEach((node, i) => {
       const status = nodeStatus(node);
-      const label = node.type === 'round' ? t('map.round', { r: node.round }) : t('phase.' + node.idx);
+      const label = node.type === 'round' ? t('map.round', { r: node.round }) : t('phase.' + node.name);
 
       const row = el("div", "map-node " + status);
       const dotCol = el("div", "map-dot-col");
@@ -2394,19 +2715,20 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       return;
     }
     if (status === "upcoming") return;
-    switch (node.idx) {
-      case 1: {
+    switch (node.name) {
+      case 'textprep': {
         const flat = utf8FlatBytes(utf8Groups(state.textInput));
         const sel = flat[Math.min(state.textByteIndex, Math.max(flat.length - 1, 0))];
         main.appendChild(el("div", "ov-result", sel ? `«${textPreview(state.textInput, 40)}» → ${bytePreview(sel.value)}` : t('map.noText')));
         return;
       }
-      case 2: main.appendChild(miniBits(state.plaintextBits)); main.appendChild(el("div", "ov-result", bytePreview(plaintextByte()))); return;
-      case 3: main.appendChild(miniBits(state.keyBits)); main.appendChild(el("div", "ov-result", bytePreview(keyByte()))); return;
-      case 4: appendMapVisual(main, node, status); return;
-      case 5: main.appendChild(el("div", "ov-result", t('map.sboxReady'))); return;
-      case 7: { const c = encryptionTrace().outByte; main.appendChild(miniBits(bits8(c))); main.appendChild(el("div", "ov-result", bytePreview(c))); return; }
-      case 8:
+      case 'plaintext': main.appendChild(miniBits(state.plaintextBits)); main.appendChild(el("div", "ov-result", bytePreview(plaintextByte()))); return;
+      case 'key': main.appendChild(miniBits(state.keyBits)); main.appendChild(el("div", "ov-result", bytePreview(keyByte()))); return;
+      case 'keyschedule': appendMapVisual(main, node, status); return;
+      case 'sboxprep': main.appendChild(el("div", "ov-result", t('map.sboxReady'))); return;
+      case 'cipher': { const c = encryptionTrace().outByte; main.appendChild(miniBits(bits8(c))); main.appendChild(el("div", "ov-result", bytePreview(c))); return; }
+      case 'keydelivery': case 'transmit': appendMapVisual(main, node, status); return;
+      case 'decrypt':
         if (state.decRunning) appendMapVisual(main, node, status);
         else main.appendChild(el("div", "map-detail", t('map.decNotStarted')));
         return;
@@ -2422,7 +2744,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
     MAP_NODES.forEach((node, i) => {
       const status = nodeStatus(node);
       if (status === "done") done++;
-      const label = node.type === 'round' ? t('map.round', { r: node.round }) : t('phase.' + node.idx);
+      const label = node.type === 'round' ? t('map.round', { r: node.round }) : t('phase.' + node.name);
       const card = el("div", "ov-step " + status);
       card.appendChild(el("div", "ov-icon", status === "done" ? "✓" : status === "current" ? "▶" : String(i + 1)));
       const main = el("div", "ov-main");
@@ -2430,7 +2752,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       top.appendChild(el("div", "ov-name", `${i + 1}. ${label}`));
       top.appendChild(el("div", "ov-pill", t('map.st.' + status)));
       main.appendChild(top);
-      main.appendChild(el("div", "ov-what", t(node.type === 'round' ? 'map.d.round' : 'map.d.' + node.idx)));
+      main.appendChild(el("div", "ov-what", t(node.type === 'round' ? 'map.d.round' : 'map.d.' + node.name)));
       appendOverlayDetail(main, node, status);
       if (status === "done") {
         main.appendChild(el("div", "ov-goto", t('map.goto')));

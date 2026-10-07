@@ -557,6 +557,8 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
     .nn-chip { font-size: 0.6rem; padding: 1px 4px; }
     .net-lbl { font-size: 0.55rem; padding: 1px 4px; }
   }
+  .btn-row a.btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+  .nav-link-icon { flex: none; }
 </style>
 </head>
 <body>
@@ -650,6 +652,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'info.p3': '<span class="highlight-gold">Дон Копперсмит</span> помог довести эту идею (через шифр Lucifer) до стандарта <span class="highlight">DES</span> — разработав S-блоки, устойчивые к атакам, о которых остальной мир узнал лишь спустя десятилетия. В СССР по тому же принципу построили собственный стандарт — <span class="highlight-gold">ГОСТ 28147-89</span>, ныне «Магма» (ГОСТ Р 34.12-2015): та же сеть Фейстеля, но с 32 раундами и 256-битным ключом.',
       'footer.note': 'Учебная демонстрация сети Фейстеля · упрощённый S-блок и расписание ключей',
       'nav.home': 'Вернуться в лабораторию',
+      'nav.theory': 'Прочитать теорию',
       'phase.intro': 'Идея', 'phase.textprep': 'Текст', 'phase.plaintext': 'Сообщение', 'phase.key': 'Ключ', 'phase.keyschedule': 'Расписание ключей', 'phase.sboxprep': 'S-блок', 'phase.rounds': 'Раунды', 'phase.cipher': 'Шифротекст', 'phase.decrypt': 'Расшифровка', 'phase.summary': 'Итоги',
       'btn.back': '← Назад', 'btn.next': 'Далее →',
       'btn.randKey': '🎲 Случайный ключ',
@@ -871,6 +874,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'info.p3': '<span class="highlight-gold">Don Coppersmith</span> later helped bring this idea (through the Lucifer cipher) to the <span class="highlight">DES</span> standard — designing S-boxes resistant to attacks the rest of the world only discovered decades later. In the USSR the same principle was used to build its own standard — <span class="highlight-gold">GOST 28147-89</span>, today known as "Magma" (GOST R 34.12-2015): the same Feistel network, but with 32 rounds and a 256-bit key.',
       'footer.note': 'Educational demo of a Feistel network · simplified S-box and key schedule',
       'nav.home': 'Back to the lab',
+      'nav.theory': 'Read the theory',
       'phase.intro': 'Idea', 'phase.textprep': 'Text', 'phase.plaintext': 'Message', 'phase.key': 'Key', 'phase.keyschedule': 'Key schedule', 'phase.sboxprep': 'S-box', 'phase.rounds': 'Rounds', 'phase.cipher': 'Ciphertext', 'phase.decrypt': 'Decryption', 'phase.summary': 'Summary',
       'btn.back': '← Back', 'btn.next': 'Next →',
       'btn.randKey': '🎲 Random key',
@@ -1092,6 +1096,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'info.p3': '<span class="highlight-gold">Don Coppersmith</span> ayudó después a llevar esta idea (a través del cifrado Lucifer) hasta el estándar <span class="highlight">DES</span>, diseñando S-boxes resistentes a ataques que el resto del mundo descubrió décadas más tarde. En la URSS, con el mismo principio se construyó un estándar propio — el <span class="highlight-gold">GOST 28147-89</span>, hoy conocido como «Magma» (GOST R 34.12-2015): la misma red de Feistel, pero con 32 rondas y una clave de 256 bits.',
       'footer.note': 'Demostración educativa de una red de Feistel · S-box y calendario de claves simplificados',
       'nav.home': 'Volver al laboratorio',
+      'nav.theory': 'Leer la teoría',
       'phase.intro': 'Idea', 'phase.textprep': 'Texto', 'phase.plaintext': 'Mensaje', 'phase.key': 'Clave', 'phase.keyschedule': 'Calendario de claves', 'phase.sboxprep': 'S-box', 'phase.rounds': 'Rondas', 'phase.cipher': 'Texto cifrado', 'phase.decrypt': 'Descifrado', 'phase.summary': 'Resumen',
       'btn.back': '← Atrás', 'btn.next': 'Siguiente →',
       'btn.randKey': '🎲 Clave aleatoria',
@@ -2255,6 +2260,12 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       render();
     });
     btnRow.appendChild(restartBtn);
+    const theoryLink = el("a", "btn btn-primary nav-theory", `<svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 6.2C10.2 4.8 7.8 4 5 4v13c2.8 0 5.2.8 7 2.2 1.8-1.4 4.2-2.2 7-2.2V4c-2.8 0-5.2.8-7 2.2z"/></svg> <span>${t('nav.theory')}</span>`);
+    theoryLink.href = "/theory/feistel.html";
+    btnRow.appendChild(theoryLink);
+    const homeLink = el("a", "btn btn-gold nav-home", `<svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 3.2 3 11h3v9h5v-6h2v6h5v-9h3z"/></svg> <span>${t('nav.home')}</span>`);
+    homeLink.href = "/";
+    btnRow.appendChild(homeLink);
     panel.appendChild(btnRow);
   }
 

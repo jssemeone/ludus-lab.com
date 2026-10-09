@@ -27,17 +27,17 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Segoe+UI:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-.lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
-.lang-btn { background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3); font-size: 0.7rem; letter-spacing: 0.5px; padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-.lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
-.lang-btn.active { background: rgba(255, 215, 0, 0.18); border-color: #ffd700; color: #ffd700; box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
-@media (max-width: 600px) { .lang-switch { top: 8px; right: 8px; } .lang-btn { font-size: 0.6rem; padding: 3px 7px; } }
 * {
 margin: 0;
 padding: 0;
 box-sizing: border-box;
 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+.lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+.lang-btn { background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3); font-size: 0.7rem; letter-spacing: 0.5px; padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+.lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+.lang-btn.active { background: rgba(255, 215, 0, 0.18); border-color: #ffd700; color: #ffd700; box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+@media (max-width: 600px) { .lang-switch { top: 8px; right: 8px; } .lang-btn { font-size: 0.6rem; padding: 3px 7px; } }
 body {
 background: linear-gradient(to bottom, #0a1a2a, #050d15);
 color: #c5d5e0;
@@ -103,7 +103,8 @@ box-shadow:
 0 0 20px rgba(0, 162, 255, 0.3),
 inset 0 0 15px rgba(0, 100, 150, 0.2);
 margin-bottom: 15px;
-overflow: hidden;
+overflow-x: hidden;
+overflow-y: visible;
 position: relative;
 }
 .quantum-setup {
@@ -162,35 +163,29 @@ position: relative;
 z-index: 35;
 }
 .character-status {
+font-size: 0.8rem;
+color: #c5d5e0;
 height: 35px;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-font-size: 0.75rem;
-line-height: 1.2;
+line-height: 1.3;
+overflow: hidden;
 text-align: center;
-margin-top: 4px;
+margin: 0 auto;
 padding: 3px 8px;
-background: rgba(0, 30, 60, 0.3);
-border-radius: 4px;
-border: 1px solid rgba(0, 162, 255, 0.2);
+box-sizing: border-box;
+width: 240px;
 white-space: nowrap;
 text-overflow: ellipsis;
-overflow: hidden;
-transition: all 0.3s ease;
+position: absolute;
+bottom: -40px;
+left: -45px;
+right: -45px;
+z-index: 40;
+text-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
+background: rgba(5, 20, 30, 0.95);
+border-radius: 4px;
+font-weight: 500;
+pointer-events: none;
 font-style: italic;
-}
-.status-line-1 {
-font-weight: 600;
-color: #00a2ff;
-margin-bottom: 1px;
-font-size: 0.8rem;
-}
-.status-line-2 {
-font-size: 0.7rem;
-color: #8ab0c5;
-opacity: 0.9;
 }
 .channels-container {
 flex: 1;
@@ -281,40 +276,6 @@ z-index: 62;
 font-weight: bold;
 top: 50%;
 transform: translateY(-50%);
-background: linear-gradient(45deg, #ff00ff, #800080);
-color: #ffffff;
-box-shadow: 0 0 8px rgba(255, 0, 255, 0.6);
-}
-.photon.to-alice {
-left: 5%;
-}
-.photon.to-bob {
-right: 5%;
-}
-.entangled-photons {
-position: absolute;
-width: 50px;
-height: 50px;
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 1.4rem;
-z-index: 70;
-font-weight: bold;
-left: 50%;
-top: 50%;
-transform: translate(-50%, -50%);
-background: linear-gradient(45deg, #ff00ff, #800080);
-color: #ffffff;
-box-shadow: 0 0 10px rgba(255, 0, 255, 0.6);
-animation: entangledPulse 3s infinite;
-transition: all 0.5s ease;
-}
-.entangled-photons.inactive {
-background: linear-gradient(45deg, rgba(255, 0, 255, 0.3), rgba(128, 0, 128, 0.3));
-box-shadow: 0 0 5px rgba(255, 0, 255, 0.3);
-animation: none;
 }
 .eve-icon {
 position: absolute;
@@ -390,32 +351,14 @@ text-shadow: 0 0 5px rgba(0, 162, 255, 0.3);
 font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
 text-transform: uppercase;
 }
-.basis-controls-container {
+.polarization-controls {
 display: flex;
 gap: 8px;
 margin-bottom: 15px;
 }
-.basis-controls {
+.polarization-option {
 flex: 1;
-display: flex;
-flex-direction: column;
-gap: 8px;
-}
-.basis-controls-title {
-font-weight: bold;
-color: #00a2ff;
-text-align: center;
-margin-bottom: 5px;
-font-size: 0.9rem;
-font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
-}
-.basis-options {
-display: flex;
-gap: 6px;
-}
-.basis-option {
-flex: 1;
-padding: 8px 4px;
+padding: 6px 4px;
 background: rgba(0, 10, 20, 0.7);
 border: 1px solid rgba(0, 162, 255, 0.4);
 border-radius: 5px;
@@ -430,11 +373,11 @@ align-items: center;
 justify-content: center;
 gap: 2px;
 }
-.basis-option:hover {
+.polarization-option:hover {
 background: rgba(0, 20, 35, 0.7);
 box-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
 }
-.basis-option.selected {
+.polarization-option.selected {
 border-color: #00a2ff;
 box-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
 }
@@ -450,50 +393,27 @@ color: #c5d5e0;
 font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
 font-size: 0.8rem;
 }
-.basis-angle {
-font-size: 0.65rem;
-color: #8ab0c5;
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.polarization-option[data-basis="rectilinear"] .basis-symbol {
+color: #00ff80;
 }
-/* Обновленные цвета для базисов */
-.basis-option[data-basis="a1"] .basis-symbol,
-.basis-option[data-basis="b1"] .basis-symbol,
-.basis-option[data-basis="a1"] .basis-label,
-.basis-option[data-basis="b1"] .basis-label {
-color: #008000;
+.polarization-option[data-basis="rectilinear"] .basis-label {
+color: #00ff80;
 }
-.basis-option[data-basis="a2"] .basis-symbol,
-.basis-option[data-basis="b2"] .basis-symbol,
-.basis-option[data-basis="a2"] .basis-label,
-.basis-option[data-basis="b2"] .basis-label {
-color: #ff8c00;
+.polarization-option[data-basis="diagonal"] .basis-symbol {
+color: #e6d000;
 }
-.basis-option[data-basis="a3"] .basis-symbol,
-.basis-option[data-basis="b3"] .basis-symbol,
-.basis-option[data-basis="a3"] .basis-label,
-.basis-option[data-basis="b3"] .basis-label {
-color: #0abab5;
+.polarization-option[data-basis="diagonal"] .basis-label {
+color: #e6d000;
 }
-.basis-option[data-basis="a1"]:hover,
-.basis-option[data-basis="a1"].selected,
-.basis-option[data-basis="b1"]:hover,
-.basis-option[data-basis="b1"].selected {
-border-color: #008000;
-box-shadow: 0 0 8px rgba(0, 128, 0, 0.5);
+.polarization-option[data-basis="rectilinear"]:hover,
+.polarization-option[data-basis="rectilinear"].selected {
+border-color: #00ff80;
+box-shadow: 0 0 8px rgba(0, 255, 128, 0.5);
 }
-.basis-option[data-basis="a2"]:hover,
-.basis-option[data-basis="a2"].selected,
-.basis-option[data-basis="b2"]:hover,
-.basis-option[data-basis="b2"].selected {
-border-color: #ff8c00;
-box-shadow: 0 0 8px rgba(255, 140, 0, 0.5);
-}
-.basis-option[data-basis="a3"]:hover,
-.basis-option[data-basis="a3"].selected,
-.basis-option[data-basis="b3"]:hover,
-.basis-option[data-basis="b3"].selected {
-border-color: #0abab5;
-box-shadow: 0 0 8px rgba(10, 186, 181, 0.5);
+.polarization-option[data-basis="diagonal"]:hover,
+.polarization-option[data-basis="diagonal"].selected {
+border-color: #e6d000;
+box-shadow: 0 0 8px rgba(230, 208, 0, 0.5);
 }
 .action-buttons {
 display: flex;
@@ -551,7 +471,6 @@ box-shadow: inset 0 3px 6px rgba(0,0,0,0.6);
 border-color: #ff4444 !important;
 box-shadow: 0 0 8px rgba(255, 68, 68, 0.8) !important;
 }
-/* Зеленая подсветка для активной кнопки Просеять ключ */
 .action-button.sift-active:not(:disabled) {
 border-color: #00ff80 !important;
 box-shadow: 0 0 8px rgba(0, 255, 128, 0.8) !important;
@@ -573,7 +492,6 @@ overflow-x: auto;
 padding-bottom: 8px;
 position: relative;
 }
-/* Стиль полосы прокрутки в синих тонах */
 .key-scroll-container::-webkit-scrollbar {
 height: 6px;
 }
@@ -589,39 +507,40 @@ border: 2px solid rgba(5, 20, 30, 0.85);
 .key-scroll-container::-webkit-scrollbar-thumb:hover {
 background: rgba(0, 162, 255, 0.6);
 }
-/* Для Firefox */
 .key-scroll-container {
 scrollbar-width: thin;
 scrollbar-color: rgba(0, 162, 255, 0.4) rgba(0, 10, 20, 0.5);
 }
 .key-grid {
 display: grid;
-grid-template-columns: repeat(16, 1fr);
-gap: 8px;
+grid-template-columns: repeat(auto-fill, 28px);
+grid-auto-rows: 28px;
+gap: 4px;
 margin-bottom: 12px;
-min-width: 100%;
 }
 .final-key-grid {
-grid-template-columns: repeat(8, 1fr);
-gap: 5px;
+grid-template-columns: repeat(8, 38px);
+gap: 3px;
+justify-content: center;
 }
 .key-bit {
-aspect-ratio: 1;
-border-radius: 5px;
+width: 28px;
+height: 28px;
+border-radius: 4px;
 display: flex;
 align-items: center;
 justify-content: center;
 font-weight: bold;
-font-size: 0.95rem;
+font-size: 0.8rem;
 background: rgba(0, 10, 20, 0.7);
 border: 1px solid rgba(0, 50, 80, 0.4);
-transition: all 0.3s ease;
+transition: background 0.3s ease, border-color 0.3s ease;
 position: relative;
-min-width: 32px;
 cursor: pointer;
 font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
 text-transform: uppercase;
 animation: bioshockGlowKey 4s infinite;
+flex-shrink: 0;
 }
 .key-bit.active {
 background: #006ba6;
@@ -688,8 +607,8 @@ font-weight: 600;
 }
 .alert-container {
 position: relative;
-height: 50px;
-margin-bottom: 12px;
+min-height: 76px;
+margin-bottom: 8px;
 }
 .eve-alert, .sift-notification {
 background: rgba(200, 50, 50, 0.2);
@@ -829,6 +748,64 @@ font-weight: bold;
 color: #00a2ff;
 font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
 }
+.stat-value.qber-ok   { color: #4ade80; }
+.stat-value.qber-warn { color: #e6d000; }
+.stat-value.qber-bad  { color: #ff4444; }
+.stat-sub {
+font-size: 0.65rem;
+color: #8ab0c5;
+margin-top: 2px;
+opacity: 0.8;
+}
+.eave-qber-row {
+display: flex;
+gap: 16px;
+justify-content: center;
+margin: 16px 0 8px;
+flex-wrap: wrap;
+}
+.eave-qber-box {
+flex: 1;
+min-width: 130px;
+background: rgba(0,10,20,0.5);
+border: 1px solid rgba(0,162,255,0.25);
+border-radius: 8px;
+padding: 12px;
+text-align: center;
+}
+.eave-qber-box .qber-label {
+font-size: 0.72rem;
+color: #8ab0c5;
+margin-bottom: 6px;
+}
+.eave-qber-box .qber-num {
+font-size: 1.8rem;
+font-weight: bold;
+font-family: 'Bebas Neue','Arial Narrow',Arial,sans-serif;
+}
+.eave-threshold {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+font-size: 0.8rem;
+color: #8ab0c5;
+margin-bottom: 12px;
+}
+.eave-threshold-line {
+flex: 1;
+height: 1px;
+max-width: 60px;
+background: rgba(230,208,0,0.5);
+}
+.eave-threshold-badge {
+background: rgba(230,208,0,0.15);
+border: 1px solid rgba(230,208,0,0.4);
+color: #e6d000;
+border-radius: 4px;
+padding: 2px 8px;
+font-size: 0.75rem;
+}
 .bit-history {
 background: rgba(0, 10, 20, 0.7);
 border: 1px solid rgba(0, 162, 255, 0.4);
@@ -854,28 +831,12 @@ color: #00a2ff;
 position: absolute;
 left: 0;
 }
-.basis-a1 {
-color: #008000;
+.rectilinear-basis {
+color: #00ff80;
 font-weight: bold;
 }
-.basis-a2 {
-color: #ff8c00;
-font-weight: bold;
-}
-.basis-a3 {
-color: #0abab5;
-font-weight: bold;
-}
-.basis-b1 {
-color: #008000;
-font-weight: bold;
-}
-.basis-b2 {
-color: #ff8c00;
-font-weight: bold;
-}
-.basis-b3 {
-color: #0abab5;
+.diagonal-basis {
+color: #e6d000;
 font-weight: bold;
 }
 .intercepted {
@@ -893,7 +854,7 @@ color: #ff4444;
 color: #4ade80;
 }
 .status-excess {
-color: #ff8c00;
+color: #e6d000;
 }
 .status-not-matched {
 color: #8ab0c5;
@@ -902,6 +863,95 @@ color: #8ab0c5;
 margin-top: 8px;
 padding-top: 8px;
 border-top: 1px solid rgba(0, 162, 255, 0.2);
+}
+.history-sim {
+font-size: 0.82em;
+color: #8ab0c5;
+margin-top: 4px;
+opacity: 0.85;
+}
+.eave-check-section {
+background: rgba(0, 10, 25, 0.6);
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 8px;
+padding: 20px;
+margin: 20px 0;
+}
+.eave-check-grid {
+display: flex;
+gap: 10px;
+flex-wrap: wrap;
+justify-content: center;
+margin: 16px 0;
+}
+.eave-check-bit {
+width: 80px;
+padding: 10px 6px;
+border-radius: 6px;
+text-align: center;
+font-size: 0.85em;
+border: 2px solid;
+cursor: pointer;
+transition: transform 0.15s ease;
+}
+.eave-check-bit:hover { transform: translateY(-2px); }
+.eave-check-bit.match {
+background: rgba(74, 222, 128, 0.1);
+border-color: rgba(74, 222, 128, 0.5);
+}
+.eave-check-bit.mismatch {
+background: rgba(255, 68, 68, 0.15);
+border-color: rgba(255, 68, 68, 0.6);
+animation: pulseRed 1s ease-in-out;
+}
+@keyframes pulseRed {
+0% { box-shadow: 0 0 0 0 rgba(255,68,68,0.4); }
+70% { box-shadow: 0 0 0 8px rgba(255,68,68,0); }
+100% { box-shadow: 0 0 0 0 rgba(255,68,68,0); }
+}
+.eave-check-bit .eave-row {
+margin: 3px 0;
+font-size: 0.9em;
+color: #8ab0c5;
+}
+.eave-check-bit .eave-result {
+font-size: 1.3em;
+margin-top: 6px;
+}
+.eave-check-bit.match .eave-result { color: #4ade80; }
+.eave-check-bit.mismatch .eave-result { color: #ff4444; }
+.eave-verdict {
+margin: 12px 0 16px;
+padding: 12px 16px;
+border-radius: 6px;
+font-size: 1em;
+font-weight: bold;
+text-align: center;
+}
+.eave-verdict.clean {
+background: rgba(74, 222, 128, 0.1);
+border: 1px solid rgba(74, 222, 128, 0.4);
+color: #4ade80;
+}
+.eave-verdict.compromised {
+background: rgba(255, 68, 68, 0.1);
+border: 1px solid rgba(255, 68, 68, 0.4);
+color: #ff4444;
+}
+.eave-qber {
+font-size: 0.85em;
+font-weight: normal;
+margin-top: 4px;
+color: inherit;
+opacity: 0.85;
+}
+#eaveConfirmBtn {
+display: block;
+margin: 0 auto;
+}
+.key-bit.sacrifice {
+outline: 2px dashed rgba(0, 162, 255, 0.5);
+outline-offset: 2px;
 }
 @keyframes fadeIn {
 from { opacity: 0; transform: translateY(-10px); }
@@ -913,17 +963,9 @@ to { opacity: 1; transform: translateY(0); }
 80% { opacity: 1; }
 100% { opacity: 0; }
 }
-@keyframes photonTravelToAlice {
-0% { left: 50%; opacity: 1; }
-100% { left: 5%; opacity: 1; }
-}
-@keyframes photonTravelToBob {
-0% { right: 50%; opacity: 1; }
-100% { right: 5%; opacity: 1; }
-}
-@keyframes entangledPulse {
-0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px rgba(255, 0, 255, 0.6); }
-50% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 20px rgba(255, 0, 255, 0.8); }
+@keyframes photonTravel {
+0% { left: 5%; opacity: 1; }
+100% { left: 90%; opacity: 1; }
 }
 @keyframes travelToBob {
 0% { left: 0%; opacity: 1; }
@@ -935,12 +977,10 @@ to { opacity: 1; transform: translateY(0); }
 90% { opacity: 1; }
 100% { left: 0%; opacity: 0; }
 }
-/* Эффект мерцания в стиле BioShock */
 @keyframes flicker {
 0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
 20%, 22%, 24%, 55% { opacity: 0.8; }
 }
-/* Анимация для новых кубитов */
 @keyframes popIn {
 0% { transform: scale(0.7); opacity: 0; }
 70% { transform: scale(1.1); opacity: 1; }
@@ -949,12 +989,68 @@ to { opacity: 1; transform: translateY(0); }
 .key-bit.new {
 animation: popIn 0.5s ease forwards;
 }
-/* Анимация для квантового ключа */
 @keyframes bioshockGlowKey {
 0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { box-shadow: 0 0 5px rgba(0, 162, 255, 0.3); }
 20%, 22%, 24%, 55% { box-shadow: 0 0 10px rgba(0, 162, 255, 0.5); }
 }
-/* Стили для новых кнопок навигации */
+.lab-return-container {
+display: flex;
+justify-content: center;
+margin-top: 25px;
+margin-bottom: 15px;
+}
+.lab-return-button {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+background: rgba(0, 30, 60, 0.7);
+color: #00a2ff;
+text-decoration: none;
+padding: 8px 12px;
+border-radius: 6px;
+border: 1px solid rgba(0, 162, 255, 0.4);
+font-weight: 600;
+font-size: 0.85rem;
+transition: all 0.3s ease;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.lab-return-button:hover {
+background: rgba(0, 40, 80, 0.8);
+border-color: #00a2ff;
+box-shadow: 0 0 10px rgba(0, 162, 255, 0.4);
+transform: translateY(-2px);
+}
+.lab-return-button::before {
+content: "←";
+font-weight: bold;
+}
+.game-header {
+margin-bottom: 15px;
+padding-bottom: 12px;
+border-bottom: 1px solid rgba(0, 162, 255, 0.3);
+}
+footer {
+text-align: center;
+margin-top: 25px;
+padding-top: 15px;
+border-top: 1px solid rgba(0, 162, 255, 0.2);
+color: #8ab0c5;
+font-size: 0.85rem;
+display: none;
+}
+.disclaimer {
+background: rgba(212, 175, 55, 0.1);
+border: 1px solid rgba(212, 175, 55, 0.3);
+border-radius: 6px;
+padding: 12px;
+margin-top: 15px;
+font-size: 0.85rem;
+color: #d4af37;
+border-left: 4px solid #d4af37;
+}
+.disclaimer strong {
+color: #ffd700;
+}
 .navigation-links {
 display: flex;
 justify-content: center;
@@ -996,26 +1092,100 @@ border-color: rgba(212, 175, 55, 0.3);
 color: #ffd700;
 border-color: #d4af37;
 }
-.game-header {
-margin-bottom: 15px;
-padding-bottom: 12px;
-border-bottom: 1px solid rgba(0, 162, 255, 0.3);
-}
-/* Стили для дисклеймера QBER */
-.disclaimer {
-background: rgba(212, 175, 55, 0.1);
-border: 1px solid rgba(212, 175, 55, 0.3);
+#keyCopiedNotification {
+background: rgba(0, 100, 0, 0.2);
+color: #4ade80;
+padding: 8px;
 border-radius: 6px;
-padding: 12px;
-margin-top: 15px;
-font-size: 0.85rem;
-color: #d4af37;
-border-left: 4px solid #d4af37;
+text-align: center;
+margin-top: 8px;
+border: 1px solid rgba(74, 222, 128, 0.3);
+display: none;
 }
-.disclaimer strong {
-color: #ffd700;
+.key-display {
+display: none;
+margin-top: 24px;
 }
-/* Адаптивные стили для мобильных устройств */
+/* Финальный ключ — презентабельный блок */
+#finalKeySection {
+background: linear-gradient(135deg, rgba(0,30,60,0.85) 0%, rgba(0,10,25,0.95) 100%);
+border: 1px solid rgba(0,162,255,0.45);
+border-radius: 12px;
+padding: 24px 20px 20px;
+text-align: center;
+box-shadow: 0 0 24px rgba(0,162,255,0.12), inset 0 1px 0 rgba(0,162,255,0.15);
+}
+#finalKeySection .section-title {
+font-size: 1.1rem;
+letter-spacing: 0.08em;
+margin-bottom: 4px;
+color: #00a2ff;
+}
+#finalKeySection p {
+font-size: 0.78rem;
+color: #8ab0c5;
+margin-bottom: 16px;
+}
+.final-key-grid {
+justify-content: center;
+margin-bottom: 14px;
+}
+.final-key-grid .key-bit.active {
+width: 38px;
+height: 38px;
+font-size: 1.1rem;
+background: linear-gradient(135deg, #004e7c, #006ba6);
+border-color: #00b8ff;
+box-shadow: 0 0 10px rgba(0,184,255,0.35);
+animation: finalBitGlow 3s ease-in-out infinite;
+}
+@keyframes finalBitGlow {
+0%, 100% { box-shadow: 0 0 8px rgba(0,184,255,0.3); }
+50% { box-shadow: 0 0 18px rgba(0,184,255,0.65); }
+}
+.final-key-string {
+font-family: 'Bebas Neue', 'Courier New', monospace;
+font-size: 1.05rem;
+letter-spacing: 0.25em;
+color: #4ade80;
+background: rgba(0,10,5,0.6);
+border: 1px solid rgba(74,222,128,0.3);
+border-radius: 6px;
+padding: 8px 16px;
+display: inline-block;
+margin-bottom: 16px;
+text-shadow: 0 0 8px rgba(74,222,128,0.5);
+}
+.final-key-badge {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+font-size: 0.72rem;
+color: #4ade80;
+background: rgba(74,222,128,0.08);
+border: 1px solid rgba(74,222,128,0.25);
+border-radius: 20px;
+padding: 4px 12px;
+margin-bottom: 16px;
+}
+.key-actions {
+display: flex;
+gap: 10px;
+justify-content: center;
+flex-wrap: wrap;
+}
+.key-actions .action-button {
+width: 220px;
+max-width: 90%;
+}
+#copyKeyBtn {
+width: 220px;
+max-width: 90%;
+}
+#newKeyBtn {
+width: 220px;
+max-width: 90%;
+}
 @media (max-width: 768px) {
 body {
 padding: 12px;
@@ -1085,12 +1255,6 @@ z-index: 75;
 .classical-channel {
 z-index: 74;
 }
-.entangled-photons {
-width: 45px;
-height: 45px;
-font-size: 1.2rem;
-z-index: 85;
-}
 .eve-icon {
 width: 35px;
 height: 35px;
@@ -1109,18 +1273,14 @@ left: 10%;
 #bobBasis {
 right: 10%;
 }
-.basis-controls-container {
+.polarization-controls {
 flex-wrap: wrap;
 gap: 6px;
 }
-.basis-controls {
-flex: 1 1 100%;
-}
-.basis-options {
-gap: 4px;
-}
-.basis-option {
-padding: 6px 3px;
+.polarization-option {
+flex: 1 1 calc(50% - 6px);
+min-width: 110px;
+padding: 6px 4px;
 }
 .basis-symbol {
 font-size: 1.1rem;
@@ -1135,9 +1295,6 @@ gap: 6px;
 flex-direction: row;
 gap: 6px;
 }
-.button-row.mode-buttons {
-flex-wrap: wrap;
-}
 .action-button {
 padding: 8px 6px;
 font-size: 0.8rem;
@@ -1146,16 +1303,19 @@ font-size: 0.8rem;
 font-size: 0.6rem;
 }
 .key-grid {
-grid-template-columns: repeat(8, 1fr);
-gap: 6px;
+grid-template-columns: repeat(auto-fill, 26px);
+grid-auto-rows: 26px;
+gap: 4px;
 }
 .final-key-grid {
 grid-template-columns: repeat(8, 1fr);
+grid-auto-rows: unset;
 gap: 5px;
 }
 .key-bit {
-min-width: 28px;
-font-size: 0.9rem;
+width: 26px;
+height: 26px;
+font-size: 0.8rem;
 }
 .key-bit.intercept::before {
 top: -3px;
@@ -1188,6 +1348,10 @@ padding: 12px;
 padding: 10px;
 font-size: 0.8rem;
 }
+.lab-return-button {
+padding: 6px 10px;
+font-size: 0.8rem;
+}
 .navigation-links {
 gap: 10px;
 margin: 20px auto 12px;
@@ -1196,8 +1360,10 @@ margin: 20px auto 12px;
 padding: 6px 12px;
 font-size: 0.85rem;
 }
+#copyKeyBtn, #newKeyBtn {
+width: 220px;
 }
-/* Для очень маленьких экранов */
+}
 @media (max-width: 480px) {
 h1 {
 font-size: 1.5rem;
@@ -1220,19 +1386,491 @@ font-size: 0.8rem;
 min-width: 100%;
 margin: 5px 0;
 }
-.basis-option {
+.polarization-option {
 flex: 1 1 100%;
 }
 .button-row {
 flex-direction: column;
 }
 .key-grid {
-grid-template-columns: repeat(6, 1fr);
+grid-template-columns: repeat(auto-fill, 24px);
+grid-auto-rows: 24px;
+gap: 3px;
 }
 .navigation-links {
 flex-direction: column;
 align-items: center;
 }
+}
+/* ========== WELCOME SCREEN ========== */
+.hidden { display: none !important; }
+.welcome-screen {
+background: rgba(5, 20, 30, 0.85);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 8px;
+padding: 28px 24px;
+margin-bottom: 15px;
+box-shadow: 0 0 20px rgba(0, 162, 255, 0.3), inset 0 0 15px rgba(0, 100, 150, 0.2);
+text-align: center;
+}
+.welcome-screen h2 {
+color: #00a2ff;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+font-size: 1.4rem;
+letter-spacing: 0.5px;
+margin-bottom: 14px;
+text-shadow: 0 0 10px rgba(0, 162, 255, 0.3);
+}
+.welcome-screen p { font-size: 0.92rem; margin-bottom: 12px; max-width: 640px; margin-left: auto; margin-right: auto; }
+.welcome-stages-list {
+list-style: none;
+max-width: 560px;
+margin: 0 auto 20px;
+text-align: left;
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+.welcome-stages-list li {
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(0, 162, 255, 0.25);
+border-left: 3px solid #00a2ff;
+border-radius: 6px;
+padding: 8px 12px;
+font-size: 0.85rem;
+}
+.welcome-stages-list li strong { color: #00a2ff; }
+#startGameBtn { max-width: 320px; margin: 0 auto; }
+/* ========== ПОСТУПЕННЫЕ INTRO-КАРТОЧКИ ========== */
+.stage-intro {
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 8px;
+padding: 18px;
+margin-bottom: 18px;
+border-left: 4px solid #00a2ff;
+text-align: center;
+}
+.stage-intro h3 {
+color: #00a2ff;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+font-size: 1.15rem;
+letter-spacing: 0.4px;
+margin-bottom: 10px;
+text-transform: uppercase;
+}
+.stage-intro p { font-size: 0.9rem; margin-bottom: 14px; max-width: 640px; margin-left: auto; margin-right: auto; }
+.stage-intro .action-button { max-width: 320px; margin: 0 auto; }
+/* ========== STAGE SYSTEM ========== */
+.stage-indicator {
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 18px;
+margin-bottom: 24px;
+padding-bottom: 18px;
+border-bottom: 1px solid rgba(0, 162, 255, 0.15);
+}
+.stage-dot {
+width: 10px; height: 10px;
+border-radius: 50%;
+background: rgba(0, 50, 80, 0.6);
+border: 1px solid rgba(0, 162, 255, 0.3);
+transition: all 0.3s;
+position: relative;
+cursor: default;
+flex-shrink: 0;
+}
+.stage-dot.active {
+background: #00a2ff;
+box-shadow: 0 0 8px rgba(0, 162, 255, 0.6);
+border-color: #00a2ff;
+transform: scale(1.35);
+}
+.stage-dot.completed {
+background: #4ade80;
+border-color: #4ade80;
+}
+/* labels via separate element, not ::after - no overlap risk */
+.stage-name {
+text-align: center;
+font-size: 0.7rem;
+color: #8ab0c5;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+text-transform: uppercase;
+letter-spacing: 0.6px;
+margin-top: -10px;
+margin-bottom: 18px;
+}
+.stage-content { display: flex; flex-direction: column; }
+.stage-content.hidden { display: none !important; }
+/* Two-column layout for Stage 1 */
+.stage1-layout {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 18px;
+align-items: stretch;
+margin-top: 35px;
+}
+.left-panel { display: flex; flex-direction: column; gap: 10px; }
+.right-panel { display: flex; flex-direction: column; gap: 10px; }
+.left-panel .controls { margin-top: 0; margin-bottom: 0; flex: 1; }
+/* Stack mode buttons vertically in narrow left panel */
+.left-panel .button-row.mode-buttons { flex-direction: column; }
+/* Таблица измерений Боба должна выглядеть как парная карточка к панели управления —
+   тот же фон/рамка/паддинг, что и .controls, а не "голая" таблица без обвязки */
+.right-panel .key-section {
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 8px;
+padding: 15px;
+margin: 0;
+display: flex;
+flex-direction: column;
+flex: 1;
+min-height: 0;
+}
+.right-panel .char-table-container { flex: 1; min-height: 260px; max-height: 480px; }
+/* Bottom stage buttons */
+.bottom-buttons {
+display: flex;
+justify-content: center;
+gap: 12px;
+margin-top: 18px;
+flex-wrap: wrap;
+}
+.bottom-buttons .action-button { width: auto; min-width: 180px; max-width: 380px; }
+/* ====== SIFTING SUMMARY BAR (inside QBER stage) ====== */
+.sift-summary-bar {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+justify-content: center;
+margin-bottom: 16px;
+padding: 8px 12px;
+background: rgba(0, 10, 20, 0.4);
+border: 1px solid rgba(0, 162, 255, 0.15);
+border-radius: 8px;
+}
+.sift-pill {
+display: flex;
+align-items: center;
+gap: 5px;
+background: rgba(0, 10, 20, 0.6);
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 20px;
+padding: 4px 12px;
+font-size: 0.78rem;
+color: #8ab0c5;
+}
+.sift-pill-num {
+font-weight: bold;
+color: #00a2ff;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+font-size: 1rem;
+}
+.sift-pill.s-green { border-color: rgba(74, 222, 128, 0.35); }
+.sift-pill.s-green .sift-pill-num { color: #4ade80; }
+.sift-pill.s-gold  { border-color: rgba(230, 208, 0, 0.35); }
+.sift-pill.s-gold  .sift-pill-num { color: #e6d000; }
+.sift-pill.s-cyan  { border-color: rgba(0, 220, 255, 0.4); }
+.sift-pill.s-cyan  .sift-pill-num { color: #00dcff; }
+/* ====== STAGE 2: SIFTING TABLES (Alice / Bob / Sifted key) ====== */
+.char-table-container {
+width: 100%;
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 8px;
+background: rgba(0, 10, 20, 0.6);
+overflow-y: auto;
+max-height: 340px;
+}
+.char-table {
+width: 100%;
+border-collapse: collapse;
+font-family: monospace;
+font-size: 0.82rem;
+}
+.char-table th, .char-table td {
+padding: 6px 8px;
+text-align: center;
+border: 1px solid rgba(0, 162, 255, 0.15);
+}
+.char-table th {
+background: rgba(0, 20, 35, 0.9);
+color: #00a2ff;
+position: sticky;
+top: 0;
+z-index: 5;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+text-transform: uppercase;
+font-size: 0.72rem;
+letter-spacing: 0.4px;
+}
+.char-table tbody tr:hover { background: rgba(0, 162, 255, 0.08); }
+.char-table .empty-state-row td { color: #8ab0c5; font-style: italic; padding: 40px 12px; border: none; }
+/* Таблица Боба на этапе 1 — крупнее строки, чтобы не оставалось пустоты снизу панели */
+.right-panel .char-table th, .right-panel .char-table td { padding: 11px 10px; font-size: 0.9rem; }
+.char-table tr.row-pending { opacity: 0.35; }
+.char-table tr.row-match { background: rgba(74, 222, 128, 0.12); }
+.char-table tr.row-match td.sift-match, .char-table tr.row-match td.sift-bit { color: #4ade80; font-weight: bold; }
+.char-table tr.row-mismatch { background: rgba(255, 68, 68, 0.10); opacity: 0.65; }
+.char-table tr.row-mismatch td.sift-match { color: #ff4444; }
+.char-table tr.highlight { background: rgba(0, 162, 255, 0.25); box-shadow: inset 0 0 8px rgba(0, 162, 255, 0.5); }
+/* Биты просеянного ключа, отобранные на публичную проверку QBER */
+.char-table tr.sacrifice-marked { background: rgba(230, 208, 0, 0.14); border-left: 3px solid #e6d000; }
+.char-table tr.sacrifice-marked td.check-mark { color: #e6d000; font-weight: bold; }
+.char-table tr.new-row { animation: rowFadeIn 0.3s ease; }
+@keyframes rowFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.table-caption { font-size: 0.85rem; color: #8ab0c5; margin-bottom: 4px; font-weight: 600; }
+.table-subcaption { font-size: 0.78rem; color: #8ab0c5; margin-bottom: 8px; opacity: 0.85; }
+/* Строка "Сравнение базисов" — пульс в момент раскрытия */
+.char-table tr.row-revealing { animation: siftRowPulse 0.5s ease; }
+@keyframes siftRowPulse {
+0% { box-shadow: inset 0 0 0 0 rgba(0, 162, 255, 0.7); }
+50% { box-shadow: inset 0 0 18px 2px rgba(0, 162, 255, 0.6); }
+100% { box-shadow: inset 0 0 0 0 rgba(0, 162, 255, 0); }
+}
+.result-symbol { display: inline-block; font-size: 1.1rem; }
+.result-symbol.result-flash { animation: resultFlash 0.4s ease; }
+@keyframes resultFlash {
+0% { transform: scale(0.4); opacity: 0; }
+60% { transform: scale(1.4); opacity: 1; }
+100% { transform: scale(1); opacity: 1; }
+}
+.sifting-layout {
+display: flex;
+flex-direction: column;
+gap: 14px;
+margin-top: 20px;
+}
+.sifting-mode-buttons { margin-bottom: 16px; }
+/* Визуализация обмена по открытому (классическому) каналу на этапе просеивания */
+.public-channel-viz {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 18px;
+margin-bottom: 20px;
+}
+.public-channel-viz .mini-avatar {
+width: 44px;
+height: 44px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: bold;
+font-size: 1.05rem;
+border: 2px solid #0064ff;
+color: #0064ff;
+background: rgba(5, 20, 30, 0.8);
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+flex-shrink: 0;
+box-shadow: 0 0 8px rgba(0, 100, 255, 0.4);
+}
+.public-channel-viz .channel-mid { flex: 1; max-width: 420px; text-align: center; }
+.public-channel-viz .channel-label {
+font-size: 0.72rem;
+color: #8ab0c5;
+text-transform: uppercase;
+letter-spacing: 0.4px;
+font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+margin-bottom: 6px;
+}
+.public-channel-viz .channel-bar {
+height: 3px;
+background: rgba(0, 100, 255, 0.3);
+border: 1px solid #0064ff;
+border-radius: 2px;
+box-shadow: 0 0 10px rgba(0, 100, 255, 0.5);
+position: relative;
+overflow: visible;
+}
+/* ====== STAGE 4: FINAL KEY ====== */
+.key-stage-inner { max-width: 560px; margin: 0 auto; text-align: center; }
+.success-explanation {
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(0, 162, 255, 0.4);
+border-radius: 8px; padding: 15px; margin-top: 15px;
+border-left: 4px solid #00a2ff; font-size: 0.9rem; text-align: left;
+}
+.success-explanation p { margin-bottom: 6px; }
+.stage-nav {
+display: flex; justify-content: center; gap: 12px;
+margin-top: 20px; flex-wrap: wrap;
+}
+/* Responsive for stages */
+@media (max-width: 768px) {
+.stage1-layout { grid-template-columns: 1fr; margin-top: 45px; }
+.sifting-stats { grid-template-columns: repeat(2, 1fr); }
+.char-table-container { max-height: 260px; }
+.sifting-mode-buttons .button-row.mode-buttons { flex-direction: column; }
+}
+@media (max-width: 480px) {
+.sifting-stats { grid-template-columns: 1fr 1fr; }
+}
+/* ====== E91: источник в центре канала ====== */
+.source-icon {
+position: absolute;
+left: 50%;
+top: 50%;
+transform: translate(-50%, -50%);
+width: 34px;
+height: 34px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.1rem;
+background: rgba(5, 20, 30, 0.95);
+border: 2px solid #b388ff;
+box-shadow: 0 0 12px rgba(179, 136, 255, 0.6);
+z-index: 64;
+animation: sourcePulse 2s ease-in-out infinite;
+}
+@keyframes sourcePulse {
+0%, 100% { box-shadow: 0 0 8px rgba(179, 136, 255, 0.4); }
+50% { box-shadow: 0 0 18px rgba(179, 136, 255, 0.9); }
+}
+.quantum-channel .photon {
+background: linear-gradient(45deg, #b388ff, #5e35b1);
+color: #fff;
+font-size: 0.7rem;
+width: 20px;
+height: 20px;
+left: calc(50% - 10px);
+}
+.photon.to-alice { animation: e91ToAlice 1.2s linear forwards; }
+.photon.to-bob { animation: e91ToBob 1.2s linear forwards; }
+@keyframes e91ToAlice { 0% { left: calc(50% - 10px); } 100% { left: 3%; } }
+@keyframes e91ToBob { 0% { left: calc(50% - 10px); } 100% { left: calc(97% - 20px); } }
+.quantum-channel .eve-icon { left: 75%; }
+#aliceBasis { left: 14%; }
+#bobBasis { right: 14%; }
+/* ====== выбор углов ====== */
+.angle-group-title { font-size: 0.78rem; color: #8ab0c5; margin: 4px 0 6px; font-weight: 600; }
+.angle-options { display: flex; gap: 8px; margin-bottom: 10px; }
+.angle-option {
+flex: 1;
+padding: 6px 4px;
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 5px;
+text-align: center;
+cursor: pointer;
+transition: all 0.2s;
+}
+.angle-option .angle-arrow { display: inline-block; font-family: monospace; font-size: 1.1rem; font-weight: bold; line-height: 1; }
+.angle-option .angle-label { font-size: 0.72rem; color: #c5d5e0; }
+.angle-option:hover { box-shadow: 0 0 8px rgba(0, 162, 255, 0.4); }
+.angle-option.selected { border-color: currentColor; box-shadow: 0 0 8px currentColor; }
+.ang-0 { color: #00ff80; }
+.ang-22 { color: #00dcff; }
+.ang-45 { color: #e6d000; }
+.ang-67 { color: #ffa500; }
+/* ====== Ева ====== */
+.eve-control {
+background: rgba(255, 68, 68, 0.06);
+border: 1px solid rgba(255, 68, 68, 0.3);
+border-radius: 6px;
+padding: 8px 10px;
+margin-bottom: 12px;
+}
+.eve-control-head { font-size: 0.8rem; color: #ff8a8a; margin-bottom: 6px; font-weight: 600; }
+.eve-options { display: flex; gap: 6px; }
+.eve-option {
+flex: 1;
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(255, 68, 68, 0.3);
+color: #c5d5e0;
+border-radius: 4px;
+padding: 5px 0;
+cursor: pointer;
+font-size: 0.8rem;
+transition: all 0.2s;
+}
+.eve-option:hover { border-color: #ff4444; }
+.eve-option.selected { border-color: #ff4444; color: #ff4444; background: rgba(255, 68, 68, 0.15); box-shadow: 0 0 8px rgba(255, 68, 68, 0.5); }
+.eve-hint { font-size: 0.7rem; color: #8ab0c5; margin-top: 6px; line-height: 1.4; }
+/* ====== прогресс сбора статистики ====== */
+.progress-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 8px; }
+.progress-item { background: rgba(0, 10, 20, 0.6); border: 1px solid rgba(0, 162, 255, 0.2); border-radius: 5px; padding: 5px 8px; font-size: 0.75rem; color: #8ab0c5; }
+.progress-item .progress-bar { height: 4px; background: rgba(0, 50, 80, 0.6); border-radius: 2px; margin-top: 4px; overflow: hidden; }
+.progress-item .progress-fill { height: 100%; background: #00a2ff; transition: width 0.2s; }
+.progress-item.done { border-color: rgba(74, 222, 128, 0.5); }
+.progress-item.done .progress-fill { background: #4ade80; }
+.progress-item.key-progress { grid-column: 1 / -1; }
+.char-table tbody tr.clickable { cursor: pointer; }
+.char-table tr.intercepted-row td:first-child { box-shadow: inset 3px 0 0 #ff4444; }
+.cat-key { color: #4ade80; font-weight: bold; }
+.cat-bell { color: #b388ff; font-weight: bold; }
+.cat-discard { color: #8ab0c5; }
+.char-table tr.row-bell { background: rgba(179, 136, 255, 0.10); }
+/* ====== этап 3: CHSH ====== */
+.bell-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0; }
+.bell-card { background: rgba(179, 136, 255, 0.07); border: 1px solid rgba(179, 136, 255, 0.35); border-radius: 8px; padding: 10px; text-align: center; font-size: 0.78rem; color: #8ab0c5; }
+.bell-card .bell-angles { font-weight: bold; color: #c5d5e0; margin-bottom: 4px; font-size: 0.85rem; }
+.bell-card .bell-e { font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; font-size: 1.5rem; color: #b388ff; margin: 4px 0; }
+.bell-card .bell-theory { font-size: 0.7rem; opacity: 0.8; }
+.bell-formula { text-align: center; font-family: monospace; font-size: 0.9rem; background: rgba(0, 10, 20, 0.6); border: 1px solid rgba(0, 162, 255, 0.2); border-radius: 6px; padding: 10px; margin: 10px 0; overflow-x: auto; white-space: nowrap; }
+.bell-formula strong { color: #b388ff; font-size: 1.05rem; }
+.s-gauge-wrap { margin: 26px 8px 34px; }
+.s-gauge {
+position: relative;
+height: 16px;
+border-radius: 8px;
+background: linear-gradient(90deg, rgba(255, 68, 68, 0.35) 0%, rgba(255, 68, 68, 0.35) 66.67%, rgba(230, 208, 0, 0.35) 66.67%, rgba(230, 208, 0, 0.35) 80%, rgba(74, 222, 128, 0.35) 80%, rgba(74, 222, 128, 0.35) 100%);
+border: 1px solid rgba(0, 162, 255, 0.3);
+}
+.s-mark { position: absolute; top: -6px; bottom: -6px; width: 2px; background: #c5d5e0; }
+.s-mark-label { position: absolute; top: 22px; transform: translateX(-50%); font-size: 0.68rem; color: #8ab0c5; white-space: nowrap; }
+.s-err { position: absolute; top: 5px; height: 6px; background: rgba(255, 255, 255, 0.35); border-radius: 3px; }
+.s-needle { position: absolute; top: -9px; width: 4px; height: 34px; margin-left: -2px; background: #b388ff; border-radius: 2px; box-shadow: 0 0 10px #b388ff; transition: left 0.8s ease; }
+.s-needle-label { position: absolute; top: -28px; transform: translateX(-50%); font-weight: bold; color: #b388ff; font-size: 0.85rem; white-space: nowrap; }
+/* ====== этап 4 ====== */
+.key-table-wrap { margin: 14px 0; }
+.char-table td.inv { color: #00dcff; font-weight: bold; }
+.char-table td.err { color: #e6d000; font-weight: bold; }
+.pa-heading { color: #00a2ff; font-size: 0.95rem; margin-bottom: 8px; font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; text-transform: uppercase; }
+.pa-rows { font-family: monospace; font-size: 0.78rem; background: rgba(0, 10, 20, 0.6); border: 1px solid rgba(0, 162, 255, 0.2); border-radius: 6px; padding: 8px 10px; margin-top: 8px; overflow-x: auto; }
+.pa-row { white-space: nowrap; padding: 2px 0; color: #8ab0c5; }
+.pa-row strong, .history-item strong { color: #4ade80; }
+.keyhist-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.keyhist-link { background: rgba(0, 10, 20, 0.7); border: 1px solid rgba(0, 162, 255, 0.4); color: #00a2ff; border-radius: 4px; padding: 3px 8px; cursor: pointer; font-family: monospace; font-size: 0.8rem; }
+.keyhist-link.err { border-color: rgba(230, 208, 0, 0.6); color: #e6d000; }
+.eave-verdict.warning { background: rgba(230, 208, 0, 0.08); border: 1px solid rgba(230, 208, 0, 0.5); color: #e6d000; }
+/* ====== разминка ====== */
+.warmup { background: rgba(179, 136, 255, 0.06); border: 1px solid rgba(179, 136, 255, 0.35); border-radius: 6px; padding: 10px; margin-bottom: 12px; }
+.warmup-title { font-size: 0.85rem; color: #b388ff; font-weight: 600; margin-bottom: 4px; }
+.warmup-hint { font-size: 0.75rem; color: #8ab0c5; margin-bottom: 8px; line-height: 1.4; }
+.warmup-buttons { display: flex; gap: 6px; }
+.warmup-btn { flex: 1; background: rgba(0, 10, 20, 0.7); border: 1px solid rgba(179, 136, 255, 0.4); color: #c5d5e0; border-radius: 4px; padding: 6px 0; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+.warmup-btn:hover { border-color: #b388ff; box-shadow: 0 0 8px rgba(179, 136, 255, 0.5); }
+.warmup-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.78rem; }
+.warmup-table th, .warmup-table td { padding: 4px 6px; border-bottom: 1px solid rgba(0, 162, 255, 0.15); text-align: center; }
+.warmup-table th { color: #8ab0c5; font-weight: normal; font-size: 0.72rem; }
+.warmup-table .opp-bar { display: inline-block; height: 6px; background: #b388ff; border-radius: 3px; vertical-align: middle; margin-right: 6px; }
+.warmup-done { font-size: 0.78rem; color: #4ade80; margin-top: 8px; line-height: 1.4; }
+.source-button { margin-bottom: 4px; }
+.source-button.active-mode { border-color: #4ade80 !important; box-shadow: 0 0 8px rgba(74, 222, 128, 0.7) !important; }
+/* ====== этап 3: игра Белла ====== */
+.bell-card .bell-rule { font-size: 0.72rem; color: #c5d5e0; margin-bottom: 4px; }
+.bell-card .bell-win { font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; font-size: 1.6rem; color: #b388ff; margin: 2px 0; }
+.win-gauge { background: linear-gradient(90deg, rgba(255, 68, 68, 0.35) 0%, rgba(255, 68, 68, 0.35) 50%, rgba(74, 222, 128, 0.35) 50%, rgba(74, 222, 128, 0.35) 100%); }
+.nerd-details { margin-top: 14px; background: rgba(0, 10, 20, 0.5); border: 1px solid rgba(0, 162, 255, 0.2); border-radius: 6px; padding: 8px 12px; font-size: 0.85rem; }
+.nerd-details summary { cursor: pointer; color: #00a2ff; font-weight: 600; }
+.nerd-details p { margin: 8px 0; color: #8ab0c5; }
+@media (max-width: 768px) {
+.bell-grid { grid-template-columns: repeat(2, 1fr); }
+.s-gauge-wrap { margin-bottom: 52px; }
+.s-mark-label.s-mark-q { top: 40px; }
+#aliceBasis { left: 6%; }
+#bobBasis { right: 6%; }
+}
+/* Итоговый ключ на узких экранах: ячейки тянутся по колонкам сетки, а не 38px фиксированно */
+@media (max-width: 768px) {
+.final-key-grid { grid-template-columns: repeat(8, minmax(0, 36px)); justify-content: center; width: 100%; }
+.final-key-grid .key-bit.active { width: 100%; height: 36px; }
 }
 </style>
 </head>
@@ -1248,1316 +1886,1444 @@ align-items: center;
 <div class="header-decoration"></div>
 <p class="subtitle" data-i18n="game.subtitle">Ludus Lab · Сложные вещи — простыми играми</p>
 </header>
+
+<!-- ══════════════════════════════════════════════════════
+     ЗАСТАВКА
+     ══════════════════════════════════════════════════════ -->
+<div class="welcome-screen" id="welcomeScreen">
+  <h2 data-i18n="welcome.heading">Добро пожаловать в игру «Квантовый ключ: E91»</h2>
+  <p data-i18n="welcome.p1"></p>
+  <p data-i18n="welcome.p2"></p>
+  <ul class="welcome-stages-list">
+    <li><strong data-i18n="welcome.stage1.title"></strong> — <span data-i18n="welcome.stage1.desc"></span></li>
+    <li><strong data-i18n="welcome.stage2.title"></strong> — <span data-i18n="welcome.stage2.desc"></span></li>
+    <li><strong data-i18n="welcome.stage3.title"></strong> — <span data-i18n="welcome.stage3.desc"></span></li>
+    <li><strong data-i18n="welcome.stage4.title"></strong> — <span data-i18n="welcome.stage4.desc"></span></li>
+  </ul>
+  <button class="action-button" id="startGameBtn"><span data-i18n="welcome.start">Начать игру</span></button>
+</div>
+
+<div id="mainGameArea" class="hidden">
+
 <div class="protocol-container">
 <div class="protocol-header" id="protocolHeader">
 <h2><span data-i18n="protocol.toggle">Описание протокола E91</span> <span class="toggle-icon">+</span></h2>
 </div>
 <div class="protocol-description" id="protocolContent">
-<p data-i18n="protocol.intro">Протокол E91 (Экерта-91) — это алгоритм квантового распределения ключей, предложенный Артуром Экертом в 1991 году. В отличие от BB84, он использует запутанные состояния частиц.</p>
+<p data-i18n="protocol.intro"></p>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">Генерация запутанных пар</span></div>
-<p data-i18n="protocol.step1.desc">Источник создает пары запутанных фотонов в состоянии Белла |Φ⁺⟩ = (|00⟩ + |11⟩)/√2 и отправляет один фотон Алисе, а другой — Бобу.</p>
-<p data-i18n="protocol.step1.game">В игре: Источник генерирует запутанные пары, которые отправляются Алисе и Бобу.</p>
-</div>
-<div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">Измерение запутанных фотонов</span></div>
-<p data-i18n="protocol.step2.desc">Алиса и Боб независимо и случайно выбирают базисы для измерения своих фотонов. В E91 используются три базиса с углами 0°, 45° и 90°.</p>
-<p data-i18n="protocol.step2.game">В игре: Алиса и Боб выбирают базисы измерения из трех вариантов.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title"></span></div>
+<p data-i18n="protocol.step1.desc"></p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">Квантовая корреляция</span></div>
-<p data-i18n="protocol.step3.desc">Из-за квантовой запутанности, результаты измерений Алисы и Боба коррелируют, даже если они находятся далеко друг от друга.</p>
-<p data-i18n="protocol.step3.game">В игре: Когда базисы совпадают, результаты измерений Алисы и Боба всегда противоположны (антикоррелированы).</p>
+<div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title"></span></div>
+<p data-i18n="protocol.step2.desc"></p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">Обмен базисами по классическому каналу</span></div>
-<p data-i18n="protocol.step4.desc">После измерения всех фотонов Алиса и Боб по классическому каналу сообщают друг другу, какие базисы они использовали для каждого измерения.</p>
-<p data-i18n="protocol.step4.game">В игре: При нажатии "Просеять ключ" активируется классический каналу для обмена информацией о базисах.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title"></span></div>
+<p data-i18n="protocol.step3.desc"></p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">Просеивание ключа</span></div>
-<p data-i18n="protocol.step5.desc">Алиса и Боб сохраняют только те биты, для которых базисы совпали. Остальные биты отбрасываются.</p>
-<p data-i18n="protocol.step5.game">В игре: Создается сырой ключ из совпадающих измерений.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title"></span></div>
+<p data-i18n="protocol.step4.desc"></p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">Проверка на подслушивание через неравенства Белла</span></div>
-<p data-i18n="protocol.step6.desc">Алиса и Боб используют часть ключа для проверки нарушения неравенств Белла. Если Ева подслушивала, корреляции нарушаются, и это обнаруживается.</p>
-<p data-i18n="protocol.step6.game">В игре: Перехваченные Евой биты отмечаются и исключаются из финального ключа.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title"></span></div>
+<p data-i18n="protocol.step5.desc"></p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">7</span> <span data-i18n="protocol.step7.title">Формирование секретного ключа</span></div>
-<p data-i18n="protocol.step7.desc">Если проверка Белла пройдена успешно, оставшиеся биты образуют секретный ключ.</p>
-<p data-i18n="protocol.step7.game">В игре: Формируется финальный 8-битный ключ из неперехваченных совпадающих битов.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title"></span></div>
+<p data-i18n="protocol.step6.desc"></p>
 </div>
-<p data-i18n="protocol.security"><strong>Безопасность протокола:</strong> Безопасность E91 основана на нарушении неравенств Белла — любые попытки измерить запутанные состояния разрушают их, что позволяет обнаружить подслушивание.</p>
+<div class="protocol-step">
+<div class="protocol-step-title"><span class="protocol-step-number">7</span> <span data-i18n="protocol.step7.title"></span></div>
+<p data-i18n="protocol.step7.desc"></p>
+</div>
+<p data-i18n="protocol.security"></p>
 </div>
 </div>
+
 <div class="game-area">
-<div class="quantum-setup">
-<div class="character alice">
-<div class="character-icon">A</div>
-<div class="character-name" data-i18n="char.alice">Алиса</div>
-<div class="character-status" id="aliceStatus">
-<div class="status-line-1">Применила базис: A1</div>
-<div class="status-line-2">Результат измерения: -</div>
+
+<div class="stage-indicator">
+  <div class="stage-dot active" id="stageDot1"></div>
+  <div class="stage-dot" id="stageDot2"></div>
+  <div class="stage-dot" id="stageDot3"></div>
+  <div class="stage-dot" id="stageDot4"></div>
 </div>
+<p class="stage-name" id="stageNameText">1 / 4</p>
+
+<!-- ══════════════════════════════════════════════════════
+     ЭТАП 1 — ИСТОЧНИК И ИЗМЕРЕНИЯ
+     ══════════════════════════════════════════════════════ -->
+<div id="stage1" class="stage-content">
+  <div class="stage-intro" id="stageIntro1">
+    <h3 data-i18n="stageintro.1.title"></h3>
+    <p data-i18n="stageintro.1.desc"></p>
+    <button class="action-button" id="stageIntro1Btn"><span data-i18n="stageintro.1.btn"></span></button>
+  </div>
+
+  <div class="stage-body hidden" id="stageBody1">
+  <div class="quantum-setup">
+    <div class="character alice">
+      <div class="character-icon">A</div>
+      <div class="character-name" data-i18n="char.alice">Алиса</div>
+      <div class="character-status" id="aliceStatus"></div>
+    </div>
+    <div class="channels-container">
+      <div class="quantum-channel active" id="quantumChannel">
+        <div class="basis-indicator" id="aliceBasis"></div>
+        <div class="source-icon" id="sourceIcon">⚛</div>
+        <div class="basis-indicator" id="bobBasis"></div>
+        <div class="eve-icon" id="eveIcon">👁️‍🗨️</div>
+      </div>
+      <div class="classical-channel inactive" id="classicalChannel"></div>
+    </div>
+    <div class="character bob">
+      <div class="character-icon">B</div>
+      <div class="character-name" data-i18n="char.bob">Боб</div>
+      <div class="character-status" id="bobStatus"></div>
+    </div>
+  </div>
+
+  <div class="stage1-layout">
+    <div class="left-panel">
+      <div class="controls">
+        <h2 class="section-title" data-i18n="controls.heading">Панель управления</h2>
+        <div class="warmup">
+          <div class="warmup-title" data-i18n="warmup.title">🔬 Разминка</div>
+          <div class="warmup-hint" data-i18n="warmup.hint"></div>
+          <div class="warmup-buttons" id="warmupButtons"></div>
+          <div id="warmupResults"></div>
+        </div>
+        <div class="eve-control">
+          <div class="eve-control-head" data-i18n="eve.title"></div>
+          <div class="eve-options">
+            <button class="eve-option" data-eve="off" data-i18n="eve.off">Нет</button>
+            <button class="eve-option" data-eve="random" data-i18n="eve.random">Случайно</button>
+            <button class="eve-option" data-eve="full" data-i18n="eve.full">100%</button>
+          </div>
+          <div class="eve-hint" data-i18n="eve.hint"></div>
+        </div>
+        <button class="action-button source-button" id="autoModeBtn">
+          <div><div id="sourceBtnLabel"></div><div class="mode-description" data-i18n="source.desc"></div></div>
+        </button>
+        <div class="game-stats">
+          <div class="stat-box">
+            <div class="stat-label" data-i18n="stat.pairs">Пар измерено</div>
+            <div class="stat-value" id="pairCount">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label" data-i18n="stat.win">Побед в игре Белла (режим Бога)</div>
+            <div class="stat-value" id="liveS">—</div>
+            <div class="stat-sub" data-i18n="stat.win.sub"></div>
+          </div>
+        </div>
+        <div class="angle-group-title" data-i18n="progress.title">Сколько данных собрано</div>
+        <div class="progress-grid" id="progressGrid"></div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="key-section" style="margin-top:0;">
+        <h2 class="section-title" data-i18n="table1.heading">Журнал измерений</h2>
+        <p class="table-subcaption" id="logCaption"></p>
+        <div class="char-table-container">
+          <table class="char-table">
+            <thead><tr>
+              <th data-i18n="table.num">#</th>
+              <th data-i18n="table.aliceAngle">Угол A</th>
+              <th data-i18n="table.aliceBit">Бит A</th>
+              <th data-i18n="table.bobAngle">Угол B</th>
+              <th data-i18n="table.bobBit">Бит B</th>
+            </tr></thead>
+            <tbody id="measureTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explanation" id="explanation"></div>
+
+  <div class="bottom-buttons">
+    <button class="action-button" id="toSiftBtn" disabled><span data-i18n="btn.toSift">Сравнить углы</span></button>
+  </div>
+  </div>
 </div>
-<div class="channels-container">
-<div class="quantum-channel active" id="quantumChannel">
-<div class="entangled-photons" id="entangledPhotons">⚛️</div>
-<div class="basis-indicator" id="aliceBasis" data-i18n="char.alice">Алиса</div>
-<div class="basis-indicator" id="bobBasis" data-i18n="char.bob">Боб</div>
-<div class="eve-icon" id="eveIcon">👁️‍🗨️</div>
+
+<!-- ══════════════════════════════════════════════════════
+     ЭТАП 2 — ОБЪЯВЛЕНИЕ УГЛОВ
+     ══════════════════════════════════════════════════════ -->
+<div id="stage2" class="stage-content hidden">
+  <div class="stage-intro" id="stageIntro2">
+    <h3 data-i18n="stageintro.2.title"></h3>
+    <p data-i18n="stageintro.2.desc"></p>
+    <button class="action-button" id="stageIntro2Btn"><span data-i18n="stageintro.2.btn"></span></button>
+  </div>
+
+  <div class="stage-body hidden" id="stageBody2">
+  <div class="public-channel-viz">
+    <div class="mini-avatar">A</div>
+    <div class="channel-mid">
+      <div class="channel-label" data-i18n="sift.channel">Объявление углов по открытому каналу</div>
+      <div class="channel-bar" id="siftChannelBar"></div>
+    </div>
+    <div class="mini-avatar">B</div>
+  </div>
+
+  <div class="sifting-mode-buttons action-buttons">
+    <div class="button-row mode-buttons">
+      <button class="action-button" id="siftManualBtn">
+        <div><div data-i18n="siftmode.manual.title"></div><div class="mode-description" data-i18n="siftmode.manual.desc"></div></div>
+      </button>
+      <button class="action-button" id="siftAutoBtn">
+        <div><div data-i18n="siftmode.auto.title"></div><div class="mode-description" data-i18n="siftmode.auto.desc"></div></div>
+      </button>
+    </div>
+  </div>
+
+  <div class="sift-summary-bar">
+    <div class="sift-pill"><span class="sift-pill-num" id="pillRevealed">0</span> <span data-i18n="pill.revealed">раскрыто</span></div>
+    <div class="sift-pill s-green"><span class="sift-pill-num" id="pillKey">0</span> <span data-i18n="pill.key">в ключ</span></div>
+    <div class="sift-pill s-gold"><span class="sift-pill-num" id="pillBell">0</span> <span data-i18n="pill.bell">тест Белла</span></div>
+    <div class="sift-pill"><span class="sift-pill-num" id="pillDiscard">0</span> <span data-i18n="pill.discard">отброшено</span></div>
+  </div>
+
+  <p class="table-subcaption" data-i18n="sift.rule"></p>
+  <div class="char-table-container">
+    <table class="char-table">
+      <thead><tr>
+        <th data-i18n="table.num">#</th>
+        <th data-i18n="table.aliceAngle">Угол A</th>
+        <th data-i18n="table.bobAngle">Угол B</th>
+        <th data-i18n="table.category">Назначение</th>
+      </tr></thead>
+      <tbody id="siftTableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="bottom-buttons">
+    <button class="action-button" id="toBellBtn" disabled><span data-i18n="btn.toBell">Перейти к проверке Белла</span></button>
+  </div>
+  </div>
 </div>
-<div class="classical-channel inactive" id="classicalChannel">
-<!-- Пакеты данных будут добавляться динамически -->
+
+<!-- ══════════════════════════════════════════════════════
+     ЭТАП 3 — ПРОВЕРКА НЕРАВЕНСТВА БЕЛЛА (CHSH)
+     ══════════════════════════════════════════════════════ -->
+<div id="stage3" class="stage-content hidden">
+  <div class="stage-intro" id="stageIntro3">
+    <h3 data-i18n="stageintro.3.title"></h3>
+    <p data-i18n="stageintro.3.desc"></p>
+    <button class="action-button" id="stageIntro3Btn"><span data-i18n="stageintro.3.btn"></span></button>
+  </div>
+
+  <div class="stage-body hidden" id="stageBody3">
+  <div class="eave-check-section">
+    <h2 class="section-title" data-i18n="bell.heading">Проверка Белла</h2>
+    <p data-i18n="bell.desc"></p>
+    <div class="bell-grid" id="bellGrid"></div>
+    <div class="s-gauge-wrap">
+      <div class="s-gauge win-gauge" id="sGauge"></div>
+    </div>
+    <div class="eave-qber-row" id="bellBoxes"></div>
+    <div id="bellVerdict" class="eave-verdict"></div>
+    <details class="nerd-details">
+      <summary data-i18n="nerd.summary">🔬 Для любопытных: как это считают физики</summary>
+      <p data-i18n="nerd.p1"></p>
+      <div class="bell-formula" id="bellFormula"></div>
+      <p data-i18n="nerd.p2"></p>
+      <div class="bell-formula" id="bellRate"></div>
+    </details>
+  </div>
+  <div class="bottom-buttons">
+    <button id="bellConfirmBtn" class="action-button" style="display:none;"><span data-i18n="bell.confirm">✅ Перейти к формированию ключа</span></button>
+    <button id="bellResetBtn" class="action-button" style="display:none;"><span data-i18n="bell.reset">🔄 Начать заново</span></button>
+  </div>
+  </div>
 </div>
+
+<!-- ══════════════════════════════════════════════════════
+     ЭТАП 4 — СЕКРЕТНЫЙ КЛЮЧ
+     ══════════════════════════════════════════════════════ -->
+<div id="stage4" class="stage-content hidden">
+  <div class="stage-intro" id="stageIntro4">
+    <h3 data-i18n="stageintro.4.title"></h3>
+    <p data-i18n="stageintro.4.desc"></p>
+    <button class="action-button" id="stageIntro4Btn"><span data-i18n="stageintro.4.btn"></span></button>
+  </div>
+
+  <div class="stage-body hidden" id="stageBody4">
+  <div class="key-table-wrap">
+    <div class="table-caption" data-i18n="keytable.heading">Пары с одинаковыми углами</div>
+    <p class="table-subcaption" data-i18n="keytable.desc"></p>
+    <div class="char-table-container">
+      <table class="char-table">
+        <thead><tr>
+          <th data-i18n="table.num">#</th>
+          <th data-i18n="table.angle">Угол</th>
+          <th data-i18n="table.aliceBit">Бит A</th>
+          <th data-i18n="table.bobBit">Бит B</th>
+          <th data-i18n="table.bobInv">Боб инвертирует</th>
+          <th data-i18n="table.check">Совпадает?</th>
+        </tr></thead>
+        <tbody id="keyTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="success-explanation" id="paExplanation" style="text-align:left;"></div>
+  <div class="key-stage-inner" style="margin-top:18px;">
+    <div id="finalKeySection">
+      <h2 class="section-title" data-i18n="finalkey.heading">🔐 Квантовый ключ</h2>
+      <p data-i18n="finalkey.desc"></p>
+      <div class="key-grid final-key-grid" id="finalKeyGrid"></div>
+      <div class="key-actions">
+        <button class="action-button" id="copyKeyBtn"><span data-i18n="btn.copy">Скопировать ключ</span></button>
+        <button class="action-button" id="newKeyBtn"><span data-i18n="btn.newkey">Новый ключ</span></button>
+      </div>
+      <div id="keyCopiedNotification" data-i18n="notif.copied">Ключ скопирован!</div>
+    </div>
+    <div class="success-explanation" id="successExplanation"></div>
+  </div>
+  </div>
 </div>
-<div class="character bob">
-<div class="character-icon">B</div>
-<div class="character-name" data-i18n="char.bob">Боб</div>
-<div class="character-status" id="bobStatus">
-<div class="status-line-1">Применил базис: B1</div>
-<div class="status-line-2">Результат измерения: -</div>
+
+<div class="bit-history" id="bitHistory" style="margin-top:12px;"></div>
+
+<div class="disclaimer" style="margin-top:18px;">
+  <p data-i18n="disclaimer.text"></p>
 </div>
+
+<div class="stage-nav">
+  <a href="https://ludus-lab.ru/theory/e91.html" class="nav-link secondary">
+    <svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 6.2C10.2 4.8 7.8 4 5 4v13c2.8 0 5.2.8 7 2.2 1.8-1.4 4.2-2.2 7-2.2V4c-2.8 0-5.2.8-7 2.2z"/></svg> <span data-i18n="nav.theory">Прочитать теорию</span>
+  </a>
+  <a href="https://ludus-lab.ru/" class="nav-link primary">
+    <svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 3.2 3 11h3v9h5v-6h2v6h5v-9h3z"/></svg> <span data-i18n="nav.home">Вернуться в лабораторию</span>
+  </a>
 </div>
-</div>
-<div class="controls">
-<h2 class="section-title" data-i18n="controls.title">Панель управления</h2>
-<div class="basis-controls-container">
-<div class="basis-controls">
-<div class="basis-controls-title" data-i18n="basis.aliceTitle">Базисы Алисы</div>
-<div class="basis-options">
-<div class="basis-option selected" data-basis="a1" data-angle="0">
-<div class="basis-symbol">|</div>
-<div class="basis-label">A1</div>
-<div class="basis-angle">0°</div>
-</div>
-<div class="basis-option" data-basis="a2" data-angle="45">
-<div class="basis-symbol">/</div>
-<div class="basis-label">A2</div>
-<div class="basis-angle">45°</div>
-</div>
-<div class="basis-option" data-basis="a3" data-angle="90">
-<div class="basis-symbol">—</div>
-<div class="basis-label">A3</div>
-<div class="basis-angle">90°</div>
-</div>
-</div>
-</div>
-<div class="basis-controls">
-<div class="basis-controls-title" data-i18n="basis.bobTitle">Базисы Боба</div>
-<div class="basis-options">
-<div class="basis-option selected" data-basis="b1" data-angle="0">
-<div class="basis-symbol">|</div>
-<div class="basis-label">B1</div>
-<div class="basis-angle">0°</div>
-</div>
-<div class="basis-option" data-basis="b2" data-angle="45">
-<div class="basis-symbol">/</div>
-<div class="basis-label">B2</div>
-<div class="basis-angle">45°</div>
-</div>
-<div class="basis-option" data-basis="b3" data-angle="90">
-<div class="basis-symbol">—</div>
-<div class="basis-label">B3</div>
-<div class="basis-angle">90°</div>
-</div>
-</div>
-</div>
-</div>
-<div class="action-buttons">
-<!-- Верхний ряд: три кнопки режимов -->
-<div class="button-row mode-buttons">
-<button class="action-button" id="manualModeBtn" style="flex: 1;">
-<div>
-<div data-i18n="mode.manual">Ручной режим</div>
-<div class="mode-description" data-i18n="mode.manual.desc">Отправит одну запутанную пару</div>
-</div>
-</button>
-<button class="action-button" id="semiAutoBtn" style="flex: 1;">
-<div>
-<div data-i18n="mode.semiAuto">Полуавтоматический режим</div>
-<div class="mode-description" data-i18n="mode.semiAuto.desc">Пары отправляются автоматически, базисы выбираются вручную</div>
-</div>
-</button>
-<button class="action-button" id="autoModeBtn" style="flex: 1;">
-<div>
-<div data-i18n="mode.auto">Автоматический режим</div>
-<div class="mode-description" data-i18n="mode.auto.desc">Пары отправляются автоматически, базисы выбираются автоматически</div>
-</div>
-</button>
-</div>
-<!-- Нижний ряд: кнопка Просеять ключ -->
-<div class="button-row">
-<button class="action-button" id="siftKey" disabled style="flex: 1;" data-i18n="btn.sift">
-Просеять ключ
-</button>
-</div>
-</div>
-<div class="alert-container">
-<div class="eve-alert" id="eveAlert" data-i18n="alert.eve">
-⚠️ Ева перехватила запутанную пару! Это может повлиять на конечный ключ.
-</div>
-<div class="sift-notification" id="siftNotification" data-i18n="notification.sift">
-✅ Достаточно данных для просеивания ключа!
-</div>
-</div>
-</div>
-<div class="key-section">
-<h2 class="section-title" data-i18n="rawKey.title">Сырой ключ</h2>
-<p><span data-i18n="rawKey.collected">Собрано</span> <span id="rawKeyCount">0</span> <span data-i18n="rawKey.pairs">запутанных пар</span></p>
-<div class="key-scroll-container">
-<div class="key-grid" id="rawKeyGrid">
-<!-- Сырой ключ будет здесь -->
-</div>
-</div>
-<div class="bit-history-info" id="bitHistoryInfo" data-i18n="bitHistory.hint">
-Нажмите на любую пару в сыром ключе, чтобы посмотреть её историю
-</div>
-<div class="game-stats">
-<div class="stat-box">
-<div class="stat-label" data-i18n="stat.matches">Совпадений</div>
-<div class="stat-value" id="matchCount">0</div>
-</div>
-<div class="stat-box">
-<div class="stat-label" data-i18n="stat.intercepts">Перехватов</div>
-<div class="stat-value" id="interceptCount">0</div>
-</div>
-</div>
-<div class="bit-history" id="bitHistory"></div>
-</div>
-<div class="key-section">
-<div id="siftKeyNotification" class="notification">
-<p data-i18n="notification.sift">✅ Достаточно данных для просеивания ключа!</p>
-</div>
-<div id="finalKeySection">
-<h2 class="section-title" data-i18n="finalKey.title">Квантовый ключ</h2>
-<p data-i18n="finalKey.desc">Секретный ключ сформирован из совпадающих измерений</p>
-<div class="key-grid final-key-grid" id="finalKeyGrid">
-<!-- Финальный ключ будет здесь -->
-</div>
-</div>
-<button class="action-button" id="newKeyBtn">
-<i class="fas fa-redo"></i> <span data-i18n="btn.newKey">Сгенерировать новый ключ</span>
-</button>
-</div>
-<!-- Дисклеймер о QBER -->
-<div class="disclaimer">
-<p data-i18n="disclaimer.text"><strong>Примечание:</strong> В реальном протоколе E91 вмешательство Евы (Eve) контролируется параметром QBER (Quantum Bit Error Rate). При превышении критического значения QBER вся сессия распределения ключа сбрасывается. В данной симуляции для упрощения мы просто отмечаем перехваченные Евой пары и исключаем их из финального ключа.</p>
-</div>
-<div class="explanation" id="explanation">
-<p>Выберите базисы для Алисы и Боба и отправьте запутанную пару. Когда вы отправите достаточно пар, нажмите "Просеять ключ", чтобы создать секретный ключ из совпадающих измерений.</p>
-</div>
-</div>
-<!-- Навигационные ссылки -->
-<div class="navigation-links">
-<a href="https://ludus-lab.ru/theory/e91.html" class="nav-link secondary">
-<i class="fas fa-book-open"></i> <span data-i18n="nav.theory">Прочитать теорию</span>
-</a>
-<a href="https://ludus-lab.ru/" class="nav-link primary">
-<i class="fas fa-home"></i> <span data-i18n="nav.home">Вернуться в лабораторию</span>
-</a>
-</div>
+
+</div><!-- /game-area -->
+</div><!-- /mainGameArea -->
 </div>
 <script>
-// Константы игры
+document.addEventListener('DOMContentLoaded', function() {
+
+// ══════════════════════════════════════════════════════
+//  ФИЗИКА
+// ══════════════════════════════════════════════════════
+// Углы поляризаторов (в градусах от вертикали). Схема Экерта для фотонов:
+// у Алисы 0°, 22.5°, 45°, у Боба 22.5°, 45°, 67.5°.
+const ANGLES = { a1: 0, a2: 22.5, a3: 45, b1: 22.5, b2: 45, b3: 67.5 };
+const ALICE_SETTINGS = ['a1', 'a2', 'a3'];
+const BOB_SETTINGS = ['b1', 'b2', 'b3'];
+// Четыре комбинации для CHSH: S = E(a1,b1) − E(a1,b3) + E(a3,b1) + E(a3,b3)
+const BELL_PAIRS = [
+    { a: 'a1', b: 'b1', sign: +1 },
+    { a: 'a1', b: 'b3', sign: -1 },
+    { a: 'a3', b: 'b1', sign: +1 },
+    { a: 'a3', b: 'b3', sign: +1 },
+];
+const NOISE_RATE = 0.02;        // шум канала: бит Боба переворачивается сам по себе
 const FINAL_KEY_LENGTH = 8;
-const MIN_MATCHES_FOR_SIFTING = 8;
-const EVE_INTERCEPT_PROBABILITY = 0.2; // Вероятность перехвата Евы (20%)
-// Состояние игры
-let gameState = {
-selectedAliceBasis: 'a1',
-selectedBobBasis: 'b1',
-rawKey: [],
-eveIntercepts: 0,
-matchingIndices: [],
-semiAutoInterval: null,
-autoInterval: null,
-isSemiAutoActive: false,
-isAutoActive: false,
-siftKeyPressed: false,
-lastSiftNotificationCount: -1,
-interceptTimeout: null,
-interceptHideTimeout: null,
-classicalChannelInterval: null
-};
-// Элементы DOM
-const elements = {};
+// Половину пар с одинаковыми углами раскрывают для оценки QBER: при ~100 парах в выборке
+// погрешность QBER ≈ ±1.5%, иначе чистый канал (2%) легко «показывает» 10% и ключ теряется
+const QBER_SAMPLE_FRACTION = 0.5;
+const MIN_KEY_PAIRS = FINAL_KEY_LENGTH * 2 * 2;   // половина в выборку + ≥2 бита на бит ключа
+// Минимум измерений на каждую из 4 комбинаций CHSH: при 100 парах погрешность |S| ≈ ±0.14,
+// этого хватает, чтобы отличить 2.7 (нет Евы) от 2.0 (Ева на половине пар)
+const MIN_PER_BELL_PAIR = 100;
+const MAX_PAIRS = 2000;
+const S_CLASSICAL = 2;
+const S_QUANTUM = 2 * Math.SQRT2;
+const R_WARN = 0.25;            // доля секретного ключа ниже этой — ключ получится коротким
+const AUTO_BATCH = 4;            // пар за один тик автоматического режима
 
-const state = { lang: 'ru', aliceStatus: { basis: 'a1', result: '-' }, bobStatus: { basis: 'b1', result: '-' }, explanation: { key: 'explanation.initial', vars: null }, lastHistoryIndex: null };
+const rad = deg => deg * Math.PI / 180;
+const cos2 = deg => Math.cos(rad(deg)) ** 2;
 
+function category(a, b) {
+    if (ANGLES[a] === ANGLES[b]) return 'key';
+    if ((a === 'a1' || a === 'a3') && (b === 'b1' || b === 'b3')) return 'bell';
+    return 'discard';
+}
+
+// Измерение одной пары в состоянии |Ψ⁻⟩: бит 0 — фотон прошёл поляризатор, 1 — нет.
+// Без Евы: результаты противоположны с вероятностью cos²(α−β) → E(α,β) = −cos 2(α−β).
+// С Евой: она измеряет фотон под случайным углом φ, запутанность разрушается,
+// и до Алисы с Бобом доходят два обычных фотона с поляризациями φ и φ+90°.
+function measurePair(a, b, intercepted) {
+    const alpha = ANGLES[a], beta = ANGLES[b];
+    let aliceBit, bobBit, evePhi = null;
+    if (intercepted) {
+        evePhi = Math.round(Math.random() * 1800) / 10;
+        aliceBit = Math.random() < cos2(alpha - evePhi) ? 0 : 1;
+        bobBit = Math.random() < cos2(beta - evePhi - 90) ? 0 : 1;
+    } else {
+        aliceBit = Math.random() < 0.5 ? 0 : 1;
+        const opposite = Math.random() < cos2(alpha - beta);
+        bobBit = opposite ? 1 - aliceBit : aliceBit;
+    }
+    const noisy = Math.random() < NOISE_RATE;
+    if (noisy) bobBit = 1 - bobBit;
+    return { a, b, aliceBit, bobBit, intercepted, evePhi, noisy, cat: category(a, b) };
+}
+
+// E = (N_совп − N_разн) / N для одной комбинации углов
+function correlation(a, b) {
+    const list = pairs.filter(p => p.a === a && p.b === b);
+    if (!list.length) return null;
+    const same = list.filter(p => p.aliceBit === p.bobBit).length;
+    return { n: list.length, same, diff: list.length - same, E: (2 * same - list.length) / list.length };
+}
+
+function computeS() {
+    const items = BELL_PAIRS.map(bp => ({ ...bp, ...correlation(bp.a, bp.b) }));
+    if (items.some(it => !it.n)) return null;
+    const S = items.reduce((acc, it) => acc + it.sign * it.E, 0);
+    // Статистическая погрешность: σ² = Σ (1 − E²) / N
+    const sigma = Math.sqrt(items.reduce((acc, it) => acc + (1 - it.E * it.E) / it.n, 0));
+    return { items, S, absS: Math.abs(S), sigma };
+}
+
+// Двоичная энтропия
+function h2(p) {
+    if (p <= 0 || p >= 1) return 0;
+    return -p * Math.log2(p) - (1 - p) * Math.log2(1 - p);
+}
+// Сколько Ева может знать о каждом бите ключа при данном |S| (Acín et al., PRL 98, 230501, 2007):
+// χ(S) = h((1 + √((S/2)² − 1)) / 2). При |S| ≤ 2 — всё (1 бит), при 2√2 — ничего.
+function eveInfo(S) {
+    if (S <= S_CLASSICAL) return 1;
+    const x = Math.sqrt(Math.min(S / 2, Math.SQRT2) ** 2 - 1);
+    return h2((1 + x) / 2);
+}
+// Доля секретного ключа: r = 1 − h(Q) − χ(S). h(Q) — сколько раскрывает коррекция ошибок.
+// Считаем по измеренному |S| (асимптотическая оценка); погрешность σ только показываем.
+function keyRate(absS, Q) {
+    return 1 - h2(Q) - eveInfo(absS);
+}
+
+// Проверка Белла как игра: в каждом из 4 сочетаний углов у Алисы и Боба есть цель —
+// при 0°/67.5° биты должны совпасть, в остальных трёх — различаться.
+// Доля побед p = 1/2 + |S|/8: со «шпаргалкой» (классика) не больше 75%, с запутанностью — до ≈85%.
+const P_CLASSICAL = 0.75;
+const P_QUANTUM = 0.5 + Math.SQRT2 / 4;
+function cardWin(it) { return it.sign > 0 ? it.diff / it.n : it.same / it.n; }
+function winRate(res) { return res.items.reduce((acc, it) => acc + cardWin(it), 0) / res.items.length; }
+
+// Чего ожидать «в среднем» при такой доле перехватов (режим Бога)
+function theoreticalS() {
+    const bell = pairs.filter(p => p.cat === 'bell');
+    const f = bell.length ? bell.filter(p => p.intercepted).length / bell.length : 0;
+    return (1 - 2 * NOISE_RATE) * (S_QUANTUM * (1 - f) + Math.SQRT2 * f);
+}
+
+// ══════════════════════════════════════════════════════
+//  ПЕРЕВОДЫ
+// ══════════════════════════════════════════════════════
 const I18N = {
   ru: {
     'meta.title': 'Квантовый ключ: E91 - Ludus Lab',
     'game.title': 'КВАНТОВЫЙ КЛЮЧ: E91',
     'game.subtitle': 'Ludus Lab · Сложные вещи — простыми играми',
+    'welcome.heading': 'Добро пожаловать в игру «Квантовый ключ: E91»',
+    'welcome.p1': 'В BB84 Алиса сама готовит фотоны. В E91 фотоны рождаются парами в общем источнике и запутаны: каждый по отдельности случаен, но вместе они связаны так, как не может быть связано ничто классическое. Проверить эту связь можно неравенством Белла — и именно оно выдаёт Еву.',
+    'welcome.p2': 'Игра состоит из 4 этапов:',
+    'welcome.stage1.title': '1. Источник пар', 'welcome.stage1.desc': 'разминка и запуск источника запутанных пар',
+    'welcome.stage2.title': '2. Объявление углов', 'welcome.stage2.desc': 'какие пары пойдут в ключ, а какие — в проверку',
+    'welcome.stage3.title': '3. Проверка Белла', 'welcome.stage3.desc': 'игра на угадывание: 75% против 85%',
+    'welcome.stage4.title': '4. Секретный ключ', 'welcome.stage4.desc': 'инверсия, коррекция ошибок и сжатие',
+    'welcome.start': 'Начать игру',
     'protocol.toggle': 'Описание протокола E91',
-    'protocol.intro': 'Протокол E91 (Экерта-91) — это алгоритм квантового распределения ключей, предложенный Артуром Экертом в 1991 году. В отличие от BB84, он использует запутанные состояния частиц.',
-    'protocol.step1.title': 'Генерация запутанных пар',
-    'protocol.step1.desc': 'Источник создает пары запутанных фотонов в состоянии Белла |Φ⁺⟩ = (|00⟩ + |11⟩)/√2 и отправляет один фотон Алисе, а другой — Бобу.',
-    'protocol.step1.game': 'В игре: Источник генерирует запутанные пары, которые отправляются Алисе и Бобу.',
-    'protocol.step2.title': 'Измерение запутанных фотонов',
-    'protocol.step2.desc': 'Алиса и Боб независимо и случайно выбирают базисы для измерения своих фотонов. В E91 используются три базиса с углами 0°, 45° и 90°.',
-    'protocol.step2.game': 'В игре: Алиса и Боб выбирают базисы измерения из трех вариантов.',
+    'protocol.intro': 'Протокол E91 предложил Артур Экерт в 1991 году. Его идея: безопасность ключа можно проверить через нарушение неравенства Белла — то есть убедиться, что фотоны действительно запутаны друг с другом, а значит, не могут быть «связаны» с Евой.',
+    'protocol.step1.title': 'Источник запутанных пар',
+    'protocol.step1.desc': 'Источник создаёт пары фотонов в состоянии |Ψ⁻⟩ = (|HV⟩ − |VH⟩)/√2 и отправляет один фотон Алисе, другой — Бобу. Если оба измерят поляризацию под одним и тем же углом, результаты всегда противоположны.',
+    'protocol.step2.title': 'Случайный выбор углов',
+    'protocol.step2.desc': 'Для каждой пары Алиса случайно выбирает угол поляризатора из 0°, 22.5°, 45°, а Боб — из 22.5°, 45°, 67.5°. Результат: 0 — фотон прошёл через поляризатор, 1 — не прошёл.',
     'protocol.step3.title': 'Квантовая корреляция',
-    'protocol.step3.desc': 'Из-за квантовой запутанности, результаты измерений Алисы и Боба коррелируют, даже если они находятся далеко друг от друга.',
-    'protocol.step3.game': 'В игре: Когда базисы совпадают, результаты измерений Алисы и Боба всегда противоположны (антикоррелированы).',
-    'protocol.step4.title': 'Обмен базисами по классическому каналу',
-    'protocol.step4.desc': 'После измерения всех фотонов Алиса и Боб по классическому каналу сообщают друг другу, какие базисы они использовали для каждого измерения.',
-    'protocol.step4.game': 'В игре: При нажатии "Просеять ключ" активируется классический каналу для обмена информацией о базисах.',
-    'protocol.step5.title': 'Просеивание ключа',
-    'protocol.step5.desc': 'Алиса и Боб сохраняют только те биты, для которых базисы совпали. Остальные биты отбрасываются.',
-    'protocol.step5.game': 'В игре: Создается сырой ключ из совпадающих измерений.',
-    'protocol.step6.title': 'Проверка на подслушивание через неравенства Белла',
-    'protocol.step6.desc': 'Алиса и Боб используют часть ключа для проверки нарушения неравенств Белла. Если Ева подслушивала, корреляции нарушаются, и это обнаруживается.',
-    'protocol.step6.game': 'В игре: Перехваченные Евой биты отмечаются и исключаются из финального ключа.',
-    'protocol.step7.title': 'Формирование секретного ключа',
-    'protocol.step7.desc': 'Если проверка Белла пройдена успешно, оставшиеся биты образуют секретный ключ.',
-    'protocol.step7.game': 'В игре: Формируется финальный 8-битный ключ из неперехваченных совпадающих битов.',
-    'protocol.security': '<strong>Безопасность протокола:</strong> Безопасность E91 основана на нарушении неравенств Белла — любые попытки измерить запутанные состояния разрушают их, что позволяет обнаружить подслушивание.',
+    'protocol.step3.desc': 'Если углы Алисы и Боба совпадают, их биты всегда противоположны. Чем больше разница углов, тем реже: при 22.5° — в 85% случаев, при 45° — как монетка, при 67.5° — лишь в 15%. Такая согласованность далёких фотонов сильнее любой классической.',
+    'protocol.step4.title': 'Объявление углов',
+    'protocol.step4.desc': 'После всех измерений Алиса и Боб по открытому каналу сообщают, какие углы выбирали. Результаты пока держат в секрете.',
+    'protocol.step5.title': 'Разделение пар',
+    'protocol.step5.desc': 'Пары с одинаковыми углами (22.5°/22.5° и 45°/45°) идут в ключ — Боб инвертирует свои биты. Пары с углами Алисы 0°/45° и Боба 22.5°/67.5° идут в проверку Белла. Остальные отбрасываются.',
+    'protocol.step6.title': 'Проверка неравенства Белла (CHSH)',
+    'protocol.step6.desc': 'Проверочные пары Алиса и Боб раскрывают полностью и превращают в игру: при 0°/67.5° биты должны совпасть, в остальных трёх сочетаниях — различаться. Обычные фотоны с любой заранее заготовленной «шпаргалкой» выигрывают не больше 75% раундов, запутанные — около 85%. Ещё раскрывают часть ключевых пар, чтобы посчитать ошибки.',
+    'protocol.step7.title': 'Ключ',
+    'protocol.step7.desc': 'Если побед заметно больше 75%, а ошибок мало — запутанность цела, и Ева знает о ключе мало: ключ исправляют и сжимают. Если побед 75% или меньше — фотоны вели себя как обычные, значит, их кто-то измерял, и ключ отбрасывается.',
+    'protocol.security': '<strong>Почему это работает:</strong> запутанность «моногамна». Если фотоны Алисы и Боба максимально запутаны друг с другом (|S| ≈ 2√2), третий участник не может быть с ними связан. Любое измерение Евы превращает пару в обычные фотоны — и |S| падает до классических значений.',
+    'stage.label.1': 'Источник пар', 'stage.label.2': 'Объявление углов', 'stage.label.3': 'Проверка Белла', 'stage.label.4': 'Секретный ключ',
+    'stageintro.1.title': 'Этап 1: Источник пар',
+    'stageintro.1.desc': 'Источник посередине рассылает пары запутанных фотонов. Начните с разминки: посмотрите, как часто биты Алисы и Боба противоположны при разной разнице углов. Потом запустите источник — Алиса и Боб будут выбирать углы случайно, как в настоящем протоколе.',
+    'stageintro.1.btn': 'Включить источник',
+    'stageintro.2.title': 'Этап 2: Объявление углов',
+    'stageintro.2.desc': 'Алиса и Боб сообщают друг другу углы — но не результаты. По углам каждая пара получает назначение: ключ, проверка Белла или отброс.',
+    'stageintro.2.btn': 'Начать объявление',
+    'stageintro.3.title': 'Этап 3: Проверка Белла',
+    'stageintro.3.desc': 'Проверочные пары превращаются в игру на угадывание. Обычные фотоны выигрывают не больше 75% раундов, запутанные — около 85%. Если фотоны выиграли больше 75%, запутанность цела. Если нет — их кто-то измерял по дороге.',
+    'stageintro.3.btn': 'Посчитать S',
+    'stageintro.4.title': 'Этап 4: Секретный ключ',
+    'stageintro.4.desc': 'Неравенство Белла нарушено — запутанность цела. Осталось превратить пары с одинаковыми углами в общий ключ.',
+    'stageintro.4.btn': 'Собрать ключ',
     'char.alice': 'Алиса', 'char.bob': 'Боб',
-    'controls.title': 'Панель управления',
-    'basis.aliceTitle': 'Базисы Алисы', 'basis.bobTitle': 'Базисы Боба',
-    'mode.manual': 'Ручной режим', 'mode.manual.desc': 'Отправит одну запутанную пару',
-    'mode.semiAuto': 'Полуавтоматический режим', 'mode.semiAuto.desc': 'Пары отправляются автоматически, базисы выбираются вручную',
-    'mode.auto': 'Автоматический режим', 'mode.auto.desc': 'Пары отправляются автоматически, базисы выбираются автоматически',
-    'btn.sift': 'Просеять ключ', 'btn.newKey': 'Сгенерировать новый ключ',
-    'alert.eve': '⚠️ Ева перехватила запутанную пару! Это может повлиять на конечный ключ.',
-    'notification.sift': '✅ Достаточно данных для просеивания ключа!',
-    'rawKey.title': 'Сырой ключ', 'rawKey.collected': 'Собрано', 'rawKey.pairs': 'запутанных пар',
-    'bitHistory.hint': 'Нажмите на любую пару в сыром ключе, чтобы посмотреть её историю',
-    'stat.matches': 'Совпадений', 'stat.intercepts': 'Перехватов',
-    'finalKey.title': 'Квантовый ключ', 'finalKey.desc': 'Секретный ключ сформирован из совпадающих измерений',
-    'disclaimer.text': '<strong>Примечание:</strong> В реальном протоколе E91 вмешательство Евы (Eve) контролируется параметром QBER (Quantum Bit Error Rate). При превышении критического значения QBER вся сессия распределения ключа сбрасывается. В данной симуляции для упрощения мы просто отмечаем перехваченные Евой пары и исключаем их из финального ключа.',
+    'status.ready': 'Ждёт фотон', 'status.measured': '{angle}° → бит {bit}',
+    'controls.heading': 'Панель управления',
+    'eve.title': '🕵️ Ева в канале (режим Бога)', 'eve.off': 'Нет',
+    'pa.details': 'Показать, из каких бит собран каждый бит ключа',
+    'nerd.p2': 'Сколько секретных бит остаётся, оценивают по формуле Acín и др. (2007): r = 1 − h(Q) − χ(S). h(Q) — сколько раскрывает исправление ошибок, χ(S) — сколько может знать Ева при таком S.',
+    'nerd.p1': 'Физики описывают каждое сочетание углов корреляцией E = (совпадений − различий) / всего и складывают их в число S (неравенство CHSH). Доля побед и S связаны так: p = 1/2 + |S|/8. Классический предел |S| ≤ 2 — это те самые 75%, квантовый максимум 2√2 ≈ 2.83 — около 85%.',
+    'nerd.summary': '🔬 Для любопытных: как это считают физики',
+    'bell.box.winsSub': '(во всех проверочных парах)',
+    'bell.box.wins': 'Побед всего',
+    'gauge.quantum': 'запутанность: ≈85%',
+    'gauge.classical': 'шпаргалка: максимум 75%',
+    'bell.wins': 'побед {w} из {n}',
+    'bell.rule.same': 'цель: биты одинаковые',
+    'bell.rule.diff': 'цель: биты разные',
+    'table1.last': 'последние {k} из {n} пар',
+    'stat.win.sub': 'обычные фотоны ≤ 75% · запутанные ≈ 85%',
+    'stat.win': 'Побед в игре Белла (режим Бога)',
+    'source.desc': 'Алиса и Боб выбирают углы случайно, как в протоколе',
+    'source.stop': '⏸ Остановить источник',
+    'source.start': '▶ Запустить источник',
+    'warmup.done': '✅ Чем больше разница углов, тем реже биты противоположны. Каждый фотон по отдельности случаен, но вместе они ведут себя согласованно. На этом и построена проверка Белла.',
+    'warmup.col.exp': 'Теория',
+    'warmup.col.opp': 'Биты противоположны',
+    'warmup.col.diff': 'Разница углов',
+    'warmup.diff': 'Разница {d}°',
+    'warmup.hint': 'Источник на лабораторном столе, Евы нет. Выберите разницу углов Алисы и Боба — отправится 20 пар. Как часто их биты окажутся противоположными?',
+    'warmup.title': '🔬 Разминка',
+    'history.sampled': 'Раскрыта для оценки QBER — в ключ не идёт',
+    'bell.verdict.lowRate': '🚨 {p}% побед при {q}% ошибок — слишком мало, чтобы исключить Еву: в худшем случае она знает о ключе не меньше Алисы и Боба. Ключ отбрасывается.',
+    'bell.box.eveNone': 'не было',
+    'bell.box.eveSub': '(режим Бога)',
+    'bell.box.eve': 'Ева',
+    'eve.full': '100%',
+    'eve.random': 'Случайно',
+    'eve.hint': '«Нет» — чистый канал. «100%» — Ева перехватывает каждую пару. «Случайно» — Ева то ли есть, то ли нет, и перехватывает неизвестную долю пар: попробуйте понять это по проверке Белла. Шум канала (~2%) есть всегда.',
+    'stat.pairs': 'Пар измерено',    'progress.title': 'Сколько данных собрано',
+    'progress.key': '🔑 Пары для ключа (одинаковые углы)',
+    'table1.heading': 'Журнал измерений',
+    'table.num': '#', 'table.aliceAngle': 'Угол A', 'table.aliceBit': 'Бит A', 'table.bobAngle': 'Угол B', 'table.bobBit': 'Бит B',
+    'table.category': 'Назначение', 'table.angle': 'Угол', 'table.bobInv': 'Боб инвертирует', 'table.check': 'Совпадает?',
+    'btn.toSift': 'Объявить углы',
+    'explanation.initial': 'Сделайте разминку, затем запустите источник. Каждая строка журнала — одна запутанная пара.',
+    'explanation.need': 'Нужно ещё данных: {missing}.',
+    'explanation.ready': '✅ Данных достаточно: {pairs} пар. Можно объявлять углы.',
+    'explanation.missKey': 'ещё {n} пар для ключа',
+    'explanation.missBell': 'ещё {n} пар {a}°/{b}°',
+    'sift.channel': 'Объявление углов по открытому каналу',
+    'siftmode.manual.title': 'По одной', 'siftmode.manual.desc': 'Раскрыть углы одной пары',
+    'siftmode.auto.title': 'Все сразу', 'siftmode.auto.desc': 'Раскрыть углы всех пар',
+    'pill.revealed': 'раскрыто', 'pill.key': 'в ключ', 'pill.bell': 'тест Белла', 'pill.discard': 'отброшено',
+    'sift.rule': 'Одинаковые углы → 🔑 ключ. Алиса 0°/45° и Боб 22.5°/67.5° → 🔔 проверка Белла. Остальные сочетания (0°/45°, 22.5°/45°, 22.5°/67.5°) не нужны ни для того, ни для другого → отброс.',
+    'cat.key': '🔑 Ключ', 'cat.bell': '🔔 Тест Белла', 'cat.discard': '✗ Отброс',
+    'btn.toBell': 'Перейти к проверке Белла',
+    'bell.heading': 'Проверка Белла: игра на угадывание',
+    'bell.desc': 'Алиса и Боб раскрывают результаты проверочных пар и смотрят, выполнена ли цель раунда: при 0°/67.5° биты должны совпасть, в остальных сочетаниях — различаться. Будь у фотонов заранее заготовленные ответы («шпаргалка»), никакая шпаргалка не дала бы больше 75% побед. Запутанные фотоны выигрывают около 85%.',
+    'bell.box.qber': 'Ошибки в ключе', 'bell.box.qberSub': '(ошибок: {errors} из {total} раскрытых пар)',
+    'bell.verdict.ok': '✅ Фотоны выиграли {p}% раундов — больше 75%, доступных обычным фотонам. Запутанность цела, ошибок {q}%: Ева знает о ключе мало. Секретных бит: ~{m} из {n}.',
+    'bell.verdict.warn': '⚠️ {p}% побед — больше 75%, но ненамного, а ошибок {q}%. Секрет есть, но Ева могла кое-что узнать, поэтому ключ придётся сильно сжать — секретных бит: ~{m} из {n}.',
+    'bell.verdict.fail': '🚨 Только {p}% побед — не больше 75%. Так могли бы играть обычные фотоны со «шпаргалкой», значит, запутанность разрушена: кто-то измерял фотоны по дороге. Ключ отбрасывается.',
+    'bell.confirm': '✅ Перейти к формированию ключа', 'bell.reset': '🔄 Начать заново',
+    'keytable.heading': 'Пары с одинаковыми углами',
+    'keytable.desc': 'При одинаковых углах биты запутанной пары противоположны. Поэтому Боб переворачивает каждый свой бит — и получает копию бит Алисы. Жёлтым отмечены расхождения: их дали шум или Ева.',
+    'pa.heading': 'Как из этих бит получился ключ',
+    'pa.ec': '<strong>1. Исправление ошибок.</strong> Пар для ключа: {n}. Алиса и Боб сравнивают чётности небольших блоков бит и находят расхождения — их {errors}. Боб исправляет эти биты, не раскрывая самих значений.',
+    'pa.pa': '<strong>2. Сжатие.</strong> Ева могла что-то узнать, поэтому биты сжимают: каждый бит ключа — XOR группы бит. Если Ева не знает хотя бы одного бита группы, XOR для неё случаен. По проверке Белла секретных бит: ~{m} из {n} — для игры берём 8.',
+    'pa.bit': 'Бит {k}',
+    'finalkey.heading': '🔐 Квантовый ключ', 'finalkey.desc': 'Общий секрет Алисы и Боба, полученный из запутанных пар',
+    'btn.copy': 'Скопировать ключ', 'btn.newkey': 'Новый ключ', 'notif.copied': 'Ключ скопирован в буфер обмена!',
+    'success.p1': '<strong>Готово! Общий 8-битный ключ:</strong> {key}',
+    'success.p2': 'Фотоны выиграли {p}% раундов игры Белла — больше 75%, доступных обычным фотонам. Значит, они были запутаны друг с другом, а не с Евой.',
+    'success.eve': 'Режим Бога: Ева перехватила {eve} из {total} пар — побед стало меньше, но не до 75%.',
+    'success.noEve': 'Режим Бога: Евы в канале не было — до идеальных ≈85% не хватает только из-за шума и случайности.',
+    'history.title': 'Пара #{n}',
+    'history.alice': 'Алиса: угол {angle}°, бит {bit}', 'history.bob': 'Боб: угол {angle}°, бит {bit}',
+    'history.cat': 'Назначение:',
+    'history.keyOk': 'Боб инвертирует бит → {inv}, совпадает с Алисой ✓',
+    'history.keyErr': 'Боб инвертирует бит → {inv}, не совпадает с Алисой — исправляется при согласовании',
+    'history.eve': '🕵️ Ева измерила фотон под углом {phi}° — запутанность разрушена',
+    'history.noise': '〰️ Шум канала перевернул бит Боба',
+    'history.theory': 'Вероятность противоположных бит при этих углах: cos²({d}°) = {p}%',
+    'keyhist.title': 'Бит ключа #{k}',
+    'keyhist.hint': 'Бит ключа — XOR нескольких бит Алисы из пар с одинаковыми углами. Нажмите на номер пары, чтобы открыть её историю; ⚠ — пара с ошибкой.',
+    'disclaimer.text': '<strong>Что упрощено:</strong> у Экерта углы 0°, 45°, 90° даны для спинов — для фотонов они вдвое меньше (0°, 22.5°, 45°). Решение о ключе принимается по оценке Acín и др. (2007), но без поправок на конечный размер выборки. Шум канала — фиксированные ~2%; Ева атакует простейшим способом — измеряет фотон под случайным углом. Исправление ошибок и сжатие показаны схематично, а в реальных системах пар — миллионы.',
     'nav.theory': 'Прочитать теорию', 'nav.home': 'Вернуться в лабораторию',
-    'status.aliceApplied': 'Применила базис: {basis}', 'status.bobApplied': 'Применил базис: {basis}',
-    'status.result': 'Результат измерения: {result}',
-    'explanation.initial': 'Выберите базисы для Алисы и Боба и отправьте запутанную пару. Когда вы отправите достаточно пар, нажмите "Просеять ключ", чтобы создать секретный ключ из совпадающих измерений.',
-    'explanation.enoughMatches': 'Вы отправили достаточно запутанных пар! Нажмите "Просеять ключ", чтобы создать секретный ключ.||Только совпадающие базисы без перехвата ({matches}) будут использованы для формирования финального ключа.',
-    'explanation.insufficient': '⚠️ Недостаточно данных для формирования 8-битного ключа!||Вам нужно отправить еще запутанных пар, чтобы после исключения перехваченных осталось как минимум 8 совпадающих.||Сейчас у вас {count} подходящих пар.',
-    'explanation.success': '<strong>Поздравляем! Вы создали секретный 8-битный квантовый ключ:</strong> {key}||Этот ключ можно использовать для безопасного шифрования сообщений с Бобом.||Любая попытка перехвата (было {intercepts}) нарушила бы квантовые состояния и была бы обнаружена при проверке неравенств Белла.',
-    'history.title': 'История пары #{index}:',
-    'history.aliceMeasured': 'Алиса измерила в:', 'history.bobMeasured': 'Боб измерил в:',
-    'history.basis': 'Базис', 'history.aliceResult': 'Результат Алисы:', 'history.bobResult': 'Результат Боба:',
-    'history.intercept': '⚠️ Перехват:', 'history.interceptNo': 'Перехват: Нет', 'history.yes': 'Да',
-    'history.basisMatch': '✓ Совпадение базисов:', 'history.basisNoMatch': '✗ Совпадение базисов: Нет',
-    'history.status': 'Статус:', 'history.status.dropped': 'Отброшена (скомпрометирована)',
-    'history.status.excess': 'Подходит для формирования ключа, но является избыточной',
-    'history.status.used': 'Используется в ключе', 'history.status.notMatched': 'Базисы не совпали',
   },
   en: {
     'meta.title': 'Quantum key: E91 - Ludus Lab',
     'game.title': 'QUANTUM KEY: E91',
     'game.subtitle': 'Ludus Lab · Complex things, made simple through games',
+    'welcome.heading': 'Welcome to “Quantum key: E91”',
+    'welcome.p1': 'In BB84, Alice prepares the photons herself. In E91, photons are born in pairs at a shared source and are entangled: each one alone is random, but together they are linked in a way nothing classical can be. That link can be checked with a Bell inequality — and that is exactly what gives Eve away.',
+    'welcome.p2': 'The game has 4 stages:',
+    'welcome.stage1.title': '1. Pair source', 'welcome.stage1.desc': 'warm-up and starting the source of entangled pairs',
+    'welcome.stage2.title': '2. Announcing angles', 'welcome.stage2.desc': 'which pairs go into the key and which into the test',
+    'welcome.stage3.title': '3. Bell test', 'welcome.stage3.desc': 'a guessing game: 75% versus 85%',
+    'welcome.stage4.title': '4. Secret key', 'welcome.stage4.desc': 'inversion, error correction and compression',
+    'welcome.start': 'Start the game',
     'protocol.toggle': 'E91 protocol description',
-    'protocol.intro': 'The E91 protocol (Ekert-91) is a quantum key distribution algorithm proposed by Artur Ekert in 1991. Unlike BB84, it uses entangled particle states.',
-    'protocol.step1.title': 'Generating entangled pairs',
-    'protocol.step1.desc': 'The source creates pairs of entangled photons in the Bell state |Φ⁺⟩ = (|00⟩ + |11⟩)/√2 and sends one photon to Alice and the other to Bob.',
-    'protocol.step1.game': 'In the game: The source generates entangled pairs that are sent to Alice and Bob.',
-    'protocol.step2.title': 'Measuring entangled photons',
-    'protocol.step2.desc': 'Alice and Bob independently and randomly choose bases to measure their photons. E91 uses three bases at angles of 0°, 45°, and 90°.',
-    'protocol.step2.game': 'In the game: Alice and Bob choose measurement bases from three options.',
+    'protocol.intro': 'The E91 protocol was proposed by Artur Ekert in 1991. His idea: the security of the key can be checked through the violation of a Bell inequality — that is, by making sure the photons are truly entangled with each other and therefore cannot be “linked” to Eve.',
+    'protocol.step1.title': 'Source of entangled pairs',
+    'protocol.step1.desc': 'The source creates photon pairs in the state |Ψ⁻⟩ = (|HV⟩ − |VH⟩)/√2 and sends one photon to Alice and the other to Bob. If both measure polarization at the same angle, the results are always opposite.',
+    'protocol.step2.title': 'Random choice of angles',
+    'protocol.step2.desc': 'For each pair, Alice randomly picks a polarizer angle from 0°, 22.5°, 45°, and Bob from 22.5°, 45°, 67.5°. Result: 0 — the photon passed the polarizer, 1 — it did not.',
     'protocol.step3.title': 'Quantum correlation',
-    'protocol.step3.desc': 'Due to quantum entanglement, the measurement results of Alice and Bob correlate even if they are far apart.',
-    'protocol.step3.game': 'In the game: When the bases match, Alice and Bob\'s measurement results are always opposite (anti-correlated).',
-    'protocol.step4.title': 'Exchanging bases over the classical channel',
-    'protocol.step4.desc': 'After measuring all the photons, Alice and Bob tell each other over the classical channel which bases they used for each measurement.',
-    'protocol.step4.game': 'In the game: Clicking "Sift key" activates the classical channel to exchange basis information.',
-    'protocol.step5.title': 'Key sifting',
-    'protocol.step5.desc': 'Alice and Bob keep only the bits for which the bases matched. The remaining bits are discarded.',
-    'protocol.step5.game': 'In the game: A raw key is created from the matching measurements.',
-    'protocol.step6.title': 'Checking for eavesdropping via Bell inequalities',
-    'protocol.step6.desc': 'Alice and Bob use part of the key to check for a violation of Bell inequalities. If Eve was eavesdropping, the correlations are broken, and this is detected.',
-    'protocol.step6.game': 'In the game: Bits intercepted by Eve are marked and excluded from the final key.',
-    'protocol.step7.title': 'Forming the secret key',
-    'protocol.step7.desc': 'If the Bell test passes successfully, the remaining bits form the secret key.',
-    'protocol.step7.game': 'In the game: A final 8-bit key is formed from the non-intercepted matching bits.',
-    'protocol.security': '<strong>Protocol security:</strong> The security of E91 is based on the violation of Bell inequalities — any attempt to measure the entangled states destroys them, allowing eavesdropping to be detected.',
+    'protocol.step3.desc': 'If Alice\'s and Bob\'s angles are equal, their bits are always opposite. The bigger the angle difference, the rarer that is: at 22.5° — 85% of the time, at 45° — a coin flip, at 67.5° — only 15%. This coordination between distant photons is stronger than anything classical.',
+    'protocol.step4.title': 'Announcing angles',
+    'protocol.step4.desc': 'After all measurements, Alice and Bob announce over the public channel which angles they used. The results stay secret for now.',
+    'protocol.step5.title': 'Sorting the pairs',
+    'protocol.step5.desc': 'Pairs with equal angles (22.5°/22.5° and 45°/45°) go into the key — Bob flips his bits. Pairs with Alice at 0°/45° and Bob at 22.5°/67.5° go into the Bell test. The rest are discarded.',
+    'protocol.step6.title': 'Bell inequality test (CHSH)',
+    'protocol.step6.desc': 'Alice and Bob reveal the test pairs completely and turn them into a game: at 0°/67.5° the bits should match, in the other three combinations they should differ. Ordinary photons with any pre-arranged “cheat sheet” win at most 75% of rounds; entangled ones win about 85%. They also reveal some of the key pairs to count errors.',
+    'protocol.step7.title': 'The key',
+    'protocol.step7.desc': 'If the win rate is clearly above 75% and errors are few, entanglement is intact and Eve knows little about the key: the key is corrected and compressed. If the win rate is 75% or lower, the photons behaved like ordinary ones — someone measured them — and the key is discarded.',
+    'protocol.security': '<strong>Why it works:</strong> entanglement is “monogamous”. If Alice’s and Bob’s photons are maximally entangled with each other (|S| ≈ 2√2), no third party can be linked to them. Any measurement by Eve turns the pair into ordinary photons — and |S| drops to classical values.',
+    'stage.label.1': 'Pair source', 'stage.label.2': 'Announcing angles', 'stage.label.3': 'Bell test', 'stage.label.4': 'Secret key',
+    'stageintro.1.title': 'Stage 1: Pair source',
+    'stageintro.1.desc': 'The source in the middle sends out pairs of entangled photons. Start with the warm-up: see how often Alice\'s and Bob\'s bits are opposite for different angle differences. Then start the source — Alice and Bob will choose angles at random, as in the real protocol.',
+    'stageintro.1.btn': 'Turn on the source',
+    'stageintro.2.title': 'Stage 2: Announcing angles',
+    'stageintro.2.desc': 'Alice and Bob tell each other the angles — but not the results. Based on the angles, each pair is assigned: key, Bell test, or discard.',
+    'stageintro.2.btn': 'Start announcing',
+    'stageintro.3.title': 'Stage 3: Bell test',
+    'stageintro.3.desc': 'The test pairs turn into a guessing game. Ordinary photons win at most 75% of rounds, entangled ones about 85%. If the photons won more than 75%, entanglement is intact. If not, someone measured them on the way.',
+    'stageintro.3.btn': 'Compute S',
+    'stageintro.4.title': 'Stage 4: Secret key',
+    'stageintro.4.desc': 'The Bell inequality is violated — entanglement is intact. Now turn the equal-angle pairs into a shared key.',
+    'stageintro.4.btn': 'Build the key',
     'char.alice': 'Alice', 'char.bob': 'Bob',
-    'controls.title': 'Control panel',
-    'basis.aliceTitle': "Alice's bases", 'basis.bobTitle': "Bob's bases",
-    'mode.manual': 'Manual mode', 'mode.manual.desc': 'Sends a single entangled pair',
-    'mode.semiAuto': 'Semi-automatic mode', 'mode.semiAuto.desc': 'Pairs are sent automatically, bases are chosen manually',
-    'mode.auto': 'Automatic mode', 'mode.auto.desc': 'Pairs are sent automatically, bases are chosen automatically',
-    'btn.sift': 'Sift key', 'btn.newKey': 'Generate a new key',
-    'alert.eve': '⚠️ Eve intercepted the entangled pair! This may affect the final key.',
-    'notification.sift': '✅ Enough data to sift the key!',
-    'rawKey.title': 'Raw key', 'rawKey.collected': 'Collected', 'rawKey.pairs': 'entangled pairs',
-    'bitHistory.hint': 'Click on any pair in the raw key to see its history',
-    'stat.matches': 'Matches', 'stat.intercepts': 'Intercepts',
-    'finalKey.title': 'Quantum key', 'finalKey.desc': 'The secret key is formed from the matching measurements',
-    'disclaimer.text': '<strong>Note:</strong> In the real E91 protocol, Eve\'s interference is controlled by the QBER (Quantum Bit Error Rate) parameter. If the critical QBER value is exceeded, the whole key distribution session is reset. In this simulation, for simplicity, we just mark the pairs intercepted by Eve and exclude them from the final key.',
+    'status.ready': 'Waiting for a photon', 'status.measured': '{angle}° → bit {bit}',
+    'controls.heading': 'Control panel',
+    'eve.title': '🕵️ Eve on the channel (God mode)', 'eve.off': 'None',
+    'pa.details': 'Show which bits make up each key bit',
+    'nerd.p2': 'How many secret bits remain is estimated with the formula of Acín et al. (2007): r = 1 − h(Q) − χ(S). h(Q) is what error correction reveals, χ(S) is how much Eve can know for this S.',
+    'nerd.p1': 'Physicists describe each angle combination by the correlation E = (matches − mismatches) / total and combine them into a number S (the CHSH inequality). The win rate and S are related by p = 1/2 + |S|/8. The classical limit |S| ≤ 2 is exactly those 75%; the quantum maximum 2√2 ≈ 2.83 is about 85%.',
+    'nerd.summary': '🔬 For the curious: how physicists compute it',
+    'bell.box.winsSub': '(across all test pairs)',
+    'bell.box.wins': 'Total wins',
+    'gauge.quantum': 'entanglement: ≈85%',
+    'gauge.classical': 'cheat sheet: 75% max',
+    'bell.wins': 'won {w} of {n}',
+    'bell.rule.same': 'goal: bits match',
+    'bell.rule.diff': 'goal: bits differ',
+    'table1.last': 'last {k} of {n} pairs',
+    'stat.win.sub': 'ordinary photons ≤ 75% · entangled ≈ 85%',
+    'stat.win': 'Bell game wins (God mode)',
+    'source.desc': 'Alice and Bob choose angles at random, as in the protocol',
+    'source.stop': '⏸ Stop the source',
+    'source.start': '▶ Start the source',
+    'warmup.done': '✅ The bigger the angle difference, the less often the bits are opposite. Each photon alone is random, yet together they behave in a coordinated way. That is what the Bell test is built on.',
+    'warmup.col.exp': 'Theory',
+    'warmup.col.opp': 'Bits opposite',
+    'warmup.col.diff': 'Angle difference',
+    'warmup.diff': 'Diff {d}°',
+    'warmup.hint': 'The source is on the lab bench, no Eve. Pick the difference between Alice\'s and Bob\'s angles — 20 pairs will be sent. How often will their bits be opposite?',
+    'warmup.title': '🔬 Warm-up',
+    'history.sampled': 'Revealed to estimate the QBER — not used in the key',
+    'bell.verdict.lowRate': '🚨 {p}% wins with {q}% errors — too little to rule Eve out: in the worst case she knows as much about the key as Alice and Bob. The key is discarded.',
+    'bell.box.eveNone': 'absent',
+    'bell.box.eveSub': '(God mode)',
+    'bell.box.eve': 'Eve',
+    'eve.full': '100%',
+    'eve.random': 'Random',
+    'eve.hint': '“None” — a clean channel. “100%” — Eve intercepts every pair. “Random” — Eve may or may not be there and intercepts an unknown share of pairs: try to tell from the Bell test. Channel noise (~2%) is always present.',
+    'stat.pairs': 'Pairs measured',    'progress.title': 'Data collected',
+    'progress.key': '🔑 Key pairs (equal angles)',
+    'table1.heading': 'Measurement log',
+    'table.num': '#', 'table.aliceAngle': 'Angle A', 'table.aliceBit': 'Bit A', 'table.bobAngle': 'Angle B', 'table.bobBit': 'Bit B',
+    'table.category': 'Assignment', 'table.angle': 'Angle', 'table.bobInv': 'Bob flips', 'table.check': 'Match?',
+    'btn.toSift': 'Announce angles',
+    'explanation.initial': 'Do the warm-up, then start the source. Each log row is one entangled pair.',
+    'explanation.need': 'More data needed: {missing}.',
+    'explanation.ready': '✅ Enough data: {pairs} pairs. You can announce the angles.',
+    'explanation.missKey': '{n} more key pairs',
+    'explanation.missBell': '{n} more {a}°/{b}° pairs',
+    'sift.channel': 'Announcing angles over the public channel',
+    'siftmode.manual.title': 'One by one', 'siftmode.manual.desc': 'Reveal the angles of one pair',
+    'siftmode.auto.title': 'All at once', 'siftmode.auto.desc': 'Reveal the angles of all pairs',
+    'pill.revealed': 'revealed', 'pill.key': 'to key', 'pill.bell': 'Bell test', 'pill.discard': 'discarded',
+    'sift.rule': 'Equal angles → 🔑 key. Alice 0°/45° and Bob 22.5°/67.5° → 🔔 Bell test. The other combinations (0°/45°, 22.5°/45°, 22.5°/67.5°) are not needed for either → discarded.',
+    'cat.key': '🔑 Key', 'cat.bell': '🔔 Bell test', 'cat.discard': '✗ Discard',
+    'btn.toBell': 'Continue to the Bell test',
+    'bell.heading': 'Bell test: a guessing game',
+    'bell.desc': 'Alice and Bob reveal the results of the test pairs and check whether each round\'s goal was met: at 0°/67.5° the bits should match, in the other combinations they should differ. If the photons had pre-arranged answers (a “cheat sheet”), no cheat sheet could win more than 75% of rounds. Entangled photons win about 85%.',
+    'bell.box.qber': 'Key errors', 'bell.box.qberSub': '(errors: {errors} of {total} revealed pairs)',
+    'bell.verdict.ok': '✅ The photons won {p}% of rounds — more than the 75% ordinary photons can reach. Entanglement is intact, errors are {q}%: Eve knows little about the key. {n} bits will give ~{m} secret ones.',
+    'bell.verdict.warn': '⚠️ {p}% wins — above 75%, but not by much, and errors are {q}%. There is a secret, but Eve may have learned something, so the key must be compressed heavily: ~{m} secret bits out of {n}.',
+    'bell.verdict.fail': '🚨 Only {p}% wins — not above 75%. Ordinary photons with a “cheat sheet” could play like that, so entanglement is destroyed: someone measured the photons on the way. The key is discarded.',
+    'bell.confirm': '✅ Continue to key formation', 'bell.reset': '🔄 Start over',
+    'keytable.heading': 'Pairs with equal angles',
+    'keytable.desc': 'At equal angles the bits of an entangled pair are opposite. So Bob flips each of his bits — and gets a copy of Alice’s bits. Yellow marks mismatches caused by noise or Eve.',
+    'pa.heading': 'How the key was built from these bits',
+    'pa.ec': '<strong>1. Error correction.</strong> Key pairs: {n}. Alice and Bob compare parities of small bit blocks and find the mismatches — there are {errors}. Bob fixes those bits without revealing the values themselves.',
+    'pa.pa': '<strong>2. Compression.</strong> Eve may have learned something, so the bits are compressed: each key bit is the XOR of a group of bits. If Eve misses even one bit of a group, the XOR is random to her. According to the Bell test, {n} bits give ~{m} secret ones — the game takes 8.',
+    'pa.bit': 'Bit {k}',
+    'finalkey.heading': '🔐 Quantum key', 'finalkey.desc': 'Alice and Bob’s shared secret, obtained from entangled pairs',
+    'btn.copy': 'Copy key', 'btn.newkey': 'New key', 'notif.copied': 'Key copied to the clipboard!',
+    'success.p1': '<strong>Done! The shared 8-bit key:</strong> {key}',
+    'success.p2': 'The photons won {p}% of the Bell game rounds — more than the 75% ordinary photons can reach. So they were entangled with each other, not with Eve.',
+    'success.eve': 'God mode: Eve intercepted {eve} of {total} pairs — the win rate dropped, but not to 75%.',
+    'success.noEve': 'God mode: Eve was not on the channel — the gap to the ideal ≈85% comes only from noise and chance.',
+    'history.title': 'Pair #{n}',
+    'history.alice': 'Alice: angle {angle}°, bit {bit}', 'history.bob': 'Bob: angle {angle}°, bit {bit}',
+    'history.cat': 'Assignment:',
+    'history.keyOk': 'Bob flips the bit → {inv}, matches Alice ✓',
+    'history.keyErr': 'Bob flips the bit → {inv}, does not match Alice — fixed during reconciliation',
+    'history.eve': '🕵️ Eve measured the photon at {phi}° — entanglement destroyed',
+    'history.noise': '〰️ Channel noise flipped Bob’s bit',
+    'history.theory': 'Probability of opposite bits at these angles: cos²({d}°) = {p}%',
+    'keyhist.title': 'Key bit #{k}',
+    'keyhist.hint': 'A key bit is the XOR of several of Alice’s bits from equal-angle pairs. Click a pair number to open its history; ⚠ marks a pair with an error.',
+    'disclaimer.text': '<strong>What is simplified:</strong> Ekert gives the angles 0°, 45°, 90° for spins — for photons they are halved (0°, 22.5°, 45°). The key decision uses the bound of Acín et al. (2007), but without finite-sample corrections. Channel noise is a fixed ~2%; Eve uses the simplest attack — measuring the photon at a random angle. Error correction and compression are shown schematically, and real systems use millions of pairs.',
     'nav.theory': 'Read the theory', 'nav.home': 'Return to the lab',
-    'status.aliceApplied': 'Applied basis: {basis}', 'status.bobApplied': 'Applied basis: {basis}',
-    'status.result': 'Measurement result: {result}',
-    'explanation.initial': 'Choose bases for Alice and Bob and send an entangled pair. Once you\'ve sent enough pairs, click "Sift key" to create a secret key from the matching measurements.',
-    'explanation.enoughMatches': 'You\'ve sent enough entangled pairs! Click "Sift key" to create the secret key.||Only matching bases without interception ({matches}) will be used to form the final key.',
-    'explanation.insufficient': '⚠️ Not enough data to form an 8-bit key!||You need to send more entangled pairs so that after excluding intercepted ones, at least 8 matching pairs remain.||You currently have {count} suitable pairs.',
-    'explanation.success': '<strong>Congratulations! You\'ve created a secret 8-bit quantum key:</strong> {key}||This key can be used to securely encrypt messages with Bob.||Any interception attempt ({intercepts} occurred) would have disturbed the quantum states and would have been detected when checking the Bell inequalities.',
-    'history.title': 'History of pair #{index}:',
-    'history.aliceMeasured': 'Alice measured in:', 'history.bobMeasured': 'Bob measured in:',
-    'history.basis': 'Basis', 'history.aliceResult': "Alice's result:", 'history.bobResult': "Bob's result:",
-    'history.intercept': '⚠️ Intercept:', 'history.interceptNo': 'Intercept: No', 'history.yes': 'Yes',
-    'history.basisMatch': '✓ Basis match:', 'history.basisNoMatch': '✗ Basis match: No',
-    'history.status': 'Status:', 'history.status.dropped': 'Dropped (compromised)',
-    'history.status.excess': 'Suitable for the key, but redundant',
-    'history.status.used': 'Used in the key', 'history.status.notMatched': 'Bases did not match',
   },
   es: {
     'meta.title': 'Clave cuántica: E91 - Ludus Lab',
     'game.title': 'CLAVE CUÁNTICA: E91',
     'game.subtitle': 'Ludus Lab · Cosas complejas explicadas con juegos sencillos',
+    'welcome.heading': 'Bienvenido a «Clave cuántica: E91»',
+    'welcome.p1': 'En BB84, Alice prepara los fotones ella misma. En E91, los fotones nacen en pares en una fuente común y están entrelazados: cada uno por separado es aleatorio, pero juntos están ligados de un modo imposible para cualquier cosa clásica. Ese vínculo se comprueba con una desigualdad de Bell, y es justo lo que delata a Eva.',
+    'welcome.p2': 'El juego tiene 4 etapas:',
+    'welcome.stage1.title': '1. Fuente de pares', 'welcome.stage1.desc': 'calentamiento y puesta en marcha de la fuente de pares entrelazados',
+    'welcome.stage2.title': '2. Anuncio de ángulos', 'welcome.stage2.desc': 'qué pares van a la clave y cuáles a la prueba',
+    'welcome.stage3.title': '3. Prueba de Bell', 'welcome.stage3.desc': 'un juego de adivinanzas: 75% contra 85%',
+    'welcome.stage4.title': '4. Clave secreta', 'welcome.stage4.desc': 'inversión, corrección de errores y compresión',
+    'welcome.start': 'Empezar el juego',
     'protocol.toggle': 'Descripción del protocolo E91',
-    'protocol.intro': 'El protocolo E91 (Ekert-91) es un algoritmo de distribución cuántica de claves propuesto por Artur Ekert en 1991. A diferencia de BB84, utiliza estados entrelazados de partículas.',
-    'protocol.step1.title': 'Generación de pares entrelazados',
-    'protocol.step1.desc': 'La fuente crea pares de fotones entrelazados en el estado de Bell |Φ⁺⟩ = (|00⟩ + |11⟩)/√2 y envía un fotón a Alice y el otro a Bob.',
-    'protocol.step1.game': 'En el juego: La fuente genera pares entrelazados que se envían a Alice y Bob.',
-    'protocol.step2.title': 'Medición de los fotones entrelazados',
-    'protocol.step2.desc': 'Alice y Bob eligen de forma independiente y aleatoria las bases para medir sus fotones. E91 utiliza tres bases con ángulos de 0°, 45° y 90°.',
-    'protocol.step2.game': 'En el juego: Alice y Bob eligen las bases de medición entre tres opciones.',
+    'protocol.intro': 'El protocolo E91 fue propuesto por Artur Ekert en 1991. Su idea: la seguridad de la clave se puede comprobar mediante la violación de una desigualdad de Bell, es decir, asegurándose de que los fotones están realmente entrelazados entre sí y, por tanto, no pueden estar «ligados» a Eva.',
+    'protocol.step1.title': 'Fuente de pares entrelazados',
+    'protocol.step1.desc': 'La fuente crea pares de fotones en el estado |Ψ⁻⟩ = (|HV⟩ − |VH⟩)/√2 y envía un fotón a Alice y el otro a Bob. Si ambos miden la polarización con el mismo ángulo, los resultados siempre son opuestos.',
+    'protocol.step2.title': 'Elección aleatoria de ángulos',
+    'protocol.step2.desc': 'Para cada par, Alice elige al azar el ángulo del polarizador entre 0°, 22.5° y 45°, y Bob entre 22.5°, 45° y 67.5°. Resultado: 0 — el fotón atravesó el polarizador, 1 — no lo atravesó.',
     'protocol.step3.title': 'Correlación cuántica',
-    'protocol.step3.desc': 'Debido al entrelazamiento cuántico, los resultados de las mediciones de Alice y Bob están correlacionados, incluso si están muy alejados.',
-    'protocol.step3.game': 'En el juego: Cuando las bases coinciden, los resultados de las mediciones de Alice y Bob siempre son opuestos (anticorrelacionados).',
-    'protocol.step4.title': 'Intercambio de bases por el canal clásico',
-    'protocol.step4.desc': 'Después de medir todos los fotones, Alice y Bob se comunican por el canal clásico qué bases usaron para cada medición.',
-    'protocol.step4.game': 'En el juego: Al pulsar "Filtrar clave" se activa el canal clásico para intercambiar la información de las bases.',
-    'protocol.step5.title': 'Filtrado de la clave',
-    'protocol.step5.desc': 'Alice y Bob conservan solo los bits para los que las bases coincidieron. El resto de los bits se descartan.',
-    'protocol.step5.game': 'En el juego: Se crea una clave en bruto a partir de las mediciones coincidentes.',
-    'protocol.step6.title': 'Comprobación de escuchas mediante las desigualdades de Bell',
-    'protocol.step6.desc': 'Alice y Bob usan parte de la clave para comprobar la violación de las desigualdades de Bell. Si Eva estaba escuchando, las correlaciones se rompen y esto se detecta.',
-    'protocol.step6.game': 'En el juego: Los bits interceptados por Eva se marcan y se excluyen de la clave final.',
-    'protocol.step7.title': 'Formación de la clave secreta',
-    'protocol.step7.desc': 'Si la prueba de Bell se supera con éxito, los bits restantes forman la clave secreta.',
-    'protocol.step7.game': 'En el juego: Se forma una clave final de 8 bits a partir de los bits coincidentes no interceptados.',
-    'protocol.security': '<strong>Seguridad del protocolo:</strong> La seguridad de E91 se basa en la violación de las desigualdades de Bell — cualquier intento de medir los estados entrelazados los destruye, lo que permite detectar las escuchas.',
+    'protocol.step3.desc': 'Si los ángulos de Alice y Bob coinciden, sus bits siempre son opuestos. Cuanto mayor es la diferencia de ángulos, más raro es: con 22.5°, el 85% de las veces; con 45°, como una moneda; con 67.5°, solo el 15%. Esta coordinación entre fotones lejanos es más fuerte que cualquier clásica.',
+    'protocol.step4.title': 'Anuncio de ángulos',
+    'protocol.step4.desc': 'Tras todas las mediciones, Alice y Bob anuncian por el canal público qué ángulos usaron. Los resultados siguen siendo secretos.',
+    'protocol.step5.title': 'Clasificación de los pares',
+    'protocol.step5.desc': 'Los pares con ángulos iguales (22.5°/22.5° y 45°/45°) van a la clave: Bob invierte sus bits. Los pares con Alice en 0°/45° y Bob en 22.5°/67.5° van a la prueba de Bell. El resto se descarta.',
+    'protocol.step6.title': 'Prueba de la desigualdad de Bell (CHSH)',
+    'protocol.step6.desc': 'Alice y Bob revelan por completo los pares de prueba y los convierten en un juego: con 0°/67.5° los bits deben coincidir y en las otras tres combinaciones, diferir. Los fotones ordinarios con cualquier «chuleta» preparada de antemano ganan como mucho el 75% de las rondas; los entrelazados, cerca del 85%. También revelan parte de los pares de clave para contar errores.',
+    'protocol.step7.title': 'La clave',
+    'protocol.step7.desc': 'Si las victorias superan claramente el 75% y hay pocos errores, el entrelazamiento está intacto y Eva sabe poco de la clave: la clave se corrige y se comprime. Si las victorias son del 75% o menos, los fotones se comportaron como ordinarios —alguien los midió— y la clave se descarta.',
+    'protocol.security': '<strong>Por qué funciona:</strong> el entrelazamiento es «monógamo». Si los fotones de Alice y Bob están máximamente entrelazados entre sí (|S| ≈ 2√2), ningún tercero puede estar ligado a ellos. Cualquier medición de Eva convierte el par en fotones ordinarios, y |S| cae a valores clásicos.',
+    'stage.label.1': 'Fuente de pares', 'stage.label.2': 'Anuncio de ángulos', 'stage.label.3': 'Prueba de Bell', 'stage.label.4': 'Clave secreta',
+    'stageintro.1.title': 'Etapa 1: Fuente de pares',
+    'stageintro.1.desc': 'La fuente del centro emite pares de fotones entrelazados. Empieza con el calentamiento: mira con qué frecuencia los bits de Alice y Bob son opuestos según la diferencia de ángulos. Luego enciende la fuente: Alice y Bob elegirán los ángulos al azar, como en el protocolo real.',
+    'stageintro.1.btn': 'Encender la fuente',
+    'stageintro.2.title': 'Etapa 2: Anuncio de ángulos',
+    'stageintro.2.desc': 'Alice y Bob se comunican los ángulos, pero no los resultados. Según los ángulos, cada par recibe un destino: clave, prueba de Bell o descarte.',
+    'stageintro.2.btn': 'Empezar el anuncio',
+    'stageintro.3.title': 'Etapa 3: Prueba de Bell',
+    'stageintro.3.desc': 'Los pares de prueba se convierten en un juego de adivinanzas. Los fotones ordinarios ganan como mucho el 75% de las rondas; los entrelazados, cerca del 85%. Si los fotones ganaron más del 75%, el entrelazamiento está intacto. Si no, alguien los midió por el camino.',
+    'stageintro.3.btn': 'Calcular S',
+    'stageintro.4.title': 'Etapa 4: Clave secreta',
+    'stageintro.4.desc': 'La desigualdad de Bell se viola: el entrelazamiento está intacto. Queda convertir los pares con ángulos iguales en una clave común.',
+    'stageintro.4.btn': 'Formar la clave',
     'char.alice': 'Alice', 'char.bob': 'Bob',
-    'controls.title': 'Panel de control',
-    'basis.aliceTitle': 'Bases de Alice', 'basis.bobTitle': 'Bases de Bob',
-    'mode.manual': 'Modo manual', 'mode.manual.desc': 'Envía un único par entrelazado',
-    'mode.semiAuto': 'Modo semiautomático', 'mode.semiAuto.desc': 'Los pares se envían automáticamente, las bases se eligen manualmente',
-    'mode.auto': 'Modo automático', 'mode.auto.desc': 'Los pares se envían automáticamente, las bases se eligen automáticamente',
-    'btn.sift': 'Filtrar clave', 'btn.newKey': 'Generar una nueva clave',
-    'alert.eve': '⚠️ ¡Eva interceptó el par entrelazado! Esto puede afectar a la clave final.',
-    'notification.sift': '✅ ¡Datos suficientes para filtrar la clave!',
-    'rawKey.title': 'Clave en bruto', 'rawKey.collected': 'Recogidos', 'rawKey.pairs': 'pares entrelazados',
-    'bitHistory.hint': 'Haz clic en cualquier par de la clave en bruto para ver su historial',
-    'stat.matches': 'Coincidencias', 'stat.intercepts': 'Intercepciones',
-    'finalKey.title': 'Clave cuántica', 'finalKey.desc': 'La clave secreta se forma a partir de las mediciones coincidentes',
-    'disclaimer.text': '<strong>Nota:</strong> En el protocolo E91 real, la interferencia de Eva se controla mediante el parámetro QBER (Quantum Bit Error Rate). Si se supera el valor crítico de QBER, toda la sesión de distribución de claves se reinicia. En esta simulación, para simplificar, simplemente marcamos los pares interceptados por Eva y los excluimos de la clave final.',
+    'status.ready': 'Esperando un fotón', 'status.measured': '{angle}° → bit {bit}',
+    'controls.heading': 'Panel de control',
+    'eve.title': '🕵️ Eva en el canal (modo Dios)', 'eve.off': 'No',
+    'pa.details': 'Mostrar de qué bits se forma cada bit de la clave',
+    'nerd.p2': 'Cuántos bits secretos quedan se estima con la fórmula de Acín et al. (2007): r = 1 − h(Q) − χ(S). h(Q) es lo que revela la corrección de errores; χ(S), cuánto puede saber Eva con ese S.',
+    'nerd.p1': 'Los físicos describen cada combinación de ángulos con la correlación E = (coincidencias − diferencias) / total y las combinan en un número S (la desigualdad CHSH). La proporción de victorias y S se relacionan así: p = 1/2 + |S|/8. El límite clásico |S| ≤ 2 es justo ese 75%; el máximo cuántico 2√2 ≈ 2.83, cerca del 85%.',
+    'nerd.summary': '🔬 Para curiosos: cómo lo calculan los físicos',
+    'bell.box.winsSub': '(en todos los pares de prueba)',
+    'bell.box.wins': 'Victorias totales',
+    'gauge.quantum': 'entrelazamiento: ≈85%',
+    'gauge.classical': 'chuleta: máximo 75%',
+    'bell.wins': 'ganadas {w} de {n}',
+    'bell.rule.same': 'objetivo: bits iguales',
+    'bell.rule.diff': 'objetivo: bits distintos',
+    'table1.last': 'últimos {k} de {n} pares',
+    'stat.win.sub': 'fotones ordinarios ≤ 75% · entrelazados ≈ 85%',
+    'stat.win': 'Victorias en el juego de Bell (modo Dios)',
+    'source.desc': 'Alice y Bob eligen los ángulos al azar, como en el protocolo',
+    'source.stop': '⏸ Detener la fuente',
+    'source.start': '▶ Encender la fuente',
+    'warmup.done': '✅ Cuanto mayor es la diferencia de ángulos, menos a menudo los bits son opuestos. Cada fotón por separado es aleatorio, pero juntos se comportan de forma coordinada. En eso se basa la prueba de Bell.',
+    'warmup.col.exp': 'Teoría',
+    'warmup.col.opp': 'Bits opuestos',
+    'warmup.col.diff': 'Diferencia de ángulos',
+    'warmup.diff': 'Dif. {d}°',
+    'warmup.hint': 'La fuente está en la mesa del laboratorio, sin Eva. Elige la diferencia entre los ángulos de Alice y Bob: se enviarán 20 pares. ¿Con qué frecuencia sus bits serán opuestos?',
+    'warmup.title': '🔬 Calentamiento',
+    'history.sampled': 'Revelado para estimar el QBER — no entra en la clave',
+    'bell.verdict.lowRate': '🚨 {p}% de victorias con {q}% de errores: demasiado poco para descartar a Eva; en el peor caso sabe de la clave tanto como Alice y Bob. La clave se descarta.',
+    'bell.box.eveNone': 'no estaba',
+    'bell.box.eveSub': '(modo Dios)',
+    'bell.box.eve': 'Eva',
+    'eve.full': '100%',
+    'eve.random': 'Al azar',
+    'eve.hint': '«No» — canal limpio. «100%» — Eva intercepta cada par. «Al azar» — Eva puede estar o no, e intercepta una parte desconocida de los pares: intenta deducirlo por la prueba de Bell. El ruido del canal (~2%) siempre está presente.',
+    'stat.pairs': 'Pares medidos',    'progress.title': 'Datos recogidos',
+    'progress.key': '🔑 Pares para la clave (ángulos iguales)',
+    'table1.heading': 'Registro de mediciones',
+    'table.num': '#', 'table.aliceAngle': 'Ángulo A', 'table.aliceBit': 'Bit A', 'table.bobAngle': 'Ángulo B', 'table.bobBit': 'Bit B',
+    'table.category': 'Destino', 'table.angle': 'Ángulo', 'table.bobInv': 'Bob invierte', 'table.check': '¿Coincide?',
+    'btn.toSift': 'Anunciar ángulos',
+    'explanation.initial': 'Haz el calentamiento y luego enciende la fuente. Cada fila del registro es un par entrelazado.',
+    'explanation.need': 'Faltan datos: {missing}.',
+    'explanation.ready': '✅ Datos suficientes: {pairs} pares. Ya puedes anunciar los ángulos.',
+    'explanation.missKey': '{n} pares más para la clave',
+    'explanation.missBell': '{n} pares más {a}°/{b}°',
+    'sift.channel': 'Anuncio de ángulos por el canal público',
+    'siftmode.manual.title': 'De uno en uno', 'siftmode.manual.desc': 'Revelar los ángulos de un par',
+    'siftmode.auto.title': 'Todos a la vez', 'siftmode.auto.desc': 'Revelar los ángulos de todos los pares',
+    'pill.revealed': 'revelados', 'pill.key': 'a la clave', 'pill.bell': 'prueba de Bell', 'pill.discard': 'descartados',
+    'sift.rule': 'Ángulos iguales → 🔑 clave. Alice 0°/45° y Bob 22.5°/67.5° → 🔔 prueba de Bell. Las demás combinaciones (0°/45°, 22.5°/45°, 22.5°/67.5°) no sirven para ninguna de las dos → descarte.',
+    'cat.key': '🔑 Clave', 'cat.bell': '🔔 Prueba de Bell', 'cat.discard': '✗ Descarte',
+    'btn.toBell': 'Pasar a la prueba de Bell',
+    'bell.heading': 'Prueba de Bell: un juego de adivinanzas',
+    'bell.desc': 'Alice y Bob revelan los resultados de los pares de prueba y comprueban si se cumplió el objetivo de cada ronda: con 0°/67.5° los bits deben coincidir y en las demás combinaciones, diferir. Si los fotones tuvieran respuestas preparadas (una «chuleta»), ninguna chuleta ganaría más del 75% de las rondas. Los fotones entrelazados ganan cerca del 85%.',
+    'bell.box.qber': 'Errores en la clave', 'bell.box.qberSub': '(errores: {errors} de {total} pares revelados)',
+    'bell.verdict.ok': '✅ Los fotones ganaron el {p}% de las rondas, más del 75% al que llegan los fotones ordinarios. El entrelazamiento está intacto, errores del {q}%: Eva sabe poco de la clave. De {n} bits saldrán ~{m} secretos.',
+    'bell.verdict.warn': '⚠️ {p}% de victorias: más del 75%, pero por poco, y los errores son del {q}%. Hay secreto, pero Eva pudo averiguar algo, así que hay que comprimir mucho la clave: ~{m} bits secretos de {n}.',
+    'bell.verdict.fail': '🚨 Solo {p}% de victorias, no más del 75%. Así podrían jugar fotones ordinarios con una «chuleta», así que el entrelazamiento está destruido: alguien midió los fotones por el camino. La clave se descarta.',
+    'bell.confirm': '✅ Pasar a la formación de la clave', 'bell.reset': '🔄 Empezar de nuevo',
+    'keytable.heading': 'Pares con ángulos iguales',
+    'keytable.desc': 'Con ángulos iguales, los bits de un par entrelazado son opuestos. Por eso Bob invierte cada uno de sus bits y obtiene una copia de los de Alice. En amarillo, las discrepancias causadas por el ruido o por Eva.',
+    'pa.heading': 'Cómo se obtuvo la clave a partir de estos bits',
+    'pa.ec': '<strong>1. Corrección de errores.</strong> Pares para la clave: {n}. Alice y Bob comparan las paridades de pequeños bloques de bits y encuentran las discrepancias: hay {errors}. Bob corrige esos bits sin revelar los valores.',
+    'pa.pa': '<strong>2. Compresión.</strong> Eva pudo averiguar algo, así que los bits se comprimen: cada bit de clave es el XOR de un grupo de bits. Si Eva desconoce aunque sea un bit del grupo, el XOR es aleatorio para ella. Según la prueba de Bell, de {n} bits se obtienen ~{m} secretos; el juego toma 8.',
+    'pa.bit': 'Bit {k}',
+    'finalkey.heading': '🔐 Clave cuántica', 'finalkey.desc': 'El secreto común de Alice y Bob, obtenido de pares entrelazados',
+    'btn.copy': 'Copiar clave', 'btn.newkey': 'Nueva clave', 'notif.copied': '¡Clave copiada al portapapeles!',
+    'success.p1': '<strong>¡Listo! La clave común de 8 bits:</strong> {key}',
+    'success.p2': 'Los fotones ganaron el {p}% de las rondas del juego de Bell, más del 75% al que llegan los fotones ordinarios. Así que estaban entrelazados entre sí, y no con Eva.',
+    'success.eve': 'Modo Dios: Eva interceptó {eve} de {total} pares; las victorias bajaron, pero no hasta el 75%.',
+    'success.noEve': 'Modo Dios: Eva no estaba en el canal; la distancia al ideal ≈85% se debe solo al ruido y al azar.',
+    'history.title': 'Par #{n}',
+    'history.alice': 'Alice: ángulo {angle}°, bit {bit}', 'history.bob': 'Bob: ángulo {angle}°, bit {bit}',
+    'history.cat': 'Destino:',
+    'history.keyOk': 'Bob invierte el bit → {inv}, coincide con Alice ✓',
+    'history.keyErr': 'Bob invierte el bit → {inv}, no coincide con Alice — se corrige en la reconciliación',
+    'history.eve': '🕵️ Eva midió el fotón a {phi}° — entrelazamiento destruido',
+    'history.noise': '〰️ El ruido del canal invirtió el bit de Bob',
+    'history.theory': 'Probabilidad de bits opuestos con estos ángulos: cos²({d}°) = {p}%',
+    'keyhist.title': 'Bit de clave #{k}',
+    'keyhist.hint': 'Un bit de clave es el XOR de varios bits de Alice de pares con ángulos iguales. Haz clic en un número de par para ver su historia; ⚠ marca un par con error.',
+    'disclaimer.text': '<strong>Qué se simplifica:</strong> Ekert da los ángulos 0°, 45°, 90° para espines; para fotones son la mitad (0°, 22.5°, 45°). La decisión sobre la clave usa la cota de Acín et al. (2007), pero sin correcciones por tamaño finito de la muestra. El ruido del canal es un ~2% fijo; Eva usa el ataque más simple: mide el fotón con un ángulo aleatorio. La corrección de errores y la compresión se muestran de forma esquemática, y los sistemas reales usan millones de pares.',
     'nav.theory': 'Leer la teoría', 'nav.home': 'Volver al laboratorio',
-    'status.aliceApplied': 'Base aplicada: {basis}', 'status.bobApplied': 'Base aplicada: {basis}',
-    'status.result': 'Resultado de la medición: {result}',
-    'explanation.initial': 'Elige las bases para Alice y Bob y envía un par entrelazado. Cuando hayas enviado suficientes pares, pulsa "Filtrar clave" para crear una clave secreta a partir de las mediciones coincidentes.',
-    'explanation.enoughMatches': '¡Has enviado suficientes pares entrelazados! Pulsa "Filtrar clave" para crear la clave secreta.||Solo las bases coincidentes sin interceptación ({matches}) se usarán para formar la clave final.',
-    'explanation.insufficient': '⚠️ ¡Datos insuficientes para formar una clave de 8 bits!||Necesitas enviar más pares entrelazados para que, tras excluir los interceptados, queden al menos 8 coincidentes.||Actualmente tienes {count} pares adecuados.',
-    'explanation.success': '<strong>¡Felicidades! Has creado una clave cuántica secreta de 8 bits:</strong> {key}||Esta clave se puede usar para cifrar mensajes de forma segura con Bob.||Cualquier intento de interceptación ({intercepts} ocurrido(s)) habría alterado los estados cuánticos y se habría detectado al comprobar las desigualdades de Bell.',
-    'history.title': 'Historial del par #{index}:',
-    'history.aliceMeasured': 'Alice midió en:', 'history.bobMeasured': 'Bob midió en:',
-    'history.basis': 'Base', 'history.aliceResult': 'Resultado de Alice:', 'history.bobResult': 'Resultado de Bob:',
-    'history.intercept': '⚠️ Interceptación:', 'history.interceptNo': 'Interceptación: No', 'history.yes': 'Sí',
-    'history.basisMatch': '✓ Coincidencia de bases:', 'history.basisNoMatch': '✗ Coincidencia de bases: No',
-    'history.status': 'Estado:', 'history.status.dropped': 'Descartado (comprometido)',
-    'history.status.excess': 'Apto para la clave, pero redundante',
-    'history.status.used': 'Usado en la clave', 'history.status.notMatched': 'Las bases no coincidieron',
   },
 };
 
+let currentLang = 'ru';
 function t(key, vars) {
-  const dict = I18N[state.lang] || I18N.ru;
-  let str = dict[key] !== undefined ? dict[key] : (I18N.ru[key] !== undefined ? I18N.ru[key] : key);
-  if (vars) for (const k in vars) str = str.replace(new RegExp('\\{' + k + '\\}', 'g'), vars[k]);
-  return str;
+    const dict = I18N[currentLang] || I18N.ru;
+    let str = dict[key] !== undefined ? dict[key] : (I18N.ru[key] !== undefined ? I18N.ru[key] : key);
+    if (vars) for (const k in vars) str = str.replace(new RegExp('\\{' + k + '\\}', 'g'), vars[k]);
+    return str;
 }
 
-function tParas(key, vars) {
-  return t(key, vars).split('||').map(p => `<p>${p}</p>`).join('\n');
+// ══════════════════════════════════════════════════════
+//  СОСТОЯНИЕ
+// ══════════════════════════════════════════════════════
+let pairs = [];
+let selA = 'a1', selB = 'b1';
+// Ева: нет / 100% / случайно. В случайном режиме доля перехватов тайно выбирается
+// на каждую сессию: с вероятностью 30% Евы нет, иначе от 5% до 35% пар.
+let eveMode = 'random';
+function drawEveRate() {
+    if (eveMode === 'off') return 0;
+    if (eveMode === 'full') return 1;
+    return Math.random() < 0.3 ? 0 : 0.05 + Math.random() * 0.3;
+}
+let eveRate = drawEveRate();
+let qberSample = [];         // индексы пар с одинаковыми углами, раскрытых для оценки QBER
+let currentStage = 1;
+let autoInterval = null;
+let siftRevealIndex = 0;
+let bellResult = null;
+let keyData = null;          // { keyPairs, groups, finalKey, errors }
+let historyView = null;      // { type: 'pair'|'key', index }
+let aliceStatusState = null, bobStatusState = null;
+let chatterInterval = null;
+
+const $ = id => document.getElementById(id);
+const measureTableBody = $('measureTableBody');
+const siftTableBody = $('siftTableBody');
+const bitHistory = $('bitHistory');
+
+const fmtAngle = s => String(ANGLES[s]);
+const angleClass = s => 'ang-' + Math.floor(ANGLES[s]);
+const fmt = (x, d = 2) => x.toFixed(d);
+
+// ══════════════════════════════════════════════════════
+//  ЭТАПЫ
+// ══════════════════════════════════════════════════════
+function goToStage(n) {
+    [1, 2, 3, 4].forEach(i => {
+        $('stage' + i).classList.toggle('hidden', i !== n);
+        const dot = $('stageDot' + i);
+        dot.classList.remove('active', 'completed');
+        if (i < n) dot.classList.add('completed');
+        else if (i === n) dot.classList.add('active');
+        $('stageIntro' + i).classList.remove('hidden');
+        $('stageBody' + i).classList.add('hidden');
+    });
+    currentStage = n;
+    renderStageName();
+    stopChatter();
+}
+function renderStageName() {
+    $('stageNameText').textContent = currentStage + ' / 4 — ' + t('stage.label.' + currentStage);
+}
+function showStageBody(n) {
+    $('stageIntro' + n).classList.add('hidden');
+    $('stageBody' + n).classList.remove('hidden');
+    if (n === 2) startChatter();
+    if (n === 3) renderBell();
+    if (n === 4) renderKeyStage();
 }
 
-function applyLanguage(lang) {
-  if (!I18N[lang]) lang = 'ru';
-  state.lang = lang;
-  document.documentElement.lang = lang;
-  document.title = t('meta.title');
-  document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n')); });
-  document.querySelectorAll('.lang-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.langBtn === lang); });
-  try { localStorage.setItem('ludusLang', lang); } catch (e) {}
-  refreshDynamicUI();
+// ══════════════════════════════════════════════════════
+//  ЭТАП 1: ИЗМЕРЕНИЯ
+// ══════════════════════════════════════════════════════
+// Разминка: источник на лабораторном столе, без Евы. Для каждой разницы углов
+// отправляем по WARMUP_BATCH пар и считаем, как часто биты противоположны (≈ cos²).
+const WARMUP_BATCH = 20;
+const WARMUP_SETUPS = [
+    { diff: 0, a: 'a2', b: 'b1' },
+    { diff: 22.5, a: 'a1', b: 'b1' },
+    { diff: 45, a: 'a1', b: 'b2' },
+    { diff: 67.5, a: 'a1', b: 'b3' },
+];
+let warmup = {};             // diff -> { opp, n }
+
+function runWarmup(setup) {
+    let opp = 0;
+    for (let i = 0; i < WARMUP_BATCH; i++) {
+        const p = measurePair(setup.a, setup.b, false);
+        if (p.aliceBit !== p.bobBit) opp++;
+    }
+    const prev = warmup[setup.diff] || { opp: 0, n: 0 };
+    warmup[setup.diff] = { opp: prev.opp + opp, n: prev.n + WARMUP_BATCH };
+    animateFlight(setup.a, setup.b, false);
+    renderWarmup();
 }
 
-function initLanguage() {
-  let saved = null;
-  try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
-  if (!saved) { const browserLang = (navigator.language || 'ru').slice(0, 2); saved = I18N[browserLang] ? browserLang : 'ru'; }
-  applyLanguage(saved);
+function renderWarmup() {
+    $('warmupButtons').innerHTML = WARMUP_SETUPS.map((w, i) =>
+        `<button class="warmup-btn" data-w="${i}">${t('warmup.diff', { d: w.diff })}</button>`).join('');
+    $('warmupButtons').querySelectorAll('.warmup-btn').forEach(btn =>
+        btn.addEventListener('click', () => runWarmup(WARMUP_SETUPS[btn.dataset.w])));
+    const done = WARMUP_SETUPS.filter(w => warmup[w.diff]);
+    if (!done.length) { $('warmupResults').innerHTML = ''; return; }
+    const rows = done.map(w => {
+        const r = warmup[w.diff];
+        const pct = Math.round(r.opp / r.n * 100);
+        return `<tr><td>${w.diff}°</td><td style="text-align:left"><span class="opp-bar" style="width:${pct * 0.6}px"></span>${pct}% <span style="opacity:.7">(${r.opp}/${r.n})</span></td>` +
+            `<td>≈${Math.round(cos2(w.diff) * 100)}%</td></tr>`;
+    }).join('');
+    $('warmupResults').innerHTML =
+        `<table class="warmup-table"><thead><tr><th>${t('warmup.col.diff')}</th><th>${t('warmup.col.opp')}</th><th>${t('warmup.col.exp')}</th></tr></thead><tbody>${rows}</tbody></table>` +
+        (done.length === WARMUP_SETUPS.length ? `<div class="warmup-done">${t('warmup.done')}</div>` : '');
 }
 
-function refreshDynamicUI() {
-  renderAliceStatus();
-  renderBobStatus();
-  renderExplanation();
-  if (state.lastHistoryIndex !== null) showBitHistory(state.lastHistoryIndex);
+function renderEveControl() {
+    document.querySelectorAll('.eve-option').forEach(btn =>
+        btn.classList.toggle('selected', btn.dataset.eve === eveMode));
 }
 
-function renderAliceStatus() {
-  const statusLine1 = elements.aliceStatus.querySelector('.status-line-1');
-  const statusLine2 = elements.aliceStatus.querySelector('.status-line-2');
-  statusLine1.textContent = t('status.aliceApplied', { basis: state.aliceStatus.basis.toUpperCase() });
-  statusLine2.textContent = t('status.result', { result: state.aliceStatus.result });
+function renderStatuses() {
+    $('aliceStatus').textContent = aliceStatusState ? t('status.measured', aliceStatusState) : t('status.ready');
+    $('bobStatus').textContent = bobStatusState ? t('status.measured', bobStatusState) : t('status.ready');
 }
 
-function renderBobStatus() {
-  const statusLine1 = elements.bobStatus.querySelector('.status-line-1');
-  const statusLine2 = elements.bobStatus.querySelector('.status-line-2');
-  statusLine1.textContent = t('status.bobApplied', { basis: state.bobStatus.basis.toUpperCase() });
-  statusLine2.textContent = t('status.result', { result: state.bobStatus.result });
+function showBasisIndicator(el, s) {
+    el.innerHTML = `<span class="${angleClass(s)}">${ANGLES[s]}°</span>`;
+    el.style.opacity = '1';
 }
 
-function setExplanation(key, vars) {
-  state.explanation = { key, vars };
-  renderExplanation();
+// Полёт пары фотонов от источника к Алисе и Бобу (только визуализация)
+function animateFlight(a, b, intercepted, onDone) {
+    const channel = $('quantumChannel');
+    const pA = document.createElement('div');
+    const pB = document.createElement('div');
+    pA.className = 'photon to-alice'; pA.textContent = '?';
+    pB.className = 'photon to-bob'; pB.textContent = '?';
+    channel.appendChild(pA); channel.appendChild(pB);
+    showBasisIndicator($('aliceBasis'), a);
+    showBasisIndicator($('bobBasis'), b);
+    if (intercepted) {
+        $('eveIcon').style.opacity = '1';
+        setTimeout(() => { $('eveIcon').style.opacity = '0'; }, 1000);
+    }
+    setTimeout(() => {
+        pA.remove(); pB.remove();
+        $('aliceBasis').style.opacity = '0';
+        $('bobBasis').style.opacity = '0';
+        if (onDone) onDone();
+    }, 1200);
+}
+
+// Источник работает быстро: измерения сразу попадают в журнал, а полёт
+// показываем только для каждой SHOW_EVERY-й пары, чтобы канал «жил»
+const SHOW_EVERY = 12;
+const LOG_ROWS = 20;          // в журнале этапа 1 видны только последние пары
+function sendPair() {
+    if (currentStage !== 1 || pairs.length >= MAX_PAIRS) return;
+    const intercepted = Math.random() < eveRate;
+    const pair = measurePair(selA, selB, intercepted);
+    addPair(pair);
+    if (pairs.length % SHOW_EVERY === 0) animateFlight(selA, selB, intercepted);
+}
+
+function addPair(pair) {
+    pairs.push(pair);
+    const i = pairs.length - 1;
+    aliceStatusState = { angle: ANGLES[pair.a], bit: pair.aliceBit };
+    bobStatusState = { angle: ANGLES[pair.b], bit: pair.bobBit };
+    renderStatuses();
+    const tr = document.createElement('tr');
+    tr.className = 'new-row clickable';
+    tr.innerHTML = `<td>${i + 1}</td><td class="${angleClass(pair.a)}">${ANGLES[pair.a]}°</td><td>${pair.aliceBit}</td>` +
+        `<td class="${angleClass(pair.b)}">${ANGLES[pair.b]}°</td><td>${pair.bobBit}</td>`;
+    tr.addEventListener('click', () => showPairHistory(i));
+    measureTableBody.prepend(tr);
+    while (measureTableBody.children.length > LOG_ROWS) measureTableBody.lastChild.remove();
+    updateStage1Stats();
+}
+
+function stage1Needs() {
+    const keyCount = pairs.filter(p => p.cat === 'key').length;
+    const bellCounts = BELL_PAIRS.map(bp => pairs.filter(p => p.a === bp.a && p.b === bp.b).length);
+    const ready = keyCount >= MIN_KEY_PAIRS && bellCounts.every(c => c >= MIN_PER_BELL_PAIR);
+    return { keyCount, bellCounts, ready };
+}
+
+function updateStage1Stats() {
+    $('pairCount').textContent = pairs.length;
+    $('logCaption').textContent = pairs.length ? t('table1.last', { k: Math.min(LOG_ROWS, pairs.length), n: pairs.length }) : '';
+    const res = computeS();
+    const liveS = $('liveS');
+    if (res) {
+        const p = winRate(res);
+        liveS.textContent = Math.round(p * 100) + '%';
+        liveS.className = 'stat-value ' + (p > 0.8 ? 'qber-ok' : p > 0.75 ? 'qber-warn' : 'qber-bad');
+    } else {
+        liveS.textContent = '—';
+        liveS.className = 'stat-value';
+    }
+    renderProgress();
+    renderExplanation();
+    const { ready } = stage1Needs();
+    $('toSiftBtn').disabled = !ready;
+    $('toSiftBtn').classList.toggle('sift-active', ready);
+}
+
+function renderProgress() {
+    const { keyCount, bellCounts } = stage1Needs();
+    const item = (label, n, need, extra = '') => {
+        const pct = Math.min(100, n / need * 100);
+        return `<div class="progress-item ${extra}${n >= need ? ' done' : ''}">${label}: <strong>${Math.min(n, need)}/${need}</strong>` +
+            `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div></div>`;
+    };
+    let html = item(t('progress.key'), keyCount, MIN_KEY_PAIRS, 'key-progress');
+    BELL_PAIRS.forEach((bp, i) => {
+        html += item(`🔔 ${ANGLES[bp.a]}° / ${ANGLES[bp.b]}°`, bellCounts[i], MIN_PER_BELL_PAIR);
+    });
+    $('progressGrid').innerHTML = html;
 }
 
 function renderExplanation() {
-  if (elements.explanation) elements.explanation.innerHTML = tParas(state.explanation.key, state.explanation.vars);
+    const el = $('explanation');
+    if (!pairs.length) { el.innerHTML = `<p>${t('explanation.initial')}</p>`; return; }
+    const { keyCount, bellCounts, ready } = stage1Needs();
+    if (ready) { el.innerHTML = `<p>${t('explanation.ready', { pairs: pairs.length })}</p>`; return; }
+    const missing = [];
+    if (keyCount < MIN_KEY_PAIRS) missing.push(t('explanation.missKey', { n: MIN_KEY_PAIRS - keyCount }));
+    BELL_PAIRS.forEach((bp, i) => {
+        if (bellCounts[i] < MIN_PER_BELL_PAIR)
+            missing.push(t('explanation.missBell', { n: MIN_PER_BELL_PAIR - bellCounts[i], a: ANGLES[bp.a], b: ANGLES[bp.b] }));
+    });
+    let html = `<p>${t('explanation.initial')}</p><p>${t('explanation.need', { missing: missing.join(', ') })}</p>`;
+    el.innerHTML = html;
 }
 
-document.querySelectorAll('.lang-btn').forEach(btn => {
-  btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn));
-});
+function renderSourceButton() {
+    $('sourceBtnLabel').textContent = t(autoInterval ? 'source.stop' : 'source.start');
+    $('autoModeBtn').classList.toggle('active-mode', !!autoInterval);
+}
+function stopModes() {
+    clearInterval(autoInterval); autoInterval = null;
+    renderSourceButton();
+}
+function toggleAuto() {
+    const wasOn = !!autoInterval;
+    stopModes();
+    if (wasOn) { renderExplanation(); return; }
+    // Останавливаемся сами, когда данных впервые стало достаточно; если их уже
+    // хватало (игрок хочет больше статистики) — идём до ручной остановки
+    const startedReady = stage1Needs().ready;
+    autoInterval = setInterval(() => {
+        for (let i = 0; i < AUTO_BATCH; i++) {
+            // В протоколе углы каждый раз выбираются случайно и независимо
+            selA = ALICE_SETTINGS[Math.floor(Math.random() * 3)];
+            selB = BOB_SETTINGS[Math.floor(Math.random() * 3)];
+            sendPair();
+        }
+        if (pairs.length >= MAX_PAIRS || (!startedReady && stage1Needs().ready)) { stopModes(); renderExplanation(); }
+    }, 50);
+    renderSourceButton();
+}
 
-// Инициализация при загрузке страницы
-document.addEventListener('DOMContentLoaded', function() {
-console.log("Игра E91: Загрузка скрипта");
-initializeElements();
-initLanguage();
-initializeGame();
-});
-// Инициализация элементов DOM
-function initializeElements() {
-elements.aliceBasisOptions = document.querySelectorAll('.basis-option[data-basis^="a"]');
-elements.bobBasisOptions = document.querySelectorAll('.basis-option[data-basis^="b"]');
-elements.manualModeBtn = document.getElementById('manualModeBtn');
-elements.semiAutoBtn = document.getElementById('semiAutoBtn');
-elements.autoModeBtn = document.getElementById('autoModeBtn');
-elements.siftKeyBtn = document.getElementById('siftKey');
-elements.newKeyBtn = document.getElementById('newKeyBtn');
-elements.finalKeySection = document.getElementById('finalKeySection');
-elements.rawKeyGrid = document.getElementById('rawKeyGrid');
-elements.finalKeyGrid = document.getElementById('finalKeyGrid');
-elements.rawKeyCount = document.getElementById('rawKeyCount');
-elements.matchCount = document.getElementById('matchCount');
-elements.interceptCount = document.getElementById('interceptCount');
-elements.explanation = document.getElementById('explanation');
-elements.aliceStatus = document.getElementById('aliceStatus');
-elements.bobStatus = document.getElementById('bobStatus');
-elements.eveAlert = document.getElementById('eveAlert');
-elements.eveIcon = document.getElementById('eveIcon');
-elements.aliceBasisIndicator = document.getElementById('aliceBasis');
-elements.bobBasisElement = document.getElementById('bobBasis');
-elements.quantumChannel = document.getElementById('quantumChannel');
-elements.classicalChannel = document.getElementById('classicalChannel');
-elements.protocolHeader = document.getElementById('protocolHeader');
-elements.protocolContent = document.getElementById('protocolContent');
-elements.bitHistory = document.getElementById('bitHistory');
-elements.bitHistoryInfo = document.getElementById('bitHistoryInfo');
-elements.siftNotification = document.getElementById('siftNotification');
-elements.siftKeyNotification = document.getElementById('siftKeyNotification');
-elements.entangledPhotons = document.getElementById('entangledPhotons');
-}
-// Основная инициализация игры
-function initializeGame() {
-createKeyGrid(elements.rawKeyGrid, 16);
-createKeyGrid(elements.finalKeyGrid, FINAL_KEY_LENGTH);
-setupEventListeners();
-resetGame();
-}
-// Настройка обработчиков событий
-function setupEventListeners() {
-// Обработчики выбора базиса Алисы
-elements.aliceBasisOptions.forEach(option => {
-option.addEventListener('click', function() {
-selectBasis('alice', this);
-});
-});
-// Обработчики выбора базиса Боба
-elements.bobBasisOptions.forEach(option => {
-option.addEventListener('click', function() {
-selectBasis('bob', this);
-});
-});
-// Обработчики кнопок
-elements.manualModeBtn.addEventListener('click', () => sendEntangledPair());
-elements.semiAutoBtn.addEventListener('click', toggleSemiAutoMode);
-elements.autoModeBtn.addEventListener('click', toggleAutoMode);
-elements.siftKeyBtn.addEventListener('click', siftKey);
-elements.newKeyBtn.addEventListener('click', resetGame);
-elements.protocolHeader.addEventListener('click', toggleProtocol);
-}
-// Функции управления статусами
-function updateAliceStatus(basis, result) {
-state.aliceStatus.basis = basis;
-if (result !== null) state.aliceStatus.result = result;
-renderAliceStatus();
-}
-function updateBobStatus(basis, result) {
-state.bobStatus.basis = basis;
-if (result !== null) state.bobStatus.result = result;
-renderBobStatus();
-}
-// Функции управления режимами
-function toggleSemiAutoMode() {
-if (gameState.siftKeyPressed) return;
-if (gameState.isSemiAutoActive) {
-stopSemiAuto();
-} else {
-stopAuto();
-startSemiAuto();
-}
-}
-function toggleAutoMode() {
-if (gameState.siftKeyPressed) return;
-if (gameState.isAutoActive) {
-stopAuto();
-} else {
-stopSemiAuto();
-startAuto();
-}
-}
-function startSemiAuto() {
-gameState.isSemiAutoActive = true;
-elements.semiAutoBtn.classList.add('active-mode');
-gameState.semiAutoInterval = setInterval(() => {
-if (gameState.rawKey.length < 100 && !gameState.siftKeyPressed) {
-sendEntangledPair();
-}
-}, 1500);
-}
-function stopSemiAuto() {
-gameState.isSemiAutoActive = false;
-elements.semiAutoBtn.classList.remove('active-mode');
-if (gameState.semiAutoInterval) {
-clearInterval(gameState.semiAutoInterval);
-gameState.semiAutoInterval = null;
-}
-}
-function startAuto() {
-gameState.isAutoActive = true;
-elements.autoModeBtn.classList.add('active-mode');
-gameState.autoInterval = setInterval(() => {
-if (gameState.rawKey.length < 100 && !gameState.siftKeyPressed) {
-selectRandomBases();
-sendEntangledPair();
-}
-}, 1500);
-}
-function stopAuto() {
-gameState.isAutoActive = false;
-elements.autoModeBtn.classList.remove('active-mode');
-if (gameState.autoInterval) {
-clearInterval(gameState.autoInterval);
-gameState.autoInterval = null;
-}
-}
-// Функции управления базисами
-function selectBasis(character, element) {
-const options = character === 'alice' ? elements.aliceBasisOptions : elements.bobBasisOptions;
-// Снимаем выделение со всех базисов
-options.forEach(opt => opt.classList.remove('selected'));
-// Выбираем новый вариант
-element.classList.add('selected');
-const basis = element.getAttribute('data-basis');
-const basisName = basis.toUpperCase();
-if (character === 'alice') {
-gameState.selectedAliceBasis = basis;
-updateAliceStatus(basisName, null);
-} else {
-gameState.selectedBobBasis = basis;
-updateBobStatus(basisName, null);
-}
-}
-function selectRandomBases() {
-const randomAliceBasis = ['a1', 'a2', 'a3'][Math.floor(Math.random() * 3)];
-const randomBobBasis = ['b1', 'b2', 'b3'][Math.floor(Math.random() * 3)];
-// Выбираем соответствующие элементы базисов
-elements.aliceBasisOptions.forEach(opt => {
-if (opt.getAttribute('data-basis') === randomAliceBasis) {
-opt.classList.add('selected');
-} else {
-opt.classList.remove('selected');
-}
-});
-elements.bobBasisOptions.forEach(opt => {
-if (opt.getAttribute('data-basis') === randomBobBasis) {
-opt.classList.add('selected');
-} else {
-opt.classList.remove('selected');
-}
-});
-gameState.selectedAliceBasis = randomAliceBasis;
-gameState.selectedBobBasis = randomBobBasis;
-// Обновляем статусы
-updateAliceStatus(randomAliceBasis.toUpperCase(), null);
-updateBobStatus(randomBobBasis.toUpperCase(), null);
-}
-// Функции управления каналами
-function activateQuantumChannel() {
-elements.quantumChannel.classList.remove('inactive');
-elements.quantumChannel.classList.add('active');
-elements.classicalChannel.classList.remove('active');
-elements.classicalChannel.classList.add('inactive');
-stopClassicalChannelAnimation();
-elements.entangledPhotons.classList.remove('inactive');
-}
-function activateClassicalChannel() {
-elements.quantumChannel.classList.remove('active');
-elements.quantumChannel.classList.add('inactive');
-elements.classicalChannel.classList.remove('inactive');
-elements.classicalChannel.classList.add('active');
-startClassicalChannelAnimation();
-elements.entangledPhotons.classList.add('inactive');
-}
-function startClassicalChannelAnimation() {
-if (gameState.classicalChannelInterval) return;
-gameState.classicalChannelInterval = setInterval(() => {
-// Пакет от Алисы к Бобу
-const packetToBob = document.createElement('div');
-packetToBob.className = 'data-packet to-bob';
-elements.classicalChannel.appendChild(packetToBob);
-// Пакет от Боба к Алисе (с задержкой)
-setTimeout(() => {
-const packetToAlice = document.createElement('div');
-packetToAlice.className = 'data-packet to-alice';
-elements.classicalChannel.appendChild(packetToAlice);
-// Удаляем пакеты после завершения анимации
-setTimeout(() => {
-if (packetToBob.parentNode) {
-packetToBob.parentNode.removeChild(packetToBob);
-}
-}, 2000);
-setTimeout(() => {
-if (packetToAlice.parentNode) {
-packetToAlice.parentNode.removeChild(packetToAlice);
-}
-}, 2000);
-}, 1000);
-}, 1500);
-}
-function stopClassicalChannelAnimation() {
-if (gameState.classicalChannelInterval) {
-clearInterval(gameState.classicalChannelInterval);
-gameState.classicalChannelInterval = null;
-}
-// Удаляем все пакеты данных
-const packets = elements.classicalChannel.querySelectorAll('.data-packet');
-packets.forEach(packet => {
-if (packet.parentNode) {
-packet.parentNode.removeChild(packet);
-}
-});
-}
-// Основная логика игры
-function sendEntangledPair() {
-if (gameState.siftKeyPressed) return;
-const currentAliceBasis = gameState.selectedAliceBasis;
-const currentBobBasis = gameState.selectedBobBasis;
-// Создаем фотоны с фиолетовым оформлением
-const photonToAlice = document.createElement('div');
-photonToAlice.className = 'photon to-alice';
-photonToAlice.textContent = '?';
-const photonToBob = document.createElement('div');
-photonToBob.className = 'photon to-bob';
-photonToBob.textContent = '?';
-// Добавляем в канал
-elements.quantumChannel.appendChild(photonToAlice);
-elements.quantumChannel.appendChild(photonToBob);
-// Анимация базисов
-showBasisIndicators(currentAliceBasis, currentBobBasis);
-// Случайно решаем, будет ли перехват (ИЗМЕНЕНО: 20% вероятность)
-const shouldIntercept = Math.random() < EVE_INTERCEPT_PROBABILITY;
-if (shouldIntercept) {
-showEveInterception();
-}
-// Анимация движения фотонов
-setTimeout(() => {
-photonToAlice.style.animation = 'photonTravelToAlice 2s linear forwards';
-photonToBob.style.animation = 'photonTravelToBob 2s linear forwards';
-// Анимация завершена
-setTimeout(() => {
-// Удаляем фотоны и скрываем базисы
-cleanupAfterAnimation(photonToAlice, photonToBob);
-// Измерение запутанных фотонов
-measureEntangledPair(shouldIntercept, currentAliceBasis, currentBobBasis);
-// Сбрасываем таймауты
-resetInterceptTimeouts();
-}, 2000);
-}, 10);
-}
-function showBasisIndicators(aliceBasis, bobBasis) {
-// Анимация базиса Алисы
-if (elements.aliceBasisIndicator) {
-elements.aliceBasisIndicator.style.opacity = '1';
-if (aliceBasis === 'a1') {
-elements.aliceBasisIndicator.textContent = '|';
-elements.aliceBasisIndicator.style.background = 'rgba(0, 128, 0, 0.2)';
-elements.aliceBasisIndicator.style.borderColor = '#008000';
-} else if (aliceBasis === 'a2') {
-elements.aliceBasisIndicator.textContent = '/';
-elements.aliceBasisIndicator.style.background = 'rgba(255, 140, 0, 0.2)';
-elements.aliceBasisIndicator.style.borderColor = '#ff8c00';
-} else {
-elements.aliceBasisIndicator.textContent = '—';
-elements.aliceBasisIndicator.style.background = 'rgba(10, 186, 181, 0.2)';
-elements.aliceBasisIndicator.style.borderColor = '#0abab5';
-}
-}
-// Анимация базиса Боба
-if (elements.bobBasisElement) {
-elements.bobBasisElement.style.opacity = '1';
-if (bobBasis === 'b1') {
-elements.bobBasisElement.textContent = '|';
-elements.bobBasisElement.style.background = 'rgba(0, 128, 0, 0.2)';
-elements.bobBasisElement.style.borderColor = '#008000';
-} else if (bobBasis === 'b2') {
-elements.bobBasisElement.textContent = '/';
-elements.bobBasisElement.style.background = 'rgba(255, 140, 0, 0.2)';
-elements.bobBasisElement.style.borderColor = '#ff8c00';
-} else {
-elements.bobBasisElement.textContent = '—';
-elements.bobBasisElement.style.background = 'rgba(10, 186, 181, 0.2)';
-elements.bobBasisElement.style.borderColor = '#0abab5';
-}
-}
-}
-function showEveInterception() {
-// Показываем Еву через некоторое время
-gameState.interceptTimeout = setTimeout(() => {
-if (elements.eveIcon) {
-elements.eveIcon.style.opacity = '1';
-}
-if (elements.eveAlert) {
-elements.eveAlert.style.display = 'block';
-setTimeout(() => {
-elements.eveAlert.style.display = 'none';
-}, 2000);
-}
-}, 300);
-// Скрываем Еву позже
-gameState.interceptHideTimeout = setTimeout(() => {
-if (elements.eveIcon) {
-elements.eveIcon.style.opacity = '0';
-}
-}, 2200);
-}
-function cleanupAfterAnimation(photonToAlice, photonToBob) {
-// Удаляем фотоны
-if (photonToAlice.parentNode) {
-photonToAlice.parentNode.removeChild(photonToAlice);
-}
-if (photonToBob.parentNode) {
-photonToBob.parentNode.removeChild(photonToBob);
-}
-// Скрываем базисы
-if (elements.aliceBasisIndicator) {
-elements.aliceBasisIndicator.style.opacity = '0';
-}
-if (elements.bobBasisElement) {
-elements.bobBasisElement.style.opacity = '0';
-}
-}
-function resetInterceptTimeouts() {
-if (gameState.interceptTimeout) {
-clearTimeout(gameState.interceptTimeout);
-gameState.interceptTimeout = null;
-}
-}
-function measureEntangledPair(wasIntercepted, aliceBasis, bobBasis) {
-// Результаты измерений для запутанных пар
-let aliceValue, bobValue;
-if (wasIntercepted) {
-// Если был перехват, Ева измерила в случайном базисе
-aliceValue = Math.round(Math.random()).toString();
-bobValue = Math.round(Math.random()).toString();
-// Увеличиваем счетчик перехватов
-gameState.eveIntercepts++;
-if (elements.interceptCount) {
-elements.interceptCount.textContent = gameState.eveIntercepts;
-}
-} else {
-// Без перехвата - корректные квантовые корреляции
-aliceValue = Math.round(Math.random()).toString();
-// Результат Боба зависит от базисов и результата Алисы
-if (aliceBasis.replace('a', '') === bobBasis.replace('b', '')) {
-// Если базисы совпадают, результаты антикоррелированы
-bobValue = aliceValue === '0' ? '1' : '0';
-} else {
-// Если базисы разные, результат случайный
-bobValue = Math.round(Math.random()).toString();
-}
-}
-// Отображаем результат
-setTimeout(() => {
-updateAliceStatus(aliceBasis.toUpperCase(), aliceValue);
-updateBobStatus(bobBasis.toUpperCase(), bobValue);
-// Передаем сохраненные значения
-addToRawKey(aliceValue, aliceBasis, bobValue, bobBasis, wasIntercepted);
-// Скрываем базисы
-setTimeout(() => {
-if (elements.aliceBasisIndicator) {
-elements.aliceBasisIndicator.style.opacity = '0';
-}
-if (elements.bobBasisElement) {
-elements.bobBasisElement.style.opacity = '0';
-}
-}, 1500);
-}, 1000);
-}
-function addToRawKey(aliceValue, aliceBasis, bobValue, bobBasis, wasIntercepted) {
-const index = gameState.rawKey.length;
-// Добавляем в сырую ключевую последовательность
-gameState.rawKey.push({
-aliceValue,
-aliceBasis,
-bobValue,
-bobBasis,
-wasIntercepted,
-matches: aliceBasis.replace('a', '') === bobBasis.replace('b', '')
-});
-// Если нужно добавить новую пару в сетку
-if (index >= elements.rawKeyGrid.children.length) {
-addKeyBit();
-}
-// Обновляем отображение
-updateRawKeyDisplay(index, aliceValue, aliceBasis, bobBasis, wasIntercepted);
-// Обновляем счетчики
-updateCounters();
-// Проверяем, можно ли просеять ключ
-checkSiftingAvailability();
-}
-function updateRawKeyDisplay(index, aliceValue, aliceBasis, bobBasis, wasIntercepted) {
-const rawKeyCells = elements.rawKeyGrid.querySelectorAll('.key-bit');
-if (index < rawKeyCells.length) {
-const cell = rawKeyCells[index];
-// Устанавливаем значение Алисы
-cell.textContent = aliceValue;
-// Цвет в зависимости от совпадения базисов
-if (aliceBasis.replace('a', '') === bobBasis.replace('b', '')) {
-cell.style.background = 'rgba(0, 107, 166, 0.7)';
-cell.style.borderColor = 'rgba(0, 136, 204, 0.4)';
-} else {
-cell.style.background = 'rgba(200, 50, 50, 0.2)';
-cell.style.borderColor = 'rgba(255, 68, 68, 0.3)';
-}
-// Отмечаем перехват
-if (wasIntercepted) {
-cell.classList.add('intercept');
-}
-// Анимируем появление новой пары
-cell.classList.add('new');
-}
-}
-function updateCounters() {
-// Обновляем счетчик
-if (elements.rawKeyCount) {
-elements.rawKeyCount.textContent = gameState.rawKey.length;
-}
-// Обновляем количество совпадений (без перехваченных)
-const matches = gameState.rawKey.filter(item => item.matches && !item.wasIntercepted).length;
-if (elements.matchCount) {
-elements.matchCount.textContent = matches;
-}
-// Обновляем состояние кнопки Просеять ключ
-updateSiftButtonState();
-}
-function updateSiftButtonState() {
-const matches = gameState.rawKey.filter(item => item.matches && !item.wasIntercepted).length;
-elements.siftKeyBtn.disabled = !isSiftingAvailable() || gameState.siftKeyPressed;
-// Обновляем подсветку кнопки Просеять ключ
-if (!elements.siftKeyBtn.disabled) {
-elements.siftKeyBtn.classList.add('sift-active');
-} else {
-elements.siftKeyBtn.classList.remove('sift-active');
-}
-}
-function isSiftingAvailable() {
-const matches = gameState.rawKey.filter(item => item.matches && !item.wasIntercepted).length;
-return matches >= MIN_MATCHES_FOR_SIFTING;
-}
-function checkSiftingAvailability() {
-const matches = gameState.rawKey.filter(item => item.matches && !item.wasIntercepted).length;
-// Проверяем, достаточно ли совпадений для просеивания (без перехваченных)
-if (matches >= MIN_MATCHES_FOR_SIFTING) {
-// Показываем уведомление каждые 4 пары (вместо 7)
-if (gameState.lastSiftNotificationCount === -1 || matches - gameState.lastSiftNotificationCount >= 4) {
-// Обновляем счетчик последнего уведомления
-gameState.lastSiftNotificationCount = matches;
-// Показываем уведомление
-if (elements.siftNotification) {
-elements.siftNotification.style.display = 'block';
-setTimeout(() => {
-elements.siftNotification.style.display = 'none';
-}, 3000);
-}
-// Обновляем объяснение
-setExplanation('explanation.enoughMatches', { matches });
-}
-}
-}
-// Функции управления ключами
-function createKeyGrid(gridElement, size) {
-gridElement.innerHTML = '';
-for (let i = 0; i < size; i++) {
-const keyBit = document.createElement('div');
-keyBit.className = 'key-bit';
-keyBit.dataset.index = i;
-// Добавляем обработчик клика для информации
-keyBit.addEventListener('click', function() {
-const index = parseInt(this.dataset.index);
-showBitHistory(index);
-});
-gridElement.appendChild(keyBit);
-}
-// Обновляем CSS для динамического размера сетки
-gridElement.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-}
-function addKeyBit() {
-// Создаем новый кубит
-const keyBit = document.createElement('div');
-keyBit.className = 'key-bit';
-keyBit.dataset.index = gameState.rawKey.length;
-// Добавляем обработчик клика для информации
-keyBit.addEventListener('click', function() {
-const index = parseInt(this.dataset.index);
-showBitHistory(index);
-});
-// Добавляем в сетку
-elements.rawKeyGrid.appendChild(keyBit);
-// Обновляем CSS для динамического размера сетки
-elements.rawKeyGrid.style.gridTemplateColumns = `repeat(${elements.rawKeyGrid.children.length}, 1fr)`;
-return keyBit;
-}
-function showBitHistory(index) {
-if (index >= gameState.rawKey.length) return;
-state.lastHistoryIndex = index;
-const pair = gameState.rawKey[index];
-// Формируем историю
-let historyHTML = `<div class="history-title">${t('history.title', { index })}</div>`;
-// Базис Алисы
-let aliceBasisSymbol = getBasisSymbol(pair.aliceBasis);
-let aliceBasisClass = getBasisClass(pair.aliceBasis, 'a');
-historyHTML += `<div class="history-item">${t('history.aliceMeasured')} <span class="${aliceBasisClass}">${aliceBasisSymbol} (${t('history.basis')} ${pair.aliceBasis.toUpperCase()})</span></div>`;
-// Базис Боба
-let bobBasisSymbol = getBasisSymbol(pair.bobBasis);
-let bobBasisClass = getBasisClass(pair.bobBasis, 'b');
-historyHTML += `<div class="history-item">${t('history.bobMeasured')} <span class="${bobBasisClass}">${bobBasisSymbol} (${t('history.basis')} ${pair.bobBasis.toUpperCase()})</span></div>`;
-// Результаты измерений
-historyHTML += `<div class="history-item">${t('history.aliceResult')} <span class="matched">${pair.aliceValue}</span></div>`;
-historyHTML += `<div class="history-item">${t('history.bobResult')} <span class="matched">${pair.bobValue}</span></div>`;
-// Перехват Евой
-if (pair.wasIntercepted) {
-historyHTML += `<div class="history-item">${t('history.intercept')} <span class="intercepted">${t('history.yes')}</span></div>`;
-} else {
-historyHTML += `<div class="history-item">${t('history.interceptNo')}</div>`;
-}
-// Совпадение базисов
-if (pair.matches) {
-historyHTML += `<div class="history-item">${t('history.basisMatch')} <span class="matched">${t('history.yes')}</span></div>`;
-} else {
-historyHTML += `<div class="history-item">${t('history.basisNoMatch')}</div>`;
-}
-// Статус использования
-historyHTML += getUsageStatus(pair, index);
-// Отображаем историю
-elements.bitHistory.innerHTML = historyHTML;
-elements.bitHistory.style.display = 'block';
-// Скрываем уведомление о необходимости просмотре истории
-hideBitHistoryInfo();
-}
-function getBasisSymbol(basis) {
-switch(basis) {
-case 'a1': case 'b1': return '|';
-case 'a2': case 'b2': return '/';
-case 'a3': case 'b3': return '—';
-default: return '?';
-}
-}
-function getBasisClass(basis, prefix) {
-switch(basis) {
-case `${prefix}1`: return 'basis-a1';
-case `${prefix}2`: return 'basis-a2';
-case `${prefix}3`: return 'basis-a3';
-default: return '';
-}
-}
-function getUsageStatus(pair, index) {
-if (pair.wasIntercepted) {
-return `<div class="history-item history-status">${t('history.status')} <span class="status-intercepted">${t('history.status.dropped')}</span></div>`;
-} else if (pair.matches) {
-// Проверяем, является ли пара избыточной
-const indexInMatching = gameState.matchingIndices.indexOf(index);
-if (indexInMatching >= 0 && indexInMatching >= FINAL_KEY_LENGTH) {
-return `<div class="history-item history-status">${t('history.status')} <span class="status-excess">${t('history.status.excess')}</span></div>`;
-} else if (indexInMatching >= 0) {
-return `<div class="history-item history-status">${t('history.status')} <span class="status-used">${t('history.status.used')}</span></div>`;
-}
-} else {
-return `<div class="history-item history-status">${t('history.status')} <span class="status-not-matched">${t('history.status.notMatched')}</span></div>`;
-}
-return '';
-}
-function hideBitHistoryInfo() {
-if (elements.bitHistoryInfo && elements.bitHistoryInfo.style.display !== 'none') {
-elements.bitHistoryInfo.style.opacity = '0';
-setTimeout(() => {
-elements.bitHistoryInfo.style.display = 'none';
-}, 300);
-}
-}
-function siftKey() {
-// Устанавливаем флаг, что кнопка Просеять ключ была нажата
-gameState.siftKeyPressed = true;
-// Останавливаем все режимы
-stopSemiAuto();
-stopAuto();
-// Отключаем все кнопки
-setButtonsDisabled(true);
-// Деактивируем квантовый канал
-elements.quantumChannel.classList.remove('active');
-elements.quantumChannel.classList.add('inactive');
-// Переключаем каналы: выключаем квантовый, включаем классический
-activateClassicalChannel();
-// Получаем совпадающие биты и их индексы (исключая перехваченные)
-gameState.matchingIndices = [];
-const matchingBits = gameState.rawKey
-.map((item, index) => {
-// Исключаем перехваченные пары
-if (item.matches && !item.wasIntercepted) {
-gameState.matchingIndices.push(index);
-return item.aliceValue;
-}
-return null;
-})
-.filter(bit => bit !== null);
-// Проверяем, достаточно ли битов для формирования 8-битного ключа
-if (matchingBits.length < FINAL_KEY_LENGTH) {
-handleInsufficientData(matchingBits.length);
-return;
-}
-// Формируем финальный ключ
-createFinalKey(matchingBits);
-}
-function handleInsufficientData(matchingBitsLength) {
-setExplanation('explanation.insufficient', { count: matchingBitsLength });
-// Включаем кнопки обратно
-gameState.siftKeyPressed = false;
-setButtonsDisabled(false);
-// Восстанавливаем пульсацию источника
-elements.entangledPhotons.classList.remove('inactive');
-}
-function createFinalKey(matchingBits) {
-// Берем первые 8 бит для финального ключа
-const finalKey = matchingBits.slice(0, FINAL_KEY_LENGTH);
-// Показываем область финального ключа
-if (elements.finalKeySection) {
-elements.finalKeySection.style.display = 'block';
-}
-// Отображаем финальный ключ
-displayFinalKey(finalKey);
-// Обновляем объяснение
-updateFinalExplanation(finalKey);
-// Показываем кнопку "Сгенерировать новый ключ"
-if (elements.newKeyBtn) {
-elements.newKeyBtn.style.display = 'flex';
-}
-// Показываем уведомление о просмотре истории пар
-showBitHistoryNotification();
-}
-function displayFinalKey(finalKey) {
-const finalKeyCells = elements.finalKeyGrid.querySelectorAll('.key-bit');
-for (let i = 0; i < FINAL_KEY_LENGTH; i++) {
-if (i < finalKey.length && finalKeyCells[i]) {
-finalKeyCells[i].textContent = finalKey[i];
-finalKeyCells[i].classList.add('active');
-// Добавляем атрибут с индексом исходной пары
-if (i < gameState.matchingIndices.length) {
-finalKeyCells[i].dataset.sourceIndex = gameState.matchingIndices[i];
-}
-// ИСПРАВЛЕНИЕ: Добавляем обработчик клика для просмотра истории
-finalKeyCells[i].addEventListener('click', function() {
-const sourceIndex = parseInt(this.dataset.sourceIndex);
-if (!isNaN(sourceIndex)) {
-showBitHistory(sourceIndex);
-}
-});
-// Добавляем обработчик для подсветки
-setupFinalKeyHover(finalKeyCells[i]);
-}
-}
-}
-function setupFinalKeyHover(cell) {
-cell.addEventListener('mouseenter', function() {
-const sourceIndex = parseInt(this.dataset.sourceIndex);
-if (!isNaN(sourceIndex)) {
-highlightSourceBit(sourceIndex);
-}
-});
-cell.addEventListener('mouseleave', function() {
-const sourceIndex = parseInt(this.dataset.sourceIndex);
-if (!isNaN(sourceIndex)) {
-unhighlightSourceBit(sourceIndex);
-}
-});
-}
-function updateFinalExplanation(finalKey) {
-setExplanation('explanation.success', { key: finalKey.join(''), intercepts: gameState.eveIntercepts });
-}
-function showBitHistoryNotification() {
-if (elements.bitHistoryInfo) {
-elements.bitHistoryInfo.style.display = 'block';
-setTimeout(() => {
-elements.bitHistoryInfo.style.opacity = '1';
-}, 50);
-}
-}
-function highlightSourceBit(sourceIndex) {
-if (sourceIndex === undefined || sourceIndex === null) return;
-const rawKeyCells = elements.rawKeyGrid.querySelectorAll('.key-bit');
-if (sourceIndex < rawKeyCells.length) {
-rawKeyCells[sourceIndex].classList.add('highlight');
-}
-}
-function unhighlightSourceBit(sourceIndex) {
-if (sourceIndex === undefined || sourceIndex === null) return;
-const rawKeyCells = elements.rawKeyGrid.querySelectorAll('.key-bit');
-if (sourceIndex < rawKeyCells.length) {
-rawKeyCells[sourceIndex].classList.remove('highlight');
-}
-}
-// Вспомогательные функции
-function setButtonsDisabled(disabled) {
-elements.manualModeBtn.disabled = disabled || gameState.siftKeyPressed;
-elements.semiAutoBtn.disabled = disabled || gameState.siftKeyPressed;
-elements.autoModeBtn.disabled = disabled || gameState.siftKeyPressed;
-elements.siftKeyBtn.disabled = disabled || !isSiftingAvailable() || gameState.siftKeyPressed;
-// Обновляем подсветку кнопки Просеять ключ
-if (!elements.siftKeyBtn.disabled) {
-elements.siftKeyBtn.classList.add('sift-active');
-} else {
-elements.siftKeyBtn.classList.remove('sift-active');
-}
-}
-function toggleProtocol() {
-const isExpanded = elements.protocolContent.style.display === 'block';
-const toggleIcon = elements.protocolHeader.querySelector('.toggle-icon');
-if (isExpanded) {
-elements.protocolContent.style.display = 'none';
-toggleIcon.textContent = '+';
-} else {
-elements.protocolContent.style.display = 'block';
-toggleIcon.textContent = '-';
-}
-}
-// Функция сброса игры
+// ══════════════════════════════════════════════════════
+//  ЭТАП 2: ОБЪЯВЛЕНИЕ УГЛОВ
+// ══════════════════════════════════════════════════════
+function enterStage2() {
+    if (!stage1Needs().ready) return;
+    stopModes();
+    siftRevealIndex = 0;
+    $('quantumChannel').classList.replace('active', 'inactive');
+    $('siftManualBtn').disabled = false;
+    $('siftAutoBtn').disabled = false;
+    $('toBellBtn').disabled = true;
+    renderSiftTable();
+    goToStage(2);
+}
+
+function catLabel(cat) { return `<span class="cat-${cat}">${t('cat.' + cat)}</span>`; }
+
+function renderSiftTable() {
+    siftTableBody.innerHTML = '';
+    pairs.forEach((p, i) => {
+        const tr = document.createElement('tr');
+        const revealed = i < siftRevealIndex;
+        tr.className = 'clickable' + (revealed ? (p.cat === 'key' ? ' row-match' : p.cat === 'bell' ? ' row-bell' : ' row-mismatch') : ' row-pending');
+        tr.innerHTML = `<td>${i + 1}</td>` +
+            (revealed
+                ? `<td class="${angleClass(p.a)}">${ANGLES[p.a]}°</td><td class="${angleClass(p.b)}">${ANGLES[p.b]}°</td><td>${catLabel(p.cat)}</td>`
+                : `<td>?</td><td>?</td><td>—</td>`);
+        tr.addEventListener('click', () => { if (i < siftRevealIndex) showPairHistory(i); });
+        siftTableBody.appendChild(tr);
+    });
+    updateSiftPills();
+}
+
+function revealNext(count) {
+    const rows = siftTableBody.children;
+    const end = Math.min(pairs.length, siftRevealIndex + count);
+    for (let i = siftRevealIndex; i < end; i++) {
+        const p = pairs[i];
+        const tr = rows[i];
+        tr.className = 'clickable row-revealing ' + (p.cat === 'key' ? 'row-match' : p.cat === 'bell' ? 'row-bell' : 'row-mismatch');
+        tr.innerHTML = `<td>${i + 1}</td><td class="${angleClass(p.a)}">${ANGLES[p.a]}°</td><td class="${angleClass(p.b)}">${ANGLES[p.b]}°</td><td>${catLabel(p.cat)}</td>`;
+    }
+    siftRevealIndex = end;
+    if (count === 1 && rows[end - 1]) rows[end - 1].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    pulsePacket();
+    updateSiftPills();
+    if (siftRevealIndex >= pairs.length) {
+        $('siftManualBtn').disabled = true;
+        $('siftAutoBtn').disabled = true;
+        $('toBellBtn').disabled = false;
+        $('toBellBtn').classList.add('sift-active');
+    }
+}
+
+function updateSiftPills() {
+    const shown = pairs.slice(0, siftRevealIndex);
+    $('pillRevealed').textContent = shown.length;
+    $('pillKey').textContent = shown.filter(p => p.cat === 'key').length;
+    $('pillBell').textContent = shown.filter(p => p.cat === 'bell').length;
+    $('pillDiscard').textContent = shown.filter(p => p.cat === 'discard').length;
+}
+
+function pulsePacket() {
+    const bar = $('siftChannelBar');
+    const packet = document.createElement('div');
+    packet.className = 'data-packet ' + (Math.random() < 0.5 ? 'to-bob' : 'to-alice');
+    bar.appendChild(packet);
+    setTimeout(() => packet.remove(), 2000);
+}
+function startChatter() { if (!chatterInterval) chatterInterval = setInterval(pulsePacket, 500); }
+function stopChatter() { clearInterval(chatterInterval); chatterInterval = null; }
+
+// ══════════════════════════════════════════════════════
+//  ЭТАП 3: ПРОВЕРКА БЕЛЛА
+// ══════════════════════════════════════════════════════
+function enterStage3() {
+    bellResult = computeS();
+    // Случайная половина пар с одинаковыми углами раскрывается публично:
+    // по ним оценивают долю ошибок в ключе (с учётом того, что Боб инвертирует биты)
+    const keyIdx = [];
+    pairs.forEach((p, i) => { if (p.cat === 'key') keyIdx.push(i); });
+    for (let i = keyIdx.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [keyIdx[i], keyIdx[j]] = [keyIdx[j], keyIdx[i]];
+    }
+    qberSample = keyIdx.slice(0, Math.floor(keyIdx.length * QBER_SAMPLE_FRACTION)).sort((a, b) => a - b);
+    const errors = qberSample.filter(i => pairs[i].aliceBit === pairs[i].bobBit).length;
+    const Q = errors / qberSample.length;
+    const nKey = keyIdx.length - qberSample.length;
+    const r = keyRate(bellResult.absS, Q);
+    bellResult = { ...bellResult, errors, Q, nKey, r, secretBits: Math.max(0, Math.floor(r * nKey)) };
+    goToStage(3);
+}
+
+function sColor(s) { return s > 2.4 ? '#4ade80' : s > S_CLASSICAL ? '#e6d000' : '#ff4444'; }
+function rColor(r) { return r >= R_WARN ? '#4ade80' : r > 0 ? '#e6d000' : '#ff4444'; }
+
+function renderBell() {
+    if (!bellResult) return;
+    const r = bellResult;
+    const p = winRate(r);
+    $('bellGrid').innerHTML = r.items.map(it => {
+        const wins = it.sign > 0 ? it.diff : it.same;
+        return `<div class="bell-card">
+            <div class="bell-angles"><span class="${angleClass(it.a)}">${ANGLES[it.a]}°</span> / <span class="${angleClass(it.b)}">${ANGLES[it.b]}°</span></div>
+            <div class="bell-rule">${t(it.sign > 0 ? 'bell.rule.diff' : 'bell.rule.same')}</div>
+            <div class="bell-win">${Math.round(wins / it.n * 100)}%</div>
+            <div>${t('bell.wins', { w: wins, n: it.n })}</div>
+        </div>`;
+    }).join('');
+
+    // Шкала доли побед от 50% до 100%
+    const pos = v => Math.max(0, Math.min(100, (v - 0.5) / 0.5 * 100));
+    $('sGauge').innerHTML =
+        `<div class="s-mark" style="left:${pos(P_CLASSICAL)}%"></div><div class="s-mark-label" style="left:${pos(P_CLASSICAL)}%">${t('gauge.classical')}</div>` +
+        `<div class="s-mark" style="left:${pos(P_QUANTUM)}%"></div><div class="s-mark-label s-mark-q" style="left:${pos(P_QUANTUM)}%">${t('gauge.quantum')}</div>` +
+        `<div class="s-needle" style="left:${pos(p)}%"><div class="s-needle-label" style="left:2px">${Math.round(p * 100)}%</div></div>`;
+
+    const eveShare = pairs.length ? Math.round(pairs.filter(x => x.intercepted).length / pairs.length * 100) : 0;
+    const box = (label, sub, value, color) =>
+        `<div class="eave-qber-box"><div class="qber-label">${label}<br>${sub}</div><div class="qber-num" style="color:${color}">${value}</div></div>`;
+    $('bellBoxes').innerHTML =
+        box(t('bell.box.wins'), t('bell.box.winsSub'), Math.round(p * 100) + '%', p > P_CLASSICAL ? '#4ade80' : '#ff4444') +
+        box(t('bell.box.qber'), t('bell.box.qberSub', { errors: r.errors, total: qberSample.length }), Math.round(r.Q * 100) + '%', r.Q <= 0.05 ? '#4ade80' : r.Q < 0.11 ? '#e6d000' : '#ff4444') +
+        box(t('bell.box.eve'), t('bell.box.eveSub'), eveShare ? eveShare + '%' : t('bell.box.eveNone'), eveShare ? '#ff4444' : '#4ade80');
+
+    // Для любопытных: то же самое на языке физиков
+    const terms = r.items.map((it, i) => (i === 0 ? '' : it.sign > 0 ? ' + ' : ' − ') + `(${fmt(it.E)})`).join('');
+    $('bellFormula').innerHTML = `S = E₁ − E₂ + E₃ + E₄ = ${terms} = ${fmt(r.S)} → |S| = <strong>${fmt(r.absS)} ± ${fmt(r.sigma)}</strong>`;
+    $('bellRate').innerHTML = `r = 1 − h(Q) − χ(|S|) = 1 − ${fmt(h2(r.Q))} − ${fmt(eveInfo(r.absS))} = <strong>${fmt(Math.max(0, r.r))}</strong>`;
+
+    const verdict = $('bellVerdict');
+    const vars = { p: Math.round(p * 100), q: Math.round(r.Q * 100), m: r.secretBits, n: r.nKey };
+    const confirmBtn = $('bellConfirmBtn'), resetBtn = $('bellResetBtn');
+    const show = (cls, key, canConfirm) => {
+        verdict.className = 'eave-verdict ' + cls;
+        verdict.textContent = t(key, vars);
+        confirmBtn.style.display = canConfirm ? 'block' : 'none';
+        resetBtn.style.display = cls === 'clean' ? 'none' : 'block';
+    };
+    if (r.absS <= S_CLASSICAL) show('compromised', 'bell.verdict.fail', false);
+    else if (r.secretBits < FINAL_KEY_LENGTH) show('compromised', 'bell.verdict.lowRate', false);
+    else if (r.r < R_WARN) show('warning', 'bell.verdict.warn', true);
+    else show('clean', 'bell.verdict.ok', true);
+}
+
+// ══════════════════════════════════════════════════════
+//  ЭТАП 4: КЛЮЧ
+// ══════════════════════════════════════════════════════
+function enterStage4() {
+    // В ключ идут пары с одинаковыми углами, кроме раскрытых для оценки QBER
+    const sampled = new Set(qberSample);
+    const keyPairs = [];
+    pairs.forEach((p, i) => { if (p.cat === 'key' && !sampled.has(i)) keyPairs.push(i); });
+    // Боб инвертирует бит; расхождение = биты Алисы и Боба совпали до инверсии
+    const errors = keyPairs.filter(i => pairs[i].aliceBit === pairs[i].bobBit).length;
+    // Усиление секретности: бит ключа k = XOR бит Алисы с номерами ≡ k (mod 8)
+    const groups = Array.from({ length: FINAL_KEY_LENGTH }, () => []);
+    keyPairs.forEach((pi, j) => groups[j % FINAL_KEY_LENGTH].push(pi));
+    const finalKey = groups.map(g => g.reduce((acc, pi) => acc ^ pairs[pi].aliceBit, 0));
+    keyData = { keyPairs, groups, finalKey, errors };
+    goToStage(4);
+}
+
+// Длинные группы сокращаем: «#6 ⊕ #27 ⊕ #75 ⊕ … ⊕ #321 (25)»
+function shortJoin(items, total) {
+    if (items.length <= 8) return items.join(' ⊕ ');
+    return items.slice(0, 4).join(' ⊕ ') + ' ⊕ … ⊕ ' + items.slice(-2).join(' ⊕ ') + ` (${total})`;
+}
+function groupFormula(k) {
+    const g = keyData.groups[k];
+    return `${shortJoin(g.map(pi => '#' + (pi + 1)), g.length)} = ${shortJoin(g.map(pi => pairs[pi].aliceBit), g.length)} = <strong>${keyData.finalKey[k]}</strong>`;
+}
+
+function renderKeyStage() {
+    if (!keyData) return;
+    const body = $('keyTableBody');
+    body.innerHTML = '';
+    keyData.keyPairs.forEach(pi => {
+        const p = pairs[pi];
+        const inv = 1 - p.bobBit;
+        const ok = inv === p.aliceBit;
+        const tr = document.createElement('tr');
+        tr.className = 'clickable' + (ok ? '' : ' row-mismatch');
+        tr.innerHTML = `<td>${pi + 1}</td><td class="${angleClass(p.a)}">${ANGLES[p.a]}°</td><td>${p.aliceBit}</td><td>${p.bobBit}</td>` +
+            `<td class="inv">${inv}</td><td class="${ok ? '' : 'err'}">${ok ? '✓' : '⚠'}</td>`;
+        tr.addEventListener('click', () => showPairHistory(pi));
+        body.appendChild(tr);
+    });
+
+    const vars = { n: keyData.keyPairs.length, errors: keyData.errors, m: bellResult.secretBits, rate: Math.round(bellResult.r * 100) };
+    $('paExplanation').innerHTML =
+        `<h3 class="pa-heading">${t('pa.heading')}</h3><p>${t('pa.ec', vars)}</p><p>${t('pa.pa', vars)}</p>` +
+        `<details class="nerd-details"><summary>${t('pa.details')}</summary><div class="pa-rows">${keyData.groups.map((g, k) => `<div class="pa-row">${t('pa.bit', { k: k + 1 })}: ${groupFormula(k)}</div>`).join('')}</div></details>`;
+
+    const grid = $('finalKeyGrid');
+    grid.innerHTML = '';
+    keyData.finalKey.forEach((bit, k) => {
+        const cell = document.createElement('div');
+        cell.className = 'key-bit active';
+        cell.textContent = bit;
+        cell.addEventListener('click', () => showKeyBitHistory(k));
+        grid.appendChild(cell);
+    });
+
+    const eve = pairs.filter(p => p.intercepted).length;
+    const sVars = { key: keyData.finalKey.join(''), p: Math.round(winRate(bellResult) * 100), eve, total: pairs.length };
+    $('successExplanation').innerHTML =
+        `<p>${t('success.p1', sVars)}</p><p>${t('success.p2', sVars)}</p><p>${eve ? t('success.eve', sVars) : t('success.noEve')}</p>`;
+}
+
+function copyKey() {
+    if (!keyData) return;
+    navigator.clipboard.writeText(keyData.finalKey.join('')).then(() => {
+        $('keyCopiedNotification').style.display = 'block';
+        setTimeout(() => { $('keyCopiedNotification').style.display = 'none'; }, 3000);
+    }, () => {});
+}
+
+// ══════════════════════════════════════════════════════
+//  ИСТОРИЯ
+// ══════════════════════════════════════════════════════
+function showPairHistory(i) {
+    const p = pairs[i];
+    if (!p) return;
+    historyView = { type: 'pair', index: i };
+    let html = `<div class="history-title">${t('history.title', { n: i + 1 })}</div>`;
+    html += `<div class="history-item">${t('history.alice', { angle: ANGLES[p.a], bit: p.aliceBit })}</div>`;
+    html += `<div class="history-item">${t('history.bob', { angle: ANGLES[p.b], bit: p.bobBit })}</div>`;
+    const d = Math.abs(ANGLES[p.a] - ANGLES[p.b]);
+    html += `<div class="history-item history-sim">${t('history.theory', { d, p: Math.round(cos2(d) * 100) })}</div>`;
+    if (currentStage >= 2) {
+        html += `<div class="history-item">${t('history.cat')} ${catLabel(p.cat)}</div>`;
+        if (p.cat === 'key' && qberSample.includes(i)) {
+            html += `<div class="history-item">${t('history.sampled')}</div>`;
+        } else if (p.cat === 'key') {
+            const inv = 1 - p.bobBit;
+            html += `<div class="history-item">${t(inv === p.aliceBit ? 'history.keyOk' : 'history.keyErr', { inv })}</div>`;
+        }
+    }
+    if (p.intercepted) html += `<div class="history-item history-sim">${t('history.eve', { phi: p.evePhi })}</div>`;
+    if (p.noisy) html += `<div class="history-item history-sim">${t('history.noise')}</div>`;
+    bitHistory.innerHTML = html;
+    bitHistory.style.display = 'block';
+}
+
+function showKeyBitHistory(k) {
+    if (!keyData) return;
+    historyView = { type: 'key', index: k };
+    let html = `<div class="history-title">${t('keyhist.title', { k: k + 1 })}</div>`;
+    html += `<div class="history-item">${groupFormula(k)}</div>`;
+    html += `<div class="history-item history-sim">${t('keyhist.hint')}</div>`;
+    html += '<div class="keyhist-links">' + keyData.groups[k].map(pi => {
+        const p = pairs[pi];
+        const err = p.aliceBit === p.bobBit;
+        return `<button class="keyhist-link${err ? ' err' : ''}" data-pi="${pi}">#${pi + 1}${err ? ' ⚠' : ''}</button>`;
+    }).join('') + '</div>';
+    bitHistory.innerHTML = html;
+    bitHistory.style.display = 'block';
+    bitHistory.querySelectorAll('.keyhist-link').forEach(btn =>
+        btn.addEventListener('click', () => showPairHistory(parseInt(btn.dataset.pi))));
+}
+
+// ══════════════════════════════════════════════════════
+//  ЯЗЫК И СБРОС
+// ══════════════════════════════════════════════════════
+function applyLanguage(lang) {
+    if (!I18N[lang]) lang = 'ru';
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.title = t('meta.title');
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n')); });
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.langBtn === lang));
+    try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+    renderStageName();
+    renderStatuses();
+    renderWarmup();
+    renderSourceButton();
+    updateStage1Stats();
+    renderProgress();
+    renderExplanation();
+    if (currentStage === 2) renderSiftTable();
+    if (currentStage === 3) renderBell();
+    if (currentStage === 4) renderKeyStage();
+    if (historyView && bitHistory.style.display === 'block') {
+        if (historyView.type === 'pair') showPairHistory(historyView.index);
+        else showKeyBitHistory(historyView.index);
+    }
+}
+
+function initLanguage() {
+    let saved = null;
+    try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+    if (!saved) { const browserLang = (navigator.language || 'ru').slice(0, 2); saved = I18N[browserLang] ? browserLang : 'ru'; }
+    applyLanguage(saved);
+}
+
 function resetGame() {
-// Сбрасываем флаг Просеять ключ
-gameState.siftKeyPressed = false;
-// Переключаем каналы: выключаем классический, включаем квантовый
-activateQuantumChannel();
-// Сбрасываем состояние
-gameState.rawKey = [];
-gameState.matchingIndices = [];
-gameState.eveIntercepts = 0;
-// Останавливаем режимы
-stopSemiAuto();
-stopAuto();
-// Сбрасываем счетчик уведомлений
-gameState.lastSiftNotificationCount = -1;
-// Сбрасываем интерфейс
-resetInterface();
-// Сбрасываем статусы
-updateAliceStatus('A1', '-');
-updateBobStatus('B1', '-');
-// Скрываем историю пар
-state.lastHistoryIndex = null;
-if (elements.bitHistory) {
-elements.bitHistory.style.display = 'none';
+    stopModes();
+    eveRate = drawEveRate();
+    qberSample = [];
+    pairs = [];
+    bellResult = null;
+    keyData = null;
+    historyView = null;
+    aliceStatusState = bobStatusState = null;
+    siftRevealIndex = 0;
+    measureTableBody.innerHTML = '';
+    siftTableBody.innerHTML = '';
+    bitHistory.style.display = 'none';
+    $('quantumChannel').classList.replace('inactive', 'active');
+    $('keyCopiedNotification').style.display = 'none';
+    renderStatuses();
+    updateStage1Stats();
+    goToStage(1);
 }
-// Скрываем уведомление о просмотре истории
-hideBitHistoryInfo();
-// Сбрасываем сетки
-resetKeyGrids();
-// Сбрасываем объяснение
-setExplanation('explanation.initial');
-// Активируем кнопки
-setButtonsDisabled(false);
-// Скрываем финальный ключ и кнопку нового ключа
-if (elements.finalKeySection) {
-elements.finalKeySection.style.display = 'none';
-}
-if (elements.newKeyBtn) {
-elements.newKeyBtn.style.display = 'none';
-}
-// Сбрасываем анимацию Евы
-resetEveAnimation();
-// Сбрасываем базисы
-resetBasisIndicators();
-// Сбрасываем таймауты
-resetAllTimeouts();
-}
-function resetInterface() {
-if (elements.rawKeyCount) {
-elements.rawKeyCount.textContent = '0';
-}
-if (elements.matchCount) {
-elements.matchCount.textContent = '0';
-}
-if (elements.interceptCount) {
-elements.interceptCount.textContent = '0';
-}
-}
-function resetKeyGrids() {
-const rawKeyCells = elements.rawKeyGrid.querySelectorAll('.key-bit');
-rawKeyCells.forEach(cell => {
-cell.textContent = '';
-cell.style.background = 'rgba(0, 10, 20, 0.7)';
-cell.style.borderColor = 'rgba(0, 50, 80, 0.4)';
-cell.classList.remove('new', 'source', 'highlight', 'intercept');
+
+// ══════════════════════════════════════════════════════
+//  ОБРАБОТЧИКИ
+// ══════════════════════════════════════════════════════
+document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn)));
+$('startGameBtn').addEventListener('click', () => {
+    $('welcomeScreen').classList.add('hidden');
+    $('mainGameArea').classList.remove('hidden');
 });
-const finalKeyCells = elements.finalKeyGrid.querySelectorAll('.key-bit');
-finalKeyCells.forEach(cell => {
-cell.textContent = '';
-cell.classList.remove('active', 'highlight');
-// Удаляем атрибут sourceIndex
-delete cell.dataset.sourceIndex;
+$('protocolHeader').addEventListener('click', () => {
+    const content = $('protocolContent');
+    const open = content.style.display === 'block';
+    content.style.display = open ? 'none' : 'block';
+    $('protocolHeader').querySelector('.toggle-icon').textContent = open ? '+' : '−';
 });
-}
-function resetEveAnimation() {
-if (elements.eveIcon) {
-elements.eveIcon.style.opacity = '0';
-}
-if (elements.eveAlert) {
-elements.eveAlert.style.display = 'none';
-}
-}
-function resetBasisIndicators() {
-if (elements.aliceBasisIndicator) {
-elements.aliceBasisIndicator.style.opacity = '0';
-}
-if (elements.bobBasisElement) {
-elements.bobBasisElement.style.opacity = '0';
-}
-}
-function resetAllTimeouts() {
-if (gameState.interceptTimeout) {
-clearTimeout(gameState.interceptTimeout);
-gameState.interceptTimeout = null;
-}
-if (gameState.interceptHideTimeout) {
-clearTimeout(gameState.interceptHideTimeout);
-gameState.interceptHideTimeout = null;
-}
-}
+[1, 2, 3, 4].forEach(n => $('stageIntro' + n + 'Btn').addEventListener('click', () => showStageBody(n)));
+document.querySelectorAll('.eve-option').forEach(btn => btn.addEventListener('click', () => {
+    eveMode = btn.dataset.eve;
+    eveRate = drawEveRate();
+    renderEveControl();
+}));
+$('autoModeBtn').addEventListener('click', toggleAuto);
+$('toSiftBtn').addEventListener('click', enterStage2);
+$('siftManualBtn').addEventListener('click', () => revealNext(1));
+$('siftAutoBtn').addEventListener('click', () => revealNext(pairs.length));
+$('toBellBtn').addEventListener('click', enterStage3);
+$('bellConfirmBtn').addEventListener('click', enterStage4);
+$('bellResetBtn').addEventListener('click', resetGame);
+$('newKeyBtn').addEventListener('click', resetGame);
+$('copyKeyBtn').addEventListener('click', copyKey);
+
+renderWarmup();
+renderEveControl();
+initLanguage();
+resetGame();
+
+});
 </script>
 </body>
 </html>

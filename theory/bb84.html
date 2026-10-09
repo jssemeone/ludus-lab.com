@@ -675,8 +675,18 @@
           <div class="step-content">
             <h3 data-i18n="step4.title">Обнаружение шпиона (вот где проявляется QBER!)</h3>
             <p data-i18n="step4.text1">Теперь у <span class="highlight">Алисы</span> и <span class="highlight">Боба</span> есть предварительный ключ из совпавших битов. Чтобы проверить его чистоту, они открыто сравнивают небольшую случайную часть этих битов.</p>
-            <p data-i18n="step4.text2"><span class="highlight">Если Евы не было:</span> все проверочные биты у Алисы и Боба должны <span class="highlight">полностью совпасть</span>. Любые небольшие расхождения будут вызваны лишь естественным шумом оборудования.</p>
-            <p data-i18n="step4.text3"><span class="highlight">Если Ева подслушивала:</span> чтобы перехватить фотон, ей пришлось его измерить. Она, как и Боб, угадывала базис вслепую. В половине случаев она угадывала неверно, <span class="highlight">необратимо меняла состояние фотона</span> и пересылала Бобу результат своей ошибки. Это приводит к тому, что в примерно <span class="highlight">25% проверочных битов</span> у Алисы и Боба появятся необъяснимые расхождения.</p>
+            <p data-i18n="step4.text2"><span class="highlight">Если Евы не было:</span> проверочные биты у Алисы и Боба почти все совпадут. Несколько процентов расхождений даёт естественный шум оборудования (в игре — около 2%).</p>
+            <p data-i18n="step4.text3"><span class="highlight">Если Ева подслушивала:</span> чтобы перехватить фотон, ей пришлось его измерить. Базис она, как и Боб, угадывала вслепую. В половине случаев она ошибалась, <span class="highlight">необратимо меняла состояние фотона</span> и пересылала Бобу испорченный фотон. Если Ева перехватывает каждый фотон, примерно <span class="highlight">25% проверочных битов</span> разойдутся; если только часть — ошибок будет пропорционально меньше.</p>
+          </div>
+        </div>
+
+        <!-- Шаг 5 -->
+        <div class="step">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <h3 data-i18n="step5.title">Дочистка ключа</h3>
+            <p data-i18n="step5.text1">Проверочные биты раскрыты публично, поэтому в ключ они уже не идут. Оставшиеся биты проходят <span class="highlight">коррекцию ошибок</span>: Алиса и Боб сравнивают чётности небольших блоков и исправляют редкие расхождения, не раскрывая самих битов.</p>
+            <p data-i18n="step5.text2">Затем — <span class="highlight">усиление секретности</span>: ключ сжимают, например заменяя группы битов их XOR. Если Ева знала часть битов, после сжатия её знания превращаются в случайный шум.</p>
           </div>
         </div>
       </div>
@@ -747,7 +757,7 @@
               <ul class="timeline-points">
                 <li data-i18n="diagram.stage4.p1">Сравнивают часть битов из сырого ключа</li>
                 <li data-i18n="diagram.stage4.p2">Вычисляют QBER (уровень ошибок)</li>
-                <li data-i18n="diagram.stage4.p3"><strong>QBER &gt; 11%? Ключ отбрасывается!</strong></li>
+                <li data-i18n="diagram.stage4.p3"><strong>QBER ≥ 11%? Ключ отбрасывается!</strong></li>
               </ul>
             </div>
           </div>
@@ -756,20 +766,16 @@
         <!-- Финальный ключ -->
         <div class="final-key">
           <div class="final-key-title" data-i18n="diagram.final.title">Секретный ключ</div>
-          <div class="final-key-description" data-i18n="diagram.final.desc">
-            Если QBER ≤ 11%, оставшиеся биты проходят процедуры исправления ошибок и усиления конфиденциальности, формируя секретный ключ для симметричного шифрования
-          </div>
-          <div class="key-parameter" data-i18n="diagram.final.param">QBER ≤ 11% → Ключ безопасен</div>
+          <div class="final-key-description" data-i18n="diagram.final.desc">Если QBER ниже 11%, оставшиеся биты проходят исправление ошибок и усиление секретности и становятся секретным ключом для симметричного шифрования</div>
+          <div class="key-parameter" data-i18n="diagram.final.param">QBER < 11% → ключ можно использовать</div>
         </div>
 
-        <div class="diagram-note" data-i18n="diagram.note">
-          * QBER (Quantum Bit Error Rate) — критический параметр безопасности BB84. Высокий QBER указывает на возможное вмешательство Евы.
-        </div>
+        <div class="diagram-note" data-i18n="diagram.note">* QBER (Quantum Bit Error Rate) — доля ошибок в проверочных битах. Порог 11% — доказанная граница безопасности BB84 (Шор и Прескилл, 2000): при большей доле ошибок Ева может знать о ключе больше, чем удастся стереть сжатием.</div>
       </div>
       <!-- КОНЕЦ ОБНОВЛЁННОЙ ДИАГРАММЫ -->
       
       <div class="key-insight">
-        <strong data-i18n="insight.label">Ключевая мысль:</strong> <span class="highlight" data-i18n="insight.text">Высокий процент ошибок (QBER) — это сигнал тревоги!</span> <span data-i18n="insight.rest">Он прямо указывает на вмешательство. В этом случае ключ отбрасывается, и передача начинается заново. Если ошибок в пределах шума — оставшиеся несравненные биты становятся идеальным секретным ключом. Это не математическая сложность, а <span class="highlight">физическая невозможность</span> подслушать без обнаружения.</span>
+        <strong data-i18n="insight.label">Ключевая мысль:</strong> <span class="highlight" data-i18n="insight.text">Высокий процент ошибок (QBER) — это сигнал тревоги!</span> <span data-i18n="insight.rest">Он прямо указывает на вмешательство. В этом случае ключ отбрасывается, и передача начинается заново. Если ошибок в пределах шума — оставшиеся биты после коррекции ошибок и сжатия становятся секретным ключом. Это не математическая сложность, а <span class="highlight">физическая невозможность</span> подслушать без следов.</span> подслушать без обнаружения.</span>
       </div>
     </section>
 
@@ -793,25 +799,19 @@
         </li>
         <li>
           <span class="action-icon">🕵️</span>
-          <div class="action-text" data-i18n="action3">
-            <span>Вы <strong>увидите, как Ева пытается перехватить фотоны</strong> - Боб будет сразу помечать результат атак Евы, это упрощение и упразднение функции qber необходимо для того, что бы сфокусироваться на основной механике протокола</span>
-          </div>
+          <div class="action-text" data-i18n="action3">Вы <strong>сами решите, будет ли в канале Ева</strong>: её нет, она перехватывает каждый фотон или включён случайный режим — тогда, есть ли Ева и сколько она перехватывает, придётся понять по QBER</div>
         </li>
         <li>
           <span class="action-icon">📖</span>
-          <div class="action-text" data-i18n="action4">
-            <span>Вы <strong>изучите историю каждого фотона</strong> — увидите, вошёл ли он в состав финального ключа или был отброшен из-за несовпадения базисов</span>
-          </div>
+          <div class="action-text" data-i18n="action4">Вы <strong>изучите историю каждого фотона</strong> — увидите, совпали ли базисы, исказила ли его Ева или шум канала, пошёл ли он на проверку или в итоговый ключ</div>
         </li>
         <li>
           <span class="action-icon">📊</span>
-          <div class="action-text" data-i18n="action5">
-            <span>Вы <strong>отследите перехваченные фотоны и их влияние</strong> на формирование ключа — каждый перехват отмечается в истории кубита</span>
-          </div>
+          <div class="action-text" data-i18n="action5">Вы <strong>проверите ключ на прослушивание</strong> — Алиса и Боб публично сравнят 30 случайных бит, и вы увидите QBER по выборке рядом с настоящим (режим Бога)</div>
         </li>
       </ul>
 
-      <p data-i18n="block3.outro">В игре вы не просто читаете о BB84 — вы <span class="highlight">проживаете его</span> со всех ролей. Вы увидите, как случайность в выборе базисов превращается в абсолютную безопасность, и поймёте, почему квантовая криптография — это не магия, а физика.</p>
+      <p data-i18n="block3.outro">В игре вы не просто читаете о BB84 — вы <span class="highlight">проживаете его</span> со всех ролей. Вы увидите, как случайность в выборе базисов превращается в ключ, подслушивание которого нельзя скрыть, и поймёте, почему квантовая криптография — это не магия, а физика.</p>
     </section>
 
     <!-- Дополнительный материал -->
@@ -823,7 +823,7 @@
 
         <h3 data-i18n="advanced.why25.heading">Почему именно 25% ошибок?</h3>
         <p data-i18n="advanced.why25.text1">В идеальном протоколе BB84, если Ева подслушивает каждый фотон и пересылает дальше, она угадывает базис с вероятностью 50%. Когда она угадывает правильно — не оставляет следов. Когда ошибается — создаёт ошибку с вероятностью 50%. Итого: 50% (шанс выбрать неверный базис) × 50% (шанс создать ошибку) = <strong>25% ошибок в ключе</strong>.</p>
-        <p data-i18n="advanced.why25.text2">В нашей симуляции для наглядности Ева атакует 30% фотонов, при этом сессия не разрывается. Это упрощение позволяет лучше наблюдать эффект перехвата.</p>
+        <p data-i18n="advanced.why25.text2">В игре можно выбрать, как действует Ева. При перехвате каждого фотона QBER около 25% плюс шум — Еву видно сразу. В случайном режиме её с вероятностью 30% нет вовсе, а иначе она перехватывает от 5% до 35% фотонов: QBER растёт примерно на четверть доли перехватов, и слабую Еву бывает трудно отличить от шума — как и в реальности.</p>
 
         <h3 data-i18n="advanced.topics.heading">Темы для углублённого изучения</h3>
         <p data-i18n="advanced.topics.intro">Если вы хотите погрузиться глубже в теорию, вот ключевые темы для изучения:</p>
@@ -840,8 +840,8 @@
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic3.title">Квантовая коррекция ошибок</h4>
-            <p data-i18n="topic3.desc">Как удалять ошибки из квантового ключа при сохранении его секретности</p>
+            <h4 data-i18n="topic3.title">Согласование ключа</h4>
+            <p data-i18n="topic3.desc">Как Алиса и Боб находят и исправляют расхождения в ключе (протоколы Cascade, LDPC), раскрывая о нём как можно меньше</p>
           </div>
 
           <div class="topic-card">
@@ -922,8 +922,11 @@
         'step3.text3': '<span class="highlight">Биты с разными базисами</span> — отбрасываются.',
         'step4.title': 'Обнаружение шпиона (вот где проявляется QBER!)',
         'step4.text1': 'Теперь у <span class="highlight">Алисы</span> и <span class="highlight">Боба</span> есть предварительный ключ из совпавших битов. Чтобы проверить его чистоту, они открыто сравнивают небольшую случайную часть этих битов.',
-        'step4.text2': '<span class="highlight">Если Евы не было:</span> все проверочные биты у Алисы и Боба должны <span class="highlight">полностью совпасть</span>. Любые небольшие расхождения будут вызваны лишь естественным шумом оборудования.',
-        'step4.text3': '<span class="highlight">Если Ева подслушивала:</span> чтобы перехватить фотон, ей пришлось его измерить. Она, как и Боб, угадывала базис вслепую. В половине случаев она угадывала неверно, <span class="highlight">необратимо меняла состояние фотона</span> и пересылала Бобу результат своей ошибки. Это приводит к тому, что в примерно <span class="highlight">25% проверочных битов</span> у Алисы и Боба появятся необъяснимые расхождения.',
+        'step4.text2': '<span class="highlight">Если Евы не было:</span> проверочные биты у Алисы и Боба почти все совпадут. Несколько процентов расхождений даёт естественный шум оборудования (в игре — около 2%).',
+        'step4.text3': '<span class="highlight">Если Ева подслушивала:</span> чтобы перехватить фотон, ей пришлось его измерить. Базис она, как и Боб, угадывала вслепую. В половине случаев она ошибалась, <span class="highlight">необратимо меняла состояние фотона</span> и пересылала Бобу испорченный фотон. Если Ева перехватывает каждый фотон, примерно <span class="highlight">25% проверочных битов</span> разойдутся; если только часть — ошибок будет пропорционально меньше.',
+        'step5.text2': 'Затем — <span class="highlight">усиление секретности</span>: ключ сжимают, например заменяя группы битов их XOR. Если Ева знала часть битов, после сжатия её знания превращаются в случайный шум.',
+        'step5.text1': 'Проверочные биты раскрыты публично, поэтому в ключ они уже не идут. Оставшиеся биты проходят <span class="highlight">коррекцию ошибок</span>: Алиса и Боб сравнивают чётности небольших блоков и исправляют редкие расхождения, не раскрывая самих битов.',
+        'step5.title': 'Дочистка ключа',
         'diagram.title': 'Этапы работы протокола BB84',
         'diagram.stage1.title': 'Подготовка квантовых состояний',
         'diagram.stage1.p1': 'Алиса генерирует случайные биты (0/1)',
@@ -940,33 +943,33 @@
         'diagram.stage4.title': 'Проверка на подслушивание',
         'diagram.stage4.p1': 'Сравнивают часть битов из сырого ключа',
         'diagram.stage4.p2': 'Вычисляют QBER (уровень ошибок)',
-        'diagram.stage4.p3': '<strong>QBER &gt; 11%? Ключ отбрасывается!</strong>',
+        'diagram.stage4.p3': '<strong>QBER ≥ 11%? Ключ отбрасывается!</strong>',
         'diagram.final.title': 'Секретный ключ',
-        'diagram.final.desc': 'Если QBER ≤ 11%, оставшиеся биты проходят процедуры исправления ошибок и усиления конфиденциальности, формируя секретный ключ для симметричного шифрования',
-        'diagram.final.param': 'QBER ≤ 11% → Ключ безопасен',
-        'diagram.note': '* QBER (Quantum Bit Error Rate) — критический параметр безопасности BB84. Высокий QBER указывает на возможное вмешательство Евы.',
+        'diagram.final.desc': 'Если QBER ниже 11%, оставшиеся биты проходят исправление ошибок и усиление секретности и становятся секретным ключом для симметричного шифрования',
+        'diagram.final.param': 'QBER < 11% → ключ можно использовать',
+        'diagram.note': '* QBER (Quantum Bit Error Rate) — доля ошибок в проверочных битах. Порог 11% — доказанная граница безопасности BB84 (Шор и Прескилл, 2000): при большей доле ошибок Ева может знать о ключе больше, чем удастся стереть сжатием.',
         'insight.label': 'Ключевая мысль:',
         'insight.text': 'Высокий процент ошибок (QBER) — это сигнал тревоги!',
-        'insight.rest': 'Он прямо указывает на вмешательство. В этом случае ключ отбрасывается, и передача начинается заново. Если ошибок в пределах шума — оставшиеся несравненные биты становятся идеальным секретным ключом. Это не математическая сложность, а <span class="highlight">физическая невозможность</span> подслушать без обнаружения.',
+        'insight.rest': 'Он прямо указывает на вмешательство. В этом случае ключ отбрасывается, и передача начинается заново. Если ошибок в пределах шума — оставшиеся биты после коррекции ошибок и сжатия становятся секретным ключом. Это не математическая сложность, а <span class="highlight">физическая невозможность</span> подслушать без следов.',
         'block3.heading': 'А теперь — главная магия',
         'block3.intro': 'Что вы <span class="highlight">сделаете</span> в симуляции?',
         'action1': 'Вы будете <strong>формировать фотоны от лица Алисы</strong> — выбирать биты и базисы, создавая квантовые состояния',
         'action2': 'Вы <strong>увидите весь протокол со всех сторон</strong> — в реальном времени будете наблюдать, какой базис выбрал Боб для каждого фотона',
-        'action3': 'Вы <strong>увидите, как Ева пытается перехватить фотоны</strong> - Боб будет сразу помечать результат атак Евы, это упрощение и упразднение функции qber необходимо для того, что бы сфокусироваться на основной механике протокола',
-        'action4': 'Вы <strong>изучите историю каждого фотона</strong> — увидите, вошёл ли он в состав финального ключа или был отброшен из-за несовпадения базисов',
-        'action5': 'Вы <strong>отследите перехваченные фотоны и их влияние</strong> на формирование ключа — каждый перехват отмечается в истории кубита',
-        'block3.outro': 'В игре вы не просто читаете о BB84 — вы <span class="highlight">проживаете его</span> со всех ролей. Вы увидите, как случайность в выборе базисов превращается в абсолютную безопасность, и поймёте, почему квантовая криптография — это не магия, а физика.',
+        'action3': 'Вы <strong>сами решите, будет ли в канале Ева</strong>: её нет, она перехватывает каждый фотон или включён случайный режим — тогда, есть ли Ева и сколько она перехватывает, придётся понять по QBER',
+        'action4': 'Вы <strong>изучите историю каждого фотона</strong> — увидите, совпали ли базисы, исказила ли его Ева или шум канала, пошёл ли он на проверку или в итоговый ключ',
+        'action5': 'Вы <strong>проверите ключ на прослушивание</strong> — Алиса и Боб публично сравнят 30 случайных бит, и вы увидите QBER по выборке рядом с настоящим (режим Бога)',
+        'block3.outro': 'В игре вы не просто читаете о BB84 — вы <span class="highlight">проживаете его</span> со всех ролей. Вы увидите, как случайность в выборе базисов превращается в ключ, подслушивание которого нельзя скрыть, и поймёте, почему квантовая криптография — это не магия, а физика.',
         'advanced.summary': 'Для любознательных',
         'advanced.history.heading': 'Историческая справка',
         'advanced.history.text': 'Протокол BB84 был предложен <strong>Чарльзом Беннетом и Жилем Брассаром в 1984 году</strong> (отсюда и название). Это был первый практически реализуемый протокол квантового распределения ключей, который открыл новую эру в криптографии.',
         'advanced.why25.heading': 'Почему именно 25% ошибок?',
         'advanced.why25.text1': 'В идеальном протоколе BB84, если Ева подслушивает каждый фотон и пересылает дальше, она угадывает базис с вероятностью 50%. Когда она угадывает правильно — не оставляет следов. Когда ошибается — создаёт ошибку с вероятностью 50%. Итого: 50% (шанс выбрать неверный базис) × 50% (шанс создать ошибку) = <strong>25% ошибок в ключе</strong>.',
-        'advanced.why25.text2': 'В нашей симуляции для наглядности Ева атакует 30% фотонов, при этом сессия не разрывается. Это упрощение позволяет лучше наблюдать эффект перехвата.',
+        'advanced.why25.text2': 'В игре можно выбрать, как действует Ева. При перехвате каждого фотона QBER около 25% плюс шум — Еву видно сразу. В случайном режиме её с вероятностью 30% нет вовсе, а иначе она перехватывает от 5% до 35% фотонов: QBER растёт примерно на четверть доли перехватов, и слабую Еву бывает трудно отличить от шума — как и в реальности.',
         'advanced.topics.heading': 'Темы для углублённого изучения',
         'advanced.topics.intro': 'Если вы хотите погрузиться глубже в теорию, вот ключевые темы для изучения:',
         'topic1.title': 'Квантовые базисы и состояния', 'topic1.desc': 'Поляризация фотонов, диагональная и круговая поляризация, представление состояний на сфере Блоха',
         'topic2.title': 'Теорема о запрете клонирования', 'topic2.desc': 'Почему нельзя создать точную копию неизвестного квантового состояния и как это защищает протокол',
-        'topic3.title': 'Квантовая коррекция ошибок', 'topic3.desc': 'Как удалять ошибки из квантового ключа при сохранении его секретности',
+        'topic3.title': 'Согласование ключа', 'topic3.desc': 'Как Алиса и Боб находят и исправляют расхождения в ключе (протоколы Cascade, LDPC), раскрывая о нём как можно меньше',
         'topic4.title': 'Атаки на реализацию BB84', 'topic4.desc': 'Атаки по сторонним каналам, атаки на детекторы, ослепляющие атаки и защита от них',
         'topic5.title': 'Практические реализации', 'topic5.desc': 'Спутниковые квантовые сети, волоконно-оптические системы, коммерческие решения QKD',
         'topic6.title': 'Пост-обработка ключа', 'topic6.desc': 'Выравнивание, усиление секретности, аутентификация классического канала',
@@ -1008,8 +1011,11 @@
         'step3.text3': '<span class="highlight">Bits with mismatched bases</span> are discarded.',
         'step4.title': 'Catching the spy (this is where QBER comes in!)',
         'step4.text1': 'Now <span class="highlight">Alice</span> and <span class="highlight">Bob</span> have a preliminary key made of matching bits. To check it\'s clean, they openly compare a small random sample of those bits.',
-        'step4.text2': '<span class="highlight">If there was no Eve:</span> all the test bits of Alice and Bob should <span class="highlight">match completely</span>. Any small discrepancies would only come from natural equipment noise.',
-        'step4.text3': '<span class="highlight">If Eve was listening in:</span> to intercept a photon, she had to measure it. Just like Bob, she guessed the basis blindly. Half the time she guessed wrong, <span class="highlight">irreversibly changing the photon\'s state</span>, and forwarded Bob the result of her mistake. This means roughly <span class="highlight">25% of the test bits</span> will show unexplained mismatches between Alice and Bob.',
+        'step4.text2': '<span class="highlight">If there was no Eve:</span> almost all of Alice\'s and Bob\'s test bits will match. A few percent of mismatches come from natural equipment noise (about 2% in the game).',
+        'step4.text3': '<span class="highlight">If Eve was listening:</span> to intercept a photon she had to measure it. Like Bob, she guessed the basis blindly. Half the time she guessed wrong, <span class="highlight">irreversibly changed the photon\'s state</span> and sent Bob a spoiled photon. If Eve intercepts every photon, about <span class="highlight">25% of the test bits</span> will disagree; if she intercepts only some, there will be proportionally fewer errors.',
+        'step5.text2': 'Then comes <span class="highlight">privacy amplification</span>: the key is compressed, for example by replacing groups of bits with their XOR. If Eve knew some of the bits, after compression her knowledge turns into random noise.',
+        'step5.text1': 'The test bits were revealed publicly, so they no longer go into the key. The remaining bits go through <span class="highlight">error correction</span>: Alice and Bob compare parities of small blocks and fix the rare mismatches without revealing the bits themselves.',
+        'step5.title': 'Cleaning up the key',
         'diagram.title': 'How the BB84 protocol unfolds',
         'diagram.stage1.title': 'Preparing quantum states',
         'diagram.stage1.p1': 'Alice generates random bits (0/1)',
@@ -1026,33 +1032,33 @@
         'diagram.stage4.title': 'Checking for eavesdropping',
         'diagram.stage4.p1': 'They compare a portion of the bits from the raw key',
         'diagram.stage4.p2': 'They calculate the QBER (error rate)',
-        'diagram.stage4.p3': '<strong>QBER &gt; 11%? The key is discarded!</strong>',
+        'diagram.stage4.p3': '<strong>QBER ≥ 11%? The key is discarded!</strong>',
         'diagram.final.title': 'The secret key',
-        'diagram.final.desc': 'If QBER ≤ 11%, the remaining bits go through error correction and privacy amplification, producing a secret key for symmetric encryption',
-        'diagram.final.param': 'QBER ≤ 11% → key is secure',
-        'diagram.note': '* QBER (Quantum Bit Error Rate) is the critical security parameter in BB84. A high QBER signals possible interference from Eve.',
+        'diagram.final.desc': 'If QBER is below 11%, the remaining bits go through error correction and privacy amplification and become a secret key for symmetric encryption',
+        'diagram.final.param': 'QBER < 11% → the key can be used',
+        'diagram.note': '* QBER (Quantum Bit Error Rate) is the share of errors in the test bits. The 11% threshold is the proven BB84 security bound (Shor and Preskill, 2000): above it, Eve may know more about the key than compression can erase.',
         'insight.label': 'Key takeaway:',
         'insight.text': 'A high error rate (QBER) is an alarm bell!',
-        'insight.rest': 'It points directly to interference. In that case, the key is discarded and transmission starts over. If the errors stay within the noise floor, the remaining uncompared bits become a perfect secret key. This isn\'t mathematical complexity — it\'s <span class="highlight">physical impossibility</span> of eavesdropping without detection.',
+        'insight.rest': 'It points directly to interference. In that case the key is discarded and the transmission starts over. If errors stay within the noise, the remaining bits become a secret key after error correction and compression. It\'s not mathematical complexity but a <span class="highlight">physical impossibility</span> of eavesdropping without leaving traces.',
         'block3.heading': 'Now for the real magic',
         'block3.intro': 'What will you <span class="highlight">actually do</span> in the simulation?',
         'action1': 'You\'ll <strong>generate photons as Alice</strong> — choosing bits and bases, creating quantum states',
         'action2': 'You\'ll <strong>see the whole protocol from every side</strong> — watching in real time which basis Bob picked for each photon',
-        'action3': 'You\'ll <strong>watch Eve try to intercept photons</strong> — Bob immediately flags the outcome of Eve\'s attacks; this simplification (skipping a full QBER calculation) keeps the focus on the protocol\'s core mechanics',
-        'action4': 'You\'ll <strong>trace the history of every photon</strong> — seeing whether it made it into the final key or was discarded due to mismatched bases',
-        'action5': 'You\'ll <strong>track intercepted photons and their effect</strong> on the resulting key — every interception is logged in the qubit\'s history',
-        'block3.outro': 'In the game you don\'t just read about BB84 — you <span class="highlight">live through it</span> from every role. You\'ll see how randomness in choosing bases turns into absolute security, and understand why quantum cryptography isn\'t magic — it\'s physics.',
+        'action3': 'You\'ll <strong>decide whether Eve is on the channel</strong>: no Eve, Eve intercepting every photon, or a random mode — where you have to tell from the QBER whether Eve is there and how much she intercepts',
+        'action4': 'You\'ll <strong>explore the history of every photon</strong> — whether the bases matched, whether Eve or channel noise corrupted it, and whether it went to the check or into the final key',
+        'action5': 'You\'ll <strong>check the key for eavesdropping</strong> — Alice and Bob publicly compare 30 random bits, and you\'ll see the sample QBER next to the true one (God mode)',
+        'block3.outro': 'In the game you don\'t just read about BB84 — you <span class="highlight">live through it</span> from every role. You\'ll see how randomness in choosing bases turns into a key whose eavesdropping cannot be hidden, and understand why quantum cryptography is not magic but physics.',
         'advanced.summary': 'For the curious',
         'advanced.history.heading': 'Historical background',
         'advanced.history.text': 'The BB84 protocol was proposed by <strong>Charles Bennett and Gilles Brassard in 1984</strong> (hence the name). It was the first practically realizable quantum key distribution protocol, opening a new era in cryptography.',
         'advanced.why25.heading': 'Why exactly 25% errors?',
         'advanced.why25.text1': 'In the ideal BB84 protocol, if Eve intercepts every photon and forwards it onward, she guesses the basis with 50% probability. When she guesses right, she leaves no trace. When she guesses wrong, she introduces an error with 50% probability. In total: 50% (chance of picking the wrong basis) × 50% (chance that creates an error) = <strong>25% errors in the key</strong>.',
-        'advanced.why25.text2': 'In our simulation, for clarity, Eve attacks 30% of the photons, and the session doesn\'t get aborted. This simplification makes it easier to observe the effect of interception.',
+        'advanced.why25.text2': 'In the game you choose how Eve behaves. If she intercepts every photon, the QBER is about 25% plus noise — Eve is obvious. In random mode she is absent 30% of the time, and otherwise intercepts 5% to 35% of photons: the QBER grows by about a quarter of the intercepted share, and a weak Eve can be hard to tell from noise — just like in reality.',
         'advanced.topics.heading': 'Topics for further study',
         'advanced.topics.intro': 'If you want to dive deeper into the theory, here are the key topics worth studying:',
         'topic1.title': 'Quantum bases and states', 'topic1.desc': 'Photon polarization, diagonal and circular polarization, representing states on the Bloch sphere',
         'topic2.title': 'The no-cloning theorem', 'topic2.desc': 'Why you can\'t make an exact copy of an unknown quantum state, and how this protects the protocol',
-        'topic3.title': 'Quantum error correction', 'topic3.desc': 'How to remove errors from a quantum key while preserving its secrecy',
+        'topic3.title': 'Key reconciliation', 'topic3.desc': 'How Alice and Bob find and fix mismatches in the key (Cascade, LDPC protocols) while revealing as little as possible about it',
         'topic4.title': 'Attacks on BB84 implementations', 'topic4.desc': 'Side-channel attacks, detector attacks, blinding attacks, and how to defend against them',
         'topic5.title': 'Practical implementations', 'topic5.desc': 'Satellite quantum networks, fiber-optic systems, commercial QKD solutions',
         'topic6.title': 'Key post-processing', 'topic6.desc': 'Reconciliation, privacy amplification, authentication of the classical channel',
@@ -1094,8 +1100,11 @@
         'step3.text3': '<span class="highlight">Los bits con bases distintas</span> se descartan.',
         'step4.title': 'Detectando al espía (¡aquí aparece el QBER!)',
         'step4.text1': 'Ahora <span class="highlight">Alicia</span> y <span class="highlight">Bob</span> tienen una clave preliminar formada por los bits coincidentes. Para comprobar que está limpia, comparan abiertamente una pequeña muestra aleatoria de esos bits.',
-        'step4.text2': '<span class="highlight">Si no hubo Eva:</span> todos los bits de verificación de Alicia y Bob deberían <span class="highlight">coincidir por completo</span>. Cualquier pequeña discrepancia se debería solo al ruido natural del equipo.',
-        'step4.text3': '<span class="highlight">Si Eva estaba escuchando:</span> para interceptar un fotón tuvo que medirlo. Igual que Bob, adivinó la base a ciegas. La mitad de las veces se equivocó, <span class="highlight">cambiando irreversiblemente el estado del fotón</span>, y le envió a Bob el resultado de su error. Esto provoca que en aproximadamente el <span class="highlight">25% de los bits de verificación</span> aparezcan discrepancias inexplicables entre Alicia y Bob.',
+        'step4.text2': '<span class="highlight">Si no hubo Eva:</span> casi todos los bits de verificación de Alicia y Bob coincidirán. Unos pocos por ciento de discrepancias se deben al ruido natural del equipo (en el juego, alrededor del 2%).',
+        'step4.text3': '<span class="highlight">Si Eva escuchaba:</span> para interceptar un fotón tuvo que medirlo. Igual que Bob, adivinaba la base a ciegas. La mitad de las veces se equivocaba, <span class="highlight">cambiaba irreversiblemente el estado del fotón</span> y enviaba a Bob un fotón estropeado. Si Eva intercepta cada fotón, cerca del <span class="highlight">25% de los bits de verificación</span> no coincidirán; si solo intercepta una parte, habrá proporcionalmente menos errores.',
+        'step5.text2': 'Después viene la <span class="highlight">amplificación de privacidad</span>: la clave se comprime, por ejemplo sustituyendo grupos de bits por su XOR. Si Eva conocía algunos bits, tras la compresión su conocimiento se convierte en ruido aleatorio.',
+        'step5.text1': 'Los bits de verificación se revelaron públicamente, así que ya no entran en la clave. Los bits restantes pasan por la <span class="highlight">corrección de errores</span>: Alicia y Bob comparan las paridades de pequeños bloques y corrigen las escasas discrepancias sin revelar los bits.',
+        'step5.title': 'Limpieza de la clave',
         'diagram.title': 'Etapas del protocolo BB84',
         'diagram.stage1.title': 'Preparación de los estados cuánticos',
         'diagram.stage1.p1': 'Alicia genera bits aleatorios (0/1)',
@@ -1112,33 +1121,33 @@
         'diagram.stage4.title': 'Comprobación de escuchas',
         'diagram.stage4.p1': 'Comparan una parte de los bits de la clave en bruto',
         'diagram.stage4.p2': 'Calculan el QBER (tasa de errores)',
-        'diagram.stage4.p3': '<strong>¿QBER &gt; 11%? ¡La clave se descarta!</strong>',
+        'diagram.stage4.p3': '<strong>¿QBER ≥ 11%? ¡La clave se descarta!</strong>',
         'diagram.final.title': 'La clave secreta',
-        'diagram.final.desc': 'Si el QBER ≤ 11%, los bits restantes pasan por procesos de corrección de errores y amplificación de privacidad, formando una clave secreta para el cifrado simétrico',
-        'diagram.final.param': 'QBER ≤ 11% → clave segura',
-        'diagram.note': '* El QBER (Quantum Bit Error Rate) es el parámetro de seguridad crítico de BB84. Un QBER alto indica una posible interferencia de Eva.',
+        'diagram.final.desc': 'Si el QBER está por debajo del 11%, los bits restantes pasan por la corrección de errores y la amplificación de privacidad y se convierten en una clave secreta para el cifrado simétrico',
+        'diagram.final.param': 'QBER < 11% → la clave se puede usar',
+        'diagram.note': '* QBER (Quantum Bit Error Rate) es la proporción de errores en los bits de verificación. El umbral del 11% es el límite de seguridad demostrado de BB84 (Shor y Preskill, 2000): por encima, Eva puede saber de la clave más de lo que la compresión logra borrar.',
         'insight.label': 'Idea clave:',
         'insight.text': '¡Un porcentaje alto de errores (QBER) es una señal de alarma!',
-        'insight.rest': 'Indica directamente una interferencia. En ese caso, la clave se descarta y la transmisión comienza de nuevo. Si los errores están dentro del ruido esperado, los bits restantes sin comparar se convierten en una clave secreta perfecta. No se trata de complejidad matemática, sino de la <span class="highlight">imposibilidad física</span> de escuchar sin ser detectado.',
+        'insight.rest': 'Señala directamente una interferencia. En ese caso la clave se descarta y la transmisión empieza de nuevo. Si los errores están dentro del ruido, los bits restantes se convierten en clave secreta tras la corrección de errores y la compresión. No es complejidad matemática, sino una <span class="highlight">imposibilidad física</span> de escuchar sin dejar rastro.',
         'block3.heading': 'Y ahora, la verdadera magia',
         'block3.intro': '¿Qué <span class="highlight">harás</span> en la simulación?',
         'action1': '<strong>Generarás fotones como Alicia</strong> — eligiendo bits y bases, creando estados cuánticos',
         'action2': '<strong>Verás todo el protocolo desde todos los ángulos</strong> — observando en tiempo real qué base eligió Bob para cada fotón',
-        'action3': '<strong>Verás cómo Eva intenta interceptar los fotones</strong> — Bob marca de inmediato el resultado de los ataques de Eva; esta simplificación (omitir el cálculo completo del QBER) permite centrarse en la mecánica principal del protocolo',
-        'action4': '<strong>Explorarás la historia de cada fotón</strong> — verás si terminó formando parte de la clave final o si fue descartado por no coincidir las bases',
-        'action5': '<strong>Seguirás los fotones interceptados y su efecto</strong> en la formación de la clave — cada intercepción queda registrada en el historial del cúbit',
-        'block3.outro': 'En el juego no solo lees sobre BB84: lo <span class="highlight">vives</span> desde todos los roles. Verás cómo la aleatoriedad al elegir las bases se convierte en seguridad absoluta, y entenderás por qué la criptografía cuántica no es magia, sino física.',
+        'action3': '<strong>Tú decides si Eva está en el canal</strong>: sin Eva, Eva interceptando cada fotón o un modo aleatorio, en el que tendrás que deducir por el QBER si Eva está y cuánto intercepta',
+        'action4': '<strong>Explorarás la historia de cada fotón</strong>: si las bases coincidieron, si Eva o el ruido del canal lo alteraron y si fue a la verificación o a la clave final',
+        'action5': '<strong>Comprobarás la clave contra el espionaje</strong>: Alicia y Bob comparan públicamente 30 bits aleatorios y verás el QBER de la muestra junto al real (modo Dios)',
+        'block3.outro': 'En el juego no solo lees sobre BB84: lo <span class="highlight">vives</span> desde todos los roles. Verás cómo el azar al elegir bases se convierte en una clave cuyo espionaje no se puede ocultar, y entenderás por qué la criptografía cuántica no es magia, sino física.',
         'advanced.summary': 'Para los curiosos',
         'advanced.history.heading': 'Contexto histórico',
         'advanced.history.text': 'El protocolo BB84 fue propuesto por <strong>Charles Bennett y Gilles Brassard en 1984</strong> (de ahí el nombre). Fue el primer protocolo de distribución cuántica de claves prácticamente realizable, que abrió una nueva era en la criptografía.',
         'advanced.why25.heading': '¿Por qué exactamente un 25% de errores?',
         'advanced.why25.text1': 'En el protocolo BB84 ideal, si Eva intercepta cada fotón y lo reenvía, adivina la base con un 50% de probabilidad. Cuando adivina bien, no deja rastro. Cuando se equivoca, introduce un error con un 50% de probabilidad. En total: 50% (probabilidad de elegir la base equivocada) × 50% (probabilidad de que eso genere un error) = <strong>25% de errores en la clave</strong>.',
-        'advanced.why25.text2': 'En nuestra simulación, para que se vea con claridad, Eva ataca el 30% de los fotones sin que la sesión se interrumpa. Esta simplificación permite observar mejor el efecto de la intercepción.',
+        'advanced.why25.text2': 'En el juego eliges cómo actúa Eva. Si intercepta cada fotón, el QBER es de alrededor del 25% más el ruido: Eva se ve enseguida. En el modo aleatorio, el 30% de las veces no está, y si no, intercepta entre el 5% y el 35% de los fotones: el QBER crece aproximadamente una cuarta parte de la proporción interceptada, y una Eva débil puede ser difícil de distinguir del ruido, igual que en la realidad.',
         'advanced.topics.heading': 'Temas para profundizar',
         'advanced.topics.intro': 'Si quieres profundizar en la teoría, estos son los temas clave que vale la pena estudiar:',
         'topic1.title': 'Bases y estados cuánticos', 'topic1.desc': 'Polarización de fotones, polarización diagonal y circular, representación de estados en la esfera de Bloch',
         'topic2.title': 'El teorema de no clonación', 'topic2.desc': 'Por qué no se puede crear una copia exacta de un estado cuántico desconocido y cómo esto protege el protocolo',
-        'topic3.title': 'Corrección cuántica de errores', 'topic3.desc': 'Cómo eliminar errores de una clave cuántica conservando su confidencialidad',
+        'topic3.title': 'Reconciliación de la clave', 'topic3.desc': 'Cómo Alicia y Bob encuentran y corrigen las discrepancias de la clave (protocolos Cascade, LDPC) revelando lo menos posible sobre ella',
         'topic4.title': 'Ataques a implementaciones de BB84', 'topic4.desc': 'Ataques de canal lateral, ataques a detectores, ataques de deslumbramiento y cómo defenderse de ellos',
         'topic5.title': 'Implementaciones prácticas', 'topic5.desc': 'Redes cuánticas satelitales, sistemas de fibra óptica, soluciones comerciales de QKD',
         'topic6.title': 'Postprocesado de la clave', 'topic6.desc': 'Reconciliación, amplificación de privacidad, autenticación del canal clásico',

@@ -1709,6 +1709,44 @@ margin-top: 20px; flex-wrap: wrap;
 @media (max-width: 480px) {
 .sifting-stats { grid-template-columns: 1fr 1fr; }
 }
+/* ====== ПЕРЕКЛЮЧАТЕЛЬ ЕВЫ (режим Бога) ====== */
+.eve-control {
+background: rgba(255, 68, 68, 0.06);
+border: 1px solid rgba(255, 68, 68, 0.3);
+border-radius: 6px;
+padding: 8px 10px;
+margin-bottom: 12px;
+}
+.eve-control-head { font-size: 0.8rem; color: #ff8a8a; margin-bottom: 6px; font-weight: 600; }
+.eve-options { display: flex; gap: 6px; }
+.eve-option {
+flex: 1;
+background: rgba(0, 10, 20, 0.7);
+border: 1px solid rgba(255, 68, 68, 0.3);
+color: #c5d5e0;
+border-radius: 4px;
+padding: 5px 0;
+cursor: pointer;
+font-size: 0.8rem;
+transition: all 0.2s;
+}
+.eve-option:hover { border-color: #ff4444; }
+.eve-option.selected { border-color: #ff4444; color: #ff4444; background: rgba(255, 68, 68, 0.15); box-shadow: 0 0 8px rgba(255, 68, 68, 0.5); }
+.eve-hint { font-size: 0.7rem; color: #8ab0c5; margin-top: 6px; line-height: 1.4; }
+/* ====== ЭТАП 4: согласование + усиление секретности ====== */
+.pa-heading { color: #00a2ff; font-size: 0.95rem; margin-bottom: 8px; font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; text-transform: uppercase; }
+.pa-rows { font-family: monospace; font-size: 0.78rem; background: rgba(0, 10, 20, 0.6); border: 1px solid rgba(0, 162, 255, 0.2); border-radius: 6px; padding: 8px 10px; margin-top: 8px; overflow-x: auto; }
+.pa-row { white-space: nowrap; padding: 2px 0; color: #8ab0c5; }
+.pa-row strong, .history-item strong { color: #4ade80; }
+.keyhist-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.keyhist-link { background: rgba(0, 10, 20, 0.7); border: 1px solid rgba(0, 162, 255, 0.4); color: #00a2ff; border-radius: 4px; padding: 3px 8px; cursor: pointer; font-family: monospace; font-size: 0.8rem; }
+.keyhist-link.err { border-color: rgba(230, 208, 0, 0.6); color: #e6d000; }
+.keyhist-link:hover { box-shadow: 0 0 8px rgba(0, 162, 255, 0.5); }
+/* Итоговый ключ на узких экранах: ячейки тянутся по колонкам сетки, а не 38px фиксированно */
+@media (max-width: 768px) {
+.final-key-grid { grid-template-columns: repeat(8, minmax(0, 36px)); justify-content: center; width: 100%; }
+.final-key-grid .key-bit.active { width: 100%; height: 36px; }
+}
 </style>
 </head>
 <body>
@@ -1868,6 +1906,15 @@ margin-top: 20px; flex-wrap: wrap;
             <div class="basis-label" data-i18n="basis.diagonal">Диагональный</div>
             <div class="polarization-value" style="font-size:0.65rem;">135° = 1</div>
           </div>
+        </div>
+        <div class="eve-control">
+          <div class="eve-control-head" data-i18n="eve.title">🕵️ Ева в канале (режим Бога)</div>
+          <div class="eve-options">
+            <button class="eve-option" data-eve="off" data-i18n="eve.off">Нет</button>
+            <button class="eve-option" data-eve="random" data-i18n="eve.random">Случайно</button>
+            <button class="eve-option" data-eve="full" data-i18n="eve.full">100%</button>
+          </div>
+          <div class="eve-hint" data-i18n="eve.hint"></div>
         </div>
         <div class="action-buttons">
           <div class="button-row mode-buttons">
@@ -2129,6 +2176,7 @@ margin-top: 20px; flex-wrap: wrap;
       </div>
     </div>
     <div class="success-explanation" id="successExplanation" style="display:none;"></div>
+    <div class="success-explanation pa-explanation" id="paExplanation" style="display:none;"></div>
     <div class="bit-history-info" id="bitHistoryInfo" data-i18n="rawkey.hint" style="display:none; opacity:0;">
       Нажмите на любой бит финального ключа, чтобы посмотреть его историю
     </div>
@@ -2229,10 +2277,10 @@ const I18N = {
     'protocol.step5.p2': 'В игре: Создается сырой ключ из совпадающих измерений.',
     'protocol.step6.title': 'Обнаружение подслушивания',
     'protocol.step6.p1': 'В реальном протоколе Алиса и Боб сравнивают часть оставшихся бит (которые затем отбрасываются). Если Ева подслушивала, она вносила ошибки, которые обнаруживаются при сравнении.',
-    'protocol.step6.p2': 'В игре: Перехваченные Евой биты отмечаются и исключаются из финального ключа.',
+    'protocol.step6.p2': 'В игре: 30 случайных бит просеянного ключа сравниваются публично, по ним считается QBER. Переключатель «Ева» показывает, как подслушивание поднимает долю ошибок.',
     'protocol.step7.title': 'Формирование секретного ключа',
     'protocol.step7.p1': 'Если уровень ошибок ниже определенного порога, оставшиеся биты образуют секретный ключ. В противном случае ключ отбрасывается и процесс повторяется.',
-    'protocol.step7.p2': 'В игре: Формируется финальный 8-битный ключ из неперехваченных совпадающих бит.',
+    'protocol.step7.p2': 'В игре: при QBER < 11% оставшиеся биты проходят коррекцию ошибок и сжимаются (XOR) в 8-битный ключ; при QBER ≥ 11% ключ отбрасывается.',
     'protocol.security': '<strong>Безопасность протокола:</strong> Безопасность BB84 основана на фундаментальных принципах квантовой механики — любые попытки измерить квантовое состояние изменяют его, что позволяет обнаружить подслушивание.',
     'char.alice': 'Алиса', 'char.bob': 'Боб',
     'status.aliceReady': 'Готова отправить кубит', 'status.aliceSending': 'Отправляет кубит...',
@@ -2247,35 +2295,35 @@ const I18N = {
     'alert.eve': '⚠️ Ева перехватила кубит! Это может повлиять на конечный ключ.',
     'notif.siftReady': '✅ Достаточно данных для просеивания ключа!', 'notif.copied': 'Ключ успешно скопирован в буфер обмена!',
     'rawkey.collected': 'Собрано кубит:', 'rawkey.hint': 'Нажмите на любой бит финального ключа, чтобы посмотреть его историю',
-    'stat.matches': 'Совпадений базисов', 'stat.matches.sub': 'из всех отправленных', 'stat.intercepts': 'Перехватов', 'stat.qber': 'QBER (режим Бога)', 'stat.qber.sub': '0-5% норма · 5-11% подозрительно · ≥11% опасно',
-    'finalkey.heading': 'Квантовый ключ', 'finalkey.desc': 'Секретный ключ сформирован из совпадающих измерений', 'finalkey.bits': '8 бит · квантовое распределение',
-    'disclaimer.text': '<strong>Примечание:</strong> В данной симуляции реализован полноценный механизм обнаружения Евы: из просеянных бит случайно выбираются 30 для публичного сравнения (жертвенные биты). Если QBER (доля ошибок) < 11% — ключ формируется (до 5% — норма, 5–11% — жёлтая зона); если QBER ≥ 11% — сессия сбрасывается.',
+    'stat.matches': 'Совпадений базисов', 'stat.matches.sub': 'из всех отправленных', 'stat.intercepts': 'Перехватов', 'stat.qber': 'QBER (режим Бога)', 'stat.qber.sub': '0–5% шум · 5–11% подозрительно · ≥11% опасно',
+    'finalkey.heading': 'Квантовый ключ', 'finalkey.desc': 'Сжат из оставшихся бит после коррекции ошибок', 'finalkey.bits': '8 бит · квантовое распределение',
+    'disclaimer.text': '<strong>Что упрощено:</strong> шум канала — фиксированные ~2%; Ева атакует простейшим способом «перехват — пересылка»; коррекция ошибок и усиление секретности показаны схематично (в реальности — протоколы вроде Cascade или LDPC и универсальное хеширование, а ключи длиной в тысячи бит). Порог QBER 11% — известная граница безопасности BB84.',
     'explanation.initial.p1': 'Выберите один из четырех вариантов поляризации кубита и отправьте его Бобу. Боб будет случайным образом выбирать базис для измерения.',
     'explanation.initial.p2': 'Когда вы отправите достаточно кубит, нажмите "Просеять ключ", чтобы перейти к сравнению базисов.',
     'explanation.enoughBits.p1': 'Вы отправили достаточно кубит! Нажмите "Просеять ключ", чтобы перейти к просеиванию.',
-    'explanation.enoughBits.p2': 'Только совпадающие базисы без перехвата ({matches}) будут использованы для формирования финального ключа.',
+    'explanation.enoughBits.p2': 'Совпадений базисов: {matches}. 30 из них уйдут на публичную проверку QBER, остальные — в ключ.',
     'explanation.insufficient.p1': '⚠️ Недостаточно данных для формирования 8-битного ключа!',
-    'explanation.insufficient.p2': 'Вам нужно отправить еще кубит, чтобы после исключения перехваченных осталось как минимум 8 совпадающих.',
-    'explanation.insufficient.p3': 'Сейчас у вас {count} подходящих кубит.',
+    'explanation.insufficient.p2': 'Нужно минимум {min} совпадений базисов: 30 на проверку QBER и ещё 16 на ключ.',
+    'explanation.insufficient.p3': 'Сейчас совпадений: {count}.',
     'explanation.success.p1': '<strong>Поздравляем! Вы создали секретный 8-битный квантовый ключ:</strong> {key}',
     'explanation.success.p2': 'Этот ключ можно использовать для безопасного шифрования сообщений с Бобом.',
-    'explanation.success.p3': 'Проверка QBER: {intercepts} {errorsWord} в выборке из 30 бит. Ева повысила QBER — именно так её обнаруживают в протоколе BB84.',
+    'explanation.success.p3': 'Проверка QBER: {intercepts} {errorsWord} в выборке из 30 бит ({qber}%) — ниже порога 11%, поэтому ключ принят.',
     'history.title': 'История кубита #{index}:', 'history.aliceSent': 'Алиса отправила:', 'history.bobMeasured': 'Боб измерил:',
     'history.intercept.label': 'Перехват:', 'history.basisMatch.label': 'Совпадение базисов:', 'history.status.label': 'Статус:',
     'history.yes': 'Да', 'history.no': 'Нет',
-    'history.status.intercepted': 'Исключен из ключа (скомпрометирован Евой)', 'history.status.excess': 'Подходит для формирования ключа, но является избыточным', 'history.status.used': 'Используется в финальном ключе', 'history.status.notMatched': 'Базисы не совпали', 'history.status.pending': 'Подходит для ключа — ожидает просейва',
-    'history.eveDetected.label': 'Обнаружен подлог:', 'history.eveDetected.yes': 'ДА — базисы совпали, биты разные!',
+    'history.status.intercepted': 'Исключен из ключа (скомпрометирован Евой)', 'history.status.excess': 'Подходит для формирования ключа, но является избыточным', 'history.status.used': 'Пошёл в ключ — входит в XOR бита ключа #{k}', 'history.status.notMatched': 'Базисы не совпали', 'history.status.pending': 'Подходит для ключа — ждёт проверки QBER',
+    'history.eveDetected.label': 'Ошибка:', 'history.eveDetected.yes': 'базисы совпали, а биты разные',
     'history.eve.basis': 'Ева измерила базисом:', 'history.eve.guessedRight': 'угадала базис Алисы — ошибки нет', 'history.eve.guessedWrong': 'не угадала — бит искажён',
     
     'eaveCheck.heading': 'Проверка на прослушивание',
-    'eaveCheck.desc': 'Алиса и Боб публично сравнивают ~50% просеянных бит. Больше бит — точнее QBER.',
+    'eaveCheck.desc': 'Алиса и Боб публично сравнивают 30 случайно выбранных бит просеянного ключа и считают долю ошибок (QBER). Раскрытые биты в ключ уже не пойдут.',
     'eaveCheck.bitLabel': 'Бит #{n}', 'eaveCheck.alice': 'Алиса', 'eaveCheck.bob': 'Боб',
-    'eaveCheck.confirm': '✅ Сформировать ключ из оставшихся бит',
+    'eaveCheck.confirm': '✅ Перейти к формированию ключа',
     'eaveCheck.reset': '🔄 Начать заново',
     'eaveCheck.verdict.clean': '✅ Линия чиста — ошибок нет из {total} проверенных бит. Ева не обнаружена.',
     'eaveCheck.verdict.compromised': '🚨 Обнаружен перехват! QBER = {qber}% — достиг порога 11% или выше. Ключ небезопасен.', 'eaveCheck.verdict.warning': '⚠️ QBER = {qber}% ({errors}/{total}) — жёлтая зона (5–11%). Стоит обратить внимание, но ключ всё равно формируется из этого материала.',
-    'eaveCheck.verdict.normal': '✅ QBER = {qber}% ({errors}/{total}) — обычная неидеальность среды (до 5%), не повод для тревоги. Ключ сформирован.',
-    'eaveCheck.verdict.risk': '⚠️ Ошибок нет в выборке, но статистика не гарантирует отсутствие Евы. Ключ сформирован с риском.',
+    'eaveCheck.verdict.normal': '✅ QBER = {qber}% ({errors}/{total}) — в пределах обычного шума канала (до 5%). Ключ можно формировать.',
+    'eaveCheck.verdict.risk': '⚠️ В выборке ошибок нет, но в режиме Бога видно, что Ева исказила часть других бит. Выборка — лишь оценка: ключ сформирован с риском.',
     'eaveCheck.sampleQber': 'QBER по выборке', 'eaveCheck.sampleQberSub': '({total} бит — что видят Алиса и Боб)',
     'eaveCheck.trueQber': 'Реальный QBER', 'eaveCheck.trueQberSub': '(режим Бога)',
     'history.status.sacrifice': 'Использован для проверки на прослушивание (публично раскрыт)',
@@ -2287,7 +2335,7 @@ const I18N = {
     'welcome.stage1.title': '1. Квантовый канал', 'welcome.stage1.desc': 'Алиса отправляет кубиты Бобу',
     'welcome.stage2.title': '2. Просеивание', 'welcome.stage2.desc': 'сравнение базисов и сборка сырого ключа',
     'welcome.stage3.title': '3. Проверка QBER', 'welcome.stage3.desc': 'поиск следов подслушивания',
-    'welcome.stage4.title': '4. Секретный ключ', 'welcome.stage4.desc': 'итоговый общий ключ Алисы и Боба',
+    'welcome.stage4.title': '4. Секретный ключ', 'welcome.stage4.desc': 'коррекция ошибок, сжатие и итоговый ключ',
     'welcome.start': 'Начать игру',
     'stageintro.1.title': 'Этап 1: Квантовый канал',
     'stageintro.1.desc': 'Алиса выбирает случайную поляризацию для каждого кубита и отправляет их Бобу. Боб для каждого кубита независимо выбирает случайный базис измерения. Вы управляете отправкой Алисы через панель управления.',
@@ -2297,7 +2345,7 @@ const I18N = {
     'stageintro.3.desc': 'Алиса и Боб публично сравнивают часть просеянного ключа, чтобы оценить долю ошибок (QBER). Если ошибок слишком много — в канале была Ева, и ключ придётся отбросить.',
     'stageintro.3.btn': 'Начать проверку QBER',
     'stageintro.4.title': 'Этап 4: Секретный ключ',
-    'stageintro.4.desc': 'Проверка прошла успешно — из оставшихся чистых бит собран общий секретный ключ Алисы и Боба.',
+    'stageintro.4.desc': 'QBER ниже порога. Осталось два шага: исправить редкие ошибки (согласование) и сжать биты, чтобы стереть то, что могла узнать Ева (усиление секретности).',
     'stageintro.4.btn': 'Показать ключ',
     'sifting.stat.sent': 'кубит', 'sifting.stat.matches': 'совпадений', 'sifting.stat.sacrifice': 'на QBER', 'sifting.stat.forkey': 'в ключ', 'sifting.stat.revealed': 'раскрыто',
     'bobtable.heading': 'Таблица измерений Боба', 'bobtable.empty': 'Кубиты появятся здесь по мере отправки',
@@ -2311,6 +2359,24 @@ const I18N = {
     'siftmode.auto.title': 'Автоматическое сравнение', 'siftmode.auto.desc': 'Сравнить все биты сразу',
     'btn.continueToQber': 'Перейти к проверке QBER',
     'sifting.channel.label': 'Обмен базисами по открытому каналу',
+    'eve.title': '🕵️ Ева в канале (режим Бога)',
+    'eve.off': 'Нет',
+    'eaveCheck.eveNone': 'не было',
+    'eaveCheck.eveBoxSub': '(режим Бога: доля перехваченных фотонов)',
+    'eaveCheck.eveBox': 'Ева',
+    'eve.full': '100%',
+    'eve.random': 'Случайно',
+    'eve.hint': '«Нет» — чистый канал. «100%» — Ева перехватывает каждый фотон. «Случайно» — Ева то ли есть, то ли нет, и перехватывает неизвестную долю фотонов: попробуйте понять это по QBER. Шум канала (~2%) есть всегда.',
+    'history.noise': 'Шум канала перевернул бит Боба',
+    'history.status.corrected': 'Ошибка найдена и исправлена при согласовании',
+    'explanation.success.eve': 'Режим Бога: Ева перехватила {eve} из {sent} фотонов. Её знания о ключе стёрты усилением секретности.',
+    'explanation.success.noEve': 'Режим Бога: Евы в канале не было — все ошибки дал шум.',
+    'keyhist.title': 'Бит ключа #{k}',
+    'keyhist.hint': 'Бит ключа — XOR нескольких бит просеянного ключа (номера кубитов). Нажмите на номер, чтобы открыть историю кубита; ⚠ — бит с ошибкой, исправленной при согласовании.',
+    'pa.heading': 'Как из оставшихся бит получился ключ',
+    'pa.ec': '<strong>1. Согласование (коррекция ошибок).</strong> После проверки осталось {n} бит. Алиса и Боб по открытому каналу сравнивают чётности блоков бит и находят расхождения — их оказалось {errors}. Боб исправляет эти биты. Сами значения бит при этом не раскрываются.',
+    'pa.pa': '<strong>2. Усиление секретности.</strong> Ева могла кое-что узнать: часть перехватов не дала ошибок, а чётности из шага 1 были публичными. Поэтому {n} бит сжимаются в 8: каждый бит ключа — XOR группы бит. Если Ева не знает хотя бы одного бита группы, XOR для неё — случайная монетка.',
+    'pa.bit': 'Бит {k}',
   },
   en: {
     'meta.title': 'Quantum Key: BB84 - Ludus Lab',
@@ -2335,10 +2401,10 @@ const I18N = {
     'protocol.step5.p2': 'In the game: a raw key is built from the matching measurements.',
     'protocol.step6.title': 'Eavesdropping detection',
     'protocol.step6.p1': 'In the real protocol, Alice and Bob compare part of the remaining bits (which are then discarded). If Eve was eavesdropping, she introduced errors that are detected during the comparison.',
-    'protocol.step6.p2': 'In the game: bits intercepted by Eve are flagged and excluded from the final key.',
+    'protocol.step6.p2': 'In the game: 30 random bits of the sifted key are compared publicly to estimate the QBER. The “Eve” switch shows how eavesdropping raises the error rate.',
     'protocol.step7.title': 'Building the secret key',
     'protocol.step7.p1': 'If the error rate is below a certain threshold, the remaining bits form the secret key. Otherwise the key is discarded and the process repeats.',
-    'protocol.step7.p2': 'In the game: a final 8-bit key is built from the matching, non-intercepted bits.',
+    'protocol.step7.p2': 'In the game: if QBER < 11%, the remaining bits go through error correction and are compressed (XOR) into an 8-bit key; if QBER ≥ 11%, the key is discarded.',
     'protocol.security': '<strong>Protocol security:</strong> BB84\'s security rests on fundamental principles of quantum mechanics — any attempt to measure a quantum state disturbs it, which makes eavesdropping detectable.',
     'char.alice': 'Alice', 'char.bob': 'Bob',
     'status.aliceReady': 'Ready to send a qubit', 'status.aliceSending': 'Sending a qubit...',
@@ -2353,35 +2419,35 @@ const I18N = {
     'alert.eve': '⚠️ Eve intercepted the qubit! This may affect the final key.',
     'notif.siftReady': '✅ Enough data to sift the key!', 'notif.copied': 'Key successfully copied to clipboard!',
     'rawkey.collected': 'Qubits collected:', 'rawkey.hint': 'Click any bit of the final key to see its history',
-    'stat.matches': 'Basis matches', 'stat.matches.sub': 'of all sent', 'stat.intercepts': 'Intercepts', 'stat.qber': 'QBER (God mode)', 'stat.qber.sub': '0-5% ok · 5-11% suspicious · ≥11% danger',
-    'finalkey.heading': 'Quantum key', 'finalkey.desc': 'The secret key is built from the matching measurements', 'finalkey.bits': '8 bits · quantum distribution',
-    'disclaimer.text': '<strong>Note:</strong> This simulation implements the full eavesdropping detection mechanism: 30 random bits from the sifted key are publicly compared (sacrifice bits). If QBER (error rate) is under 11%, the key is formed (under 5% is normal, 5–11% is a yellow zone); if QBER reaches 11% or more, the session is discarded.',
+    'stat.matches': 'Basis matches', 'stat.matches.sub': 'of all sent', 'stat.intercepts': 'Intercepts', 'stat.qber': 'QBER (God mode)', 'stat.qber.sub': '0–5% noise · 5–11% suspicious · ≥11% danger',
+    'finalkey.heading': 'Quantum key', 'finalkey.desc': 'Compressed from the remaining bits after error correction', 'finalkey.bits': '8 bits · quantum distribution',
+    'disclaimer.text': '<strong>What is simplified:</strong> channel noise is a fixed ~2%; Eve uses the simplest intercept-resend attack; error correction and privacy amplification are shown schematically (real systems use protocols like Cascade or LDPC plus universal hashing, with keys thousands of bits long). The 11% QBER threshold is the well-known BB84 security bound.',
     'explanation.initial.p1': 'Choose one of the four qubit polarization options and send it to Bob. Bob will randomly choose a basis to measure it.',
     'explanation.initial.p2': 'Once you\'ve sent enough qubits, click "Sift key" to compare bases.',
     'explanation.enoughBits.p1': 'You\'ve sent enough qubits! Click "Sift key" to start sifting.',
-    'explanation.enoughBits.p2': 'Only the matching bases without interception ({matches}) will be used to build the final key.',
+    'explanation.enoughBits.p2': 'Basis matches: {matches}. 30 of them go to the public QBER check, the rest go into the key.',
     'explanation.insufficient.p1': '⚠️ Not enough data to build an 8-bit key!',
-    'explanation.insufficient.p2': 'You need to send more qubits so that at least 8 matching ones remain after excluding intercepted ones.',
-    'explanation.insufficient.p3': 'You currently have {count} suitable qubits.',
+    'explanation.insufficient.p2': 'You need at least {min} basis matches: 30 for the QBER check and 16 more for the key.',
+    'explanation.insufficient.p3': 'Current matches: {count}.',
     'explanation.success.p1': '<strong>Congratulations! You created a secret 8-bit quantum key:</strong> {key}',
     'explanation.success.p2': 'This key can be used to securely encrypt messages with Bob.',
-    'explanation.success.p3': 'QBER check: {intercepts} {errorsWord} found in the 30-bit sample. Eve raised the QBER — that is how she is detected in the BB84 protocol.',
+    'explanation.success.p3': 'QBER check: {intercepts} {errorsWord} in the 30-bit sample ({qber}%) — below the 11% threshold, so the key was accepted.',
     'history.title': 'Qubit #{index} history:', 'history.aliceSent': 'Alice sent:', 'history.bobMeasured': 'Bob measured:',
     'history.intercept.label': 'Intercepted:', 'history.basisMatch.label': 'Bases matched:', 'history.status.label': 'Status:',
     'history.yes': 'Yes', 'history.no': 'No',
-    'history.status.intercepted': 'Excluded from the key (compromised by Eve)', 'history.status.excess': 'Suitable for the key, but redundant', 'history.status.used': 'Used in the final key', 'history.status.notMatched': 'Bases did not match', 'history.status.pending': 'Eligible for key — pending sifting',
-    'history.eveDetected.label': 'Forgery detected:', 'history.eveDetected.yes': 'YES — bases matched, bits differ!',
+    'history.status.intercepted': 'Excluded from the key (compromised by Eve)', 'history.status.excess': 'Suitable for the key, but redundant', 'history.status.used': 'Went into the key — part of the XOR for key bit #{k}', 'history.status.notMatched': 'Bases did not match', 'history.status.pending': 'Eligible for the key — awaiting the QBER check',
+    'history.eveDetected.label': 'Error:', 'history.eveDetected.yes': 'bases matched, but bits differ',
     'history.eve.basis': 'Eve measured with basis:', 'history.eve.guessedRight': 'guessed Alice\'s basis — no error', 'history.eve.guessedWrong': 'wrong basis — bit corrupted',
     
     'eaveCheck.heading': 'Eavesdropping check',
-    'eaveCheck.desc': 'Alice and Bob publicly compare ~50% of the sifted bits. More bits = more accurate QBER.',
+    'eaveCheck.desc': 'Alice and Bob publicly compare 30 randomly chosen bits of the sifted key and compute the error rate (QBER). Revealed bits can no longer be used in the key.',
     'eaveCheck.bitLabel': 'Bit #{n}', 'eaveCheck.alice': 'Alice', 'eaveCheck.bob': 'Bob',
-    'eaveCheck.confirm': '✅ Build key from remaining bits',
+    'eaveCheck.confirm': '✅ Continue to key formation',
     'eaveCheck.reset': '🔄 Start over',
     'eaveCheck.verdict.clean': '✅ Channel is clean — no errors in {total} checked bits. Eve not detected.',
     'eaveCheck.verdict.compromised': '🚨 Interception detected! QBER = {qber}% — reached the 11% threshold or above. Key is unsafe.', 'eaveCheck.verdict.warning': '⚠️ QBER = {qber}% ({errors}/{total}) — yellow zone (5–11%). Worth paying attention to, but the key is still built from this material.',
-    'eaveCheck.verdict.normal': '✅ QBER = {qber}% ({errors}/{total}) — normal environmental imperfection (under 5%), nothing to worry about. Key formed.',
-    'eaveCheck.verdict.risk': '⚠️ No errors in the sample, but statistics cannot guarantee Eve\'s absence. Key formed with residual risk.',
+    'eaveCheck.verdict.normal': '✅ QBER = {qber}% ({errors}/{total}) — within normal channel noise (up to 5%). The key can be formed.',
+    'eaveCheck.verdict.risk': '⚠️ No errors in the sample, but God mode shows that Eve corrupted some other bits. The sample is only an estimate: the key was formed at a risk.',
     'eaveCheck.sampleQber': 'Sample QBER', 'eaveCheck.sampleQberSub': '({total} bits — what Alice and Bob see)',
     'eaveCheck.trueQber': 'True QBER', 'eaveCheck.trueQberSub': '(God mode)',
     'history.status.sacrifice': 'Used for eavesdropping check (publicly revealed)',
@@ -2393,7 +2459,7 @@ const I18N = {
     'welcome.stage1.title': '1. Quantum channel', 'welcome.stage1.desc': 'Alice sends qubits to Bob',
     'welcome.stage2.title': '2. Sifting', 'welcome.stage2.desc': 'comparing bases and building the raw key',
     'welcome.stage3.title': '3. QBER check', 'welcome.stage3.desc': 'looking for signs of eavesdropping',
-    'welcome.stage4.title': '4. Secret key', 'welcome.stage4.desc': "Alice and Bob's final shared key",
+    'welcome.stage4.title': '4. Secret key', 'welcome.stage4.desc': 'error correction, compression and the final key',
     'welcome.start': 'Start the game',
     'stageintro.1.title': 'Stage 1: Quantum channel',
     'stageintro.1.desc': 'Alice chooses a random polarization for each qubit and sends it to Bob. Bob independently picks a random measurement basis for each qubit. You control Alice\'s sending through the control panel.',
@@ -2403,7 +2469,7 @@ const I18N = {
     'stageintro.3.desc': 'Alice and Bob publicly compare part of the sifted key to estimate the error rate (QBER). If there are too many errors, Eve was on the channel and the key must be discarded.',
     'stageintro.3.btn': 'Start the QBER check',
     'stageintro.4.title': 'Stage 4: Secret key',
-    'stageintro.4.desc': "The check passed — Alice and Bob's shared secret key is built from the remaining clean bits.",
+    'stageintro.4.desc': 'QBER is below the threshold. Two steps remain: fix the rare errors (reconciliation) and compress the bits to erase what Eve might have learned (privacy amplification).',
     'stageintro.4.btn': 'Show the key',
     'sifting.stat.sent': 'qubits', 'sifting.stat.matches': 'matches', 'sifting.stat.sacrifice': 'for QBER', 'sifting.stat.forkey': 'into key', 'sifting.stat.revealed': 'revealed',
     'bobtable.heading': "Bob's measurement table", 'bobtable.empty': 'Qubits will appear here as they are sent',
@@ -2417,6 +2483,24 @@ const I18N = {
     'siftmode.auto.title': 'Automatic comparison', 'siftmode.auto.desc': 'Compare all bits at once',
     'btn.continueToQber': 'Continue to QBER check',
     'sifting.channel.label': 'Exchanging bases over the public channel',
+    'eve.title': '🕵️ Eve on the channel (God mode)',
+    'eve.off': 'None',
+    'eaveCheck.eveNone': 'absent',
+    'eaveCheck.eveBoxSub': '(God mode: share of intercepted photons)',
+    'eaveCheck.eveBox': 'Eve',
+    'eve.full': '100%',
+    'eve.random': 'Random',
+    'eve.hint': '“None” — a clean channel. “100%” — Eve intercepts every photon. “Random” — Eve may or may not be there and intercepts an unknown share of photons: try to tell from the QBER. Channel noise (~2%) is always present.',
+    'history.noise': 'Channel noise flipped Bob\'s bit',
+    'history.status.corrected': 'The error was found and fixed during reconciliation',
+    'explanation.success.eve': 'God mode: Eve intercepted {eve} of {sent} photons. Privacy amplification erased what she learned about the key.',
+    'explanation.success.noEve': 'God mode: Eve was not on the channel — all errors came from noise.',
+    'keyhist.title': 'Key bit #{k}',
+    'keyhist.hint': 'A key bit is the XOR of several sifted-key bits (qubit numbers). Click a number to open that qubit\'s history; ⚠ marks a bit whose error was fixed during reconciliation.',
+    'pa.heading': 'How the key was built from the remaining bits',
+    'pa.ec': '<strong>1. Reconciliation (error correction).</strong> After the check, {n} bits remain. Alice and Bob compare parities of bit blocks over the public channel and find the mismatches — there were {errors}. Bob fixes those bits. The bit values themselves are never revealed.',
+    'pa.pa': '<strong>2. Privacy amplification.</strong> Eve may have learned something: some intercepts caused no errors, and the parities from step 1 were public. So the {n} bits are compressed into 8: each key bit is the XOR of a group of bits. If Eve misses even one bit of a group, the XOR is a coin flip for her.',
+    'pa.bit': 'Bit {k}',
   },
   es: {
     'meta.title': 'Clave cuántica: BB84 - Ludus Lab',
@@ -2441,10 +2525,10 @@ const I18N = {
     'protocol.step5.p2': 'En el juego: se construye una clave en bruto a partir de las mediciones coincidentes.',
     'protocol.step6.title': 'Detección de espionaje',
     'protocol.step6.p1': 'En el protocolo real, Alicia y Bob comparan parte de los bits restantes (que luego se descartan). Si Eva estaba espiando, introdujo errores que se detectan al comparar.',
-    'protocol.step6.p2': 'En el juego: los bits interceptados por Eva se marcan y se excluyen de la clave final.',
+    'protocol.step6.p2': 'En el juego: 30 bits aleatorios de la clave filtrada se comparan públicamente para estimar el QBER. El selector «Eva» muestra cómo el espionaje aumenta la tasa de errores.',
     'protocol.step7.title': 'Formación de la clave secreta',
     'protocol.step7.p1': 'Si la tasa de error está por debajo de un umbral determinado, los bits restantes forman la clave secreta. En caso contrario, la clave se descarta y el proceso se repite.',
-    'protocol.step7.p2': 'En el juego: se forma una clave final de 8 bits a partir de los bits coincidentes no interceptados.',
+    'protocol.step7.p2': 'En el juego: si el QBER < 11%, los bits restantes pasan por la corrección de errores y se comprimen (XOR) en una clave de 8 bits; si el QBER ≥ 11%, la clave se descarta.',
     'protocol.security': '<strong>Seguridad del protocolo:</strong> La seguridad de BB84 se basa en principios fundamentales de la mecánica cuántica — cualquier intento de medir un estado cuántico lo altera, lo que permite detectar el espionaje.',
     'char.alice': 'Alicia', 'char.bob': 'Bob',
     'status.aliceReady': 'Lista para enviar un cúbit', 'status.aliceSending': 'Enviando un cúbit...',
@@ -2459,35 +2543,35 @@ const I18N = {
     'alert.eve': '⚠️ ¡Eva interceptó el cúbit! Esto puede afectar a la clave final.',
     'notif.siftReady': '✅ ¡Datos suficientes para filtrar la clave!', 'notif.copied': '¡Clave copiada correctamente al portapapeles!',
     'rawkey.collected': 'Cúbits recopilados:', 'rawkey.hint': 'Haz clic en cualquier bit de la clave final para ver su historial',
-    'stat.matches': 'Coincidencias de base', 'stat.matches.sub': 'de todos los enviados', 'stat.intercepts': 'Intercepciones', 'stat.qber': 'QBER (modo Dios)', 'stat.qber.sub': '0-5% ok · 5-11% sospechoso · ≥11% peligro',
-    'finalkey.heading': 'Clave cuántica', 'finalkey.desc': 'La clave secreta se forma a partir de las mediciones coincidentes', 'finalkey.bits': '8 bits · distribución cuántica',
-    'disclaimer.text': '<strong>Nota:</strong> Esta simulación implementa el mecanismo completo de detección de espionaje: se comparan públicamente 30 bits aleatorios de la clave filtrada (bits de sacrificio). Si el QBER (tasa de errores) es menor al 11%, la clave se forma (menos del 5% es normal, 5–11% es zona amarilla); si el QBER llega al 11% o más, la sesión se descarta.',
+    'stat.matches': 'Coincidencias de base', 'stat.matches.sub': 'de todos los enviados', 'stat.intercepts': 'Intercepciones', 'stat.qber': 'QBER (modo Dios)', 'stat.qber.sub': '0–5% ruido · 5–11% sospechoso · ≥11% peligro',
+    'finalkey.heading': 'Clave cuántica', 'finalkey.desc': 'Comprimida a partir de los bits restantes tras la corrección de errores', 'finalkey.bits': '8 bits · distribución cuántica',
+    'disclaimer.text': '<strong>Qué se simplifica:</strong> el ruido del canal es un ~2% fijo; Eva usa el ataque más simple de interceptar y reenviar; la corrección de errores y la amplificación de privacidad se muestran de forma esquemática (en la realidad se usan protocolos como Cascade o LDPC y hashing universal, con claves de miles de bits). El umbral de QBER del 11% es el conocido límite de seguridad de BB84.',
     'explanation.initial.p1': 'Elige una de las cuatro opciones de polarización del cúbit y envíaselo a Bob. Bob elegirá aleatoriamente una base para medirlo.',
     'explanation.initial.p2': 'Cuando hayas enviado suficientes cúbits, pulsa "Filtrar clave" para comparar las bases.',
     'explanation.enoughBits.p1': '¡Has enviado suficientes cúbits! Pulsa "Filtrar clave" para empezar a filtrar.',
-    'explanation.enoughBits.p2': 'Solo las bases coincidentes sin interceptación ({matches}) se usarán para formar la clave final.',
+    'explanation.enoughBits.p2': 'Coincidencias de base: {matches}. 30 irán a la comprobación pública del QBER y el resto a la clave.',
     'explanation.insufficient.p1': '⚠️ ¡Datos insuficientes para formar una clave de 8 bits!',
-    'explanation.insufficient.p2': 'Necesitas enviar más cúbits para que, tras excluir los interceptados, queden al menos 8 coincidentes.',
-    'explanation.insufficient.p3': 'Ahora mismo tienes {count} cúbits adecuados.',
+    'explanation.insufficient.p2': 'Se necesitan al menos {min} coincidencias de base: 30 para la comprobación del QBER y 16 más para la clave.',
+    'explanation.insufficient.p3': 'Coincidencias actuales: {count}.',
     'explanation.success.p1': '<strong>¡Felicidades! Has creado una clave cuántica secreta de 8 bits:</strong> {key}',
     'explanation.success.p2': 'Esta clave se puede usar para cifrar mensajes de forma segura con Bob.',
-    'explanation.success.p3': 'Comprobación QBER: {intercepts} {errorsWord} en la muestra de 30 bits. Eva elevó el QBER — así es como se detecta en el protocolo BB84.',
+    'explanation.success.p3': 'Comprobación QBER: {intercepts} {errorsWord} en la muestra de 30 bits ({qber}%) — por debajo del umbral del 11%, así que la clave fue aceptada.',
     'history.title': 'Historial del cúbit #{index}:', 'history.aliceSent': 'Alicia envió:', 'history.bobMeasured': 'Bob midió:',
     'history.intercept.label': 'Interceptado:', 'history.basisMatch.label': 'Bases coincidentes:', 'history.status.label': 'Estado:',
     'history.yes': 'Sí', 'history.no': 'No',
-    'history.status.intercepted': 'Excluido de la clave (comprometido por Eva)', 'history.status.excess': 'Apto para la clave, pero redundante', 'history.status.used': 'Usado en la clave final', 'history.status.notMatched': 'Las bases no coincidieron', 'history.status.pending': 'Apto para la clave — pendiente de filtrado',
-    'history.eveDetected.label': 'Suplantación detectada:', 'history.eveDetected.yes': 'SÍ — bases coinciden, bits difieren!',
+    'history.status.intercepted': 'Excluido de la clave (comprometido por Eva)', 'history.status.excess': 'Apto para la clave, pero redundante', 'history.status.used': 'Entró en la clave — forma parte del XOR del bit de clave #{k}', 'history.status.notMatched': 'Las bases no coincidieron', 'history.status.pending': 'Apto para la clave — pendiente de la comprobación QBER',
+    'history.eveDetected.label': 'Error:', 'history.eveDetected.yes': 'las bases coinciden, pero los bits difieren',
     'history.eve.basis': 'Eva midió con base:', 'history.eve.guessedRight': 'adivinó la base de Alicia — sin error', 'history.eve.guessedWrong': 'base errónea — bit corrompido',
     
     'eaveCheck.heading': 'Comprobación de espionaje',
-    'eaveCheck.desc': 'Alicia y Bob comparan públicamente ~50% de los bits filtrados. Más bits = QBER más preciso.',
+    'eaveCheck.desc': 'Alicia y Bob comparan públicamente 30 bits elegidos al azar de la clave filtrada y calculan la tasa de errores (QBER). Los bits revelados ya no pueden usarse en la clave.',
     'eaveCheck.bitLabel': 'Bit #{n}', 'eaveCheck.alice': 'Alicia', 'eaveCheck.bob': 'Bob',
-    'eaveCheck.confirm': '✅ Formar clave con los bits restantes',
+    'eaveCheck.confirm': '✅ Pasar a la formación de la clave',
     'eaveCheck.reset': '🔄 Empezar de nuevo',
     'eaveCheck.verdict.clean': '✅ Canal limpio — sin errores en {total} bits comprobados. Eva no detectada.',
     'eaveCheck.verdict.compromised': '🚨 ¡Interceptación detectada! QBER = {qber}% — alcanzó el umbral del 11% o más. Clave insegura.', 'eaveCheck.verdict.warning': '⚠️ QBER = {qber}% ({errors}/{total}) — zona amarilla (5–11%). Merece atención, pero la clave se forma igualmente con este material.',
-    'eaveCheck.verdict.normal': '✅ QBER = {qber}% ({errors}/{total}) — imperfección normal del entorno (menos del 5%), sin motivo de preocupación. Clave formada.',
-    'eaveCheck.verdict.risk': '⚠️ Sin errores en la muestra, pero la estadística no garantiza la ausencia de Eva. Clave formada con riesgo residual.',
+    'eaveCheck.verdict.normal': '✅ QBER = {qber}% ({errors}/{total}) — dentro del ruido normal del canal (hasta 5%). La clave se puede formar.',
+    'eaveCheck.verdict.risk': '⚠️ No hay errores en la muestra, pero el modo Dios muestra que Eva corrompió otros bits. La muestra es solo una estimación: la clave se formó con riesgo.',
     'eaveCheck.sampleQber': 'QBER de la muestra', 'eaveCheck.sampleQberSub': '({total} bits — lo que ven Alicia y Bob)',
     'eaveCheck.trueQber': 'QBER real', 'eaveCheck.trueQberSub': '(modo Dios)',
     'history.status.sacrifice': 'Usado para la comprobación de espionaje (revelado públicamente)',
@@ -2499,7 +2583,7 @@ const I18N = {
     'welcome.stage1.title': '1. Canal cuántico', 'welcome.stage1.desc': 'Alicia envía cúbits a Bob',
     'welcome.stage2.title': '2. Filtrado', 'welcome.stage2.desc': 'comparación de bases y formación de la clave en bruto',
     'welcome.stage3.title': '3. Verificación QBER', 'welcome.stage3.desc': 'búsqueda de señales de espionaje',
-    'welcome.stage4.title': '4. Clave secreta', 'welcome.stage4.desc': 'la clave final compartida por Alicia y Bob',
+    'welcome.stage4.title': '4. Clave secreta', 'welcome.stage4.desc': 'corrección de errores, compresión y clave final',
     'welcome.start': 'Empezar el juego',
     'stageintro.1.title': 'Etapa 1: Canal cuántico',
     'stageintro.1.desc': 'Alicia elige una polarización aleatoria para cada cúbit y se lo envía a Bob. Bob elige de forma independiente una base de medición aleatoria para cada cúbit. Tú controlas el envío de Alicia mediante el panel de control.',
@@ -2509,7 +2593,7 @@ const I18N = {
     'stageintro.3.desc': 'Alicia y Bob comparan públicamente parte de la clave filtrada para estimar la tasa de errores (QBER). Si hay demasiados errores, Eva estaba en el canal y la clave debe descartarse.',
     'stageintro.3.btn': 'Empezar la verificación QBER',
     'stageintro.4.title': 'Etapa 4: Clave secreta',
-    'stageintro.4.desc': 'La verificación fue exitosa — con los bits limpios restantes se ha formado la clave secreta compartida de Alicia y Bob.',
+    'stageintro.4.desc': 'El QBER está por debajo del umbral. Quedan dos pasos: corregir los errores escasos (reconciliación) y comprimir los bits para borrar lo que Eva pudo averiguar (amplificación de privacidad).',
     'stageintro.4.btn': 'Mostrar la clave',
     'sifting.stat.sent': 'cúbits', 'sifting.stat.matches': 'coincid.', 'sifting.stat.sacrifice': 'para QBER', 'sifting.stat.forkey': 'en clave', 'sifting.stat.revealed': 'revelados',
     'bobtable.heading': 'Tabla de mediciones de Bob', 'bobtable.empty': 'Los cúbits aparecerán aquí a medida que se envíen',
@@ -2523,6 +2607,24 @@ const I18N = {
     'siftmode.auto.title': 'Comparación automática', 'siftmode.auto.desc': 'Comparar todos los bits a la vez',
     'btn.continueToQber': 'Continuar a la verificación QBER',
     'sifting.channel.label': 'Intercambio de bases por el canal público',
+    'eve.title': '🕵️ Eva en el canal (modo Dios)',
+    'eve.off': 'No',
+    'eaveCheck.eveNone': 'no estaba',
+    'eaveCheck.eveBoxSub': '(modo Dios: parte de fotones interceptados)',
+    'eaveCheck.eveBox': 'Eva',
+    'eve.full': '100%',
+    'eve.random': 'Al azar',
+    'eve.hint': '«No» — canal limpio. «100%» — Eva intercepta cada fotón. «Al azar» — Eva puede estar o no, e intercepta una parte desconocida de los fotones: intenta deducirlo por el QBER. El ruido del canal (~2%) siempre está presente.',
+    'history.noise': 'El ruido del canal invirtió el bit de Bob',
+    'history.status.corrected': 'El error se encontró y corrigió durante la reconciliación',
+    'explanation.success.eve': 'Modo Dios: Eva interceptó {eve} de {sent} fotones. La amplificación de privacidad borró lo que sabía de la clave.',
+    'explanation.success.noEve': 'Modo Dios: Eva no estaba en el canal — todos los errores se deben al ruido.',
+    'keyhist.title': 'Bit de clave #{k}',
+    'keyhist.hint': 'Un bit de clave es el XOR de varios bits de la clave filtrada (números de cúbit). Haz clic en un número para ver la historia del cúbit; ⚠ marca un bit cuyo error se corrigió en la reconciliación.',
+    'pa.heading': 'Cómo se obtuvo la clave a partir de los bits restantes',
+    'pa.ec': '<strong>1. Reconciliación (corrección de errores).</strong> Tras la comprobación quedan {n} bits. Alicia y Bob comparan las paridades de bloques de bits por el canal público y encuentran las discrepancias: hubo {errors}. Bob corrige esos bits. Los valores de los bits nunca se revelan.',
+    'pa.pa': '<strong>2. Amplificación de privacidad.</strong> Eva pudo averiguar algo: algunas intercepciones no causaron errores y las paridades del paso 1 eran públicas. Por eso los {n} bits se comprimen en 8: cada bit de clave es el XOR de un grupo de bits. Si Eva desconoce aunque sea un bit del grupo, el XOR es para ella una moneda al aire.',
+    'pa.bit': 'Bit {k}',
   },
 };
 
@@ -2574,6 +2676,11 @@ function refreshDynamicUI() {
   if (lastHistoryIndex !== null && bitHistory && bitHistory.style.display === 'block') {
     showBitHistory(lastHistoryIndex);
   }
+  if (lastKeyHistoryIndex !== null && bitHistory && bitHistory.style.display === 'block') {
+    showKeyBitHistory(lastKeyHistoryIndex);
+  }
+  if (currentStage === 4) renderPrivacyAmplification();
+  renderEveControl();
 }
 
 document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn)));
@@ -2604,7 +2711,7 @@ function renderExplanation() {
   } else if (s.key === 'enoughBits') {
     explanation.innerHTML = `<p>${t('explanation.enoughBits.p1')}</p><p>${t('explanation.enoughBits.p2', s.vars)}</p>`;
   } else if (s.key === 'insufficient') {
-    explanation.innerHTML = `<p>${t('explanation.insufficient.p1')}</p><p>${t('explanation.insufficient.p2')}</p><p>${t('explanation.insufficient.p3', s.vars)}</p>`;
+    explanation.innerHTML = `<p>${t('explanation.insufficient.p1')}</p><p>${t('explanation.insufficient.p2', s.vars)}</p><p>${t('explanation.insufficient.p3', s.vars)}</p>`;
   }
   // 'success' рендерится отдельно в Stage 4 через renderSuccessExplanation()
 }
@@ -2613,7 +2720,13 @@ function renderSuccessExplanation() {
   if (!el || explanationState.key !== 'success') return;
   const s = explanationState;
   el.style.display = 'block';
-  el.innerHTML = `<p>${t('explanation.success.p1', s.vars)}</p><p>${t('explanation.success.p2')}</p><p>${t('explanation.success.p3', s.vars)}</p>`;
+  const n = s.vars.intercepts;
+  const errorsWord = currentLang === 'ru'
+    ? plur(n, 'ошибка', 'ошибки', 'ошибок')
+    : currentLang === 'es' ? (n === 1 ? 'error' : 'errores') : (n === 1 ? 'error' : 'errors');
+  const vars = { ...s.vars, errorsWord };
+  const eveNote = s.vars.eve > 0 ? t('explanation.success.eve', vars) : t('explanation.success.noEve');
+  el.innerHTML = `<p>${t('explanation.success.p1', vars)}</p><p>${t('explanation.success.p2')}</p><p>${t('explanation.success.p3', vars)}</p><p>${eveNote}</p>`;
 }
 function renderSiftingDesc() {
   const el = document.getElementById('siftingDescBox');
@@ -2630,13 +2743,26 @@ let selectedBasis = 'rectilinear';
 let selectedValue = '0';
 let rawKey = [];
 const FINAL_KEY_LENGTH = 8;
-// Жертвуем 50% matching-бит на проверку QBER — как в реальном протоколе.
-// Минимум matching-бит: нужно чтобы в оставшихся 50% было ≥ FINAL_KEY_LENGTH чистых.
-// При P(Ева)=0.5 → ~25% matching грязные, значит чистые ≈ 75%.
-// Нужно: (N/2) × 0.75 ≥ 8  →  N ≥ 21.3, с запасом → 32
-const SACRIFICE_COUNT = 30;        // фиксированные 30 бит на проверку QBER
-// 30 sacrifice + нужно ≥ 8 чистых из оставшихся. При ~25% грязных: (N-30)×0.75 ≥ 8 → N ≥ 41, с запасом → 45
-const MIN_MATCHES_FOR_SIFTING = 45;
+const SACRIFICE_COUNT = 30;        // фиксированные 30 бит на публичную проверку QBER
+// Каждый бит итогового ключа — XOR группы из ≥2 оставшихся бит (усиление секретности),
+// поэтому после проверки нужно ≥ 16 бит: 30 + 16 = 46 совпадений базисов.
+const MIN_KEY_MATERIAL = FINAL_KEY_LENGTH * 2;
+const MIN_MATCHES_FOR_SIFTING = SACRIFICE_COUNT + MIN_KEY_MATERIAL;
+// Шум канала: с такой вероятностью бит Боба переворачивается сам по себе (неидеальная оптика/детекторы)
+const NOISE_RATE = 0.02;
+// Ева (переключатель «режим Бога» на этапе 1): нет / 100% / случайно.
+// В случайном режиме доля перехватов тайно выбирается на каждую сессию:
+// с вероятностью 30% Евы нет, иначе она перехватывает от 5% до 35% фотонов.
+let eveMode = 'random';
+function drawEveRate() {
+    if (eveMode === 'off') return 0;
+    if (eveMode === 'full') return 1;
+    return Math.random() < 0.3 ? 0 : 0.05 + Math.random() * 0.3;
+}
+let eveRate = drawEveRate();
+let keyGroups = [];                  // keyGroups[k] — rawKey-индексы бит, из XOR которых собран бит ключа k
+let paState = null;                  // данные для блока «коррекция ошибок + усиление секретности»
+let lastKeyHistoryIndex = null;      // какой бит итогового ключа открыт в панели истории
 let eveIntercepts = 0;
 let matchingIndices = [];
 let sacrificeIndices = [];           // rawKey-индексы бит, пошедших на проверку
@@ -2753,6 +2879,15 @@ function initGame() {
         });
     });
     
+    // Переключатель интенсивности Евы (режим Бога)
+    document.querySelectorAll('.eve-option').forEach(btn => {
+        btn.addEventListener('click', function() {
+            eveMode = this.dataset.eve;
+            eveRate = drawEveRate();
+            renderEveControl();
+        });
+    });
+
     // Обработчик ручного режима
     manualModeBtn.addEventListener('click', function() {
         if (siftKeyPressed) return;
@@ -2882,6 +3017,11 @@ function stopAuto() {
     }
 }
 
+function renderEveControl() {
+    document.querySelectorAll('.eve-option').forEach(btn =>
+        btn.classList.toggle('selected', btn.dataset.eve === eveMode));
+}
+
 function toggleProtocol() {
     const isExpanded = protocolContent.style.display === 'block';
     const toggleIcon = protocolHeader.querySelector('.toggle-icon');
@@ -2939,6 +3079,7 @@ function showBitHistory(index) {
     if (index >= rawKey.length) return;
 
     lastHistoryIndex = index;
+    lastKeyHistoryIndex = null;
     const bit = rawKey[index];
 
     let historyHTML = `<div class="history-title">${t('history.title', { index })}</div>`;
@@ -2967,41 +3108,37 @@ function showBitHistory(index) {
         historyHTML += `<div class="history-item">✗ ${t('history.basisMatch.label')} ${t('history.no')}</div>`;
     }
 
-    // Обнаружение подлога: базисы совпали, но биты не совпали → Ева
-    const eveDetected = bit.matches && bit.aliceValue !== bit.bobValue;
-    if (eveDetected) {
+    // Ошибка: базисы совпали, но биты разные — причина либо Ева, либо шум канала
+    const hasError = bit.matches && bit.aliceValue !== bit.bobValue;
+    if (hasError) {
         historyHTML += `<div class="history-item">🚨 ${t('history.eveDetected.label')} <span class="intercepted">${t('history.eveDetected.yes')}</span></div>`;
     }
 
-    // Детали симуляции: что именно сделала Ева (образовательный блок)
+    // Детали симуляции (режим Бога): что именно сделала Ева и был ли шум
     if (bit.wasIntercepted && bit.eveBasis !== null) {
         const eveBasisLabel = bit.eveBasis === 'rectilinear' ? '+' : '×';
         const sameAsAlice = bit.eveBasis === bit.aliceBasis;
         historyHTML += `<div class="history-item history-sim">🕵️ ${t('history.eve.basis')} <span class="${bit.eveBasis === 'rectilinear' ? 'rectilinear-basis' : 'diagonal-basis'}">${eveBasisLabel}</span>${sameAsAlice ? ' ✓' : ' ✗'} — ${t(sameAsAlice ? 'history.eve.guessedRight' : 'history.eve.guessedWrong')}</div>`;
     }
+    if (bit.noisy) {
+        historyHTML += `<div class="history-item history-sim">〰️ ${t('history.noise')}</div>`;
+    }
 
     // Статус использования
-    if (eveDetected) {
-        // Базисы совпали, но бит искажён — детектированный подлог, из ключа исключается
-        historyHTML += `<div class="history-item history-status">${t('history.status.label')} <span class="status-intercepted">${t('history.status.intercepted')}</span></div>`;
-    } else if (!bit.matches) {
+    const statusRow = (cls, key, vars) =>
+        `<div class="history-item history-status">${t('history.status.label')} <span class="${cls}">${t(key, vars)}</span></div>`;
+    if (!bit.matches) {
         // Базисы не совпали — кубит не попадает в ключ в принципе
-        historyHTML += `<div class="history-item history-status">${t('history.status.label')} <span class="status-not-matched">${t('history.status.notMatched')}</span></div>`;
+        historyHTML += statusRow('status-not-matched', 'history.status.notMatched');
+    } else if (sacrificeIndices.includes(index)) {
+        // Бит был публично раскрыт при проверке на прослушивание
+        historyHTML += statusRow('status-excess', 'history.status.sacrifice');
+    } else if (matchingIndices.includes(index)) {
+        const k = keyGroups.findIndex(g => g.includes(index));
+        historyHTML += statusRow('status-used', 'history.status.used', { k: k + 1 });
+        if (hasError) historyHTML += statusRow('status-excess', 'history.status.corrected');
     } else {
-        // Базисы совпали, биты совпали — потенциально пригоден для ключа
-        if (sacrificeIndices.includes(index)) {
-            // Бит был публично раскрыт при проверке на прослушивание
-            historyHTML += `<div class="history-item history-status">${t('history.status.label')} <span class="status-excess">${t('history.status.sacrifice')}</span></div>`;
-        } else {
-            const indexInMatching = matchingIndices.indexOf(index);
-            if (indexInMatching >= 0 && indexInMatching >= FINAL_KEY_LENGTH) {
-                historyHTML += `<div class="history-item history-status">${t('history.status.label')} <span class="status-excess">${t('history.status.excess')}</span></div>`;
-            } else if (indexInMatching >= 0) {
-                historyHTML += `<div class="history-item history-status">${t('history.status.label')} <span class="status-used">${t('history.status.used')}</span></div>`;
-            } else {
-                historyHTML += `<div class="history-item history-status">${t('history.status.label')} <span class="status-excess">${t('history.status.pending')}</span></div>`;
-            }
-        }
+        historyHTML += statusRow('status-excess', 'history.status.pending');
     }
 
     bitHistory.innerHTML = historyHTML;
@@ -3117,7 +3254,7 @@ function sendPhoton() {
         }
     }
     
-    const shouldIntercept = Math.random() < 0.15;
+    const shouldIntercept = Math.random() < eveRate;
     const fast = isAutoActive;  // автоматический режим — ускоренные тайминги
 
     // В обычном режиме показываем иконку Евы, в авто — пропускаем анимацию
@@ -3227,15 +3364,19 @@ function measurePhoton(wasIntercepted, aliceBasis, aliceValue, bobBasis) {
         }
     }
 
+    // Шум канала: небольшая доля бит искажается без всякой Евы
+    const noisy = Math.random() < NOISE_RATE;
+    if (noisy) bobValue = bobValue === '0' ? '1' : '0';
+
     setTimeout(() => {
         if (bobStatus) {
             setBobStatus('bobReceived', { value: bobValue });
         }
-        addToRawKey(aliceValue, aliceBasis, bobValue, bobBasis, wasIntercepted, eveBasis, eveValue);
+        addToRawKey(aliceValue, aliceBasis, bobValue, bobBasis, wasIntercepted, eveBasis, eveValue, noisy);
     }, isAutoActive ? 40 : 1000);
 }
 
-function addToRawKey(aliceValue, aliceBasis, bobValue, bobBasis, wasIntercepted, eveBasis = null, eveValue = null) {
+function addToRawKey(aliceValue, aliceBasis, bobValue, bobBasis, wasIntercepted, eveBasis = null, eveValue = null, noisy = false) {
     const index = rawKey.length;
 
     rawKey.push({
@@ -3246,6 +3387,7 @@ function addToRawKey(aliceValue, aliceBasis, bobValue, bobBasis, wasIntercepted,
         wasIntercepted,
         eveBasis,
         eveValue,
+        noisy,
         matches: aliceBasis === bobBasis
     });
 
@@ -3317,7 +3459,7 @@ function checkSiftingAvailability(matches) {
 function enterSiftingStage() {
     const allMatching = rawKey.filter(item => item.matches);
     if (allMatching.length < MIN_MATCHES_FOR_SIFTING) {
-        setExplanation('insufficient', { count: allMatching.length });
+        setExplanation('insufficient', { count: allMatching.length, min: MIN_MATCHES_FOR_SIFTING });
         return;
     }
 
@@ -3492,45 +3634,40 @@ function enterQberStage() {
     // и подсветки нужной строки в таблице просеянного ключа при клике).
     const allMatching = siftedIndices.map((rawIndex, siftIndex) => ({ ...rawKey[rawIndex], rawIndex, siftIndex }));
 
-    // Жертвуем 50% matching-бит на проверку QBER.
-    // Выборка случайная — Ева не знает, какие биты будут публично раскрыты.
-    const sacrificeCount = SACRIFICE_COUNT;
+    // SACRIFICE_COUNT случайных бит идут на публичную проверку QBER.
+    // Выборка случайная — Ева не знает заранее, какие биты будут раскрыты.
     const shuffled = [...allMatching];
     for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    const checkBits = shuffled.slice(0, sacrificeCount);
-    const remaining = shuffled.slice(sacrificeCount);
-
+    const checkBits = shuffled.slice(0, SACRIFICE_COUNT);
     sacrificeIndices = checkBits.map(b => b.rawIndex);
+    const sacrificeSet = new Set(sacrificeIndices);
 
     let errorCount = 0;
     checkBits.forEach(bit => {
         if (bit.aliceValue !== bit.bobValue) errorCount++;
     });
 
-    const cleanRemaining = remaining.filter(b => b.aliceValue === b.bobValue);
+    // Все нераскрытые биты идут в ключ. Алиса и Боб НЕ знают, какие из них
+    // ошибочны — это выясняет согласование (коррекция ошибок) на этапе 4.
+    const remaining = allMatching.filter(b => !sacrificeSet.has(b.rawIndex));
+    const correctedErrors = remaining.filter(b => b.aliceValue !== b.bobValue).length;
 
-    if (cleanRemaining.length < FINAL_KEY_LENGTH) {
-        // Раскрытых чистых бит не хватает — возвращаемся на этап 1 отправить ещё
-        setExplanation('insufficient', { count: cleanRemaining.length });
-        matchingIndices = [];
-        sacrificeIndices = [];
-        siftKeyPressed = false;
-        setButtonsDisabled(false);
-        activateQuantumChannel();
-        goToStage(1);
-        return;
-    }
+    // Усиление секретности: бит ключа k = XOR всех оставшихся бит с номером ≡ k (mod 8).
+    // После согласования у Боба те же значения, что у Алисы, поэтому XOR берём по Алисе.
+    keyGroups = Array.from({ length: FINAL_KEY_LENGTH }, () => []);
+    remaining.forEach((b, j) => keyGroups[j % FINAL_KEY_LENGTH].push(b.rawIndex));
+    finalKey = keyGroups.map(group =>
+        group.reduce((acc, ri) => acc ^ Number(rawKey[ri].aliceValue), 0).toString());
+    matchingIndices = remaining.map(b => b.rawIndex);
+    paState = { n: remaining.length, errors: correctedErrors };
 
-    matchingIndices = cleanRemaining.slice(0, FINAL_KEY_LENGTH).map(b => b.rawIndex);
-    finalKey = cleanRemaining.slice(0, FINAL_KEY_LENGTH).map(b => b.aliceValue);
-
-    renderFullSiftedKeyTable(allMatching, new Set(sacrificeIndices));
+    renderFullSiftedKeyTable(allMatching, sacrificeSet);
 
     // Переходим к Этапу 3 (проверка QBER)
-    showSiftingStage(rawKey.length, allMatching.length, cleanRemaining.length, checkBits, errorCount);
+    showSiftingStage(rawKey.length, allMatching.length, remaining.length, checkBits, errorCount);
 }
 
 // Красивая таблица всего просеянного ключа (стиль как у Алисы/Боба) с подсветкой
@@ -3593,6 +3730,7 @@ function showEavesdroppingCheck(checkBits, errorCount) {
     const sampleQber = Math.round((errorCount / total) * 100);
     const trueQ = calcTrueQber();
     const trueQber = trueQ ? trueQ.pct : 0;
+    const eveShare = rawKey.length ? Math.round(rawKey.filter(b => b.wasIntercepted).length / rawKey.length * 100) : 0;
 
     // QBER-блок: выборка vs реальный
     const qberColor = (pct) => pct <= 5 ? '#4ade80' : pct <= 11 ? '#e6d000' : '#ff4444';
@@ -3611,6 +3749,10 @@ function showEavesdroppingCheck(checkBits, errorCount) {
            <div class="eave-qber-box">
              <div class="qber-label">${t('eaveCheck.trueQber')}<br>${t('eaveCheck.trueQberSub')}</div>
              <div class="qber-num" style="color:${qberColor(trueQber)}">${trueQber}%</div>
+           </div>
+           <div class="eave-qber-box">
+             <div class="qber-label">${t('eaveCheck.eveBox')}<br>${t('eaveCheck.eveBoxSub')}</div>
+             <div class="qber-num" style="color:${eveShare ? '#ff4444' : '#4ade80'}">${eveShare ? eveShare + '%' : t('eaveCheck.eveNone')}</div>
            </div>
          </div>`
     );
@@ -3640,8 +3782,8 @@ function showEavesdroppingCheck(checkBits, errorCount) {
         verdict.textContent = t('eaveCheck.verdict.normal', { errors: errorCount, total, qber: sampleQber });
         confirmBtn.style.display = 'block';
         resetBtn.style.display = 'none';
-    } else if (trueQber > 0) {
-        // Выборка чистая, но режим Бога показывает что ошибки были — Ева проскочила
+    } else if (rawKey.some(b => b.matches && b.wasIntercepted && b.aliceValue !== b.bobValue)) {
+        // Выборка чистая, но режим Бога показывает ошибки от Евы — она проскочила
         verdict.className = 'eave-verdict';
         verdict.style.cssText = 'border-color:rgba(230,208,0,0.5);background:rgba(230,208,0,0.08);color:#e6d000;';
         verdict.textContent = t('eaveCheck.verdict.risk');
@@ -3666,31 +3808,20 @@ function revealFinalKey() {
         if (i < finalKey.length && finalKeyCells[i]) {
             finalKeyCells[i].textContent = finalKey[i];
             finalKeyCells[i].classList.add('active');
-            if (i < matchingIndices.length) {
-                finalKeyCells[i].dataset.sourceIndex = matchingIndices[i];
-            }
+            finalKeyCells[i].dataset.keyIndex = i;
             finalKeyCells[i].addEventListener('click', function() {
-                const idx = parseInt(this.dataset.sourceIndex);
-                if (!isNaN(idx)) showBitHistory(idx);
-            });
-            finalKeyCells[i].addEventListener('mouseenter', function() {
-                highlightSourceBit(this.dataset.sourceIndex);
-            });
-            finalKeyCells[i].addEventListener('mouseleave', function() {
-                unhighlightSourceBit(this.dataset.sourceIndex);
+                showKeyBitHistory(parseInt(this.dataset.keyIndex));
             });
         }
     }
 
-    const eveDetectedInCheck = sacrificeIndices
-        .filter(ri => rawKey[ri] && rawKey[ri].aliceValue !== rawKey[ri].bobValue).length;
+    renderPrivacyAmplification();
 
-    const errorsWord = currentLang === 'ru'
-        ? plur(eveDetectedInCheck, 'ошибка', 'ошибки', 'ошибок')
-        : currentLang === 'es'
-            ? (eveDetectedInCheck === 1 ? 'error' : 'errores')
-            : (eveDetectedInCheck === 1 ? 'error' : 'errors');
-    setExplanation('success', { key: finalKey.join(''), intercepts: eveDetectedInCheck, errorsWord });
+    const errorsInCheck = sacrificeIndices
+        .filter(ri => rawKey[ri] && rawKey[ri].aliceValue !== rawKey[ri].bobValue).length;
+    const qber = Math.round(errorsInCheck / SACRIFICE_COUNT * 100);
+    const eveCount = rawKey.filter(b => b.wasIntercepted).length;
+    setExplanation('success', { key: finalKey.join(''), intercepts: errorsInCheck, qber, eve: eveCount, sent: rawKey.length });
 
     if (bitHistoryInfo) {
         bitHistoryInfo.style.display = 'block';
@@ -3710,22 +3841,50 @@ function copyFinalKey() {
     });
 }
 
-function highlightSourceBit(sourceIndex) {
-    if (sourceIndex === undefined || sourceIndex === null || !siftedTableBody) return;
-    const row = siftedTableBody.querySelector(`tr[data-index="${sourceIndex}"]`);
-    if (row) row.classList.add('highlight');
+// Формула бита ключа: «#3 ⊕ #11 ⊕ #19 = 1 ⊕ 0 ⊕ 1 = 0» (номера — позиции кубитов)
+function keyGroupFormula(k) {
+    const group = keyGroups[k] || [];
+    const ids = group.map(ri => '#' + (ri + 1)).join(' ⊕ ');
+    const vals = group.map(ri => rawKey[ri].aliceValue).join(' ⊕ ');
+    return `${ids} = ${vals} = <strong>${finalKey[k]}</strong>`;
 }
 
-function unhighlightSourceBit(sourceIndex) {
-    if (sourceIndex === undefined || sourceIndex === null || !siftedTableBody) return;
-    const row = siftedTableBody.querySelector(`tr[data-index="${sourceIndex}"]`);
-    if (row) {
-        row.classList.remove('highlight');
-    }
+function showKeyBitHistory(k) {
+    if (!keyGroups[k]) return;
+    lastKeyHistoryIndex = k;
+    lastHistoryIndex = null;
+    let html = `<div class="history-title">${t('keyhist.title', { k: k + 1 })}</div>`;
+    html += `<div class="history-item">${keyGroupFormula(k)}</div>`;
+    html += `<div class="history-item history-sim">${t('keyhist.hint')}</div>`;
+    html += '<div class="keyhist-links">' + keyGroups[k].map(ri => {
+        const b = rawKey[ri];
+        const err = b.aliceValue !== b.bobValue;
+        return `<button class="keyhist-link${err ? ' err' : ''}" data-ri="${ri}">#${ri + 1}${err ? ' ⚠' : ''}</button>`;
+    }).join('') + '</div>';
+    bitHistory.innerHTML = html;
+    bitHistory.style.display = 'block';
+    bitHistory.querySelectorAll('.keyhist-link').forEach(btn =>
+        btn.addEventListener('click', () => showBitHistory(parseInt(btn.dataset.ri))));
+    if (bitHistoryInfo) bitHistoryInfo.style.display = 'none';
+}
+
+// Блок этапа 4: согласование (коррекция ошибок) + усиление секретности (XOR-сжатие)
+function renderPrivacyAmplification() {
+    const el = document.getElementById('paExplanation');
+    if (!el || !paState) return;
+    const rows = keyGroups.map((g, k) =>
+        `<div class="pa-row">${t('pa.bit', { k: k + 1 })}: ${keyGroupFormula(k)}</div>`).join('');
+    el.innerHTML =
+        `<h3 class="pa-heading">${t('pa.heading')}</h3>` +
+        `<p>${t('pa.ec', paState)}</p>` +
+        `<p>${t('pa.pa', paState)}</p>` +
+        `<div class="pa-rows">${rows}</div>`;
+    el.style.display = 'block';
 }
 
 function resetGame() {
     siftKeyPressed = false;
+    eveRate = drawEveRate();
     activateQuantumChannel();
 
     rawKey = [];
@@ -3733,6 +3892,11 @@ function resetGame() {
     sacrificeIndices = [];
     eveIntercepts = 0;
     finalKey = '';
+    keyGroups = [];
+    paState = null;
+    lastKeyHistoryIndex = null;
+    const paEl = document.getElementById('paExplanation');
+    if (paEl) { paEl.style.display = 'none'; paEl.innerHTML = ''; }
     savedCheckBits = null;
     savedErrorCount = 0;
     siftingVars = null;

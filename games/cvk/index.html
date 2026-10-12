@@ -411,6 +411,7 @@
     <button class="lang-btn" data-lang-btn="ru">RU</button>
     <button class="lang-btn" data-lang-btn="en">EN</button>
     <button class="lang-btn" data-lang-btn="es">ES</button>
+    <button class="lang-btn" data-lang-btn="zh">中文</button>
   </div>
   <div class="container">
     <header class="game-header">
@@ -601,6 +602,51 @@
         'alert.copied': '¡Clave copiada!',
         'nav.theory': 'Leer la teoría', 'nav.home': 'Volver al laboratorio',
       },
+      zh: {
+        'meta.title': '密钥生成中心',
+        'game.title': '密钥生成中心',
+        'game.subtitle': 'Ludus Lab · 用游戏把复杂的事情变简单',
+        'protocol.toggle': '密钥生成中心是如何工作的',
+        'protocol.intro': '密钥生成中心（CVK）是一个基于用户熵生成密码密钥的模拟器。与算法生成器不同，它利用不可预测的光标移动来生成真正随机的序列。',
+        'protocol.step1.title': '收集熵',
+        'protocol.step1.desc': '系统收集三个熵源：光标的 X 坐标、Y 坐标，以及以毫秒为单位的当前时间。鼠标移动得越混乱，熵的质量就越高。',
+        'protocol.step2.title': '数值的奇偶性',
+        'protocol.step2.desc': '对这三个数值中的每一个，系统判断它是奇数（奇偶位 = 1）还是偶数（奇偶位 = 0）。',
+        'protocol.step2.example': '例如：X=125 → 奇数 → 1；Y=84 → 偶数 → 0；时间=1623456789 → 奇数 → 1',
+        'protocol.step3.title': '异或运算',
+        'protocol.step3.desc1': '三个奇偶位（X、Y、时间）按模 2 相加（异或运算）。',
+        'protocol.step3.desc2': '异或的规则是：如果 1 的个数（奇数值的个数）是奇数，结果就是 1。',
+        'protocol.step3.list': '<li>0+0+0 = 0 → 1 的个数为偶数 → 比特 = 0</li><li>1+0+1 = 2 → 1 的个数为偶数 → 比特 = 0</li><li>1+1+1 = 3 → 1 的个数为奇数 → 比特 = 1</li><li>1+0+0 = 1 → 1 的个数为奇数 → 比特 = 1</li>',
+        'protocol.step4.title': '生成一个密钥比特',
+        'protocol.step4.desc': '异或运算的结果成为未来密码密钥的一个比特。每隔固定的时间间隔，针对每一个新的光标位置重复这一运算。',
+        'protocol.step5.title': '组装密钥',
+        'protocol.step5.desc': '比特依次填入密钥的各个格子。收集到足够的比特后（本模拟中为 16 位），完整的密码密钥就形成了。',
+        'protocol.step6.title': '安全性',
+        'protocol.step6.desc': '用这种方式生成的密钥具有很高的密码强度，因为不知道确切的光标轨迹和每次采样的时间，就无法预测它。',
+        'protocol.practical': '<strong>实际应用：</strong>类似的方法用于需要高度随机性的系统——密码协议、会话密钥生成、加密中的初始化向量。',
+        'btn.generate': '生成密钥',
+        'btn.copy': '复制密钥',
+        'btn.newkey': '新密钥',
+        'vis.xLabel': 'X = ',
+        'vis.yLabel': 'Y = ',
+        'vis.timeLabel': '时间 = ',
+        'vis.oddQ': '→ 奇数？',
+        'vis.xorLabel': '异或：奇数值的个数 = ',
+        'vis.bitLabel': '比特 = ',
+        'status.pressStart': '点击“生成密钥”',
+        'status.moveForEntropy': '移动光标以产生熵',
+        'status.capturing': '正在采集熵……',
+        'status.moveCursor': '移动光标',
+        'status.keyGenerated': '密钥已生成',
+        'parity.yes': '是',
+        'parity.no': '否',
+        'canvas.collected': '已收集比特：{count} / {total}',
+        'key.successTitle': '主密钥生成成功：',
+        'key.copyHint': '你可以复制它以备后用。',
+        'alert.copied': '密钥已复制！',
+        'nav.theory': '阅读理论',
+        'nav.home': '返回实验室',
+      },
     };
     let currentLang = 'ru';
     function t(key, vars) {
@@ -612,7 +658,7 @@
     function applyLanguage(lang) {
       if (!I18N[lang]) lang = 'ru';
       currentLang = lang;
-      document.documentElement.lang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
       document.title = t('meta.title');
       document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n')); });
       document.querySelectorAll('.lang-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.langBtn === lang); });

@@ -100,6 +100,8 @@
       padding: 40px 20px;
       flex: 1 0 auto;
     }
+    /* body is a flex column and the auto margins make the container shrink-to-fit its content: pin it to the viewport width */
+    .theory-container { width: 100%; box-sizing: border-box; }
 
     /* Заголовок статьи */
     .article-header {
@@ -479,6 +481,16 @@
       .nav-links { flex-direction: column; width: 100%; }
       .nav-link { width: 100%; margin-bottom: 5px; }
     }
+  
+    /* the XOR table must fit a phone screen */
+    @media (max-width: 480px) {
+      .xor-table th, .xor-table td { min-width: 0; padding-left: 6px; padding-right: 6px; }
+      .xor-table { width: 100%; }
+      .xor-value { min-width: 0; padding: 8px 12px; }
+    }
+    @media (max-width: 360px) {
+      .xor-table th, .xor-table td { padding: 6px 3px; font-size: 0.78rem; }
+    }
   </style>
 </head>
 <body>
@@ -486,6 +498,7 @@
     <button class="lang-btn" data-lang-btn="ru">RU</button>
     <button class="lang-btn" data-lang-btn="en">EN</button>
     <button class="lang-btn" data-lang-btn="es">ES</button>
+    <button class="lang-btn" data-lang-btn="zh">中文</button>
   </div>
 
   <!-- Навигация -->
@@ -973,12 +986,97 @@
         'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
         'footer.line2': 'Este artículo es una explicación simplificada de los principios. Los sistemas reales de generación de claves usan algoritmos mucho más complejos.',
       },
+      zh: {
+        'meta.title': '熵与密钥生成 | Ludus Lab',
+        'meta.description': '什么是真正的随机性，它为什么对密码学至关重要。密码密钥是如何生成的，才能让人无法预测。',
+        'nav.home': '首页',
+        'nav.play': '开始游戏',
+        'article.category': '密码学',
+        'article.title': '熵与密钥生成',
+        'article.subtitle': '什么是真正的随机性，以及为什么它是整个现代密码学的基础',
+        'meta.readtime': '⏱️ 阅读约 4 分钟',
+        'meta.level': '📊 中级',
+        'meta.security': '🔐 安全的基础',
+        'block1.heading': '我们为什么需要它？',
+        'block1.p1': '想象你在设计一种保护国家机密的密码。你发明了一个出色的算法，能把消息变成无法读懂的噪声。但有一个问题：<span class="highlight">密钥</span>——既能加密又能解密的数字“万能钥匙”。',
+        'block1.p2': '如果攻击者能够<span class="highlight">预测</span>或<span class="highlight">猜出</span>你的密钥，你所有精巧的算法都将一文不值。这就像装了一扇带密码锁的防盗门——却把密码设成“1234”。',
+        'block1.p3': '这时就轮到<span class="highlight">熵</span>登场了——它是衡量真正随机性的尺度。生成密钥时的熵越高，密钥就越<span class="highlight">不可能</span>被预测。你的安全不取决于算法有多复杂，而取决于密钥有多不可预测。',
+        'block2.heading': '什么是真正的随机性？',
+        'block2.intro': '计算机本质上是<span class="highlight">确定性的</span>——它严格按照指令行事。如果你让计算机“想一个随机数”，它会运行一个数学公式，得到的结果只是<span class="highlight">看起来</span>随机。',
+        'step1.title': '伪随机性',
+        'step1.text': '软件中大多数“随机”数都是<span class="highlight">伪随机序列</span>。它们从一个“种子”开始，按照数学公式生成。只要知道种子和公式，就能复现整个序列。',
+        'step2.title': '真随机性',
+        'step2.text': '真正的随机性来自<span class="highlight">物理过程</span>：晶体管噪声、鼠标移动、两次按键之间的时间间隔、放射性衰变。这些过程<span class="highlight">从根本上无法预测</span>。',
+        'step3.title': '熵',
+        'step3.text': '熵是<span class="highlight">不确定性的度量</span>。在密码学中：随机源的熵越高，攻击者对未来的值了解得就越少。',
+        'insight.label': '关键结论：',
+        'insight.text': '对密码学来说，“看起来随机”是不够的。需要的是<span class="highlight-gold">真正的不可预测性</span>。伪随机数发生器用于游戏没问题，但保护银行交易需要来自物理世界的熵。',
+        'block3.heading': '异或的魔力',
+        'block3.intro': '“密钥生成中心”游戏使用<span class="highlight">异或（XOR）</span>运算。它是密码学中最有用的运算之一，其思想很简单：',
+        'xor.title': '异或是如何工作的',
+        'xor.explain': '简单地说：两个值<strong>不同</strong>时结果为 1，<strong>相同</strong>时结果为 0。',
+        'block3.property': '在密码学中，异或有一个独特的性质：把数据与密钥做异或，再把结果与同一个密钥做一次异或，就会得到原来的数据！',
+        'xor.table.message': '消息',
+        'xor.table.key': '密钥',
+        'xor.table.cipher': '密文',
+        'block3.outro': '在我们的游戏中，我们用异或来<span class="highlight">组合</span>多个熵源：鼠标的 X、Y 坐标和当前时间。单个熵源也许并不完全随机，但它们组合在一起就产生了真正的不可预测性。',
+        'block4.heading': '现在来看真正的魔法',
+        'block4.intro': '在“密钥生成中心”模拟中，你将：',
+        'action1': '<strong>通过移动鼠标产生熵</strong>——移动越混乱，得到的密钥就越随机',
+        'action2': '<strong>实时观看异或的运作</strong>——看看 X、Y 坐标和时间戳如何变成密钥比特',
+        'action3': '<strong>看着密钥被“组装”起来</strong>——一个个比特火花飞向各自的格子，组成密码密钥',
+        'action4': '<strong>跟踪每一个比特的逻辑</strong>——看每个坐标值是偶数还是奇数，以及它如何影响结果',
+        'action5': '<strong>得到一个真正的密钥</strong>——一个可以复制使用的 16 位数',
+        'block4.outro': '你不只是阅读关于随机性的内容——而是<span class="highlight">亲手创造它</span>。你会看到现实世界中的物理动作如何变成数字保护，并理解为什么<span class="highlight-gold">熵是密码学中最宝贵的资源</span>。',
+        'advanced.summary': '给好奇的人',
+        'advanced.sources.heading': '真实系统中的熵源',
+        'advanced.sources.intro': '工业级的密钥生成系统会利用多种熵源：',
+        'topic1.title': '硬件发生器',
+        'topic1.desc': '半导体噪声、电阻热噪声、约翰逊噪声——无法预测的物理过程',
+        'topic2.title': '量子随机性',
+        'topic2.desc': '现代系统利用量子效应，例如光子的自发辐射或电子隧穿',
+        'topic3.title': '人的因素',
+        'topic3.desc': '按键之间的时间、鼠标移动、视网膜图案——这些都会增加不可预测性',
+        'topic4.title': '系统事件',
+        'topic4.desc': '网络数据包的到达时间、硬件中断、硬盘活动',
+        'advanced.csprng.heading': '密码学安全的随机数发生器',
+        'advanced.csprng.intro': '真实系统通常会结合多种方法：',
+        'csprng1': '从多个物理源<strong>收集熵</strong>',
+        'csprng2': '用密码哈希函数<strong>增强熵</strong>',
+        'csprng3': '<strong>建立“熵池”</strong>——一个不断补充的缓冲区',
+        'csprng4': '按需从熵池中<strong>输出随机数据</strong>',
+        'advanced.xorwhy.heading': '为什么偏偏是异或？',
+        'advanced.xorwhy.intro': '异或运算凭借以下性质，非常适合密码学：',
+        'xorwhy1': '<strong>可逆性</strong>：A XOR B XOR B = A',
+        'xorwhy2': '<strong>均匀性</strong>：如果 B 是随机的，那么 A XOR B 也是随机的',
+        'xorwhy3': '<strong>速度</strong>：处理器能执行的最快运算之一',
+        'xorwhy4': '<strong>简单</strong>：在任何硬件上都很容易实现',
+        'advanced.standards.heading': '标准与协议',
+        'advanced.standards.intro': '密钥生成的工业标准：',
+        'standard1': '<strong>FIPS 140-2</strong>——密码模块的安全标准',
+        'standard2': '<strong>NIST SP 800-90</strong>——关于随机数生成的建议',
+        'standard3': '<strong>RFC 4086</strong>——安全对随机性的要求',
+        'standard4': '<strong>ANSI X9.17</strong>——金融机构的标准',
+        'advanced.vulns.heading': '已知的漏洞',
+        'advanced.vulns.intro': '历史上曾多次出现因熵不足而导致的安全事件：',
+        'vuln1': '<strong>Debian OpenSSL（2008）</strong>——随机数发生器中的一个错误使 SSH 和 SSL 密钥变得可预测',
+        'vuln2': '<strong>Netscape SSL（1995）</strong>——用可预测的时间值和进程号（PID）生成密钥',
+        'vuln3': '<strong>Android 比特币钱包（2013）</strong>——熵不足导致反复生成相同的密钥',
+        'advanced.important.label': '重要：',
+        'advanced.important.text': '我们的游戏有意简化了真实的过程。工业系统使用复杂得多的算法来收集和增强熵，但核心原则不变：<span class="highlight-gold">真正的安全始于真正的随机性</span>。',
+        'actions.intro': '现在你已经理解了什么是熵以及密码密钥是如何生成的，正是亲手生成一个的好时机！',
+        'actions.play': '▶ 生成你的密钥',
+        'actions.back': '← 返回主题列表',
+        'actions.outro': '在游戏中，你会亲眼看到鼠标的移动如何变成密码保护',
+        'footer.line1': '© 2025 Ludus Lab · 用简单的游戏理解复杂的事物',
+        'footer.line2': '本文是对基本原理的简化讲解。真实的密钥生成系统使用复杂得多的算法。',
+      },
     };
 
     function applyLanguage(lang) {
       if (!I18N[lang]) lang = 'ru';
       const dict = I18N[lang];
-      document.documentElement.lang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
       document.title = dict['meta.title'];
       const descTag = document.getElementById('pageDescription');
       if (descTag) descTag.setAttribute('content', dict['meta.description']);

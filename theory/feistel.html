@@ -95,6 +95,8 @@ margin: 0 auto;
 padding: 40px 20px;
 flex: 1 0 auto;
 }
+/* body is a flex column and the auto margins make the container shrink-to-fit its content: pin it to the viewport width */
+.theory-container { width: 100%; box-sizing: border-box; }
 /* Заголовок статьи */
 .article-header {
 margin-bottom: 40px;
@@ -524,6 +526,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <button class="lang-btn" data-lang-btn="ru">RU</button>
 <button class="lang-btn" data-lang-btn="en">EN</button>
 <button class="lang-btn" data-lang-btn="es">ES</button>
+<button class="lang-btn" data-lang-btn="zh">中文</button>
 </div>
 
 <!-- Навигация -->
@@ -641,7 +644,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <div class="modern-algorithms">
 <span class="algorithm-tag important">DES</span>
 <span class="algorithm-tag important">3DES</span>
-<span class="algorithm-tag russian">МАГМА (ГОСТ)</span>
+<span class="algorithm-tag russian" data-i18n="tag.magma">МАГМА (ГОСТ)</span>
 <span class="algorithm-tag">Blowfish</span>
 <span class="algorithm-tag">CAST-128</span>
 <span class="algorithm-tag">Twofish</span>
@@ -678,15 +681,15 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <h3 data-i18n="advanced.compare.heading">DES и Магма рядом</h3>
 <p data-i18n="advanced.compare.text">Оба алгоритма — сети Фейстеля, но с разным масштабом и разной судьбой:</p>
 <table class="comparison-table">
-<tr><th style="width: 25%;" data-i18n="table.param">Параметр</th><th class="western-cell">DES</th><th class="russian-cell">Магма (ГОСТ 28147-89)</th></tr>
+<tr><th style="width: 25%;" data-i18n="table.param">Параметр</th><th class="western-cell">DES</th><th class="russian-cell" data-i18n="table.head.ru">Магма (ГОСТ 28147-89)</th></tr>
 <tr><td data-i18n="table.row1.label">Страна разработки</td><td class="western-cell" data-i18n="table.row1.west">США</td><td class="russian-cell" data-i18n="table.row1.ru">СССР / Россия</td></tr>
-<tr><td data-i18n="table.row2.label">Год принятия</td><td class="western-cell">1977</td><td class="russian-cell">1989 (сегодня — ГОСТ Р 34.12-2015)</td></tr>
+<tr><td data-i18n="table.row2.label">Год принятия</td><td class="western-cell">1977</td><td class="russian-cell" data-i18n="table.row2.ru">1989 (сегодня — ГОСТ Р 34.12-2015)</td></tr>
 <tr><td data-i18n="table.row3.label">Архитектура</td><td class="western-cell" data-i18n="table.row3.val">Сеть Фейстеля</td><td class="russian-cell" data-i18n="table.row3.val">Сеть Фейстеля</td></tr>
-<tr><td data-i18n="table.row4.label">Размер блока</td><td class="western-cell">64 бита</td><td class="russian-cell">64 бита</td></tr>
-<tr><td data-i18n="table.row5.label">Длина ключа</td><td class="western-cell">56 бит</td><td class="russian-cell">256 бит</td></tr>
+<tr><td data-i18n="table.row4.label">Размер блока</td><td class="western-cell" data-i18n="table.bits64">64 бита</td><td class="russian-cell" data-i18n="table.bits64">64 бита</td></tr>
+<tr><td data-i18n="table.row5.label">Длина ключа</td><td class="western-cell" data-i18n="table.bits56">56 бит</td><td class="russian-cell" data-i18n="table.bits256">256 бит</td></tr>
 <tr><td data-i18n="table.row6.label">Число раундов</td><td class="western-cell">16</td><td class="russian-cell">32</td></tr>
 <tr><td data-i18n="table.row7.label">S-блоки</td><td class="western-cell" data-i18n="table.row7.west">Зафиксированы стандартом с 1977 года</td><td class="russian-cell" data-i18n="table.row7.ru">Изначально ведомственный секрет; единый набор закреплён лишь в 2015-м</td></tr>
-<tr><td data-i18n="table.row8.label">Регулятор</td><td class="western-cell" data-i18n="table.row8.west">NIST (США)</td><td class="russian-cell"><span class="highlight-neon">ФСБ России</span></td></tr>
+<tr><td data-i18n="table.row8.label">Регулятор</td><td class="western-cell" data-i18n="table.row8.west">NIST (США)</td><td class="russian-cell"><span class="highlight-neon" data-i18n="table.row8.ru">ФСБ России</span></td></tr>
 </table>
 <h3 data-i18n="advanced.diff.heading">Тайна S-блоков и дифференциальный криптоанализ</h3>
 <p data-i18n="advanced.diff.p1">В 1990 году криптографы <strong>Эли Бихам</strong> и <strong>Ади Шамир</strong> опубликовали <span class="highlight">дифференциальный криптоанализ</span> — мощную атаку на блочные шифры. Публика была поражена: оказалось, что S-блоки DES на удивление хорошо устойчивы именно к этой атаке.</p>
@@ -1039,12 +1042,120 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
         'footer.line2': 'Este artículo es una explicación simplificada de los principios. El DES y el Magma reales usan permutaciones, expansiones y calendarios de claves más elaborados que los que muestra la demostración interactiva.',
       },
+      zh: {
+        'meta.title': '费斯妥网络：DES 是如何诞生的 | Ludus Lab',
+        'meta.description': '费斯妥网络如何解决密码的可逆性问题，以及为什么 DES 和俄罗斯的 Magma 都建立在这种结构之上。写给想理解思想、而不只是公式的人。',
+        'nav.home': '首页',
+        'nav.play': '开始游戏',
+        'article.category': '现代密码学',
+        'article.title': '费斯妥网络',
+        'article.subtitle': '一种结构如何解决了一个古老的加密难题——并成为 DES、俄罗斯 Magma 以及几十种其他算法的基础',
+        'meta.readtime': '⏱️ 阅读约 5 分钟',
+        'meta.level': '📊 中级',
+        'meta.security': '🔑 DES 和 Magma 的基础',
+        'block1.heading': '费斯妥解决的问题',
+        'block1.p1': '要解密一个分组密码，就必须设法撤销加密时的那些打乱操作。想出一个好的打乱函数已经够难了。再想出一个干净的数学<span class="highlight">逆函数</span>，并把两者都实现出来，工作量就翻了一倍——出错的可能性也翻了一倍。',
+        'block1.p2': '1970 年代初，<span class="highlight-gold">霍斯特·费斯妥</span>在 IBM 提出了一个结构上的妙招：把数据块切成两半 <span class="highlight-symmetric">L</span> 和 <span class="highlight-symmetric">R</span>，让其中一半与轮密钥一起经过一个可以任意复杂、任意不可逆的函数 F，把结果加到另一半上，然后交换两半。重复若干次。',
+        'insight1.label': '关键结论：',
+        'insight1.text': '妙处不在函数 F，而在<span class="highlight-gold">结构</span>本身。异或可以自己撤销自己，交换两半显然可逆。所以整个轮是可逆的——即使 F 本身不可逆。解密就是完全相同的算法，只是把轮密钥倒序使用。',
+        'block2.heading': '费斯妥网络是如何构造的',
+        'block2.intro': '把它分解成步骤，整个结构就显得出奇地简单：',
+        'step1.title': '切分分组',
+        'step1.text': '数据块被切成左半部分 <span class="highlight-symmetric">L</span> 和右半部分 <span class="highlight-symmetric">R</span>。在 DES 中，是把 64 位分组分成 32 位和 32 位；在 Ludus Lab 的游戏中，是把一个字节分成 4 位和 4 位。',
+        'step2.title': '轮函数',
+        'step2.text': '右半部分 <span class="highlight-symmetric">R</span> 与本轮的子密钥组合，再经过函数 F——在 DES 和 Magma 中，F 是一组 <span class="highlight">S 盒</span>（代换表），它们赋予密码非线性。',
+        'step3.title': '相加与交换',
+        'step3.text': 'F 的结果与左半部分 <span class="highlight-symmetric">L</span> 做异或，得到新的右半部分。然后交换两半。',
+        'step4.title': '重复多轮',
+        'step4.text': '整个过程一遍遍重复，每次使用新的子密钥：DES 重复 16 次，Magma 重复 32 次。轮数越多，就越难在明文和密文之间找到任何规律。',
+        'step5.title': '最终交换与解密',
+        'step5.text': '最后一轮之后，两半再交换一次——正是这一点赋予费斯妥网络最主要的性质：要解密，鲍勃只需运行<span class="highlight">完全相同的算法</span>，只是把子密钥倒序输入。',
+        'scheme1.title': '费斯妥网络的一轮',
+        'scheme1.label.halves': '分组的两半',
+        'scheme1.label.func': 'R + 子密钥 → S 盒',
+        'scheme1.label.xor': '加到 L 上',
+        'scheme1.label.swap': '交换两半',
+        'scheme1.note': 'F 可以任意复杂、任意不可逆——可逆的是“切分、混合、交换”这个结构本身。',
+        'block3.heading': '从 Lucifer 到今天',
+        'block3.intro': '费斯妥的想法没有停留在理论上——20 世纪对称密码学的很大一部分都建立在它之上：',
+        'cipher1.title': 'Lucifer（IBM，1970 年代初）',
+        'cipher1.text': '第一个基于费斯妥结构的密码，由霍斯特·费斯妥和他在 IBM 的团队创造。',
+        'cipher1.key': 'DES 的直接前身',
+        'cipher2.title': 'DES（NBS，1977）',
+        'cipher2.text': '改进后的 Lucifer 成为美国标准长达四分之一个世纪——64 位分组，56 位密钥，16 轮。',
+        'cipher2.key': '密钥：56 位——如今已不够',
+        'cipher3.title': 'GOST 28147-89“Magma”（苏联，1989）',
+        'cipher3.text': '基于同一思想的独立苏联设计：64 位分组，但有 256 位密钥和 32 轮。',
+        'cipher3.key': '如今：GOST R 34.12-2015',
+        'block3.mid': '费斯妥方案如此成功，以至于又成为后来好几代密码的基础：',
+        'warning1.label': '哪些不是费斯妥网络？',
+        'warning1.text': 'AES 和俄罗斯的“Kuznyechik”采用的是另一种构造——它们是<span class="highlight">代换–置换网络</span>（SP 网络），而不是费斯妥网络。两种思想解决的是同一个问题，只是方法不同。',
+        'block4.heading': '亲手试试费斯妥网络',
+        'block4.intro': '在 Ludus Lab 的交互式演示中，你可以：',
+        'action1': '<span><strong>把文本变成比特</strong>——看看 UTF-8 如何把你的消息拆成字节（可以输入中文、英文、俄文或任何其他语言），并选出一个来加密</span>',
+        'action2': '<span><strong>设置一个共享密钥</strong>，一步步看它如何产生四个不同的轮子密钥</span>',
+        'action3': '<span><strong>检验 S 盒的雪崩效应</strong>——看看改变一个输入比特如何同时改变多个输出比特</span>',
+        'action4': '<span><strong>逐位走完全部 4 轮加密</strong>——包括异或、S 盒和交换两半</span>',
+        'action5': '<span>用同一个算法、倒序的子密钥<strong>解密结果</strong>——确认消息完好无损地回来了</span>',
+        'insight2.label': '游戏的主要收获：',
+        'insight2.text': '解密之所以可行，不是因为有人撤销了函数 F，而是因为费斯妥网络的<span class="highlight-gold">结构本身</span>对子密钥的顺序是对称的。在一个字节上亲手走一遍，DES、Magma 以及几十种其他密码背后的原理就清楚了。',
+        'advanced.summary': '给好奇的人',
+        'advanced.compare.heading': 'DES 与 Magma 对比',
+        'advanced.compare.text': '这两种算法都是费斯妥网络，但规模大不相同，命运也截然不同：',
+        'table.param': '参数',
+        'table.row1.label': '起源国家',
+        'table.row1.west': '美国',
+        'table.row1.ru': '苏联 / 俄罗斯',
+        'table.row2.label': '采用年份',
+        'table.row3.label': '结构',
+        'table.row3.val': '费斯妥网络',
+        'table.row4.label': '分组大小',
+        'table.row5.label': '密钥长度',
+        'table.row6.label': '轮数',
+        'table.row7.label': 'S 盒',
+        'table.row7.west': '自 1977 年起由标准固定',
+        'table.row7.ru': '最初是各部门的秘密；直到 2015 年才有了统一固定的一套',
+        'table.row8.label': '监管机构',
+        'table.row8.west': 'NIST（美国）',
+        'advanced.diff.heading': 'S 盒的秘密与差分密码分析',
+        'advanced.diff.p1': '1990 年，密码学家<strong>埃利·比哈姆</strong>（Eli Biham）和<strong>阿迪·沙米尔</strong>（Adi Shamir）发表了<span class="highlight">差分密码分析</span>——一种针对分组密码的强大攻击。学界大吃一惊：DES 的 S 盒竟然早已对这种攻击具有非凡的抵抗力。',
+        'advanced.diff.p2': '解释是后来才出现的：据 IBM 工程师<span class="highlight-gold">唐·科珀史密斯</span>说，IBM 团队从 1970 年代初就知道差分密码分析，并有意把 DES 的 S 盒设计成能抵御它——但应 NSA 的要求，这一点保密了将近二十年。',
+        'advanced.brute.heading': 'DES 的终结：被暴力破解',
+        'advanced.brute.p1': '56 位的 DES 密钥大约有 7×10<sup>16</sup> 种可能的取值——在 1977 年这已足够多。到 1998 年，<span class="highlight">电子前哨基金会</span>（EFF）造出了一台造价约 25 万美元的专用机器“Deep Crack”，用暴力搜索在大约 56 小时内找到了密钥。',
+        'advanced.brute.p2': '这公开证明了 56 位已经不够了。权宜之计是 <strong>3DES</strong>（把 DES 连用三次），随后在 2001 年，通过公开的国际竞赛选出了 <strong>AES</strong>。',
+        'topic1.title': 'Blowfish 和 Twofish',
+        'topic1.desc': '公开、无专利的 DES 替代品，由布鲁斯·施奈尔在 1990 年代设计',
+        'topic2.title': 'Camellia',
+        'topic2.desc': '日本公司联合开发，国际 ISO/IEC 标准，用于 TLS',
+        'topic3.title': 'KASUMI',
+        'topic3.desc': '3G/UMTS 保密算法核心中的一个费斯妥网络',
+        'advanced.facts.heading': '有趣的事实',
+        'facts.li1': '最初的 Lucifer 使用 128 位密钥；在 DES 被采用之前，NSA 坚持把它缩短到 56 位',
+        'facts.li2': 'DES 作为美国官方标准超过 20 年，直到 2001 年被 AES 取代',
+        'facts.li3': '最初的 GOST 28147-89 的 S 盒不属于公开标准——不同的部门可以自行设定',
+        'facts.li4': 'AES 和“Kuznyechik”不是费斯妥网络——它们是代换–置换网络（SP 网络）',
+        'facts.li5': '费斯妥网络的解密与加密使用完全相同的结构——只是子密钥倒序',
+        'insight3.label': '哲学注解：',
+        'insight3.text': '费斯妥网络是一个难得的例子：一个简单的结构性想法，竟然比复杂的数学更有力量。半个世纪以来，它经历了一个又一个时代——从机械密码机到后量子密码学的曙光——至今仍被用于任何需要久经考验的构造的地方。',
+        'actions.intro': '现在你明白了为什么函数 F 不必可逆，以及这一个想法如何发展成 DES、Magma 和几十种其他密码',
+        'actions.play': '🚀 启动费斯妥网络演示',
+        'actions.back': '← 返回主题列表',
+        'actions.outro': '在演示中，你将带着一个字节从明文一路走到密文再回来——亲眼看看这个结构为什么有效',
+        'footer.line1': '© 2025 Ludus Lab · 用简单的游戏理解复杂的事物',
+        'footer.line2': '本文是对基本原理的简化讲解。真实的 DES 和 Magma 使用的置换、扩展和密钥编排比交互式演示中展示的更复杂。',
+      },
     };
+
+    // Labels inside the diagrams and tables (previously hard-coded in Russian)
+    Object.assign(I18N.ru, { 'tag.magma': 'МАГМА (ГОСТ)', 'table.head.ru': 'Магма (ГОСТ 28147-89)', 'table.row2.ru': '1989 (сегодня — ГОСТ Р 34.12-2015)', 'table.bits64': '64 бита', 'table.bits56': '56 бит', 'table.bits256': '256 бит', 'table.row8.ru': 'ФСБ России' });
+    Object.assign(I18N.en, { 'tag.magma': 'MAGMA (GOST)', 'table.head.ru': 'Magma (GOST 28147-89)', 'table.row2.ru': '1989 (today GOST R 34.12-2015)', 'table.bits64': '64 bits', 'table.bits56': '56 bits', 'table.bits256': '256 bits', 'table.row8.ru': 'FSB of Russia' });
+    Object.assign(I18N.es, { 'tag.magma': 'MAGMA (GOST)', 'table.head.ru': 'Magma (GOST 28147-89)', 'table.row2.ru': '1989 (hoy GOST R 34.12-2015)', 'table.bits64': '64 bits', 'table.bits56': '56 bits', 'table.bits256': '256 bits', 'table.row8.ru': 'FSB de Rusia' });
+    Object.assign(I18N.zh, { 'tag.magma': 'MAGMA（GOST）', 'table.head.ru': 'Magma（GOST 28147-89）', 'table.row2.ru': '1989（现为 GOST R 34.12-2015）', 'table.bits64': '64 位', 'table.bits56': '56 位', 'table.bits256': '256 位', 'table.row8.ru': '俄罗斯联邦安全局（FSB）' });
 
     function applyLanguage(lang) {
       if (!I18N[lang]) lang = 'ru';
       const dict = I18N[lang];
-      document.documentElement.lang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
       document.title = dict['meta.title'];
       const descTag = document.getElementById('pageDescription');
       if (descTag) descTag.setAttribute('content', dict['meta.description']);

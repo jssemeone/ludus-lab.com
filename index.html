@@ -329,6 +329,7 @@
     <button class="lang-btn" data-lang-btn="ru">RU</button>
     <button class="lang-btn" data-lang-btn="en">EN</button>
     <button class="lang-btn" data-lang-btn="es">ES</button>
+    <button class="lang-btn" data-lang-btn="zh">中文</button>
   </div>
   <div class="container">
     <header>
@@ -760,12 +761,78 @@
         'footer.line2': 'Únete a explorar lo complejo a través de lo simple',
         'btn.learn': 'Teoría', 'btn.play': 'Jugar',
       },
+      zh: {
+        'meta.title': 'Ludus Lab - 化繁为简',
+        'header.tagline': '用简单的游戏理解复杂的事物',
+        'nav.about': '关于项目', 'nav.aboutme': '关于我',
+        'category.crypto': '📚 密码学',
+        'tabs.basics': '🔐 基础', 'tabs.modern': '⚙️ 对称密码', 'tabs.quantum': '⚛️ 量子',
+        'basics.heading': '🔐 密码学基础',
+        'basics.desc': '信息保护这门科学最初的起点——古典密码',
+        'card.polybius.title': '波利比奥斯方阵',
+        'card.polybius.excerpt': '波利比奥斯方阵：用 5×5 坐标网格加密',
+        'card.polybius.time': '3 分钟', 'card.polybius.level': '约公元前 200 年',
+        'card.caesar.title': '凯撒密码',
+        'card.caesar.excerpt': '古罗马的字母移位如何奠定了密码学的基础？',
+        'card.caesar.time': '2 分钟', 'card.caesar.level': '约公元前 58 年',
+        'card.vigenere.title': '维吉尼亚密码',
+        'card.vigenere.excerpt': '维吉尼亚密码：文艺复兴时期的 </br>“不可破译的密码”',
+        'card.vigenere.time': '3 分钟', 'card.vigenere.level': '1553 年',
+        'card.vernam.title': '维尔南密码',
+        'card.vernam.excerpt': '维尔南密码：战胜了密码分析，</br>却输给了现实',
+        'card.vernam.time': '4 分钟', 'card.vernam.level': '1917 年',
+        'basics.tip': '💡 <strong>提示：</strong>按顺序体验这些密码——从波利比奥斯到维尔南，看看密码学是如何演进的！',
+        'modern.heading': '⚙️ 对称密码学',
+        'modern.desc': '如今保护着我们的算法',
+        'card.keygen.title': '熵与密钥',
+        'card.keygen.excerpt': '真正的随机性从何而来？为什么它无法伪造？',
+        'card.keygen.time': '4 分钟', 'card.keygen.level': '密码学',
+        'card.feistel.title': '费斯妥网络',
+        'card.feistel.excerpt': '一个想法如何催生了 DES 和几乎整个对称密码学？',
+        'card.feistel.time': '5 分钟', 'card.feistel.level': '1971 年',
+        'modern.disclaimer': '⚠️ 我们的游戏对真实算法做了简化。我们关注的是<span class="highlight">工作原理</span>，而不是数学细节。',
+        'quantum.heading': '⚛️ 量子通信',
+        'quantum.desc': '数据保护的未来：用物理定律代替数学',
+        'card.bb84.title': 'BB84 协议',
+        'card.bb84.excerpt': '如何生成一个无法被窃听而不留下痕迹的密钥？',
+        'card.bb84.time': '3 分钟', 'card.bb84.level': '量子密码学',
+        'card.e91.title': 'E91 协议',
+        'card.e91.excerpt': '纠缠光子如何暴露窃听者？',
+        'card.e91.time': '5 分钟', 'card.e91.level': '量子密码学',
+        'quantum.fact': '🌌 <strong>小知识：</strong>在量子密码学中，窃听的尝试会<em>从物理上改变</em>数据——这不是缺陷，而是特性！',
+        'project.heading': 'ℹ️ 关于项目',
+        'project.p1': '欢迎来到 <span class="highlight">Ludus Lab</span>——一个让抽象概念变得触手可及的实验室。',
+        'project.disclaimer': '⚠️ 我们的游戏是简化模型。我们用精确换取易懂，帮助你建立<span class="highlight nowrap">直觉上的理解</span>。',
+        'project.p2': '我们生活在一个充满复杂技术的世界：量子密码学、区块链、机器学习。如果能亲手“摸一摸”量子纠缠，会怎么样？',
+        'project.p3': '<span class="highlight">Ludus Lab 不是讲座课程。</span>它是一个实验室：犯错是学习的一部分，理解来自动手实践。',
+        'project.concept1.title': '让不可见变得可见', 'project.concept1.desc': '把抽象模型变成直观的互动',
+        'project.concept2.title': '在实践中学习', 'project.concept2.desc': '你不是在阅读量子态——而是在操控它们',
+        'project.concept3.title': '消除门槛', 'project.concept3.desc': '把复杂的概念拆解成简单的玩法',
+        'project.mission': '🎯 <strong>使命：</strong>通过互动体验而不是枯燥的公式，让前沿技术变得容易理解。',
+        'me.heading': '👤 关于我',
+        'me.p1': '你好！我是 <span class="highlight">JSSemeone</span>，Ludus Lab 的创建者。我的职业生涯在电信行业度过——那是光纤、协议和网络基础设施的世界。',
+        'me.p2': '2021 年，我开始从事量子通信工作。这是一次向更像科幻小说的技术的转变：纠缠光子、量子态、以物理定律为基础的安全。',
+        'me.disclaimer': '⚠️ 我们的游戏有意简化了真实的协议。<br>我们专注于传达<span class="highlight">过程的本质</span>，而不是精确再现每一个细节。',
+        'me.p3': '正是在这里，我遇到了一个悖论：我们创造的技术如此复杂，几乎无法用语言解释。我意识到：<span class="highlight nowrap">有些东西不该讲述，而该展示。</span>',
+        'me.p4': 'Ludus Lab 的想法就这样诞生了。不是出于想教别人的愿望，而是出于自己想弄明白、也想帮助别人的需要。这里没有故作姿态——只有通过简单的游戏理解复杂事物的真诚愿望。',
+        'me.p5': '在这件事上帮助我的，是我的“同事们”——氛围编程（vibe coding）工具：',
+        'me.tools.patience': '耐心', 'me.tools.curiosity': '好奇心', 'me.tools.coffee': '咖啡 ☕',
+        'me.timeline.heading': '我的历程',
+        'me.timeline.2021.title': '结识量子技术', 'me.timeline.2021.desc': '转入量子通信领域。意识到有些东西需要可视化。',
+        'me.timeline.2023.title': '量子技术商业化', 'me.timeline.2023.desc': '致力于量子解决方案的实际落地。',
+        'me.timeline.2024.title': '第一批游戏原型', 'me.timeline.2024.desc': '意识到游戏机制可以成为强大的教学工具。',
+        'me.timeline.2025.title': 'Ludus Lab 诞生', 'me.timeline.2025.desc': '平台理念成形。第一批游戏上线。',
+        'me.timeline.now.year': '现在', 'me.timeline.now.title': '成长与扩展', 'me.timeline.now.desc': '逐步加入新的游戏和主题。',
+        'footer.line1': '© 2025 Ludus Lab · 怀着好奇心与求知欲制作',
+        'footer.line2': '一起通过简单的方式探索复杂的事物',
+        'btn.learn': '理论', 'btn.play': '开始游戏',
+      },
     };
 
     function applyLanguage(lang) {
       if (!I18N[lang]) lang = 'ru';
       const dict = I18N[lang];
-      document.documentElement.lang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
       document.title = dict['meta.title'];
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');

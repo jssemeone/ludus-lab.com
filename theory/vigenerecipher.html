@@ -100,6 +100,8 @@
       padding: 40px 20px;
       flex: 1 0 auto;
     }
+    /* body is a flex column and the auto margins make the container shrink-to-fit its content: pin it to the viewport width */
+    .theory-container { width: 100%; box-sizing: border-box; }
 
     /* Заголовок статьи */
     .article-header {
@@ -536,6 +538,10 @@
       .nav-link { width: 100%; margin-bottom: 5px; }
       .btn-primary, .btn-secondary { padding: 10px 12px; font-size: 0.85rem; }
     }
+  
+    /* a step's text column may shrink below its content; wide alphabet tables scroll inside the step instead of widening the page */
+    .step-content { min-width: 0; max-width: 100%; }
+    .step-content > div { max-width: 100%; overflow-x: auto; }
   </style>
 </head>
 <body>
@@ -543,6 +549,7 @@
     <button class="lang-btn" data-lang-btn="ru">RU</button>
     <button class="lang-btn" data-lang-btn="en">EN</button>
     <button class="lang-btn" data-lang-btn="es">ES</button>
+    <button class="lang-btn" data-lang-btn="zh">中文</button>
   </div>
 
   <!-- Навигация -->
@@ -612,8 +619,8 @@
             <h3 data-i18n="step2.title">Выбор ключа</h3>
             <p data-i18n="step2.text">Алиса и Боб договариваются о <span class="highlight">ключевом слове</span>, например <code>КЛЮЧ</code>. Это слово циклически повторяется под сообщением:</p>
             <div style="background:rgba(0,20,40,0.6); padding:10px; border-radius:4px; font-family:monospace; margin:10px 0; text-align:center;">
-              Сообщение: П Р И В Е Т М И Р У !<br>
-                   Ключ:      К Л Ю Ч К Л Ю Ч К Л
+              <span data-i18n="step2.msgLabel">Сообщение:</span> П Р И В Е Т М И Р У !<br>
+                   <span data-i18n="step2.keyLabel">Ключ:</span>      К Л Ю Ч К Л Ю Ч К Л
             </div>
           </div>
         </div>
@@ -664,7 +671,7 @@
             <div class="diagram-example" data-i18n="diagram.encrypt.example">
               <strong>Пример:</strong><br>Шифруем <code>П</code> с ключом <code>К</code><br>
               П = 16-я буква (0-индекс), К = 11-я<br>
-              (16 + 11) mod 33 = 27 → <code>Ч</code>
+              (16 + 11) mod 33 = 27 → <code>Ъ</code>
             </div>
           </div>
 
@@ -675,8 +682,8 @@
             </div>
             <div class="diagram-formula">P = (C − K + N) mod N</div>
             <div class="diagram-example" data-i18n="diagram.decrypt.example">
-              <strong>Пример:</strong><br>Расшифровываем <code>Ч</code> с ключом <code>К</code><br>
-              Ч = 27, К = 11, N = 33<br>
+              <strong>Пример:</strong><br>Расшифровываем <code>Ъ</code> с ключом <code>К</code><br>
+              Ъ = 27, К = 11, N = 33<br>
               (27 − 11 + 33) mod 33 = 16 → <code>П</code>
             </div>
           </div>
@@ -867,9 +874,9 @@
         'step4.formula': '<strong>Формула:</strong> <code>P = (C − K + N) mod N</code>',
         'diagram.title': 'Математика шифра Виженера',
         'diagram.encrypt.title': '🔐 Шифрование',
-        'diagram.encrypt.example': '<strong>Пример:</strong><br>Шифруем <code>П</code> с ключом <code>К</code><br>П = 16-я буква (0-индекс), К = 11-я<br>(16 + 11) mod 33 = 27 → <code>Ч</code>',
+        'diagram.encrypt.example': '<strong>Пример:</strong><br>Шифруем <code>П</code> с ключом <code>К</code><br>П = 16-я буква (0-индекс), К = 11-я<br>(16 + 11) mod 33 = 27 → <code>Ъ</code>',
         'diagram.decrypt.title': '🔓 Расшифровка',
-        'diagram.decrypt.example': '<strong>Пример:</strong><br>Расшифровываем <code>Ч</code> с ключом <code>К</code><br>Ч = 27, К = 11, N = 33<br>(27 − 11 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.decrypt.example': '<strong>Пример:</strong><br>Расшифровываем <code>Ъ</code> с ключом <code>К</code><br>Ъ = 27, К = 11, N = 33<br>(27 − 11 + 33) mod 33 = 16 → <code>П</code>',
         'diagram.final.title': 'Почему это работало?',
         'diagram.final.desc': 'Каждая буква открытого текста шифруется <strong>разными буквами</strong> в зависимости от позиции ключа. Частотный анализ, который ломает простые шифры замены, становится бесполезным — буква «О» может превратиться в «А», «М», «Щ» и т.д.',
         'diagram.final.param': 'Длина ключа > 5 → высокая стойкость',
@@ -947,9 +954,9 @@
         'step4.formula': '<strong>Formula:</strong> <code>P = (C − K + N) mod N</code>',
         'diagram.title': 'The math behind the Vigenère cipher',
         'diagram.encrypt.title': '🔐 Encryption',
-        'diagram.encrypt.example': '<strong>Example:</strong><br>Encrypting <code>П</code> with key <code>К</code><br>П = 16th letter (0-indexed), К = 11th<br>(16 + 11) mod 33 = 27 → <code>Ч</code>',
+        'diagram.encrypt.example': '<strong>Example:</strong><br>Encrypting <code>П</code> with key <code>К</code><br>П = 16th letter (0-indexed), К = 11th<br>(16 + 11) mod 33 = 27 → <code>Ъ</code>',
         'diagram.decrypt.title': '🔓 Decryption',
-        'diagram.decrypt.example': '<strong>Example:</strong><br>Decrypting <code>Ч</code> with key <code>К</code><br>Ч = 27, К = 11, N = 33<br>(27 − 11 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.decrypt.example': '<strong>Example:</strong><br>Decrypting <code>Ъ</code> with key <code>К</code><br>Ъ = 27, К = 11, N = 33<br>(27 − 11 + 33) mod 33 = 16 → <code>П</code>',
         'diagram.final.title': 'Why did this work?',
         'diagram.final.desc': 'Every plaintext letter is encrypted into <strong>different letters</strong> depending on the key\'s position. The frequency analysis that breaks simple substitution ciphers becomes useless — the letter "O" might turn into "A," "M," "Щ," and so on.',
         'diagram.final.param': 'Key length > 5 → high resistance',
@@ -1027,9 +1034,9 @@
         'step4.formula': '<strong>Fórmula:</strong> <code>P = (C − K + N) mod N</code>',
         'diagram.title': 'La matemática del cifrado de Vigenère',
         'diagram.encrypt.title': '🔐 Cifrado',
-        'diagram.encrypt.example': '<strong>Ejemplo:</strong><br>Cifrando <code>П</code> con la clave <code>К</code><br>П = letra 16 (índice 0), К = letra 11<br>(16 + 11) mod 33 = 27 → <code>Ч</code>',
+        'diagram.encrypt.example': '<strong>Ejemplo:</strong><br>Cifrando <code>П</code> con la clave <code>К</code><br>П = letra 16 (índice 0), К = letra 11<br>(16 + 11) mod 33 = 27 → <code>Ъ</code>',
         'diagram.decrypt.title': '🔓 Descifrado',
-        'diagram.decrypt.example': '<strong>Ejemplo:</strong><br>Descifrando <code>Ч</code> con la clave <code>К</code><br>Ч = 27, К = 11, N = 33<br>(27 − 11 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.decrypt.example': '<strong>Ejemplo:</strong><br>Descifrando <code>Ъ</code> con la clave <code>К</code><br>Ъ = 27, К = 11, N = 33<br>(27 − 11 + 33) mod 33 = 16 → <code>П</code>',
         'diagram.final.title': '¿Por qué funcionaba esto?',
         'diagram.final.desc': 'Cada letra del texto plano se cifra con <strong>letras distintas</strong> según la posición de la clave. El análisis de frecuencia, que rompe los cifrados de sustitución simples, se vuelve inútil: la letra «O» puede convertirse en «A», «M», «Щ», etc.',
         'diagram.final.param': 'Longitud de clave > 5 → alta resistencia',
@@ -1072,12 +1079,108 @@
         'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
         'footer.line2': 'Este artículo es una explicación simplificada para transmitir los principios. Los sistemas criptográficos reales usan algoritmos mucho más complejos.',
       },
+      zh: {
+        'meta.title': '维吉尼亚密码：理论 | Ludus Lab',
+        'meta.description': '讲解经典的多表代换维吉尼亚密码：表格如何工作，为什么它是一次突破，以及它最终是如何被破解的。',
+        'nav.home': '首页',
+        'nav.play': '开始游戏',
+        'article.category': '密码学基础',
+        'article.title': '维吉尼亚密码',
+        'article.subtitle': '一种三个世纪里被认为“不可破译”的多表代换密码——它改变了密码学的进程',
+        'meta.readtime': '⏱️ 阅读约 4 分钟',
+        'meta.level': '📊 入门级',
+        'meta.era': '🗝️ 16 世纪',
+        'block1.heading': '我们为什么需要它？',
+        'block1.p1': '想象你是<span class="highlight">爱丽丝</span>，一位文艺复兴时期的外交官。你需要给<span class="highlight">鲍勃</span>送去一条秘密消息，但邮路并不安全——信件会被截获、拆开、抄录。',
+        'block1.p2': '简单的代换密码（A→X、B→C 等）很容易用频率分析破解：在任何一种语言中，某些字母出现得比其他字母频繁得多——所以密文中最常见的符号，很可能就是字母表中最常见的字母。',
+        'block1.p3': '<span class="highlight">维吉尼亚密码解决了这个问题</span>。它不只用一个字母表，而是使用<span class="highlight">多个字母表</span>，并按照关键词在它们之间切换。同一个明文字母会因位置不同而被加密成不同的字母——于是频率分析失效了。',
+        'block1.p4': '这种方法被认为如此可靠，以至于人们称它为<span class="highlight">“le chiffre indéchiffrable”</span>——“不可破译的密码”。直到 1863 年，弗里德里希·卡西斯基才发表了破解它的方法。',
+        'block2.heading': '它是如何工作的？',
+        'block2.intro': '这种密码的核心是<span class="highlight">维吉尼亚表</span>：一个 33×33 的方阵（俄文字母表），每一行都是比上一行多移一位的字母表。表格是按字母表构造的，所以汉字无法这样加密——游戏中的消息和关键词都请用俄文或英文字母。',
+        'step1.title': '准备表格',
+        'step1.text': '第一行是原始的字母表。之后的每一行都向左移动一位。第 <code>K</code> 行从字母表的第 <code>K</code> 个字母开始。',
+        'step1.example.intro': '以英文为例（前 3 行）：',
+        'step2.title': '选择密钥',
+        'step2.text': '爱丽丝和鲍勃商定一个<span class="highlight">关键词</span>，例如 <code>KEY</code>。这个词在消息下方循环重复：',
+        'step3.title': '加密',
+        'step3.intro': '对消息中的每个字母：',
+        'step3.li1': '用<strong>密钥</strong>字母找到行',
+        'step3.li2': '用<strong>消息</strong>字母找到列',
+        'step3.li3': '交叉处就是<strong>加密后的字母</strong>',
+        'step3.formula': '<strong>公式：</strong><code>C = (P + K) mod N</code>',
+        'step3.formula.legend': '其中 <code>P</code> 是明文位置，<code>K</code> 是密钥位置，<code>N</code> 是字母表的大小，<code>C</code> 是密文。',
+        'step4.title': '解密',
+        'step4.intro': '鲍勃使用同一张表，但反向操作：',
+        'step4.li1': '行 = 密钥字母',
+        'step4.li2': '在这一行中找到密文符号',
+        'step4.li3': '它所在的列就是原始字母',
+        'step4.formula': '<strong>公式：</strong><code>P = (C − K + N) mod N</code>',
+        'diagram.title': '维吉尼亚密码背后的数学',
+        'diagram.encrypt.title': '🔐 加密',
+        'diagram.encrypt.example': '<strong>例如：</strong><br>用密钥 <code>К</code> 加密 <code>П</code><br>П = 第 16 个字母（从 0 开始计数），К = 第 11 个<br>(16 + 11) mod 33 = 27 → <code>Ъ</code>',
+        'diagram.decrypt.title': '🔓 解密',
+        'diagram.decrypt.example': '<strong>例如：</strong><br>用密钥 <code>К</code> 解密 <code>Ъ</code><br>Ъ = 27，К = 11，N = 33<br>(27 − 11 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.final.title': '为什么这样可行？',
+        'diagram.final.desc': '每个明文字母都会因密钥位置的不同而被加密成<strong>不同的字母</strong>。能破解简单代换密码的频率分析变得毫无用处——字母“O”可能变成“A”“M”“Щ”等等。',
+        'diagram.final.param': '密钥长度 > 5 → 抵抗力强',
+        'diagram.note': '* 在游戏中，表格是可视化的：每一步都会点亮行和列，你可以实时观看整个过程。',
+        'insight.label': '关键结论：',
+        'insight.text': '维吉尼亚密码的力量在于密钥的重复',
+        'insight.rest': '。密钥越长、越随机，就越难破解。但正是这种循环性成了它的弱点：卡西斯基方法利用密文中的重复找出密钥长度，然后对每一个“子串”分别进行频率分析。',
+        'block3.heading': '现在来看真正的魔法',
+        'block3.intro': '在模拟中，你<span class="highlight">实际上会做什么</span>？',
+        'action1': '你将用俄文或英文字母<strong>输入自己的消息</strong>——游戏会自动过滤掉无效字符（包括汉字）',
+        'action2': '你将<strong>设置一个关键词</strong>（与消息使用同一字母表），并看着它在消息下方循环重复',
+        'action3': '你将<strong>看到维吉尼亚表的运转</strong>——加密的每一步都会点亮行和列',
+        'action4': '你将通过可视化的通信信道<strong>把密钥和密文发给鲍勃</strong>——密钥走安全途径，密文走公开信道',
+        'action5': '你将<strong>逐步完成解密</strong>，看看鲍勃如何用同一张表恢复出原始消息',
+        'action6': '你将<strong>得到确认</strong>——系统会比较原始消息和解密后的消息，验证过程是否正确',
+        'block3.outro': '在游戏中，你不只是阅读关于维吉尼亚密码的内容——而是<span class="highlight">亲身经历整个流程</span>：从输入消息到传输成功。你会看到抽象的公式变成生动的动画，并理解为什么这种密码在当时是一次突破。',
+        'advanced.summary': '给好奇的人',
+        'advanced.history.heading': '历史背景',
+        'advanced.history.text': '这种密码最早由<strong>吉奥万·巴蒂斯塔·贝拉索</strong>（Giovan Battista Bellaso）于 1553 年描述，却被误归于 1586 年描述过它的<strong>布莱斯·德·维吉尼亚</strong>（Blaise de Vigenère）。这个名字就这样沿用下来，至今我们仍称它为“维吉尼亚密码”。',
+        'advanced.broken.heading': '它为什么被破解了？',
+        'advanced.broken.text1': '1863 年，普鲁士军官<strong>弗里德里希·卡西斯基</strong>（Friedrich Kasiski）发表了一种利用密文中重复片段的方法。如果同一个明文短语被密钥的同一片段加密，密文中就会出现相同的序列。这种重复之间的距离往往是密钥长度的倍数。',
+        'advanced.broken.text2': '一旦知道了密钥长度，密码分析者就把密文分成若干组（所有用第一个密钥符号加密的字母、用第二个的，依此类推），并对每一组分别进行频率分析。',
+        'advanced.topics.heading': '进一步学习的主题',
+        'advanced.topics.intro': '如果你想更深入地了解密码学，这里有一些关键主题：',
+        'topic1.title': '频率分析',
+        'topic1.desc': '语言统计如何帮助破解密码：字母、双字母组合和三字母组合的频率',
+        'topic2.title': '卡西斯基方法',
+        'topic2.desc': '根据密文中的重复找出密钥长度的算法',
+        'topic3.title': '重合指数',
+        'topic3.desc': '弗里德曼用来确定密钥长度的统计检验',
+        'topic4.title': '一次性密码本',
+        'topic4.desc': '唯一在理论上不可破译的密码：密钥长度 = 消息长度，且只使用一次',
+        'topic5.title': '现代分组密码',
+        'topic5.desc': '多表代换密码背后的思想如何演变成 AES、ChaCha20 和其他算法',
+        'topic6.title': '用 Python 进行密码分析',
+        'topic6.desc': '用于频率分析和攻击维吉尼亚密码的实用脚本',
+        'advanced.practical.heading': '如今的实际用途',
+        'advanced.practical.intro': '虽然维吉尼亚密码已不再用于保护真实数据，但它仍然是：',
+        'practical1': '多表代换加密的优秀教学示例',
+        'practical2': '理解更复杂算法的基础',
+        'practical3': 'CTF 竞赛和密码谜题中的常客',
+        'practical4': '连接古典密码学与现代密码学的历史桥梁',
+        'actions.intro': '现在你已经了解了基础知识，正是动手实践、看看这个密码如何运作的好时机！',
+        'actions.play': '▶ 进入游戏',
+        'actions.back': '← 返回主题列表',
+        'actions.outro': '在交互式模拟中，你可以加密自己的消息，并观察过程中的每一步。',
+        'footer.line1': '© 2025 Ludus Lab · 用简单的游戏理解复杂的事物',
+        'footer.line2': '本文是一个简化的讲解，旨在传达基本原理。真实的密码系统使用复杂得多的算法。',
+      },
     };
+
+    // Labels inside the diagrams and tables (previously hard-coded in Russian)
+    Object.assign(I18N.ru, { 'step2.msgLabel': 'Сообщение:', 'step2.keyLabel': 'Ключ:' });
+    Object.assign(I18N.en, { 'step2.msgLabel': 'Message:', 'step2.keyLabel': 'Key:' });
+    Object.assign(I18N.es, { 'step2.msgLabel': 'Mensaje:', 'step2.keyLabel': 'Clave:' });
+    Object.assign(I18N.zh, { 'step2.msgLabel': '消息：', 'step2.keyLabel': '密钥：' });
 
     function applyLanguage(lang) {
       if (!I18N[lang]) lang = 'ru';
       const dict = I18N[lang];
-      document.documentElement.lang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
       document.title = dict['meta.title'];
       const descTag = document.getElementById('pageDescription');
       if (descTag) descTag.setAttribute('content', dict['meta.description']);

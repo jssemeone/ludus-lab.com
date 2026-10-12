@@ -100,6 +100,8 @@
       padding: 40px 20px;
       flex: 1 0 auto;
     }
+    /* body is a flex column and the auto margins make the container shrink-to-fit its content: pin it to the viewport width */
+    .theory-container { width: 100%; box-sizing: border-box; }
 
     /* Заголовок статьи */
     .article-header {
@@ -535,6 +537,7 @@
     <button class="lang-btn" data-lang-btn="ru">RU</button>
     <button class="lang-btn" data-lang-btn="en">EN</button>
     <button class="lang-btn" data-lang-btn="es">ES</button>
+    <button class="lang-btn" data-lang-btn="zh">中文</button>
   </div>
 
   <!-- Навигация -->
@@ -1052,12 +1055,104 @@
         'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
         'footer.line2': 'Este artículo es una explicación simplificada de los principios. Las implementaciones reales del protocolo E91 pueden incluir detalles adicionales.',
       },
+      zh: {
+        'meta.title': 'E91 协议：纠缠对抗窃听 | Ludus Lab',
+        'meta.description': '量子纠缠如何暴露窃听。用通俗的语言讲解埃克特协议（E91）和贝尔检验。',
+        'nav.home': '首页',
+        'nav.play': '开始游戏',
+        'article.category': '量子纠缠',
+        'article.title': 'E91 协议',
+        'article.subtitle': '纠缠光子如何让窃听变得无法隐藏',
+        'meta.readtime': '⏱️ 阅读约 5 分钟',
+        'meta.level': '📊 进阶级',
+        'meta.era': '🔬 1991 年',
+        'block1.heading': 'E91 有什么独特之处？',
+        'block1.p1': '想象两枚神奇的硬币。单独抛其中一枚，结果完全随机。但如果爱丽丝和鲍勃“以相同的角度”抛它们，两枚硬币总是落在相反的一面——无论相隔多远。这就是<span class="highlight-entangled">量子纠缠</span>：每个结果都是随机的，但合在一起却相互协调。',
+        'block1.p2': '阿图尔·埃克特于 1991 年提出的 E91 协议，利用这一性质来获得<span class="highlight">窃听无法隐藏的</span>密钥。与爱丽丝自己制备光子的 BB84 不同，在 E91 中光子来自纠缠光子对源，而让窃听暴露的是<span class="highlight-entangled">贝尔检验</span>。',
+        'entangle.title': '量子纠缠',
+        'entangle.alice': '爱丽丝',
+        'entangle.bob': '鲍勃',
+        'entangle.caption': '纠缠光子的测量结果在任何距离上都相互关联，尽管每一个单独看都是随机的。用这种方式无法传递消息——只有当爱丽丝和鲍勃对照记录时，这种关联才会显现出来。',
+        'insight1.label': '关键结论：',
+        'insight1.text': 'E91 不只是防止窃听——它能<span class="highlight-gold">发现窃听的企图本身</span>。要获得一个比特，伊芙就必须测量光子，而测量会破坏纠缠。光子开始表现得像普通光子，贝尔游戏的胜率就会降到 75% 或更低。',
+        'block2.heading': '每人三个角度',
+        'block2.p1': '爱丽丝和鲍勃通过转动偏振片来测量光子的偏振。他们每人有<span class="highlight">三个角度</span>，对每一对光子随机选择其中一个。',
+        'basis1.title': '爱丽丝',
+        'basis1.desc': '0°、22.5° 和 45°',
+        'basis2.title': '鲍勃',
+        'basis2.desc': '22.5°、45° 和 67.5°',
+        'basis3.title': '角度相同',
+        'basis3.desc': '22.5°/22.5° 和 45°/45°——这些比特进入密钥',
+        'block2.p2': '爱丽丝和鲍勃的角度越接近，他们的比特相反的次数就越多：角度相同时——总是相反；相差 22.5° 时——85% 的情况相反；相差 45° 时——如同抛硬币；相差 67.5° 时——只有 15%。',
+        'block2.p3': '正是这种对角度的依赖在<span class="highlight">经典世界中是不可能的</span>。人们检验的就是它，以确认光子仍然处于纠缠状态。',
+        'block3.heading': '它是如何工作的？',
+        'block3.intro': 'E91 使用分发给爱丽丝和鲍勃的纠缠光子对。我们一步一步来看这个过程：',
+        'step1.title': '分发纠缠光子对',
+        'step1.text': '光源产生<span class="highlight-entangled">纠缠光子对</span>，把一个光子发给爱丽丝，另一个发给鲍勃。如果两人以相同的角度测量各自的光子，他们的比特总是相反的。',
+        'step2.title': '随机测量',
+        'step2.text': '爱丽丝和鲍勃<span class="highlight">各自独立、随机地</span>从自己的三个角度中选一个，并记录结果：0——光子通过了偏振片，1——没有通过。',
+        'step3.title': '量子关联',
+        'step3.text': '角度相同时，比特<span class="highlight-entangled">总是相反</span>。角度不同时，差别越大，比特相同的次数就越多。每个比特单独看都是随机的。',
+        'step4.title': '公布角度',
+        'step4.text': '爱丽丝和鲍勃通过公开信道公布<span class="highlight">各自选择了哪些角度</span>——但不公布结果。',
+        'step5.title': '对光子对分类',
+        'step5.text': '角度相同的光子对进入密钥：鲍勃翻转他的比特，得到爱丽丝比特的副本。爱丽丝取 0°/45°、鲍勃取 22.5°/67.5° 的光子对用于<span class="highlight">贝尔检验</span>。其余的丢弃。',
+        'step7.text': '如果胜率明显高于 75%，且密钥中的错误很少，说明纠缠完好，伊芙对密钥知之甚少：密钥经过纠错和压缩。如果胜率不超过 75%，说明光子表现得像普通光子——有人测量过它们——密钥作废。',
+        'step7.title': '密钥',
+        'step6.text': '爱丽丝和鲍勃完整公开检验用的光子对。每一回合都有一个目标：在 0°/67.5° 时比特应当相同，在其他组合中应当不同。如果光子有事先约定的答案（“作弊表”），任何作弊表都无法赢得<span class="highlight">超过 75% 的回合</span>。纠缠光子能赢<span class="highlight-entangled">约 85%</span>。',
+        'step6.title': '贝尔检验——猜谜游戏',
+        'block4.heading': '现在来看真正的魔法',
+        'block4.intro': '在 E91 模拟中，你将：',
+        'action1': '<strong>做热身</strong>——看看在不同的角度差下，爱丽丝和鲍勃的比特相反的频率有多高',
+        'action2': '<strong>启动纠缠光子对源</strong>——爱丽丝和鲍勃像真实协议中那样随机选择角度',
+        'action3': '<strong>决定伊芙是否在信道上</strong>：没有伊芙、伊芙截获每一对光子，或者随机模式——你需要把她找出来',
+        'action4': '根据公布的角度<strong>对光子对分类</strong>：进入密钥、进入贝尔检验或丢弃',
+        'action5': '<strong>玩贝尔游戏</strong>——看看光子是否赢得了超过普通光子所能达到的 75% 的回合',
+        'action6': '<strong>生成密钥</strong>——鲍勃翻转他的比特，修正错误，并把密钥压缩到 8 位',
+        'block4.outro': '你不只是阅读关于量子纠缠的内容——而是亲自<span class="highlight-entangled">检验它</span>。你会看到 75% 与 85% 胜率之间的差距如何变成窃听探测器，并理解为什么 E91 被誉为量子密码学中最优美的协议之一。',
+        'advanced.summary': '给好奇的人',
+        'advanced.bell.heading': '贝尔不等式：数学测谎仪',
+        'advanced.bell.text1': '贝尔不等式是在<strong>任何经典的局域理论</strong>中都必须成立的数学条件。如果你测量纠缠粒子时违背了这些不等式，就说明这个系统<span class="highlight-entangled">真正是量子的、处于纠缠状态</span>。',
+        'advanced.bell.text2': '在 E91 中，贝尔检验使用的是爱丽丝和鲍勃角度<span class="highlight">不相同</span>的光子对。物理学家用关联值 E = (相同次数 − 不同次数) / 总数 和数 S = E₁ − E₂ + E₃ + E₄（CHSH 不等式）来表示它。贝尔游戏的胜率等于 1/2 + |S|/8：经典极限 |S| ≤ 2 对应 75%，量子最大值 2√2 ≈ 2.83 约对应 85%。',
+        'topic1.title': '贝尔定理',
+        'topic1.desc': '证明任何局域隐变量理论都无法重现量子力学的全部预言',
+        'topic2.title': 'EPR 佯谬',
+        'topic2.desc': '爱因斯坦-波多尔斯基-罗森思想实验，它试图证明量子力学“不完备”，结果却引出了纠缠的发现',
+        'topic3.title': '阿斯佩实验',
+        'topic3.desc': '1980 年代首次在实验上证实贝尔不等式被违背，证明了量子纠缠的真实性',
+        'advanced.why3.heading': '为什么正好是三个角度？',
+        'advanced.why3.text': '贝尔检验需要每一方各有<strong>两个角度</strong>：爱丽丝 0° 和 45°，鲍勃 22.5° 和 67.5°。密钥需要<strong>相同的角度</strong>——22.5° 和 45°。每人三个角度，是能同时满足两者的最小集合。埃克特的论文给出的是针对自旋的角度 0°、45°、90°；对光子偏振来说要减半。',
+        'advanced.compare.heading': '与 BB84 的比较',
+        'advanced.compare.intro': 'E91 与 BB84 的区别：',
+        'compare1': '<strong>无需信任光源</strong>：即使光源是伊芙安装的，贝尔检验也能显示它发出的是否是真正的纠缠光子对',
+        'compare2': '<strong>测量之前不存在密钥</strong>：比特在爱丽丝和鲍勃测量时才产生，因此无法被提前窃取',
+        'compare3': '<strong>代价</strong>：需要纠缠光子对源和更多的测量，所以商用系统更常使用 BB84 系列的协议',
+        'compare4': '<strong>影响</strong>：E91 的思想是设备无关协议（DI-QKD）的基础，在这类协议中，仅凭贝尔统计就能检验安全性',
+        'advanced.history.heading': '历史背景',
+        'advanced.history.text1': 'E91 协议由<strong>阿图尔·埃克特</strong>（Artur Ekert）于 1991 年提出。它是第一个明确利用<span class="highlight-entangled">贝尔不等式被违背</span>来发现窃听的量子密钥分发协议。',
+        'advanced.history.text2': '有趣的是：启发埃克特的不只是密码学，还有量子力学的基本问题。他的协议成为连接“纯粹”量子物理与信息安全实际应用的桥梁。',
+        'advanced.modern.heading': '现代实现',
+        'advanced.modern.intro': '如今，E91 协议及其变体被用于：',
+        'modern1': '配备纠缠光子对源的光纤网络',
+        'modern2': '卫星链路：2020 年，中国的“墨子号”卫星把纠缠光子发送到相距 1120 公里的两个地面站，生成了共享密钥',
+        'modern3': '设备无关协议（DI-QKD）：首批实验演示出现在 2022 年',
+        'modern4': '量子非局域性的基础检验',
+        'modern5': '量子互联网系统的原型',
+        'insight2.label': '哲学注解：',
+        'insight2.text': 'E91 把<span class="highlight-gold">现实本身的性质</span>用作安全系统：保护不是来自计算上的困难，而是来自量子物理定律。只有真实硬件的不完美之处仍然可能被攻击——这就是物理学家看重贝尔检验的原因，因为它不需要信任设备。',
+        'actions.intro': '现在你已经了解了量子纠缠和 E91 协议的奥妙，正是创建一个属于你自己的纠缠密钥的好时机！',
+        'actions.play': '▶ 创建纠缠密钥',
+        'actions.back': '← 返回主题列表',
+        'actions.outro': '在游戏中，你将用纠缠光子热身、启动光源、玩贝尔游戏，并看到它如何让伊芙暴露',
+        'footer.line1': '© 2025 Ludus Lab · 用简单的游戏理解复杂的事物',
+        'footer.line2': '本文是对基本原理的简化讲解。E91 协议的真实实现可能包含更多细节。',
+      },
     };
 
     function applyLanguage(lang) {
       if (!I18N[lang]) lang = 'ru';
       const dict = I18N[lang];
-      document.documentElement.lang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
       document.title = dict['meta.title'];
       const descTag = document.getElementById('pageDescription');
       if (descTag) descTag.setAttribute('content', dict['meta.description']);

@@ -1471,6 +1471,7 @@
     <button class="lang-btn" data-lang-btn="ru">RU</button>
     <button class="lang-btn" data-lang-btn="en">EN</button>
     <button class="lang-btn" data-lang-btn="es">ES</button>
+    <button class="lang-btn" data-lang-btn="zh">中文</button>
   </div>
   <div class="container">
     <header class="game-header">
@@ -2509,9 +2510,304 @@
           'error.initTitle': 'Error de inicialización del juego',
           'error.initMessage': 'Se produjo un error crítico. Por favor, actualice la página o contacte con soporte.',
           'error.codeLabel': 'Código de error: {code}'
-        }
+        },
+        zh: {
+          'game.title': '对称密码学：安全信道',
+          'game.subtitle': 'Ludus Lab · 用简单的游戏理解复杂的事物',
+          'protocol.toggle': '关于对称密码学',
+          'protocol.intro': '对称密码学使用同一个秘密密钥来加密和解密数据。爱丽丝和鲍勃必须事先商定密钥和加密算法。',
+          'protocol.step1.title': '选择数据类型',
+          'protocol.step1.desc': '选择要保护的数据类型，它决定了对设备的要求。',
+          'protocol.step1.p1': '<strong>无监管要求：</strong>可以使用任何设备。',
+          'protocol.step1.p2': '<strong>俄罗斯监管要求：</strong>只能使用采用“Kuznyechik”算法的俄罗斯设备。',
+          'protocol.step1.p3': '<strong>美国/欧盟监管要求：</strong>只能使用采用 AES 算法的 Thales、Senetas、Rohde & Schwarz 设备。',
+          'protocol.step2.title': '选择设备',
+          'protocol.step2.desc': '爱丽丝和鲍勃根据数据要求选择密码设备。',
+          'protocol.step2.p1': '<strong>西方设备：</strong>Thales 只能与 Thales 配合，Senetas 只能与 Senetas 配合，Rohde & Schwarz 只能与 Rohde & Schwarz 配合。',
+          'protocol.step3.title': '加密算法',
+          'protocol.step3.desc': '加密算法由所选设备自动确定。',
+          'protocol.step4.title': '获取密钥',
+          'protocol.step4.desc': '爱丽丝和鲍勃必须通过某种方式获得同一个秘密密钥。',
+          'protocol.step4.p1': '<strong>网络 PSK：</strong>用于 Cisco/Juniper/Huawei——整个网络共用一个密钥。',
+          'protocol.step4.p2': '<strong>成对密钥：</strong>用于加密机——每一对节点都有唯一的密钥。',
+          'protocol.step5.title': '建立安全信道',
+          'protocol.step5.desc': '使用 IKEv2/IPsec 协议建立安全信道。',
+          'protocol.step6.title': '交换消息',
+          'protocol.step6.desc': '消息在发送端加密，在接收端解密。',
+          'dataType.title': '选择要保护的数据类型',
+          'dataType.no.aria': '为无监管要求的商业秘密选择保护方式',
+          'dataType.no.name': '无监管要求的商业秘密',
+          'dataType.no.desc': '其保护不受任何机构监管的数据。可以使用任何设备。',
+          'dataType.no.rec1': '推荐：Cisco、Juniper、Huawei',
+          'dataType.no.rec2': '（AES 算法，网络 PSK）',
+          'dataType.ru.aria': '按俄罗斯监管要求选择保护方式',
+          'dataType.ru.name': '按俄罗斯监管要求保护',
+          'dataType.ru.desc': '其保护受俄罗斯机构监管的商业秘密。必须使用采用“Kuznyechik”算法的俄罗斯设备。',
+          'dataType.ru.rec1': '必须使用：KOT、Zemlya、Tekstit',
+          'dataType.ru.rec2': '（“Kuznyechik”算法，通过 CMC 分发成对密钥）',
+          'dataType.eu.aria': '按美国/欧盟监管要求选择保护方式',
+          'dataType.eu.name': '按美国/欧盟监管要求保护',
+          'dataType.eu.desc': '其保护受美国和欧盟机构监管的商业秘密。必须使用西方厂商的设备。',
+          'dataType.eu.rec1': '必须使用：Thales、Senetas、Rohde & Schwarz',
+          'dataType.eu.rec2': '（AES 算法，通过管理中心分发成对密钥）',
+          'continue.button': '进入设备选择',
+          'continue.desc': '点击此按钮后，你将为爱丽丝和鲍勃选择设备',
+          'connection.notEstablished': '连接未建立',
+          'connection.establishing': '正在建立……',
+          'connection.compatible': '配置兼容',
+          'connection.incompatible': '配置不兼容',
+          'connection.established': '连接已建立',
+          'aria.aliceParams': '爱丽丝的参数',
+          'aria.bobParams': '鲍勃的参数',
+          'char.alice': '爱丽丝',
+          'char.bob': '鲍勃',
+          'hardware.heading': '设备',
+          'aria.aliceHwSelect': '为爱丽丝选择设备',
+          'aria.bobHwSelect': '为鲍勃选择设备',
+          'hardware.choosePlaceholder': '选择设备',
+          'algorithm.notSelected': '未选择',
+          'algorithm.aes': 'AES（国际标准）',
+          'algorithm.kuznyechik': 'Kuznyechik（俄罗斯 GOST）',
+          'aria.channelsAndLogs': '通信信道和日志',
+          'channel.userLabel': '用户信道',
+          'channel.serviceLabel': '服务信道（IKEv2）',
+          'channel.serviceAriaLabel': 'IKEv2 服务信道',
+          'log.title': '日志文件',
+          'log.init': '正在初始化对称加密协议',
+          'keySetup.aria': '设置加密密钥',
+          'keySetup.heading': '设置加密密钥',
+          'keySetup.intro': '爱丽丝和鲍勃必须拥有同一个秘密密钥。选择获取密钥的方式：',
+          'keyMethod.manual.aria': '手动输入网络 PSK',
+          'keyMethod.manual.title': '手动输入',
+          'keyMethod.manual.desc': '设置网络 PSK',
+          'keyMethod.cvk.aria': '通过网络管理中心获取成对密钥',
+          'keyMethod.cvk.title': '密钥管理中心',
+          'keyMethod.cvk.desc': '使用 CMC/管理中心',
+          'keyMethod.krk.aria': '通过量子密钥分发获取成对密钥',
+          'keyMethod.krk.title': '量子分发',
+          'keyMethod.krk.desc': '使用量子密码学',
+          'keyMethod.rnd.aria': '生成随机的网络 PSK',
+          'keyMethod.rnd.title': 'RND 生成',
+          'keyMethod.rnd.desc': '生成随机 PSK',
+          'key.encryptionKeyAria': '加密密钥',
+          'key.inputPlaceholderDefault': '密钥将自动生成……',
+          'key.choosePlaceholder': '选择获取密钥的方式……',
+          'key.placeholderNetworkPSK': '输入网络 PSK（全网共用；至少 20 个字符，建议使用英文字母、数字和符号）……',
+          'key.placeholderCenterRu': 'CMC 将生成成对密钥……',
+          'key.placeholderCenterWest': '管理中心将生成成对密钥……',
+          'key.placeholderKRK': '在 KRK 游戏中获取成对密钥……',
+          'key.placeholderPSKGenerated': '网络 PSK 已生成',
+          'key.placeholderPairedKey': '{center}：爱丽丝-鲍勃隧道的成对密钥',
+          'key.typeNetwork': '网络 PSK（所有节点共用）',
+          'key.typePaired': '成对密钥（这一对专用）',
+          'btn.applyKey': '应用密钥',
+          'btn.setNetworkPSK': '设置网络 PSK',
+          'btn.getKeyFromCenterRu': '从 CMC 获取密钥',
+          'btn.getKeyFromCenterWest': '从管理中心获取密钥',
+          'btn.openKRK': '打开 KRK',
+          'btn.applyQuantumKey': '应用量子密钥',
+          'btn.applyNetworkPSK': '应用网络 PSK',
+          'btn.loadPairedKey': '把成对密钥装入加密机',
+          'keyMethodDesc.default': '选择获取密钥的方式',
+          'key.warningUnsafe': '⚠️ 这种方式不安全，不建议在实际中使用',
+          'keyMethod.manual.international': '在设备配置中输入一个共享的网络 PSK。这个 PSK 对网络中的所有路由器（爱丽丝、鲍勃、查理等）都相同。PSK 至少 20 个字符，建议使用英文字母、数字和符号。',
+          'keyMethod.manual.russian': '⚠️ 不可用：俄罗斯加密机的密钥只能通过 CMC 设置。',
+          'keyMethod.manual.western': '⚠️ 不可用：西方加密机的密钥只能通过管理中心设置。',
+          'keyMethod.cvk.international': '⚠️ 不可用：国际设备使用网络 PSK。',
+          'keyMethod.cvk.russian': '使用网络管理中心生成成对密钥。每一对（爱丽丝-鲍勃、爱丽丝-查理、鲍勃-查理）都获得唯一的密钥。',
+          'keyMethod.cvk.western': '使用管理中心生成成对密钥。每条隧道都有唯一的密钥。',
+          'keyMethod.krk.international': '⚠️ 不可用：国际设备使用网络 PSK。',
+          'keyMethod.krk.russian': '使用量子密钥分发，为这条隧道获取一个绝对安全的成对密钥。',
+          'keyMethod.krk.western': '使用量子密钥分发，为这条隧道获取一个绝对安全的成对密钥。',
+          'keyMethod.rnd.international': '生成一个随机的网络 PSK，配置到网络中的所有路由器上。',
+          'keyMethod.rnd.russian': '⚠️ 不可用：俄罗斯加密机的密钥只能通过 CMC 设置。',
+          'keyMethod.rnd.western': '⚠️ 不可用：西方加密机的密钥只能通过管理中心设置。',
+          'alert.eveDefault': '⚠️ 伊芙正试图截获消息！',
+          'alert.successDefault': '✅ 安全信道建立成功！',
+          'alert.infoDefault': 'ℹ️ 选择设备和获取密钥的方式',
+          'alert.warningDefault': '⚠️ 正在使用不安全的密钥获取方式！',
+          'controls.heading': '控制面板',
+          'btn.establish.aria': '建立安全连接',
+          'btn.establish.title': '建立连接',
+          'btn.establish.desc': '将检查配置是否兼容',
+          'btn.stop.aria': '停止信道上的流量',
+          'btn.stop.title': '停止',
+          'btn.stop.desc': '停止信道上的流量',
+          'btn.startTraffic.aria': '启动用户信道上的流量',
+          'btn.startTraffic.title': '启动流量',
+          'btn.startTraffic.desc': '启动用户信道上的流量',
+          'btn.reset': '重置设置',
+          'nav.theory': '阅读理论',
+          'nav.home': '返回实验室',
+          'legacyNav.returnToSelection': '返回数据类型选择',
+          'legacyNav.returnToLabAria': '返回 Ludus Lab',
+          'hardware.desc.cisco': '国际设备（美国）。使用 AES 算法。网络 PSK——网络中所有节点共用。',
+          'hardware.desc.juniper': '国际设备（美国）。使用 AES 算法。网络 PSK——网络中所有节点共用。',
+          'hardware.desc.huawei': '国际设备（中国）。使用 AES 算法。网络 PSK——网络中所有节点共用。',
+          'hardware.desc.kot': '俄罗斯设备 KOT。使用“Kuznyechik”算法（俄罗斯 GOST）。通过 CMC 分发成对密钥。',
+          'hardware.desc.zemlya': '俄罗斯设备。使用“Kuznyechik”算法（俄罗斯 GOST）。通过 CMC 分发成对密钥。',
+          'hardware.desc.tekstit': '俄罗斯设备。使用“Kuznyechik”算法（俄罗斯 GOST）。通过 CMC 分发成对密钥。',
+          'hardware.desc.thales': '西方设备（法国）。使用 AES 算法。通过管理中心分发成对密钥。',
+          'hardware.desc.senetas': '西方设备（澳大利亚）。使用 AES 算法。通过管理中心分发成对密钥。',
+          'hardware.desc.rohde-schwarz': '西方设备（德国）。使用 AES 算法。通过管理中心分发成对密钥。',
+          'hardware.name.kot': 'KOT',
+          'hardware.name.zemlya': 'Zemlya',
+          'hardware.name.tekstit': 'Tekstit',
+          'dataType.desc.no-regulations': '无监管要求的商业秘密',
+          'dataType.desc.russian-regulations': '按俄罗斯监管要求保护的商业秘密',
+          'dataType.desc.eu-us-regulations': '按美国/欧盟监管要求保护的商业秘密',
+          'compat.international': '✅ 与 Cisco、Juniper、Huawei 兼容（使用网络 PSK）',
+          'compat.russian': '✅ 只与 {name} 兼容（通过 CMC 使用成对密钥）',
+          'compat.western': '✅ 只与 {name} 兼容（通过管理中心使用成对密钥）',
+          'log.intlPSKInfo': 'ℹ️ 国际设备使用网络 PSK，网络中所有节点共用',
+          'log.russianPairedInfo': 'ℹ️ 俄罗斯加密机为每条隧道使用唯一的成对密钥',
+          'log.westernPairedInfo': 'ℹ️ 西方加密机为每条隧道使用唯一的成对密钥',
+          'centerName.ru': 'CMC',
+          'centerName.west': '管理中心',
+          'log.cvkRequest': '请求 {center} 为爱丽丝-鲍勃隧道生成成对密钥……',
+          'log.cvkCheckingRights': '{center}：正在检查爱丽丝和鲍勃的访问权限……',
+          'log.cvkGenerating': '{center}：正在为爱丽丝-鲍勃隧道生成唯一的成对密钥……',
+          'log.cvkKeyGenerated': '{center}：成对密钥已生成：{key}……',
+          'log.cvkKeyAlice': '{center}：爱丽丝的密钥：只与鲍勃关联',
+          'log.cvkKeyBob': '{center}：鲍勃的密钥：只与爱丽丝关联',
+          'info.cvkGenerated': '✅ {center} 为爱丽丝-鲍勃隧道生成了唯一的成对密钥',
+          'log.networkPSKConfigured': '网络 PSK 已在设备设置中配置',
+          'log.networkPSKSameForAll': '网络中所有路由器使用同一个 PSK（OSPF/MPLS）',
+          'log.networkPSKCharlie': '当查理加入网络时，他也会得到同一个 PSK',
+          'log.networkPSKLength': '网络 PSK 长度：{n} 个字符',
+          'log.pairedKeysLoaded': '{center}：成对密钥已装入加密机',
+          'log.aliceKeyOnly': '爱丽丝得到的密钥只适用于与鲍勃之间的隧道',
+          'log.bobKeyOnly': '鲍勃得到的密钥只适用于与爱丽丝之间的隧道',
+          'log.charlieDifferentKeys': '{center}：如果加入查理，将为爱丽丝-查理和鲍勃-查理生成不同的密钥',
+          'log.tunnelCommandSent': '{center}：已发送建立爱丽丝-鲍勃隧道的命令',
+          'log.keySet': '密钥已设置：{key}',
+          'method.manual': '手动（网络 PSK）',
+          'method.cvk': '通过网络管理中心（成对密钥）',
+          'method.krk': '通过量子密钥分发（成对密钥）',
+          'method.rnd': '随机生成（网络 PSK）',
+          'security.unsafe': '（不安全）',
+          'security.safe': '（安全）',
+          'log.keyMethodUsed': '获取密钥的方式：{method}{security}',
+          'ikev2.initPSK': '正在用网络 PSK 初始化 IKEv2……',
+          'ikev2.pskShared': 'PSK：网络中所有节点共用（爱丽丝、鲍勃、查理……）',
+          'ikev2.phase1Init': 'IKEv2 第 1 阶段：爱丽丝 → 鲍勃：IKE_SA_INIT_REQUEST',
+          'ikev2.phase1DH': 'IKEv2 第 1 阶段：交换 Diffie-Hellman 参数',
+          'ikev2.phase2Auth': 'IKEv2 第 2 阶段：爱丽丝 → 鲍勃：带有网络 PSK 哈希的 IKE_AUTH_REQUEST',
+          'ikev2.bobComputeHash': '鲍勃：正在计算自己的网络 PSK 的哈希……',
+          'ikev2.hashMatchBob': '鲍勃：哈希一致！→ 爱丽丝：带有确认的 IKE_AUTH_RESPONSE',
+          'ikev2.aliceComputeHash': '爱丽丝：正在计算鲍勃 PSK 的哈希……',
+          'ikev2.hashMatchAlice': '爱丽丝：哈希一致！双向认证成功',
+          'ikev2.saEstablished': 'IKE_SA 已建立：安全控制信道已创建',
+          'ikev2.ipsecCreating': '正在为数据创建 IPsec SA……',
+          'ikev2.ipsecReady': 'IPsec SA 已建立：可以传输数据',
+          'equipment.international': '国际设备（网络 PSK）',
+          'ikev2.pairedInit': '{center}：正在为爱丽丝-鲍勃隧道初始化成对密钥',
+          'ikev2.pairedUnique': '该密钥只属于这一对（爱丽丝-鲍勃）',
+          'ikev2.pairedCmdAlice': '{center}：给爱丽丝的命令：与鲍勃发起 IKEv2',
+          'ikev2.pairedInitReq': '爱丽丝 → 鲍勃：使用成对密钥的 IKE_SA_INIT_REQUEST',
+          'ikev2.phase2PairedAuth': 'IKEv2 第 2 阶段：使用成对密钥进行认证',
+          'ikev2.bobVerify': '鲍勃：正在验证成对密钥……该密钥正是为爱丽丝准备的',
+          'ikev2.aliceVerify': '爱丽丝：正在验证成对密钥……该密钥正是为鲍勃准备的',
+          'ikev2.pairedVerified': '成对密钥验证通过：双向认证成功',
+          'ikev2.ipsecPairedReady': 'IPsec SA 已建立：加密机可以传输数据',
+          'equipment.russian': '俄罗斯',
+          'equipment.western': '西方',
+          'equipment.encryptorsPaired': '{type}加密机（成对密钥）',
+          'ikev2.channelEstablished': '{type}：安全信道建立成功',
+          'success.channelEstablished': '✅ 安全信道建立成功！',
+          'log.equipmentType': '设备类型：{type}',
+          'log.keyType': '密钥类型：{type}',
+          'log.readyToTransfer': '准备传输受保护的数据',
+          'log.charlieIntlSamePSK': 'ℹ️ 如果把路由器查理加入网络，他会得到同一个网络 PSK',
+          'log.charlieIntlCommunicate': 'ℹ️ 查理将能用同一个 PSK 与爱丽丝和鲍勃通信',
+          'log.charlieIntlScale': 'ℹ️ 这便于扩展，但一旦 PSK 泄露，风险也会增大',
+          'log.charlieNewKeys': 'ℹ️ 如果加入加密机查理，{center} 会生成新的成对密钥：',
+          'log.charlieKeyAlice': 'ℹ️ 爱丽丝-查理：唯一密钥 1',
+          'log.charlieKeyBob': 'ℹ️ 鲍勃-查理：唯一密钥 2',
+          'log.aliceBobKeyUnchanged': 'ℹ️ 爱丽丝-鲍勃的密钥保持不变，对其他组合无效',
+          'eve.interceptPSKVulnerable': '已截获：网络 PSK 易受攻击——整个网络共用这个密钥',
+          'eve.interceptPairedHarder': '已截获：成对密钥更难破解',
+          'log.aliceIPsecESP': 'IPsec ESP：{message}',
+          'eve.interceptedDecrypted': '已截获并解密：“{message}”',
+          'log.criticalPSKCompromised': '⚠️ 严重威胁：网络 PSK 已泄露！网络中所有节点都面临风险。',
+          'log.pairedKeyCompromised': '⚠️ 威胁：爱丽丝-鲍勃隧道的成对密钥已泄露。',
+          'log.otherTunnelsSafe': '⚠️ 但其他隧道（爱丽丝-查理、鲍勃-查理）仍然受到保护。',
+          'eve.interceptFailedDecrypt': '已截获：无法解密 IPsec ESP 数据包',
+          'log.bobReceived': 'IPsec ESP：消息已收到并解密：{message}',
+          'log.bobUsesNetworkPSK': '使用网络 PSK：网络中所有节点共用',
+          'log.bobUsesPairedKey': '使用成对密钥：爱丽丝-鲍勃隧道专用',
+          'log.messageNotDelivered': 'IPsec ESP：消息未送达：信道已被攻破',
+          'log.dataTypeSelected': '已选择数据类型：{desc}',
+          'log.protocolInit': '正在初始化协议，以保护：{desc}',
+          'log.chooseHardware': '为爱丽丝和鲍勃选择设备',
+          'info.chooseHardwareReqs': 'ℹ️ 按照要求为爱丽丝和鲍勃选择设备',
+          'log.returnToSelection': '返回数据类型选择',
+          'info.hardwareSelectedChooseMethod': '✅ 设备已选择。现在选择获取密钥的方式',
+          'warning.methodNotAvailable': '⚠️ 所选设备类型不支持“{method}”方式',
+          'warning.manualPSKUnsafe': '⚠️ 手动输入 PSK 容易受到攻击！建议使用 HSM 安全地存储密钥。',
+          'error.networkPSKTooShort': '⚠️ 网络 PSK 至少需要 20 个字符（建议使用英文字母、数字和符号）',
+          'success.networkPSKSetManual': '✅ 网络 PSK 已在设备配置中设置',
+          'log.networkPSKManualConfig': '网络 PSK 已手动配置到 Cisco/Juniper/Huawei 设备中',
+          'success.pairedKeysLoaded': '✅ 成对密钥已装入{type}加密机',
+          'info.krkOpened': 'ℹ️ 量子密钥分发游戏已打开。获取密钥后在上面输入。',
+          'success.quantumKeyApplied': '✅ 已为爱丽丝和鲍勃应用量子密钥',
+          'success.randomPSKSet': '✅ 随机网络 PSK 已在设备配置中设置',
+          'log.randomPSKGenerated': '随机网络 PSK 已生成并设置到设备上',
+          'error.paramsNotSet': '并非所有参数都已设置。请完成爱丽丝和鲍勃的配置。',
+          'error.notCompatible': '设备不兼容！',
+          'error.intlMustUseAES': '国际设备必须使用 AES 协议。',
+          'error.russianMustMatch': '俄罗斯设备必须一致（{a} ↔ {b}），并使用“Kuznyechik”协议。',
+          'error.westernMustMatch': '西方设备必须一致（{a} ↔ {b}），并使用 AES 协议。',
+          'error.differentTypesIncompatible': '不同类型的设备彼此不兼容。',
+          'error.keysDoNotMatch': '加密密钥不一致！爱丽丝和鲍勃必须使用同一个密钥。',
+          'warning.unsafeMethodUsed': '⚠️ 你正在使用不安全的密钥获取方式。在真实系统中，这可能导致数据泄露。',
+          'error.connectFirst': '请先建立安全连接！',
+          'info.trafficStarted': '🚦 用户信道上的流量已通过 IPsec ESP 启动',
+          'info.trafficStopped': '🛑 用户信道上的流量已停止',
+          'log.settingsReset': '设置已重置。为爱丽丝和鲍勃选择设备',
+          'info.chooseDataTypeStart': 'ℹ️ 先选择要保护的数据类型',
+          'error.connectionError': '建立连接时出错。请重试。',
+          'error.initTitle': '游戏初始化错误',
+          'error.initMessage': '发生了严重错误。请刷新页面或联系支持。',
+          'error.codeLabel': '错误代码：{code}',
+        },
       };
 
+      // Random payloads for the traffic on the user channel, per interface language.
+      const TRAFFIC_MESSAGES = {
+        ru: [['test', 'Зима близко'], ['test', 'test'], ['test', 'Потрачено.'], ['test', 'Hello World!'], ['test', 'Это Спарта!'],
+          ['secret', 'Крот среди нас. Ищи его.'], ['secret', 'План «Б» активирован.'], ['secret', 'Жди сигнала: три гудка.'], ['secret', 'Сотри это после чтения.'],
+          ['secret', 'Шеф отменил операцию.'], ['secret', 'Они знают про Берлин.'], ['secret', 'Встречаемся ровно в полдень.'], ['secret', 'Пароль: Красный Октябрь.'],
+          ['secret', 'Тайник под старым дубом.'], ['secret', 'Агент раскрыт, уходи.'], ['secret', 'Код запуска: 84-92-11.'], ['secret', 'Груз доставлен на базу.'],
+          ['secret', 'Я забыл купить молоко…'], ['flood', 'В чем сила, брат?'], ['flood', '404: Секрет не найден.'], ['flood', 'Нельзя просто так взять и…'],
+          ['flood', 'Хьюстон, у нас проблема.'], ['flood', 'Бегите, глупцы!'], ['flood', 'Ложки не существует.'], ['flood', 'Марио, принцесса в другом замке.'],
+          ['flood', 'Здесь могла быть ваша реклама.'], ['flood', 'ЛевиОса, а не ЛевиосА.'], ['flood', 'Press F to pay respect.'], ['flood', 'Люк, я твой отец.']],
+        en: [['test', 'Winter is coming'], ['test', 'test'], ['test', 'Wasted.'], ['test', 'Hello World!'], ['test', 'This is Sparta!'],
+          ['secret', 'There is a mole among us. Find him.'], ['secret', 'Plan B is active.'], ['secret', 'Wait for the signal: three beeps.'], ['secret', 'Erase this after reading.'],
+          ['secret', 'The boss called off the operation.'], ['secret', 'They know about Berlin.'], ['secret', 'We meet at noon sharp.'], ['secret', 'Password: Red October.'],
+          ['secret', 'The stash is under the old oak.'], ['secret', 'Agent exposed, get out.'], ['secret', 'Launch code: 84-92-11.'], ['secret', 'The cargo has reached the base.'],
+          ['secret', 'I forgot to buy milk…'], ['flood', 'Where is the power, brother?'], ['flood', '404: Secret not found.'], ['flood', 'One does not simply…'],
+          ['flood', 'Houston, we have a problem.'], ['flood', 'Fly, you fools!'], ['flood', 'There is no spoon.'], ['flood', 'Mario, the princess is in another castle.'],
+          ['flood', 'Your ad could be here.'], ['flood', "It's LeviOsa, not LevioSA."], ['flood', 'Press F to pay respect.'], ['flood', 'Luke, I am your father.']],
+        es: [['test', 'Se acerca el invierno'], ['test', 'test'], ['test', 'Wasted.'], ['test', 'Hello World!'], ['test', '¡Esto es Esparta!'],
+          ['secret', 'Hay un topo entre nosotros. Encuéntralo.'], ['secret', 'Plan B activado.'], ['secret', 'Espera la señal: tres pitidos.'], ['secret', 'Borra esto después de leerlo.'],
+          ['secret', 'El jefe canceló la operación.'], ['secret', 'Saben lo de Berlín.'], ['secret', 'Nos vemos a mediodía en punto.'], ['secret', 'Contraseña: Octubre Rojo.'],
+          ['secret', 'El escondite está bajo el viejo roble.'], ['secret', 'Agente descubierto, sal de ahí.'], ['secret', 'Código de lanzamiento: 84-92-11.'], ['secret', 'La carga llegó a la base.'],
+          ['secret', 'Olvidé comprar leche…'], ['flood', '¿Dónde está la fuerza, hermano?'], ['flood', '404: Secreto no encontrado.'], ['flood', 'No se puede simplemente…'],
+          ['flood', 'Houston, tenemos un problema.'], ['flood', '¡Huid, insensatos!'], ['flood', 'La cuchara no existe.'], ['flood', 'Mario, la princesa está en otro castillo.'],
+          ['flood', 'Su anuncio podría estar aquí.'], ['flood', 'Es LeviOsa, no LevioSA.'], ['flood', 'Press F to pay respect.'], ['flood', 'Luke, yo soy tu padre.']],
+        zh: [['test', '凛冬将至'], ['test', 'test'], ['test', '任务失败。'], ['test', 'Hello World!'], ['test', '这就是斯巴达！'],
+          ['secret', '我们中间有内鬼。找出他。'], ['secret', 'B 计划已启动。'], ['secret', '等信号：响三声。'], ['secret', '阅后即焚。'],
+          ['secret', '老板取消了行动。'], ['secret', '他们知道柏林的事了。'], ['secret', '正午准时见面。'], ['secret', '口令：红色十月。'],
+          ['secret', '藏匿点在老橡树下。'], ['secret', '特工已暴露，快撤。'], ['secret', '发射代码：84-92-11。'], ['secret', '货物已运抵基地。'],
+          ['secret', '我忘了买牛奶……'], ['flood', '兄弟，力量在哪里？'], ['flood', '404：未找到秘密。'], ['flood', '不能就这么简单地……'],
+          ['flood', '休斯敦，我们遇到了问题。'], ['flood', '快跑，你们这些傻瓜！'], ['flood', '根本没有勺子。'], ['flood', '马里奥，公主在另一座城堡里。'],
+          ['flood', '此处可投放广告。'], ['flood', '是 LeviOsa，不是 LevioSA。'], ['flood', 'Press F to pay respect.'], ['flood', '卢克，我是你父亲。']],
+      };
+      Object.assign(I18N.ru, { 'traffic.test': 'Тестовое сообщение: ', 'traffic.secret': 'Секретно: ', 'traffic.flood': 'Флуд: ' });
+      Object.assign(I18N.en, { 'traffic.test': 'Test message: ', 'traffic.secret': 'Secret: ', 'traffic.flood': 'Chatter: ' });
+      Object.assign(I18N.es, { 'traffic.test': 'Mensaje de prueba: ', 'traffic.secret': 'Secreto: ', 'traffic.flood': 'Charla: ' });
+      Object.assign(I18N.zh, { 'traffic.test': '测试消息：', 'traffic.secret': '机密：', 'traffic.flood': '闲聊：' });
       let currentLang = 'ru';
 
       function t(key, vars) {
@@ -2540,7 +2836,7 @@
 
       function applyLanguage(lang) {
         currentLang = lang;
-        document.documentElement.lang = lang;
+        document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
         document.querySelectorAll('[data-i18n]').forEach(el => {
           const key = el.getAttribute('data-i18n');
           el.innerHTML = t(key);
@@ -2573,7 +2869,7 @@
         try { lang = localStorage.getItem('ludusLang'); } catch (e) {}
         if (!lang) {
           const browserLang = (navigator.language || 'ru').slice(0, 2).toLowerCase();
-          lang = (browserLang === 'en' || browserLang === 'es') ? browserLang : 'ru';
+          lang = (browserLang === 'en' || browserLang === 'es' || browserLang === 'zh') ? browserLang : 'ru';
         }
         applyLanguage(lang);
         document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -3480,12 +3776,14 @@
             }
             
             // Добавляем сообщение в лог
-            const messageText = this.generateRandomMessage();
+            const msg = this.generateRandomMessage();
+            const messageText = msg.full;
+            const shownText = msg.kind === 'test' ? msg.text : msg.full;
             if (shouldIntercept) {
               if (interceptSuccess) {
                 // Успешный перехват и расшифровка
                 this.domManager.addLogEntry("alice", t('log.aliceIPsecESP', {message: messageText}));
-                this.domManager.addLogEntry("eve", t('eve.interceptedDecrypted', {message: messageText.replace("Тестовое сообщение: ", "")}), "critical");
+                this.domManager.addLogEntry("eve", t('eve.interceptedDecrypted', {message: shownText}), "critical");
 
                 // Добавляем специфичное предупреждение в зависимости от типа ключа
                 if (equipmentType === 'international') {
@@ -3511,7 +3809,7 @@
             // Ответ от Боба (если не было перехвата или был неудачный перехват)
             setTimeout(() => {
               if (!shouldIntercept || !interceptSuccess) {
-                this.domManager.addLogEntry("bob", t('log.bobReceived', {message: messageText.replace("Тестовое сообщение: ", "")}));
+                this.domManager.addLogEntry("bob", t('log.bobReceived', {message: shownText}));
                 // Добавляем информацию о типе ключа
                 if (equipmentType === 'international') {
                   this.domManager.addLogEntry("bob", t('log.bobUsesNetworkPSK'));
@@ -3546,39 +3844,10 @@
         }
         
         generateRandomMessage() {
-          const messages = [
-            "Тестовое сообщение: Зима близко",
-            "Тестовое сообщение: test",
-            "Тестовое сообщение: Потрачено.",
-            "Тестовое сообщение: Hello World!",
-            "Тестовое сообщение: Это Спарта!",
-            "Секретно: Крот среди нас. Ищи его.",
-            "Секретно: План «Б» активирован.",
-            "Секретно: Жди сигнала: три гудка.",
-            "Секретно: Сотри это после чтения.",
-            "Секретно: Шеф отменил операцию.",
-            "Секретно: Они знают про Берлин.",
-            "Секретно: Встречаемся ровно в полдень.",
-            "Секретно: Пароль: Красный Октябрь.",
-            "Секретно: Тайник под старым дубом.",
-            "Секретно: Агент раскрыт, уходи.",
-            "Секретно: Код запуска: 84-92-11.",
-            "Секретно: Груз доставлен на базу.",
-            "Секретно: Я забыл купить молоко…",
-            "Флуд: В чем сила, брат?",
-            "Флуд: 404: Секрет не найден.",
-            "Флуд: Нельзя просто так взять и…",
-            "Флуд: Хьюстон, у нас проблема.",
-            "Флуд: Бегите, глупцы!",
-            "Флуд: Ложки не существует.",
-            "Флуд: Марио, принцесса в другом замке.",
-            "Флуд: 404: Секрет не найден.",
-            "Флуд: Здесь могла быть ваша реклама.",
-            "Флуд: ЛевиОса, а не ЛевиосА.",
-            "Флуд: Press F to pay respect.",
-            "Флуд: Люк, я твой отец."
-          ];
-          return messages[Math.floor(Math.random() * messages.length)];
+          // Sample payloads in the interface language: [kind, text]; kind is test / secret / flood.
+          const list = TRAFFIC_MESSAGES[currentLang] || TRAFFIC_MESSAGES.ru;
+          const [kind, text] = list[Math.floor(Math.random() * list.length)];
+          return { kind, text, full: t('traffic.' + kind) + text };
         }
         
         resetGameState() {

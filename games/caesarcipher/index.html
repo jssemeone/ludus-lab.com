@@ -1281,6 +1281,7 @@ color: #ff6b6b;
   <button class="lang-btn" data-lang-btn="ru">RU</button>
   <button class="lang-btn" data-lang-btn="en">EN</button>
   <button class="lang-btn" data-lang-btn="es">ES</button>
+  <button class="lang-btn" data-lang-btn="zh">中文</button>
 </div>
 <div class="container">
 <header>
@@ -1908,6 +1909,93 @@ const I18N = {
     'shift.reverseTemplate': 'Desplazamiento inverso: {cipher} → {shift} → {plain}',
     'key.shiftValue': 'Desplazamiento: {n} {arrow}',
   },
+  zh: {
+    'meta.title': '凯撒密码——密码盘',
+    'game.title': '凯撒密码',
+    'game.subtitle': '密码盘 · 安全传输',
+    'protocol.toggle': '这个密码是如何工作的？',
+    'protocol.intro': '<span class="highlight">凯撒密码</span>是一种通过移动字母来加密的方法。',
+    'protocol.step1.title': '选择字母表',
+    'protocol.step1.desc': '游戏支持两种字母表：俄文（А-Я、Ё）和英文（A–Z）。所有字母会自动转换为大写。空格会保留但不加密。不允许输入数字和标点符号。汉字无法用凯撒密码加密：它没有可供移位的字母表，所以请用俄文或英文字母输入消息。',
+    'protocol.step2.title': '输入消息',
+    'protocol.step2.desc': '爱丽丝输入原始消息。每个字符都会对照所选字母表进行检查，不符合的字符会被自动过滤掉。',
+    'protocol.step3.title': '设置密钥',
+    'protocol.step3.desc': '选择移位量（0-90）和方向（向左/向右）。密码盘会直观地显示字符的对应关系。',
+    'protocol.step4.title': '加密（逐步进行）',
+    'protocol.step4.intro': '对消息中的每个字符：',
+    'protocol.step4.list': '<li>在内盘上找到该字母的位置</li><li>把密码盘转动指定的移位量</li><li>从外盘读出加密后的字符</li><li>空格原样保留</li>',
+    'protocol.step4.formula': '<strong>公式：</strong><code>C = (P + K) mod N</code>，其中 P 是明文位置，K 是移位量，N 是字母表的大小。',
+    'protocol.step5.title': '数据传输',
+    'protocol.step5.desc': '密钥（移位量）通过安全信道传输，密文通过公开信道传输。',
+    'protocol.step6.title': '解密',
+    'protocol.step6.desc': '鲍勃对密文进行反向移位，恢复出原始消息。',
+    'protocol.step6.formula': '<strong>公式：</strong><code>P = (C − K + N) mod N</code>',
+    'protocol.legend': '<strong>颜色说明：</strong><span style="color:#00ff80;">●</span> 明文，<span style="color:#00a2ff;">●</span> 密文',
+    'stage.input': '输入',
+    'stage.key': '密钥',
+    'stage.encrypt': '加密',
+    'stage.transmit': '传输',
+    'stage.decrypt': '解密',
+    'stage1.heading': '爱丽丝：消息',
+    'message.placeholder': '输入文本（俄文或英文字母）……',
+    'alphabet.chooseLabel': '选择字母表：',
+    'alphabet.ru': '俄文（А-Я、Ё）',
+    'alphabet.en': '英文（A-Z）',
+    'hint.ru': '只能输入俄文字母（不区分大小写）；汉字、数字和标点不会被加密',
+    'hint.en': '只能输入英文字母（不区分大小写）；汉字、数字和标点不会被加密',
+    'btn.next': '下一步',
+    'btn.nextStage': '下一阶段',
+    'btn.autopilot': '自动演示',
+    'btn.autopilotStop': '停止',
+    'btn.sendBoth': '发送密钥和密文',
+    'btn.finish': '完成',
+    'btn.newTransmission': '新的传输',
+    'btn.setKey': '设置密钥',
+    'keySetup.heading': '密钥设置',
+    'keySetup.shift': '移位量',
+    'keySetup.direction': '方向',
+    'direction.right': '向右 →',
+    'direction.left': '← 向左',
+    'legend.plain': '明文',
+    'legend.cipher': '密文',
+    'legend.key': '密钥',
+    'legend.plainShort': '明文',
+    'legend.cipherShort': '密文',
+    'viz.char': '字符',
+    'viz.position': '位置',
+    'viz.shift': '移位',
+    'viz.cipher': '密文',
+    'result.ready': '已完成',
+    'result.decrypted': '已解密',
+    'char.alice': '爱丽丝',
+    'char.bob': '鲍勃',
+    'status.ready': '就绪',
+    'status.waiting': '等待中',
+    'status.sending': '正在发送数据……',
+    'status.waitingDots': '等待中……',
+    'status.received': '已收到！',
+    'route.key': '密钥：安全途径',
+    'route.cipher': '密文：公开信道',
+    'final.heading': '传输结果',
+    'final.key': '密钥（移位量）',
+    'final.original': '原始消息',
+    'final.decrypted': '解密结果',
+    'nav.theory': '阅读理论',
+    'nav.home': '返回实验室',
+    'modal.defaultTitle': '错误',
+    'modal.defaultMsg': '消息内容',
+    'modal.okBtn': '确定',
+    'modal.error.title': '错误',
+    'modal.error.noMessage': '请输入消息！（俄文或英文字母）',
+    'modal.success.title': '成功！',
+    'modal.success.msg': '消息已正确解密！',
+    'modal.mismatch.title': '错误！',
+    'modal.mismatch.msg': '消息不一致！',
+    'shift.none': '移位：—',
+    'shift.template': '移位：{plain} → {shift} → {cipher}',
+    'shift.reverseTemplate': '反向移位：{cipher} → {shift} → {plain}',
+    'key.shiftValue': '移位量：{n} {arrow}',
+  },
 };
 
 function t(key, vars) {
@@ -1920,7 +2008,7 @@ function t(key, vars) {
 function applyLanguage(lang) {
   if (!I18N[lang]) lang = 'ru';
   state.lang = lang;
-  document.documentElement.lang = lang;
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
   document.title = t('meta.title');
   document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n')); });
   document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.getAttribute('data-i18n-title')); });
@@ -1946,8 +2034,8 @@ function refreshDynamicUI() {
 
 function renderKeyDisplay() {
   const el = document.getElementById('keyDisplay');
-  if (!el || !state.keyDisplay) return;
-  el.textContent = t('key.shiftValue', state.keyDisplay);
+  if (!el) return;
+  el.textContent = t('key.shiftValue', state.keyDisplay || { n: 0, arrow: '→' });
 }
 
 function renderShiftDisplay() {

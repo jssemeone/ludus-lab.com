@@ -95,6 +95,8 @@ margin: 0 auto;
 padding: 40px 20px;
 flex: 1 0 auto;
 }
+/* body is a flex column and the auto margins make the container shrink-to-fit its content: pin it to the viewport width */
+.theory-container { width: 100%; box-sizing: border-box; }
 /* Заголовок статьи */
 .article-header {
 margin-bottom: 40px;
@@ -523,6 +525,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <button class="lang-btn" data-lang-btn="ru">RU</button>
 <button class="lang-btn" data-lang-btn="en">EN</button>
 <button class="lang-btn" data-lang-btn="es">ES</button>
+<button class="lang-btn" data-lang-btn="zh">中文</button>
 </div>
 
 <!-- Навигация -->
@@ -557,15 +560,15 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <div class="simple-encryption-scheme">
 <div class="scheme-title" data-i18n="scheme1.title">Симметричное шифрование</div>
 <div class="scheme-flow">
-<div class="scheme-item"><div class="scheme-box scheme-original">ПРИВЕТ</div><div class="scheme-label" data-i18n="scheme1.label.original">Исходное сообщение</div></div>
+<div class="scheme-item"><div class="scheme-box scheme-original" data-i18n="scheme1.box.msg">ПРИВЕТ</div><div class="scheme-label" data-i18n="scheme1.label.original">Исходное сообщение</div></div>
 <div class="scheme-arrow">→</div>
-<div class="scheme-item"><div class="scheme-box scheme-key">СЕКРЕТНЫЙ КЛЮЧ</div><div class="scheme-label" data-i18n="scheme1.label.key">Секретный ключ</div></div>
+<div class="scheme-item"><div class="scheme-box scheme-key" data-i18n="scheme1.box.key">СЕКРЕТНЫЙ КЛЮЧ</div><div class="scheme-label" data-i18n="scheme1.label.key">Секретный ключ</div></div>
 <div class="scheme-arrow">→</div>
 <div class="scheme-item"><div class="scheme-box scheme-cipher">XG*$@!#</div><div class="scheme-label" data-i18n="scheme1.label.cipher">Зашифрованное сообщение</div></div>
 <div class="scheme-arrow">→</div>
-<div class="scheme-item"><div class="scheme-box scheme-key">СЕКРЕТНЫЙ КЛЮЧ</div><div class="scheme-label" data-i18n="scheme1.label.samekey">Тот же ключ</div></div>
+<div class="scheme-item"><div class="scheme-box scheme-key" data-i18n="scheme1.box.key">СЕКРЕТНЫЙ КЛЮЧ</div><div class="scheme-label" data-i18n="scheme1.label.samekey">Тот же ключ</div></div>
 <div class="scheme-arrow">→</div>
-<div class="scheme-item"><div class="scheme-box scheme-original">ПРИВЕТ</div><div class="scheme-label" data-i18n="scheme1.label.decrypted">Расшифрованное сообщение</div></div>
+<div class="scheme-item"><div class="scheme-box scheme-original" data-i18n="scheme1.box.msg">ПРИВЕТ</div><div class="scheme-label" data-i18n="scheme1.label.decrypted">Расшифрованное сообщение</div></div>
 </div>
 <p class="scheme-note" data-i18n="scheme1.note">Один и тот же ключ используется для шифрования и расшифрования — в этом симметрия.</p>
 </div>
@@ -583,13 +586,13 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <div class="cipher-card">
 <h4 data-i18n="cipher1.title">Шифр Цезаря (I век до н.э.)</h4>
 <p data-i18n="cipher1.text">Каждая буква сдвигается на фиксированное число позиций в алфавите.</p>
-<div class="cipher-example" data-i18n="cipher1.example">ПРИВЕТ → СФНЕИХ<br>(сдвиг на 3)</div>
+<div class="cipher-example" data-i18n="cipher1.example">ПРИВЕТ → ТУЛЕЗХ<br>(сдвиг на 3)</div>
 <p data-i18n="cipher1.key">Ключ: число от 1 до 33</p>
 </div>
 <div class="cipher-card">
 <h4 data-i18n="cipher2.title">Шифр Виженера (XVI век)</h4>
 <p data-i18n="cipher2.text">Использует ключевое слово для сдвига букв разными величинами.</p>
-<div class="cipher-example">ПРИВЕТ + КЛЮЧ = ХФНХМИ</div>
+<div class="cipher-example">ПРИВЕТ + КЛЮЧ = ЪЬЖЩПЮ</div>
 <p data-i18n="cipher2.key">Ключ: любое слово или фраза</p>
 </div>
 <div class="cipher-card">
@@ -608,8 +611,8 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <p data-i18n="block3.intro">Сегодня симметричная криптография — это сложные математические преобразования, которые превращают данные в неразличимый шум. Вот самые известные алгоритмы:</p>
 <div class="modern-algorithms">
 <span class="algorithm-tag important">AES (Advanced Encryption Standard)</span>
-<span class="algorithm-tag russian">КУЗНЕЧИК (ГОСТ РФ)</span>
-<span class="algorithm-tag russian">МАГМА (ГОСТ 28147-89)</span>
+<span class="algorithm-tag russian" data-i18n="tag.kuznyechik">КУЗНЕЧИК (ГОСТ РФ)</span>
+<span class="algorithm-tag russian" data-i18n="tag.magma">МАГМА (ГОСТ 28147-89)</span>
 <span class="algorithm-tag">DES (Data Encryption Standard)</span>
 <span class="algorithm-tag">3DES (Triple DES)</span>
 <span class="algorithm-tag">Blowfish</span>
@@ -691,11 +694,11 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <div class="simple-encryption-scheme">
 <div class="scheme-title" data-i18n="scheme2.title">Эволюция российских стандартов</div>
 <div class="scheme-flow">
-<div class="scheme-item"><div class="scheme-box scheme-original">ГОСТ 28147-89</div><div class="scheme-label" data-i18n="scheme2.label.magma">"Магма"<br>64-бит, с 1989</div></div>
+<div class="scheme-item"><div class="scheme-box scheme-original" data-i18n="scheme2.box.magma">ГОСТ 28147-89</div><div class="scheme-label" data-i18n="scheme2.label.magma">"Магма"<br>64-бит, с 1989</div></div>
 <div class="scheme-arrow">→</div>
 <div class="scheme-item"><div class="scheme-box scheme-key" data-i18n="scheme2.box.transition">Переход</div><div class="scheme-label" data-i18n="scheme2.label.transition">Необходимость современного стандарта</div></div>
 <div class="scheme-arrow">→</div>
-<div class="scheme-item"><div class="scheme-box scheme-cipher">ГОСТ Р 34.12-2015</div><div class="scheme-label" data-i18n="scheme2.label.kuznyechik">"Кузнечик"<br>128-бит, с 2015</div></div>
+<div class="scheme-item"><div class="scheme-box scheme-cipher" data-i18n="scheme2.box.kuznyechik">ГОСТ Р 34.12-2015</div><div class="scheme-label" data-i18n="scheme2.label.kuznyechik">"Кузнечик"<br>128-бит, с 2015</div></div>
 </div>
 <p class="scheme-note" data-i18n="scheme2.note">От совместимости с DES-архитектурой к современной SP-сети. Эволюция в ответ на технологические вызовы.</p>
 </div>
@@ -730,13 +733,13 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <h3 data-i18n="advanced.compare.heading">Сравнение AES и "Кузнечика"</h3>
 <p data-i18n="advanced.compare.text">Оба алгоритма — 128-битные блочные шифры, но с разной философией и регуляторной базой:</p>
 <table class="comparison-table">
-<tr><th style="width: 25%;" data-i18n="table.param">Параметр</th><th class="western-cell">AES (Rijndael)</th><th class="russian-cell">Кузнечик (ГОСТ Р 34.12-2015)</th></tr>
+<tr><th style="width: 25%;" data-i18n="table.param">Параметр</th><th class="western-cell">AES (Rijndael)</th><th class="russian-cell" data-i18n="table.head.ru">Кузнечик (ГОСТ Р 34.12-2015)</th></tr>
 <tr><td data-i18n="table.row1.label">Страна разработки</td><td class="western-cell" data-i18n="table.row1.west">Бельгия/США</td><td class="russian-cell" data-i18n="table.row1.ru">Россия</td></tr>
 <tr><td data-i18n="table.row2.label">Год принятия</td><td class="western-cell">2001</td><td class="russian-cell">2015</td></tr>
 <tr><td data-i18n="table.row3.label">Архитектура</td><td class="western-cell" data-i18n="table.row3.val">SP-сеть</td><td class="russian-cell" data-i18n="table.row3.val">SP-сеть</td></tr>
 <tr><td data-i18n="table.row4.label">Длина ключа</td><td class="western-cell" data-i18n="table.row4.west">128, 192, 256 бит</td><td class="russian-cell" data-i18n="table.row4.ru">256 бит</td></tr>
 <tr><td data-i18n="table.row5.label">Размер блока</td><td class="western-cell" data-i18n="table.row5.val">128 бит</td><td class="russian-cell" data-i18n="table.row5.val">128 бит</td></tr>
-<tr><td data-i18n="table.row6.label">Регулятор</td><td class="western-cell" data-i18n="table.row6.west">NIST (США)</td><td class="russian-cell"><span class="highlight-neon">ФСБ России</span></td></tr>
+<tr><td data-i18n="table.row6.label">Регулятор</td><td class="western-cell" data-i18n="table.row6.west">NIST (США)</td><td class="russian-cell"><span class="highlight-neon" data-i18n="table.row6.ru">ФСБ России</span></td></tr>
 <tr><td data-i18n="table.row7.label">Использование в РФ</td><td class="western-cell" data-i18n="table.row7.west">Международные системы, VPN, Wi-Fi (там, где не требуется соответствие 152-ФЗ)</td><td class="russian-cell" data-i18n="table.row7.ru">Госсектор, банки, КИИ, системы защиты гостайны</td></tr>
 <tr><td data-i18n="table.row8.label">Особенности</td><td class="western-cell" data-i18n="table.row8.west">Открытый конкурс, прозрачная разработка, поддержка аппаратного ускорения на большинстве CPU</td><td class="russian-cell" data-i18n="table.row8.ru">Оптимизирован для российского "железа", обязателен для систем, сертифицированных <span class="highlight-neon">ФСБ</span></td></tr>
 </table>
@@ -838,7 +841,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'block2.intro': 'Симметричная криптография старше, чем вы думаете. Ей пользовался ещё Юлий Цезарь для переписки со своими генералами. Давайте посмотрим на эволюцию шифров:',
         'cipher1.title': 'Шифр Цезаря (I век до н.э.)',
         'cipher1.text': 'Каждая буква сдвигается на фиксированное число позиций в алфавите.',
-        'cipher1.example': 'ПРИВЕТ → СФНЕИХ<br>(сдвиг на 3)',
+        'cipher1.example': 'ПРИВЕТ → ТУЛЕЗХ<br>(сдвиг на 3)',
         'cipher1.key': 'Ключ: число от 1 до 33',
         'cipher2.title': 'Шифр Виженера (XVI век)',
         'cipher2.text': 'Использует ключевое слово для сдвига букв разными величинами.',
@@ -971,7 +974,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'block2.intro': 'Symmetric cryptography is older than you might think. Julius Caesar himself used it to correspond with his generals. Let\'s look at how ciphers evolved:',
         'cipher1.title': 'The Caesar cipher (1st century BCE)',
         'cipher1.text': 'Every letter is shifted by a fixed number of positions in the alphabet.',
-        'cipher1.example': 'ПРИВЕТ → СФНЕИХ<br>(shift of 3)',
+        'cipher1.example': 'ПРИВЕТ → ТУЛЕЗХ<br>(shift of 3)',
         'cipher1.key': 'Key: a number from 1 to 33',
         'cipher2.title': 'The Vigenère cipher (16th century)',
         'cipher2.text': 'Uses a keyword to shift letters by varying amounts.',
@@ -1104,7 +1107,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'block2.intro': 'La criptografía simétrica es más antigua de lo que parece. El propio Julio César la usaba para comunicarse con sus generales. Veamos cómo evolucionaron los cifrados:',
         'cipher1.title': 'El cifrado César (siglo I a.C.)',
         'cipher1.text': 'Cada letra se desplaza un número fijo de posiciones en el alfabeto.',
-        'cipher1.example': 'ПРИВЕТ → СФНЕИХ<br>(desplazamiento de 3)',
+        'cipher1.example': 'ПРИВЕТ → ТУЛЕЗХ<br>(desplazamiento de 3)',
         'cipher1.key': 'Clave: un número del 1 al 33',
         'cipher2.title': 'El cifrado Vigenère (siglo XVI)',
         'cipher2.text': 'Usa una palabra clave para desplazar las letras en distintas cantidades.',
@@ -1213,12 +1216,169 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
         'footer.line2': 'Este artículo es una explicación simplificada de los principios. Los sistemas reales usan combinaciones de algoritmos mucho más complejas y deben cumplir los requisitos regulatorios, incluido el <span class="highlight-neon">FSB de Rusia</span> para los sistemas usados en Rusia.',
       },
+      zh: {
+        'meta.title': '对称密码学：一把钥匙守护所有秘密 | Ludus Lab',
+        'meta.description': '最古老、最快速的加密方式是如何工作的。从凯撒密码到 AES 和俄罗斯 GOST 标准——通往现代数据保护之路。',
+        'nav.home': '首页',
+        'nav.play': '开始游戏',
+        'article.category': '密码学基础',
+        'article.title': '对称密码学',
+        'article.subtitle': '一个密钥如何既能加密又能解密消息。从古代密码到现代算法',
+        'meta.readtime': '⏱️ 阅读约 6 分钟',
+        'meta.level': '📊 入门级',
+        'meta.security': '🔐 安全的基础',
+        'block1.heading': '为什么叫“对称”？',
+        'block1.p1': '想象你有一个保险箱，它用<span class="highlight-symmetric">同一把钥匙</span>上锁和开锁。这就是对称密码学的本质：所有操作都用同一个密钥。',
+        'block1.p2': '当<span class="highlight">爱丽丝</span>想给<span class="highlight">鲍勃</span>发送一条秘密消息时，她拿起钥匙，插进锁里，一转——消息就变成了无法读懂的一团乱码。鲍勃拿起<span class="highlight">完全相同的钥匙</span>，插进他的锁里，一转——消息又变得可读了。',
+        'scheme1.title': '对称加密',
+        'scheme1.label.original': '原始消息',
+        'scheme1.label.key': '秘密密钥',
+        'scheme1.label.cipher': '加密后的消息',
+        'scheme1.label.samekey': '同一个密钥',
+        'scheme1.label.decrypted': '解密后的消息',
+        'scheme1.note': '加密和解密使用同一个密钥——“对称”就是由此而来。',
+        'insight1.label': '关键结论：',
+        'insight1.text': '对称密码学是保护数据<span class="highlight-gold">最快速、最高效</span>的方式，因为它依靠的是简单的数学运算（与非对称密码学相比）。凡是讲究速度的地方都在用它：Wi-Fi、VPN、磁盘加密、即时通讯。但它有一个大问题：<span class="highlight">怎样把密钥安全地交给对方？</span>',
+        'block2.heading': '从凯撒到今天',
+        'block2.intro': '对称密码学比你想象的更古老。尤利乌斯·凯撒本人就曾用它与将领们通信。我们来看看密码是如何演变的：',
+        'cipher1.title': '凯撒密码（公元前 1 世纪）',
+        'cipher1.text': '每个字母都在字母表中移动固定的位数。',
+        'cipher1.example': 'ПРИВЕТ → ТУЛЕЗХ<br>（移位 3）',
+        'cipher1.key': '密钥：1 到 33 之间的一个数',
+        'cipher2.title': '维吉尼亚密码（16 世纪）',
+        'cipher2.text': '使用关键词让字母移动不同的位数。',
+        'cipher2.key': '密钥：任意单词或短语',
+        'cipher3.title': '维尔南密码（1917）',
+        'cipher3.text': '每个字母都与密钥中的一个字母做异或。当密钥与消息等长时，它在理论上可被证明是不可破译的。',
+        'cipher3.key': '密钥：一串随机比特',
+        'block2.outro': '所有这些密码都有一个共同的思想：<span class="highlight">对称</span>。加密和解密需要同一个密钥。但古代密码可以手工破解，而现代算法即使用最强大的计算机，也要数十亿年才能破解。',
+        'block3.heading': '现代算法',
+        'block3.intro': '如今，对称密码学意味着复杂的数学变换，它们把数据变成无法分辨的噪声。下面是最著名的几种算法：',
+        'step1.title': 'AES——西方的黄金标准',
+        'step1.text': '2001 年被采纳为美国政府标准。使用 128、192 或 256 位的密钥。<span class="highlight">西方数字世界安全的支柱</span>——从银行交易到 VPN。',
+        'step1.note': '<strong>对俄罗斯读者值得一提：</strong>AES 是一个出色的算法，但在受俄罗斯监管的系统中往往不允许使用。第 152-FZ 号联邦法律和该国密码监管机构<span class="highlight-neon">俄罗斯联邦安全局（FSB）</span>的命令要求使用国产方案。',
+        'step2.title': '分组密码与流密码',
+        'step2.text': '<span class="highlight">分组密码</span>（AES、DES、Kuznyechik）处理固定大小的数据块（通常为 128 位）。<span class="highlight">流密码</span>（RC4、ChaCha20）逐位或逐字节地加密数据，非常适合流式传输。',
+        'step3.title': '工作模式',
+        'step3.text': '同一个算法可以在不同的模式下运行：ECB（简单模式）、CBC（分组链接）、CTR（计数器）、GCM（带认证）。每种模式解决不同的问题，从文件加密到安全通信。',
+        'block3.outro': '尽管如此复杂，原理始终不变：<span class="highlight-symmetric">用一个密钥加密，用同一个密钥解密</span>。概念的简单正是对称密码学的力量所在。',
+        'block4.heading': '俄罗斯国家标准',
+        'block4.subtitle': '从 Magma 到 Kuznyechik',
+        'block4.intro': '当西方世界以 AES 为标准时，俄罗斯有着自己的密码学历史。俄罗斯的算法并非简单的复制品——它们是独立的设计，有着自己的理念和优势。',
+        'step4.title': '<span class="highlight-neon">GOST 28147-89“Magma”——苏联时期的基础</span>',
+        'step4.text': '早在苏联时期就已开发，1989 年通过。一种 <span class="highlight-gold">64 位分组密码</span>，密钥 256 位。基于费斯妥网络——与传奇的 DES 采用相同的结构。',
+        'step4.note': '<strong>显著特点：</strong>使用可以更换的非标准 S 盒（代换表），增加了灵活性。它曾长期用于政府系统和银行业。',
+        'step5.title': '<span class="highlight-neon">GOST R 34.12-2015“Kuznyechik”——现代标准</span>',
+        'step5.text': '2015 年作为 Magma 的继任者通过。一种 <span class="highlight">128 位分组密码</span>，密钥 256 位。与 AES 一样，采用 SP 网络结构（代换–置换）。',
+        'step5.note2': '<strong>主要优势：</strong>',
+        'step5.benefit': '<span class="highlight-neon">用于必须符合俄罗斯监管要求的系统</span>',
+        'step6.title': '为什么这对俄罗斯很重要？',
+        'step6.text': '<span class="highlight-symmetric">密码主权</span>不只是一句口号。使用国产算法：',
+        'step6.li1': '<strong>保证没有隐藏的后门</strong>——算法的每一处行为都是已知的',
+        'step6.li2': '<strong>可以针对国产设备进行优化</strong>——“KOT”“Zemlya”“Tekstil”',
+        'step6.li3': '<strong>提供法律上的确定性</strong>——符合第 152-FZ 号联邦法律和监管要求',
+        'step6.li4': '<strong>实现技术独立</strong>——即使在制裁之下系统也能继续运行',
+        'scheme2.title': '俄罗斯标准的演变',
+        'scheme2.label.magma': '“Magma”<br>64 位，自 1989 年起',
+        'scheme2.box.transition': '过渡',
+        'scheme2.label.transition': '需要一个现代标准',
+        'scheme2.label.kuznyechik': '“Kuznyechik”<br>128 位，自 2015 年起',
+        'scheme2.note': '从与 DES 相似的结构到现代的 SP 网络。为应对技术挑战而不断演进。',
+        'insight2.label': '在游戏中就能看到：',
+        'insight2.text': '当你选择符合俄罗斯要求的保护时，只能使用俄罗斯设备（“KOT”“Zemlya”“Tekstil”），算法会自动设为<span class="highlight-neon">“Kuznyechik”</span>。你会看到，为什么对于经<span class="highlight-neon">俄罗斯联邦安全局（FSB）</span>认证的系统，必须通过密钥管理中心分发成对密钥。',
+        'block5.heading': '亲手试试对称加密',
+        'block5.intro': '在对称密码学模拟中，你可以：',
+        'action1': '<span><strong>选择要保护的数据类型</strong>——从商业秘密到受俄罗斯、美国和欧盟标准监管的信息</span>',
+        'action2': '<span>按照监管要求和兼容性<strong>为爱丽丝和鲍勃配置设备</strong></span>',
+        'action3': '<span><strong>选择密钥分发方式</strong>——从手动输入 PSK 到量子密钥分发</span>',
+        'action4': '<span><strong>观看通过 IKEv2/IPsec 协议建立安全信道</strong>的过程，全网密钥和成对密钥的逻辑各不相同</span>',
+        'action5': '<span><strong>运行受保护的流量</strong>，看看不同的密钥获取方式如何影响安全性</span>',
+        'action6': '<span><strong>观看伊芙的攻击</strong>——看她如何试图截获和解密消息，从而理解每种方法的弱点</span>',
+        'insight3.label': '游戏的主要收获：',
+        'insight3.text': '你会看到<span class="highlight">全网 PSK</span>（所有节点共用一个密钥）和<span class="highlight-symmetric">成对密钥</span>（每一对都有唯一的密钥）之间的根本区别。前一种方式适合基本的保护，但敏感数据需要后一种——明确划分区域、集中控制密钥，并为每条隧道使用唯一的密钥。',
+        'advanced.summary': '给好奇的人',
+        'advanced.compare.heading': 'AES 与“Kuznyechik”对比',
+        'advanced.compare.text': '这两种算法都是 128 位分组密码，但理念和监管背景不同：',
+        'table.param': '参数',
+        'table.row1.label': '起源国家',
+        'table.row1.west': '比利时/美国',
+        'table.row1.ru': '俄罗斯',
+        'table.row2.label': '采用年份',
+        'table.row3.label': '结构',
+        'table.row3.val': 'SP 网络',
+        'table.row4.label': '密钥长度',
+        'table.row4.west': '128、192、256 位',
+        'table.row4.ru': '256 位',
+        'table.row5.label': '分组大小',
+        'table.row5.val': '128 位',
+        'table.row6.label': '监管机构',
+        'table.row6.west': 'NIST（美国）',
+        'table.row7.label': '在俄罗斯的使用',
+        'table.row7.west': '国际系统、VPN、Wi-Fi（在不要求符合 152-FZ 的场合）',
+        'table.row7.ru': '公共部门、银行、关键基础设施、国家秘密保护系统',
+        'table.row8.label': '显著特点',
+        'table.row8.west': '公开竞赛、设计透明，大多数 CPU 支持硬件加速',
+        'table.row8.ru': '针对俄罗斯设备优化，经<span class="highlight-neon">FSB</span>认证的系统必须使用',
+        'advanced.keydist.heading': '密钥分发问题',
+        'advanced.keydist.p1': '对称密码学的主要问题是<strong>安全地交付密钥</strong>。如果你已经有一条可以安全发送密钥的信道，又何必加密？而如果信道不安全，又怎样发送密钥才不会被截获？',
+        'advanced.keydist.p2': '这个两难问题催生了一整个领域——<span class="highlight">密钥分发</span>。下面这些正是为了解决它而诞生的：',
+        'topic1.title': '公钥密码学',
+        'topic1.desc': '非对称密码学（RSA、ECC）解决了密钥分发问题，但比对称密码学慢',
+        'topic2.title': 'Diffie-Hellman 协议',
+        'topic2.desc': '让双方能够通过公开信道建立一个共享的秘密密钥',
+        'topic3.title': '量子密钥分发',
+        'topic3.desc': 'BB84 和 E91 协议在物理层面上解决了这个问题；用于要求最高安全性的系统',
+        'advanced.hybrid.heading': '混合系统',
+        'advanced.hybrid.text': '真实的系统几乎总是<strong>把对称密码学和非对称密码学结合起来</strong>使用：',
+        'hybrid.li1': '<strong>非对称部分</strong>：用于安全地交换对称密钥（慢，但解决了分发问题）',
+        'hybrid.li2': '<strong>对称部分</strong>：用于加密实际的数据（快速而高效）',
+        'advanced.hybrid.outro': 'SSL/TLS（网站安全）、PGP（电子邮件加密）和 Signal/WhatsApp（即时通讯）都是这样工作的。',
+        'advanced.attacks.heading': '针对对称密码的攻击',
+        'advanced.attacks.text': '即使是最强的算法，如果使用不当也会有弱点：',
+        'attacks.li1': '<strong>计时攻击</strong>：测量运算所需的时间',
+        'attacks.li2': '<strong>侧信道攻击</strong>：分析功耗或电磁辐射',
+        'attacks.li3': '<strong>实现攻击</strong>：利用软件或硬件中的错误',
+        'attacks.li4': '<strong>社会工程学</strong>：获取密钥最古老、也最有效的方法',
+        'advanced.future.heading': '对称密码学的未来',
+        'advanced.future.text': '随着量子计算机的发展，一些对称算法将面临威胁：',
+        'future.li1': '<strong>格罗弗算法</strong>把暴力搜索的复杂度从 2<sup>n</sup> 降到 2<sup>n/2</sup>',
+        'future.li2': '<strong>AES-256 和 Kuznyechik</strong> 仍然安全（2<sup>128</sup> 次运算依然遥不可及）',
+        'future.li3': '能够抵御量子攻击的<strong>后量子算法</strong>正在开发中',
+        'advanced.facts.heading': '趣闻',
+        'facts.li1': '第一次世界大战中，俄国军队曾使用凯撒密码——并经常被破解',
+        'facts.li2': '纳粹的对称密码机恩尼格玛（Enigma）被破解，靠的是波兰数学家和一台英国计算机',
+        'facts.li3': 'AES 是经过一场为期 5 年、有来自世界各地 15 种算法参加的竞赛选出的',
+        'facts.li4': 'AES-256 的密钥有 2<sup>256</sup> 种可能的取值——比可观测宇宙中的原子数还多',
+        'facts.li5': 'GOST 28147-89（“Magma”）在苏联和俄罗斯的银行系统中使用了 25 年以上',
+        'facts.li6': '“Kuznyechik”与 AES 的工作模式完全兼容，这简化了从西方标准的迁移',
+        'advanced.regulatory.heading': '俄罗斯的监管特点',
+        'advanced.regulatory.text': '在俄罗斯联邦，<span class="highlight-neon">联邦安全局（FSB）</span>是密码信息保护领域的授权监管机构。这意味着：',
+        'regulatory.li1': '所有用于保护国家秘密的加密算法都必须经过 FSB 认证',
+        'regulatory.li2': '加密设备（加密机）必须经过强制认证',
+        'regulatory.li3': '对于某些类别的信息（关键基础设施、政府机构中的个人数据），禁止使用未经 FSB 认证的算法',
+        'regulatory.li4': '密钥管理中心必须符合监管机构的要求',
+        'advanced.regulatory.outro': '正因如此，在游戏中选择“按俄罗斯要求保护”时，只能使用俄罗斯的算法和设备——这反映了现实中的监管要求。',
+        'insight4.label': '哲学时刻：',
+        'insight4.text': '对称密码学教给我们一个重要的原则：<span class="highlight-gold">概念越简单，系统越可靠</span>。一个密钥、两种运算——每天守护着数十亿笔交易。有时最优雅的方案恰恰最有力量。而在 AES 和“Kuznyechik”之间做选择，不只是一个技术决定，也是一个合规问题——对于俄罗斯国内的系统，规则由<span class="highlight-neon">俄罗斯联邦安全局（FSB）</span>制定。',
+        'actions.intro': '现在你理解了全网 PSK 与成对密钥的区别，以及为什么不同的任务需要不同的算法——从国际通用的 AES 到俄罗斯自己的“Kuznyechik”',
+        'actions.play': '🚀 启动对称密码学模拟',
+        'actions.back': '← 返回主题列表',
+        'actions.outro': '在模拟中，你会亲眼看到这些方法之间的区别，并理解为什么选择算法不只是技术决定，更是战略决定',
+        'footer.line1': '© 2025 Ludus Lab · 用简单的游戏理解复杂的事物',
+        'footer.line2': '本文是对相关原理的简化讲解。真实的系统使用更复杂的算法组合，并且必须符合监管要求，包括在俄罗斯使用的系统须符合<span class="highlight-neon">俄罗斯联邦安全局（FSB）</span>的要求。',
+      },
     };
+
+    // Labels inside the diagrams and tables (previously hard-coded in Russian)
+    Object.assign(I18N.ru, { 'scheme1.box.msg': 'ПРИВЕТ', 'scheme1.box.key': 'СЕКРЕТНЫЙ КЛЮЧ', 'tag.kuznyechik': 'КУЗНЕЧИК (ГОСТ РФ)', 'tag.magma': 'МАГМА (ГОСТ 28147-89)', 'scheme2.box.magma': 'ГОСТ 28147-89', 'scheme2.box.kuznyechik': 'ГОСТ Р 34.12-2015', 'table.head.ru': 'Кузнечик (ГОСТ Р 34.12-2015)', 'table.row6.ru': 'ФСБ России' });
+    Object.assign(I18N.en, { 'scheme1.box.msg': 'HELLO', 'scheme1.box.key': 'SECRET KEY', 'tag.kuznyechik': 'KUZNYECHIK (GOST)', 'tag.magma': 'MAGMA (GOST 28147-89)', 'scheme2.box.magma': 'GOST 28147-89', 'scheme2.box.kuznyechik': 'GOST R 34.12-2015', 'table.head.ru': 'Kuznyechik (GOST R 34.12-2015)', 'table.row6.ru': 'FSB of Russia' });
+    Object.assign(I18N.es, { 'scheme1.box.msg': 'HOLA', 'scheme1.box.key': 'CLAVE SECRETA', 'tag.kuznyechik': 'KUZNYECHIK (GOST)', 'tag.magma': 'MAGMA (GOST 28147-89)', 'scheme2.box.magma': 'GOST 28147-89', 'scheme2.box.kuznyechik': 'GOST R 34.12-2015', 'table.head.ru': 'Kuznyechik (GOST R 34.12-2015)', 'table.row6.ru': 'FSB de Rusia' });
+    Object.assign(I18N.zh, { 'scheme1.box.msg': '你好', 'scheme1.box.key': '秘密密钥', 'tag.kuznyechik': 'KUZNYECHIK（俄罗斯 GOST）', 'tag.magma': 'MAGMA（GOST 28147-89）', 'scheme2.box.magma': 'GOST 28147-89', 'scheme2.box.kuznyechik': 'GOST R 34.12-2015', 'table.head.ru': 'Kuznyechik（GOST R 34.12-2015）', 'table.row6.ru': '俄罗斯联邦安全局（FSB）' });
 
     function applyLanguage(lang) {
       if (!I18N[lang]) lang = 'ru';
       const dict = I18N[lang];
-      document.documentElement.lang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
       document.title = dict['meta.title'];
       const descTag = document.getElementById('pageDescription');
       if (descTag) descTag.setAttribute('content', dict['meta.description']);

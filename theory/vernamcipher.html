@@ -100,6 +100,8 @@
       padding: 40px 20px;
       flex: 1 0 auto;
     }
+    /* body is a flex column and the auto margins make the container shrink-to-fit its content: pin it to the viewport width */
+    .theory-container { width: 100%; box-sizing: border-box; }
 
     /* Заголовок статьи */
     .article-header {
@@ -559,6 +561,7 @@
     <button class="lang-btn" data-lang-btn="ru">RU</button>
     <button class="lang-btn" data-lang-btn="en">EN</button>
     <button class="lang-btn" data-lang-btn="es">ES</button>
+    <button class="lang-btn" data-lang-btn="zh">中文</button>
   </div>
 
   <!-- Навигация (аналог первой страницы) -->
@@ -1047,12 +1050,97 @@
         'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
         'footer.line2': 'El cifrado de Vernam es un ideal teórico. Los sistemas reales usan un compromiso entre seguridad y practicidad.',
       },
+      zh: {
+        'meta.title': '维尔南密码：理论 | Ludus Lab',
+        'meta.description': '维尔南密码（异或密码、一次性密码本）——唯一在理论上不可破译的密码。按位加法如何工作、完美保密的条件，以及它为什么是密码学的一次突破。',
+        'nav.home': '首页',
+        'nav.play': '开始游戏',
+        'article.category': '密码学基础 · 完美保密',
+        'article.title': '维尔南密码',
+        'article.subtitle': '唯一在理论上不可破译的密码。</br>按位异或加密、一次性密码本，</br>以及它为什么至今仍是保密的黄金标准。',
+        'meta.readtime': '⏱️ 阅读约 5 分钟',
+        'meta.level': '📊 进阶级',
+        'meta.era': '🗝️ 1917 年（吉尔伯特·维尔南）',
+        'block1.heading': '我们为什么需要它？',
+        'block1.p1': '每一种古典密码（在现代密码系统兴起之前）都有一个弱点：它依赖<span class="highlight">确定性的算法</span>和重复的密钥。统计分析（卡西斯基方法、重合指数）迟早会揭示出消息。',
+        'block1.p2': '从根本上克服这一弱点的尝试，就是<span class="highlight">维尔南密码</span>：加密建立在消息与密钥序列的按位组合之上。但真正重要的不是变换本身，而是密钥的性质。完美保密（绝对保密）只在这种方案的一个特例中才能实现——<span class="highlight">一次性密码本</span>：密钥真正随机、长度不小于消息、由相互独立的元素组成、严格保密，并且只使用一次。如果所有这些条件都满足，就无法从密文推断出原始消息：对攻击者来说，每一种可能的明文看起来都同样可能。',
+        'block1.p3': '1949 年，克劳德·香农从数学上证明了</br><span class="highlight">一次性密码本</span>——采用理想密钥的维尔南密码——的绝对安全性。据推测，这种方法用于关键的军事或外交通信，那里需要绝对的、可证明的安全性</br>（包括抵御量子计算机）。',
+        'block2.heading': '它是如何工作的？',
+        'block2.intro': '这种密码的核心是一个简单而巧妙的运算：<span class="highlight">异或（XOR）</span>。消息和密钥都表示为比特串，消息的每一位都按照异或规则与密钥中对应的位组合。',
+        'truth.col1': '消息比特（P）',
+        'truth.col2': '密钥比特（K）',
+        'truth.col3': '密文（C = P ⊕ K）',
+        'step1.title': '转换为比特',
+        'step1.text': '消息（文本）通过某种编码转换为二进制序列：在维尔南密码诞生的年代，标准是<span class="highlight">博多码</span>（每个字符 5 位）。游戏中还可以选择 ASCII 和 UTF-8：要加密中文（或俄文），请选择 UTF-8——博多码和 ASCII 只能表示拉丁字母。',
+        'step2.title': '生成理想的密钥',
+        'step2.text': '生成一个随机比特串，长度与消息<span class="highlight">相同</span>。每一位都真正随机（0 或 1 的概率各为 ½）。密钥只有发送方和接收方知道，并且<strong>只使用一次</strong>。',
+        'step3.title': '加密（异或）',
+        'step3.text': '<code>C = P ⊕ K</code>——按模 2 逐位相加。得到的密文可以通过公开信道发送：没有密钥，它看起来就像随机噪声。',
+        'step3.example': '<strong>例如：</strong>消息 <code>101</code> ⊕ 密钥 <code>011</code> = 密文 <code>110</code>。',
+        'step4.title': '解密',
+        'step4.text': '持有同一个密钥的鲍勃把密文与密钥做异或：<code>P = C ⊕ K</code>。由于 <code>(P ⊕ K) ⊕ K = P</code>，原始消息被毫无损失地恢复出来。',
+        'diagram.title': '维尔南密码的数学',
+        'diagram.encrypt.title': '🔐 加密',
+        'diagram.encrypt.example': '<strong>例如（ASCII）：</strong><br>消息 <code>H</code> = 72 = <code>01001000</code><br>密钥（前 8 位）= <code>10110101</code><br>C = <code>11111101</code> = 253（不可打印字符）',
+        'diagram.decrypt.title': '🔓 解密',
+        'diagram.decrypt.example': '<strong>例如：</strong><br>C = <code>11111101</code> ⊕ K = <code>10110101</code><br>= <code>01001000</code> → <code>H</code>',
+        'diagram.final.title': '为什么它不可破译？',
+        'diagram.final.desc': '对密码分析者来说，密文中<strong>不包含任何</strong>关于原始消息的信息。只要选取合适的密钥，就能得到任何可能的明文。由于每个密钥的可能性都相同，攻击者无法区分真实的消息和虚假的消息。',
+        'diagram.final.param': '密钥 = 消息长度 · 随机性 · 仅用一次',
+        'diagram.note': '* 在交互式游戏中，你可以选择编码、生成随机密钥，并逐步或即时地观看异或运算。',
+        'insight.label': '关键结论：',
+        'insight.text': '完美的保密以完美保密的密钥为代价',
+        'insight.rest': '实际上，难点在于生成真正随机的密钥并安全地交付它们。因此一次性密码本只用于特别关键的通信，而日常的密码学依靠的是兼顾实用的折中算法（Kuznyechik、Magma、AES、ChaCha20）。',
+        'block3.heading': '现在——真正的魔法',
+        'block3.intro': '在交互式模拟中，你<span class="highlight">实际上会做什么</span>？',
+        'action1': '你将<strong>选择编码</strong>（博多码、ASCII 7/8、UTF-8）——游戏会动态更新字符表和比特表示。要输入中文，请选择 UTF-8',
+        'action2': '你将<strong>输入一条消息</strong>，并看到它被逐位拆解。不受支持的字符会以警告标出',
+        'action3': '你将<strong>生成一个随机密钥</strong>（当然是伪随机的）</br>，长度按需选择（或与消息等长——真正的一次性密码本）',
+        'action4': '你将<strong>加密消息</strong>——可以逐步进行，看清每一位的异或，也可以即时完成，并完整可视化',
+        'action5': '你将通过动画信道<strong>发送密钥和密文</strong>：密钥走安全线路（金色数据包），密文走公开线路（蓝色数据包）',
+        'action6': '你将在鲍勃一方<strong>解密消息</strong>，再次进行异或，并选择反向转换所用的编码',
+        'action7': '你将<strong>看到最终对比</strong>——原始消息、密钥（HEX）、密文和解密后的文本。两者一致即证明传输成功',
+        'block3.outro': '游戏完整地展示了<span class="highlight">完美保密的原理</span>：你会亲眼看到，没有密钥时密文就像随机噪声，而有了密钥，它立刻变回原始消息。',
+        'advanced.summary': '给好奇的人',
+        'advanced.history.heading': '历史背景',
+        'advanced.history.text': '1917 年，AT&amp;T 的工程师<strong>吉尔伯特·维尔南</strong>（Gilbert Vernam）为一种密码申请了专利：把电报纸带（5 位博多码）与打孔的密钥纸带做异或。后来，<strong>约瑟夫·莫博涅</strong>（Joseph Mauborgne）提出使用随机密钥；1949 年，<strong>克劳德·香农</strong>发表了《保密系统的通信理论》，严格证明了一次性密码本是完全安全的密码。',
+        'advanced.why.heading': '为什么它没有被普遍使用？',
+        'advanced.why.intro': '有三个实际问题：',
+        'why1': '<strong>密钥长度：</strong>密钥必须至少和消息一样长。传输大量数据就需要巨大的密钥。',
+        'why2': '<strong>密钥分发：</strong>密钥必须通过安全信道送到接收方手中。',
+        'why3': '<strong>只能使用一次：</strong>重复使用密钥会破坏安全性——两段密文可以放在一起分析（C1⊕C2 = P1⊕P2）。',
+        'advanced.topics.heading': '进一步学习的主题',
+        'topic1.title': '量子密钥分发（QKD）',
+        'topic1.desc': '量子物理如何解决为一次性密码本安全传输密钥的问题。',
+        'topic2.title': '真随机数发生器',
+        'topic2.desc': '基于热噪声、放射性衰变或量子效应的硬件随机数发生器。',
+        'topic3.title': '密钥重用攻击',
+        'topic3.desc': '如果一个密钥被使用了两次，密码分析者如何仅凭密文恢复消息（C1⊕C2 = P1⊕P2）。',
+        'topic4.title': '现代流密码',
+        'topic4.desc': '维尔南的原理如何在 Salsa20、ChaCha20 和 AES-CTR 中延续（生成伪随机密钥流）。',
+        'topic5.title': '香农定理',
+        'topic5.desc': '完美保密的严格数学证明，表明密钥的熵必须至少与消息的熵一样大：H(K) ≥ H(M)。',
+        'topic6.title': '密钥分发问题',
+        'topic6.desc': '为什么安全地交付长随机密钥仍然是一次性密码本在实际中的主要限制。',
+        'advanced.refs.heading': '实际应用与相关记载',
+        'advanced.refs.intro': '维尔南密码在以下文献中有所提及：',
+        'ref1': '苏联情报机构对一次性密码材料的使用。</br>来源：克里斯托弗·安德鲁、瓦西里·米特罗欣，《米特罗欣档案》',
+        'ref2': '密码的历史与一次性方案的发展。</br>来源：A. A. 巴巴什、G. P. 尚金，《密码学史》',
+        'ref3': '一次性密码本在情报和外交中的实际使用。</br>来源：D. 卡恩，《破译者》',
+        'ref4': '苏联一次性密钥因重复使用而被攻破。</br>来源：NSA，VENONA',
+        'actions.intro': '现在你已经理解了它的数学基础，正是亲眼看看维尔南密码如何运作的好时机——一位一位地、直观地、互动地！',
+        'actions.play': '▶ 进入游戏',
+        'actions.back': '← 返回实验室',
+        'actions.outro': '在模拟中，你可以选择编码、生成随机密钥、逐步加密消息，并观看数据传输的动画。',
+        'footer.line1': '© 2025 Ludus Lab · 用简单的游戏理解复杂的事物',
+        'footer.line2': '维尔南密码是一种理论上的理想。真实的系统在安全性和实用性之间折中。',
+      },
     };
 
     function applyLanguage(lang) {
       if (!I18N[lang]) lang = 'ru';
       const dict = I18N[lang];
-      document.documentElement.lang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
       document.title = dict['meta.title'];
       const descTag = document.getElementById('pageDescription');
       if (descTag) descTag.setAttribute('content', dict['meta.description']);

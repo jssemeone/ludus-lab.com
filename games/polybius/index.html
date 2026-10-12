@@ -1320,6 +1320,7 @@ text-shadow: 0 0 8px rgba(0, 162, 255, 0.5);
   <button class="lang-btn" data-lang-btn="ru">RU</button>
   <button class="lang-btn" data-lang-btn="en">EN</button>
   <button class="lang-btn" data-lang-btn="es">ES</button>
+  <button class="lang-btn" data-lang-btn="zh">中文</button>
 </div>
 <div class="container">
 <header>
@@ -1748,6 +1749,84 @@ const I18N = {
     'modal.success.title': '¡Éxito!', 'modal.success.msg': '¡El mensaje se descifró correctamente!',
     'modal.mismatch.title': '¡Error!', 'modal.mismatch.msg': '¡El mensaje no coincide!',
   },
+  zh: {
+    'meta.title': '波利比奥斯方阵——密码表',
+    'game.title': '波利比奥斯方阵',
+    'game.subtitle': '坐标加密 · 古代密码学',
+    'protocol.toggle': '这个密码是如何工作的？',
+    'protocol.intro': '<span class="highlight">波利比奥斯方阵</span>是最古老的加密方法之一，由古希腊历史学家波利比奥斯在公元前 2 世纪发明。每个字母都被替换成一对数字——它在表格中的坐标。',
+    'protocol.step1.title': '构造方阵',
+    'protocol.step1.desc': '字母表中的字母被排列在一张方形表格中。俄文字母表使用 6×6 的表格（36 个格子，容纳 33 个字母 + Ё）；英文使用 5×5（字母 I 和 J 共用一格）。行和列从 1 开始编号。方阵只能容纳字母表，所以汉字无法这样加密——请用俄文或英文字母输入消息。',
+    'protocol.step2.title': '输入消息',
+    'protocol.step2.desc': '爱丽丝输入原始消息。每个字符都会对照所选字母表进行检查。大小写无关——所有字母都会转换为大写。空格和标点符号保留，不加密。',
+    'protocol.step3.title': '加密（逐步进行）',
+    'protocol.step3.intro': '对消息中的每个字母：',
+    'protocol.step3.list': '<li>在波利比奥斯表中找到这个字母</li><li>确定行号（第一个坐标）</li><li>确定列号（第二个坐标）</li><li>把这对数字写下作为密文</li>',
+    'protocol.step3.example': '<strong>例如：</strong>在俄文方阵中，字母“А”位于第 1 行第 1 列 → 密文“11”。字母“Б”→“12”。',
+    'protocol.step4.title': '数据传输',
+    'protocol.step4.desc': '密文通过公开信道传输。不知道波利比奥斯表的截获者只能看到一串数字。为了加强保护，可以使用字母排列保密的表格。',
+    'protocol.step5.title': '解密',
+    'protocol.step5.intro': '鲍勃使用同一张波利比奥斯表：',
+    'protocol.step5.list': '<li>读出一对数字</li><li>第一个数字是行号</li><li>第二个数字是列号</li><li>找到交叉处的字母</li>',
+    'protocol.step5.example': '<strong>例如：</strong>密文“23”→ 第 2 行第 3 列 → 字母“И”（俄文字母表中）。',
+    'protocol.step6.title': '检查结果',
+    'protocol.step6.desc': '解密后，系统把得到的文本与原文进行比较。如果一致，传输就成功了。表格上的高亮显示有助于跟踪过程的每一步。',
+    'protocol.legend': '<strong>颜色说明：</strong><span style="color:#00ff80;">●</span> 明文，<span style="color:#00a2ff;">●</span> 密文',
+    'stage.input': '输入',
+    'stage.encrypt': '加密',
+    'stage.transmit': '传输',
+    'stage.decrypt': '解密',
+    'stage1.heading': '爱丽丝：消息',
+    'message.placeholder': '输入文本（俄文或英文字母）……',
+    'alphabet.chooseLabel': '选择字母表：',
+    'alphabet.ru': '俄文（А-Я、Ё）',
+    'alphabet.en': '英文（A-Z）',
+    'hint.ru': '只能输入俄文字母（不区分大小写）；汉字和数字不会被加密',
+    'hint.en': '只能输入英文字母（不区分大小写）；汉字和数字不会被加密',
+    'btn.next': '下一步',
+    'btn.nextStage': '下一阶段',
+    'btn.autopilot': '自动演示',
+    'btn.autopilotStop': '停止',
+    'btn.send': '发送密文',
+    'btn.finish': '完成',
+    'btn.newTransmission': '新的传输',
+    'legend.plain': '明文',
+    'legend.cipher': '密文',
+    'coord.row': '行',
+    'coord.col': '列',
+    'viz.char': '字符',
+    'viz.position': '位置',
+    'viz.coords': '坐标',
+    'viz.cipher': '密文',
+    'viz.original': '原文',
+    'result.ready': '已完成',
+    'result.decrypted': '已解密',
+    'table.heading': '波利比奥斯表',
+    'table.standard': '标准 {size}×{size}',
+    'char.alice': '爱丽丝',
+    'char.bob': '鲍勃',
+    'status.ready': '就绪',
+    'status.waiting': '等待中',
+    'status.sending': '正在发送数据……',
+    'status.waitingDots': '等待中……',
+    'status.received': '已收到！',
+    'route.cipher': '密文：公开信道',
+    'final.heading': '传输结果',
+    'final.table': '表格',
+    'final.original': '原始消息',
+    'final.decrypted': '解密结果',
+    'nav.theory': '阅读理论',
+    'nav.home': '返回实验室',
+    'modal.defaultTitle': '错误',
+    'modal.defaultMsg': '消息内容',
+    'modal.okBtn': '确定',
+    'modal.error.title': '错误',
+    'modal.error.noMessage': '请输入消息！（俄文或英文字母）',
+    'modal.success.title': '成功！',
+    'modal.success.msg': '消息已正确解密！',
+    'modal.mismatch.title': '错误！',
+    'modal.mismatch.msg': '消息不一致！',
+  },
 };
 
 function t(key, vars) {
@@ -1760,7 +1839,7 @@ function t(key, vars) {
 function applyLanguage(lang) {
   if (!I18N[lang]) lang = 'ru';
   state.lang = lang;
-  document.documentElement.lang = lang;
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
   document.title = t('meta.title');
   document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n')); });
   document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.getAttribute('data-i18n-title')); });

@@ -100,6 +100,8 @@
       padding: 40px 20px;
       flex: 1 0 auto;
     }
+    /* body is a flex column and the auto margins make the container shrink-to-fit its content: pin it to the viewport width */
+    .theory-container { width: 100%; box-sizing: border-box; }
 
     /* Заголовок статьи */
     .article-header {
@@ -541,6 +543,7 @@
     <button class="lang-btn" data-lang-btn="ru">RU</button>
     <button class="lang-btn" data-lang-btn="en">EN</button>
     <button class="lang-btn" data-lang-btn="es">ES</button>
+    <button class="lang-btn" data-lang-btn="zh">中文</button>
   </div>
 
   <!-- Навигация -->
@@ -635,7 +638,7 @@
             <div class="diagram-example" data-i18n="diagram.encrypt.example">
               <strong>Пример:</strong><br>Шифруем букву <code>П</code> со сдвигом <code>3</code><br>
               П = 16-я буква (0-индекс), K = 3<br>
-              (16 + 3) mod 33 = 19 → <code>С</code>
+              (16 + 3) mod 33 = 19 → <code>Т</code>
             </div>
           </div>
 
@@ -646,8 +649,8 @@
             </div>
             <div class="diagram-formula">P = (C − K + N) mod N</div>
             <div class="diagram-example" data-i18n="diagram.decrypt.example">
-              <strong>Пример:</strong><br>Расшифровываем <code>С</code> со сдвигом <code>3</code><br>
-              С = 19, K = 3, N = 33<br>
+              <strong>Пример:</strong><br>Расшифровываем <code>Т</code> со сдвигом <code>3</code><br>
+              Т = 19, K = 3, N = 33<br>
               (19 − 3 + 33) mod 33 = 16 → <code>П</code>
             </div>
           </div>
@@ -838,9 +841,9 @@
         'step3.text': 'Для расшифровки получатель вычитает ключ: <span class="highlight">старая_позиция = (новая_позиция - ключ + N) mod N</span>.',
         'diagram.title': 'Математика шифра Цезаря',
         'diagram.encrypt.title': '🔐 Шифрование',
-        'diagram.encrypt.example': '<strong>Пример:</strong><br>Шифруем букву <code>П</code> со сдвигом <code>3</code><br>П = 16-я буква (0-индекс), K = 3<br>(16 + 3) mod 33 = 19 → <code>С</code>',
+        'diagram.encrypt.example': '<strong>Пример:</strong><br>Шифруем букву <code>П</code> со сдвигом <code>3</code><br>П = 16-я буква (0-индекс), K = 3<br>(16 + 3) mod 33 = 19 → <code>Т</code>',
         'diagram.decrypt.title': '🔓 Расшифровка',
-        'diagram.decrypt.example': '<strong>Пример:</strong><br>Расшифровываем <code>С</code> со сдвигом <code>3</code><br>С = 19, K = 3, N = 33<br>(19 − 3 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.decrypt.example': '<strong>Пример:</strong><br>Расшифровываем <code>Т</code> со сдвигом <code>3</code><br>Т = 19, K = 3, N = 33<br>(19 − 3 + 33) mod 33 = 16 → <code>П</code>',
         'diagram.final.title': 'Почему это работает?',
         'diagram.final.desc': 'Операция <code>mod N</code> обеспечивает «зацикливание» алфавита: после последней буквы снова идёт первая. Это простое, но мощное математическое свойство лежит в основе многих современных шифров.',
         'diagram.final.param': 'Ключ может быть от 1 до N−1',
@@ -911,9 +914,9 @@
         'step3.text': 'To decrypt, the receiver subtracts the key: <span class="highlight">old_position = (new_position - key + N) mod N</span>.',
         'diagram.title': 'The math behind the Caesar cipher',
         'diagram.encrypt.title': '🔐 Encryption',
-        'diagram.encrypt.example': '<strong>Example:</strong><br>Encrypting the letter <code>П</code> with shift <code>3</code><br>П = 16th letter (0-indexed), K = 3<br>(16 + 3) mod 33 = 19 → <code>С</code>',
+        'diagram.encrypt.example': '<strong>Example:</strong><br>Encrypting the letter <code>П</code> with shift <code>3</code><br>П = 16th letter (0-indexed), K = 3<br>(16 + 3) mod 33 = 19 → <code>Т</code>',
         'diagram.decrypt.title': '🔓 Decryption',
-        'diagram.decrypt.example': '<strong>Example:</strong><br>Decrypting <code>С</code> with shift <code>3</code><br>С = 19, K = 3, N = 33<br>(19 − 3 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.decrypt.example': '<strong>Example:</strong><br>Decrypting <code>Т</code> with shift <code>3</code><br>Т = 19, K = 3, N = 33<br>(19 − 3 + 33) mod 33 = 16 → <code>П</code>',
         'diagram.final.title': 'Why does this work?',
         'diagram.final.desc': 'The <code>mod N</code> operation makes the alphabet "wrap around": after the last letter comes the first one again. This simple but powerful mathematical property underlies many modern ciphers.',
         'diagram.final.param': 'The key can be anywhere from 1 to N−1',
@@ -984,9 +987,9 @@
         'step3.text': 'Para descifrar, el receptor resta la clave: <span class="highlight">posición_anterior = (nueva_posición - clave + N) mod N</span>.',
         'diagram.title': 'La matemática del cifrado César',
         'diagram.encrypt.title': '🔐 Cifrado',
-        'diagram.encrypt.example': '<strong>Ejemplo:</strong><br>Cifrando la letra <code>П</code> con desplazamiento <code>3</code><br>П = letra 16 (índice 0), K = 3<br>(16 + 3) mod 33 = 19 → <code>С</code>',
+        'diagram.encrypt.example': '<strong>Ejemplo:</strong><br>Cifrando la letra <code>П</code> con desplazamiento <code>3</code><br>П = letra 16 (índice 0), K = 3<br>(16 + 3) mod 33 = 19 → <code>Т</code>',
         'diagram.decrypt.title': '🔓 Descifrado',
-        'diagram.decrypt.example': '<strong>Ejemplo:</strong><br>Descifrando <code>С</code> con desplazamiento <code>3</code><br>С = 19, K = 3, N = 33<br>(19 − 3 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.decrypt.example': '<strong>Ejemplo:</strong><br>Descifrando <code>Т</code> con desplazamiento <code>3</code><br>Т = 19, K = 3, N = 33<br>(19 − 3 + 33) mod 33 = 16 → <code>П</code>',
         'diagram.final.title': '¿Por qué funciona esto?',
         'diagram.final.desc': 'La operación <code>mod N</code> hace que el alfabeto se «cierre en bucle»: después de la última letra vuelve a empezar la primera. Esta propiedad matemática simple pero poderosa es la base de muchos cifrados modernos.',
         'diagram.final.param': 'La clave puede ir de 1 a N−1',
@@ -1031,12 +1034,95 @@
         'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
         'footer.line2': 'Este artículo es una explicación simplificada para transmitir los principios. Los sistemas criptográficos reales usan algoritmos mucho más complejos y deben cumplir con los requisitos regulatorios, incluidos los del FSB para los sistemas utilizados en Rusia.',
       },
+      zh: {
+        'meta.title': '凯撒密码：理论 | Ludus Lab',
+        'meta.description': '讲解历史上最古老的密码：移位是如何工作的，为什么它很容易被破解，以及它如何成为密码学的基础。',
+        'nav.home': '首页',
+        'nav.play': '开始游戏',
+        'article.category': '密码学基础',
+        'article.title': '凯撒密码',
+        'article.subtitle': '最简单的移位密码，两千年前由尤利乌斯·凯撒使用。密码学的历史就从这里开始。',
+        'meta.readtime': '⏱️ 阅读约 4 分钟',
+        'meta.level': '📊 入门级',
+        'meta.era': '🗝️ 公元前 1 世纪',
+        'block1.heading': '为什么要学习凯撒密码？',
+        'block1.p1': '想象你是古罗马的一位将军。你要给部队送去一道命令，但信使可能会被敌人抓住。怎样才能保证即使消息被截获，除了你的将领之外谁也看不懂？',
+        'block1.p2': '这正是尤利乌斯·凯撒在 2000 多年前解决的问题。他的方法——<span class="highlight">把字母表中的字母简单地移位</span>——成为迈向现代密码学的第一步。',
+        'block1.p3': '如今凯撒密码已不用于保护真实数据——它几秒钟就能被破解。但它仍然是<span class="highlight">一个完美的教学工具</span>，因为它清楚地展示了一些基本原理：',
+        'block1.li1': '<strong>密钥</strong>——只有发送方和接收方知道的秘密参数',
+        'block1.li2': '<strong>算法</strong>——变换数据所依据的规则',
+        'block1.li3': '<strong>可逆性</strong>——能够恢复原始消息',
+        'block1.li4': '<strong>模运算</strong>——大多数密码的数学基础',
+        'block2.heading': '凯撒密码是如何工作的？',
+        'block2.intro': '这个想法简单得惊人：消息中的每个字母都被替换成字母表中相隔固定位置的另一个字母。这个数叫作<span class="highlight">移位量</span>或<span class="highlight">密钥</span>。',
+        'step1.title': '分配位置',
+        'step1.text': '字母表中的每个字母都有一个数字位置：А=0、Б=1、В=2……Я=32（俄文字母表）。',
+        'step2.title': '进行移位',
+        'step2.text': '把密钥加到每个字母的位置上：<span class="highlight">新位置 = (原位置 + 密钥) mod N</span>，其中 N 是字母表的大小。',
+        'step3.title': '逆向变换',
+        'step3.text': '解密时，接收方减去密钥：<span class="highlight">原位置 = (新位置 - 密钥 + N) mod N</span>。',
+        'diagram.title': '凯撒密码背后的数学',
+        'diagram.encrypt.title': '🔐 加密',
+        'diagram.encrypt.example': '<strong>例如：</strong><br>用移位量 <code>3</code> 加密字母 <code>П</code><br>П = 第 16 个字母（从 0 开始计数），K = 3<br>(16 + 3) mod 33 = 19 → <code>Т</code>',
+        'diagram.decrypt.title': '🔓 解密',
+        'diagram.decrypt.example': '<strong>例如：</strong><br>用移位量 <code>3</code> 解密 <code>Т</code><br>Т = 19，K = 3，N = 33<br>(19 − 3 + 33) mod 33 = 16 → <code>П</code>',
+        'diagram.final.title': '为什么这样可行？',
+        'diagram.final.desc': '<code>mod N</code> 运算让字母表“首尾相接”：最后一个字母之后又回到第一个字母。这个简单而强大的数学性质是许多现代密码的基础。',
+        'diagram.final.param': '密钥可以取 1 到 N−1 之间的任意值',
+        'diagram.note': '* 在游戏中，密码盘会转动，直观地显示明文字母如何对应到密文字母。',
+        'insight.label': '关键结论：',
+        'insight.text': '凯撒密码的魔力在于<span class="highlight">模运算</span>。“mod N”运算让字母表“首尾相接”：最后一个字母之后又回到第一个字母。这是一个简单而强大的原理，现代密码算法正是以它为基础。',
+        'block3.heading': '亲手试试这个密码',
+        'block3.intro': '在交互式模拟“凯撒密码”中，你不只是阅读理论——而是亲自成为密码学家：',
+        'action1': '你将<strong>输入自己的消息</strong>——最多 50 个字符，可用俄文或英文字母（汉字无法用凯撒密码加密：它没有可供移位的字母表）',
+        'action2': '你将<strong>选择加密密钥</strong>——向任一方向移位 0 到 90 个位置',
+        'action3': '你将<strong>看到密码盘的运转</strong>——两个转动的圆环展示明文如何对应到密文',
+        'action4': '你将<strong>逐步执行加密</strong>——一个字符一个字符地进行，每一次变换都可视化',
+        'action5': '你将<strong>模拟数据传输</strong>——密钥和密文通过不同的信道从爱丽丝传到鲍勃',
+        'action6': '你将<strong>完成解密</strong>——鲍勃进行反向移位，恢复出原始消息',
+        'block3.outro': '你会看到<span class="highlight">绿色圆盘</span>（明文）和<span class="highlight">蓝色圆盘</span>（密文）转动，生动地展示加密与解密之间的对称性。',
+        'insight2.label': '主要收获：',
+        'insight2.text': '游戏展示的不只是密码的数学，还有<span class="highlight">安全的传输协议</span>：先发送密钥，再发送加密后的消息。这是所有现代数据保护系统背后的一个基本思想。',
+        'advanced.summary': '给好奇的人',
+        'advanced.history.heading': '历史背景',
+        'advanced.history.text': '尤利乌斯·凯撒使用的密码由罗马历史学家苏埃托尼乌斯记载下来。凯撒把字母移动 3 个位置，但这个原理对任何密钥都适用。在很长一段时间里，这种方法被认为足够安全，直到阿拉伯学者发明了频率分析（9 世纪）。',
+        'advanced.weak.heading': '为什么凯撒密码很弱？',
+        'advanced.weak.intro': '尽管有重要的历史意义，凯撒密码却很容易被破解：',
+        'weak1': '<strong>密钥空间小</strong>——只有 N−1 种可能的移位（俄文字母表为 32 种）',
+        'weak2': '<strong>频率分析</strong>——在一种语言中，各个字母出现的频率不同；把密文的频率与参考频率进行比较，就能恢复出密钥',
+        'weak3': '<strong>暴力攻击</strong>——手工尝试全部 32 种可能，只需几分钟',
+        'advanced.topics.heading': '进一步学习的主题',
+        'advanced.topics.intro': '如果你想更深入地了解密码学，这里有一些关键主题：',
+        'topic1.title': '频率分析',
+        'topic1.desc': '语言统计如何帮助破解密码：字母、双字母组合和三字母组合的频率',
+        'topic2.title': '维吉尼亚密码',
+        'topic2.desc': '一种被认为三个世纪无法破解的多表代换密码',
+        'topic3.title': '一次性密码本',
+        'topic3.desc': '唯一在理论上不可破译的密码：密钥与消息等长，且只使用一次',
+        'topic4.title': '现代分组密码',
+        'topic4.desc': '简单的代换如何演变成 AES、俄罗斯“Kuznyechik”标准和其他算法',
+        'topic5.title': '用 Python 进行密码分析',
+        'topic5.desc': '用于频率分析和攻击凯撒密码的实用脚本',
+        'topic6.title': '俄罗斯标准',
+        'topic6.desc': 'GOST 28147-89“Magma”、GOST R 34.12-2015“Kuznyechik”以及“Streebog”哈希函数',
+        'advanced.facts.heading': '趣闻',
+        'fact1': '第一次世界大战期间，俄国军队曾使用凯撒密码——并经常被敌人破解',
+        'fact2': '希伯来语中有一种叫作“Atbash”的密码传统——把字母表的第一个字母与最后一个互换，第二个与倒数第二个互换，以此类推',
+        'fact3': 'ROT13 是移位量为 13 的凯撒密码变体，在网上常用来隐藏剧透；它的特别之处在于加密和解密是同一个操作',
+        'fact4': '游戏使用扩展字母表（西里尔字母 + 拉丁字母 + 数字 + 符号），把密钥空间扩大到 90 多种',
+        'actions.intro': '现在你已经了解了凯撒密码的数学和历史，正是亲手试一试的好时机！',
+        'actions.play': '▶ 启动模拟',
+        'actions.back': '← 返回主题列表',
+        'actions.outro': '在交互式模拟中，你可以加密自己的消息，并观察过程中的每一步',
+        'footer.line1': '© 2025 Ludus Lab · 用简单的游戏理解复杂的事物',
+        'footer.line2': '本文是一个简化的讲解，旨在传达基本原理。真实的密码系统使用复杂得多的算法，并且必须符合监管要求，包括在俄罗斯使用的系统须符合 FSB 的要求。',
+      },
     };
 
     function applyLanguage(lang) {
       if (!I18N[lang]) lang = 'ru';
       const dict = I18N[lang];
-      document.documentElement.lang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
       document.title = dict['meta.title'];
       const descTag = document.getElementById('pageDescription');
       if (descTag) descTag.setAttribute('content', dict['meta.description']);

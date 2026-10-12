@@ -1345,6 +1345,7 @@ color: #ff6b6b;
   <button class="lang-btn" data-lang-btn="ru">RU</button>
   <button class="lang-btn" data-lang-btn="en">EN</button>
   <button class="lang-btn" data-lang-btn="es">ES</button>
+  <button class="lang-btn" data-lang-btn="zh">中文</button>
 </div>
 <div class="container">
 <header>
@@ -1796,6 +1797,90 @@ const I18N = {
     'modal.success.title': '¡Éxito!', 'modal.success.msg': '¡El mensaje se descifró correctamente!',
     'modal.mismatch.title': '¡Error!', 'modal.mismatch.msg': '¡El mensaje no coincide!',
   },
+  zh: {
+    'meta.title': '维吉尼亚密码——密码表',
+    'game.title': '维吉尼亚密码',
+    'game.subtitle': '维吉尼亚表 · 安全传输',
+    'protocol.toggle': '这个密码是如何工作的？',
+    'protocol.intro': '<span class="highlight">维吉尼亚密码</span>是一种经典的多表代换加密方法，它使用移位表和关键词来保护消息。',
+    'protocol.step1.title': '准备字母表',
+    'protocol.step1.desc': '游戏支持两种字母表：俄文（А-Я、Ё）和英文（A–Z）。所有字母会自动转换为大写。数字和标点符号不加密。汉字同样无法加密：维吉尼亚表是按字母表构造的，所以消息和关键词都请用俄文或英文字母输入。',
+    'protocol.step2.title': '输入消息',
+    'protocol.step2.desc': '爱丽丝输入原始消息。每个字符都会对照所选字母表进行检查，不符合的字符会被自动过滤掉。',
+    'protocol.step3.title': '设置密钥',
+    'protocol.step3.desc': '输入一个关键词——一串字母，它会在消息下方循环重复。密钥长度影响密码强度：密钥越长、越随机，密码就越难被破解。',
+    'protocol.step4.title': '加密（逐步进行）',
+    'protocol.step4.intro': '对消息中的每个字符：',
+    'protocol.step4.list': '<li>找到对应的密钥字母（密钥循环重复）</li><li>在维吉尼亚表中：行 = 密钥字母，列 = 消息字母</li><li>在交叉处找到加密后的字符</li><li>非字母字符原样保留</li>',
+    'protocol.step4.formula': '<strong>公式：</strong><code>C = (P + K) mod N</code>，其中 P 是明文位置，K 是密钥位置，N 是字母表的大小。',
+    'protocol.step5.title': '数据传输',
+    'protocol.step5.desc': '密钥通过安全信道传输，密文通过公开信道传输。即使密文被截获，没有密钥也无法恢复消息。',
+    'protocol.step6.title': '解密',
+    'protocol.step6.intro': '鲍勃使用同一个密钥和维吉尼亚表，按相反的顺序操作：',
+    'protocol.step6.list': '<li>行 = 密钥字母，找到的格子 = 密文字符</li><li>该格子所在的列就是原始字符</li>',
+    'protocol.step6.formula': '<strong>公式：</strong><code>P = (C − K + N) mod N</code>',
+    'protocol.step7.title': '检查结果',
+    'protocol.step7.desc': '解密后，系统把得到的文本与原文进行比较。如果一致，传输就成功了。表格上的高亮显示有助于跟踪过程的每一步。',
+    'protocol.legend': '<strong>颜色说明：</strong><span style="color:#00ff80;">●</span> 明文，<span style="color:#d4af37;">●</span> 密钥，<span style="color:#00a2ff;">●</span> 密文',
+    'stage.input': '输入',
+    'stage.key': '密钥',
+    'stage.encrypt': '加密',
+    'stage.transmit': '传输',
+    'stage.decrypt': '解密',
+    'stage1.heading': '爱丽丝：消息',
+    'message.placeholder': '输入文本（俄文或英文字母）……',
+    'alphabet.chooseLabel': '选择字母表：',
+    'alphabet.ru': '俄文（А-Я、Ё）',
+    'alphabet.en': '英文（A-Z）',
+    'hint.message.ru': '只能输入俄文字母（不区分大小写）；汉字、数字和标点不会被加密',
+    'hint.message.en': '只能输入英文字母（不区分大小写）；汉字、数字和标点不会被加密',
+    'hint.key.ru': '只能使用俄文字母',
+    'hint.key.en': '只能使用英文字母',
+    'btn.next': '下一步',
+    'btn.nextStage': '下一阶段',
+    'btn.autopilot': '自动演示',
+    'btn.autopilotStop': '停止',
+    'btn.sendBoth': '发送密钥和密文',
+    'btn.finish': '完成',
+    'btn.newTransmission': '新的传输',
+    'btn.setKey': '设置密钥',
+    'keySetup.heading': '密钥设置',
+    'keySetup.label': '关键词（仅限字母）',
+    'keySetup.placeholder': '输入密钥（与消息相同的字母表）……',
+    'legend.plain': '明文',
+    'legend.cipher': '密文',
+    'legend.key': '密钥',
+    'viz.char': '字符',
+    'viz.position': '位置',
+    'viz.cipher': '密文',
+    'viz.original': '原文',
+    'result.ready': '已完成',
+    'result.decrypted': '已解密',
+    'char.alice': '爱丽丝',
+    'char.bob': '鲍勃',
+    'status.ready': '就绪',
+    'status.waiting': '等待中',
+    'status.sending': '正在发送数据……',
+    'status.waitingDots': '等待中……',
+    'status.received': '已收到！',
+    'route.key': '密钥：安全途径',
+    'route.cipher': '密文：公开信道',
+    'final.heading': '传输结果',
+    'final.original': '原始消息',
+    'final.decrypted': '解密结果',
+    'nav.theory': '阅读理论',
+    'nav.home': '返回实验室',
+    'modal.defaultTitle': '错误',
+    'modal.defaultMsg': '消息内容',
+    'modal.okBtn': '确定',
+    'modal.error.title': '错误',
+    'modal.error.noMessage': '请输入消息！（俄文或英文字母）',
+    'modal.error.noKey': '请输入由字母组成的关键词！（与消息相同的字母表）',
+    'modal.success.title': '成功！',
+    'modal.success.msg': '消息已正确解密！',
+    'modal.mismatch.title': '错误！',
+    'modal.mismatch.msg': '消息不一致！',
+  },
 };
 
 function t(key, vars) {
@@ -1808,7 +1893,7 @@ function t(key, vars) {
 function applyLanguage(lang) {
   if (!I18N[lang]) lang = 'ru';
   state.lang = lang;
-  document.documentElement.lang = lang;
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
   document.title = t('meta.title');
   document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n')); });
   document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.getAttribute('data-i18n-title')); });

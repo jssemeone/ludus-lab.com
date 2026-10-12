@@ -100,6 +100,8 @@
       padding: 40px 20px;
       flex: 1 0 auto;
     }
+    /* body is a flex column and the auto margins make the container shrink-to-fit its content: pin it to the viewport width */
+    .theory-container { width: 100%; box-sizing: border-box; }
 
     /* Заголовок статьи */
     .article-header {
@@ -593,6 +595,7 @@
     <button class="lang-btn" data-lang-btn="ru">RU</button>
     <button class="lang-btn" data-lang-btn="en">EN</button>
     <button class="lang-btn" data-lang-btn="es">ES</button>
+    <button class="lang-btn" data-lang-btn="zh">中文</button>
   </div>
 
   <!-- Навигация -->
@@ -1163,12 +1166,111 @@
         'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
         'footer.line2': 'Este artículo es una explicación simplificada para transmitir los principios. Las implementaciones reales del protocolo pueden incluir detalles adicionales.',
       },
+      zh: {
+        'meta.title': 'BB84 协议：理论 | Ludus Lab',
+        'meta.description': '讲解第一个量子密钥分发协议：BB84 是如何工作的，为什么无法在不被发现的情况下窃听它。',
+        'nav.home': '首页',
+        'nav.play': '开始游戏',
+        'article.category': '量子密码学',
+        'article.title': 'BB84 协议',
+        'article.subtitle': '世界上第一个能生成完全随机、受量子物理定律保护的密钥的协议',
+        'meta.readtime': '⏱️ 阅读约 3 分钟',
+        'meta.level': '📊 中级',
+        'meta.era': '🔬 1984 年',
+        'block1.heading': '我们为什么需要它？',
+        'block1.p1': '想象你是<span class="highlight">爱丽丝</span>，想给<span class="highlight">鲍勃</span>发一条秘密消息。有一个窃听者——<span class="highlight">伊芙</span>——正试图偷听你们的对话。',
+        'block1.p2': '在经典密码学中，<span class="highlight">伊芙</span>可以悄无声息地复制你的所有消息。但如果有一种方法，能让任何窃听企图都<span class="highlight">立即被发现</span>，会怎么样？',
+        'block1.p3': '这正是 BB84 所做的。它的安全性由<span class="highlight">物理定律</span>保证。<span class="highlight">伊芙的窃听不只是有被抓住的风险——它必然会留下痕迹。</span>为什么？要截获量子信号，伊芙必须测量它，而在量子世界里，测量<span class="highlight">总会改变粒子的状态</span>。这些改变会表现为错误，爱丽丝和鲍勃很容易发现。',
+        'block2.heading': '它是如何工作的？',
+        'block2.intro': 'BB84 依靠量子力学的一个基本性质：<span class="highlight">你无法偷偷“看一眼”一个量子粒子</span>。我们一步一步来看：',
+        'step1.title': '量子传输',
+        'step1.text': '<span class="highlight">爱丽丝</span>制备光子（光的粒子），在每个光子中编码一个比特（0 或 1）。对每个比特，她从两种编码方式中随机选择一种——即<span class="highlight">“基”</span>（可以想象成“+”或“×”）。这就像选择用哪种字母表来写同一个字母。',
+        'step2.title': '盲测',
+        'step2.text1': '<span class="highlight">鲍勃</span>收到光子。对每个光子，他也<span class="highlight">随机选择</span>一个基来测量。',
+        'step2.text2': '<span class="highlight">如果他的基与爱丽丝的一致</span>——他一定会得到正确的比特（0 或 1）。',
+        'step2.text3': '<span class="highlight">如果基不一致</span>——测量结果是随机的（0 或 1 各占 50%），即使光子本身完美无缺。',
+        'step3.title': '通过公开信道筛选',
+        'step3.text1': '<span class="highlight">爱丽丝</span>和<span class="highlight">鲍勃</span>公开地（通过普通的、不受保护的信道！）公布每个光子用的是哪个基——<span class="highlight">但不公布比特本身</span>。',
+        'step3.text2': '<span class="highlight">用一致的基发送和测量的比特</span>被保留下来，它们成为秘密密钥的基础。',
+        'step3.text3': '<span class="highlight">基不一致的比特</span>被丢弃。',
+        'step4.title': '抓住间谍（QBER 就在这里登场！）',
+        'step4.text1': '现在<span class="highlight">爱丽丝</span>和<span class="highlight">鲍勃</span>有了一个由一致比特组成的初步密钥。为了检查它是否干净，他们公开比较这些比特中的一小部分随机样本。',
+        'step4.text2': '<span class="highlight">如果没有伊芙：</span>爱丽丝和鲍勃的检验比特几乎全部一致。百分之几的不一致来自设备的自然噪声（游戏中约为 2%）。',
+        'step4.text3': '<span class="highlight">如果伊芙窃听过：</span>要截获光子，她就必须测量它。和鲍勃一样，她只能盲猜基。有一半的时候她猜错了，<span class="highlight">不可逆地改变了光子的状态</span>，把一个被破坏的光子发给了鲍勃。如果伊芙截获每一个光子，大约 <span class="highlight">25% 的检验比特</span>会不一致；如果她只截获一部分，错误会相应地减少。',
+        'step5.text2': '然后是<span class="highlight">隐私放大</span>：把密钥压缩，例如用一组比特的异或来代替这组比特。如果伊芙知道其中一些比特，压缩之后她的知识就变成了随机噪声。',
+        'step5.text1': '检验比特已经公开，因此不再进入密钥。剩下的比特要经过<span class="highlight">纠错</span>：爱丽丝和鲍勃比较小块比特的奇偶性，在不公开比特本身的情况下修正少量的不一致。',
+        'step5.title': '清理密钥',
+        'diagram.title': 'BB84 协议的流程',
+        'diagram.stage1.title': '制备量子态',
+        'diagram.stage1.p1': '爱丽丝生成随机比特（0/1）',
+        'diagram.stage1.p2': '对每个比特，她随机选择一个基（+ 或 ×）',
+        'diagram.stage1.p3': '她通过量子信道发送光子',
+        'diagram.stage2.title': '测量量子态',
+        'diagram.stage2.p1': '鲍勃接收光子',
+        'diagram.stage2.p2': '对每个光子，他随机选择一个基',
+        'diagram.stage2.p3': '他用所选的基测量光子',
+        'diagram.stage3.title': '筛选密钥',
+        'diagram.stage3.p1': '爱丽丝和鲍勃通过公开信道讨论测量基',
+        'diagram.stage3.p2': '他们保留基一致的比特（约 50%）',
+        'diagram.stage3.p3': '<strong>这就形成了“原始”密钥</strong>',
+        'diagram.stage4.title': '检查窃听',
+        'diagram.stage4.p1': '他们比较原始密钥中的一部分比特',
+        'diagram.stage4.p2': '他们计算 QBER（误码率）',
+        'diagram.stage4.p3': '<strong>QBER ≥ 11%？密钥作废！</strong>',
+        'diagram.final.title': '秘密密钥',
+        'diagram.final.desc': '如果 QBER 低于 11%，剩下的比特经过纠错和隐私放大后，就成为对称加密用的秘密密钥',
+        'diagram.final.param': 'QBER < 11% → 密钥可以使用',
+        'diagram.note': '* QBER（量子误码率，Quantum Bit Error Rate）是检验比特中错误所占的比例。11% 的阈值是已被证明的 BB84 安全界限（Shor 和 Preskill，2000）：超过它，伊芙对密钥的了解可能多到压缩也无法消除。',
+        'insight.label': '关键结论：',
+        'insight.text': '高误码率（QBER）就是警报！',
+        'insight.rest': '它直接表明存在干扰。这时密钥作废，传输重新开始。如果错误保持在噪声范围内，剩下的比特在纠错和压缩之后就成为秘密密钥。这靠的不是数学上的复杂性，而是窃听而不留痕迹在<span class="highlight">物理上的不可能</span>。',
+        'block3.heading': '现在来看真正的魔法',
+        'block3.intro': '在模拟中，你<span class="highlight">实际上会做什么</span>？',
+        'action1': '你将<strong>作为爱丽丝生成光子</strong>——选择比特和基，制备量子态',
+        'action2': '你将<strong>从各个角度看到整个协议</strong>——实时观察鲍勃为每个光子选择了哪个基',
+        'action3': '你将<strong>决定伊芙是否在信道上</strong>：没有伊芙、伊芙截获每一个光子，或随机模式——你需要根据 QBER 判断伊芙是否存在、截获了多少',
+        'action4': '你将<strong>查看每个光子的历史</strong>——基是否一致、它是否被伊芙或信道噪声破坏，以及它是用于检验还是进入了最终密钥',
+        'action5': '你将<strong>检查密钥是否被窃听</strong>——爱丽丝和鲍勃公开比较 30 个随机比特，你会看到样本 QBER 和真实 QBER（上帝模式）并列显示',
+        'block3.outro': '在游戏中，你不只是阅读关于 BB84 的内容——而是从每一个角色<span class="highlight">亲身经历</span>它。你会看到选择测量基时的随机性如何变成一个窃听无法隐藏的密钥，并理解为什么量子密码学不是魔法，而是物理。',
+        'advanced.summary': '给好奇的人',
+        'advanced.history.heading': '历史背景',
+        'advanced.history.text': 'BB84 协议由<strong>查尔斯·贝内特和吉勒·布拉萨德于 1984 年</strong>提出（名字由此而来）。它是第一个可以实际实现的量子密钥分发协议，开启了密码学的新纪元。',
+        'advanced.why25.heading': '为什么正好是 25% 的错误？',
+        'advanced.why25.text1': '在理想的 BB84 协议中，如果伊芙截获每一个光子再转发出去，她猜中基的概率是 50%。猜对时，她不会留下痕迹；猜错时，她有 50% 的概率引入一个错误。合计：50%（选错基的概率）× 50%（因此产生错误的概率）= <strong>密钥中 25% 的错误</strong>。',
+        'advanced.why25.text2': '在游戏中，你可以选择伊芙的行为。如果她截获每一个光子，QBER 约为 25% 再加上噪声——伊芙一目了然。在随机模式下，她有 30% 的时候不在，其余时候截获 5% 到 35% 的光子：QBER 大约增加截获比例的四分之一，而一个弱小的伊芙可能很难与噪声区分开——就像现实中一样。',
+        'advanced.topics.heading': '进一步学习的主题',
+        'advanced.topics.intro': '如果你想更深入地了解理论，这里有一些值得学习的关键主题：',
+        'topic1.title': '量子基与量子态',
+        'topic1.desc': '光子偏振，对角偏振和圆偏振，在布洛赫球上表示量子态',
+        'topic2.title': '不可克隆定理',
+        'topic2.desc': '为什么无法精确复制一个未知的量子态，以及这如何保护协议',
+        'topic3.title': '密钥协调',
+        'topic3.desc': '爱丽丝和鲍勃如何在尽量少泄露信息的情况下找出并修正密钥中的不一致（Cascade、LDPC 协议）',
+        'topic4.title': '针对 BB84 实现的攻击',
+        'topic4.desc': '侧信道攻击、探测器攻击、致盲攻击，以及如何防御',
+        'topic5.title': '实际实现',
+        'topic5.desc': '卫星量子网络、光纤系统、商用 QKD 解决方案',
+        'topic6.title': '密钥后处理',
+        'topic6.desc': '信息协调、隐私放大、经典信道的认证',
+        'advanced.modern.heading': '当前的发展状况',
+        'advanced.modern.intro': '如今，BB84 及其变体在以下领域有潜在应用：',
+        'practical1': '安全的银行交易',
+        'practical2': '政府和外交通信',
+        'practical3': '科研中心之间的量子网络',
+        'practical4': '卫星量子通信系统',
+        'actions.intro': '现在你已经了解了基础知识，正是动手实践、看看协议如何运作的好时机！',
+        'actions.play': '▶ 试试这个实验',
+        'actions.back': '← 返回主题列表',
+        'actions.outro': '在游戏中，你可以把学到的一切付诸实践，在交互式模拟中观看 BB84 的整个过程',
+        'footer.line1': '© 2025 Ludus Lab · 用简单的游戏理解复杂的事物',
+        'footer.line2': '本文是一个简化的讲解，旨在传达基本原理。协议的真实实现可能包含更多细节。',
+      },
     };
 
     function applyLanguage(lang) {
       if (!I18N[lang]) lang = 'ru';
       const dict = I18N[lang];
-      document.documentElement.lang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
       document.title = dict['meta.title'];
       const descTag = document.getElementById('pageDescription');
       if (descTag) descTag.setAttribute('content', dict['meta.description']);

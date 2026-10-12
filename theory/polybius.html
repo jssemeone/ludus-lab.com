@@ -100,6 +100,8 @@
       padding: 40px 20px;
       flex: 1 0 auto;
     }
+    /* body is a flex column and the auto margins make the container shrink-to-fit its content: pin it to the viewport width */
+    .theory-container { width: 100%; box-sizing: border-box; }
 
     /* Заголовок статьи */
     .article-header {
@@ -538,6 +540,10 @@
       .lang-switch { top: 8px; right: 8px; }
       .lang-btn { font-size: 0.65rem; padding: 3px 7px; }
     }
+  
+    /* a step's text column may shrink below its content; wide alphabet tables scroll inside the step instead of widening the page */
+    .step-content { min-width: 0; max-width: 100%; }
+    .step-content > div { max-width: 100%; overflow-x: auto; }
   </style>
 </head>
 <body>
@@ -545,6 +551,7 @@
     <button class="lang-btn" data-lang-btn="ru">RU</button>
     <button class="lang-btn" data-lang-btn="en">EN</button>
     <button class="lang-btn" data-lang-btn="es">ES</button>
+    <button class="lang-btn" data-lang-btn="zh">中文</button>
   </div>
 
   <!-- Навигация -->
@@ -614,7 +621,7 @@
             <h3 data-i18n="step2.title">Шифрование буквы → координаты</h3>
             <p data-i18n="step2.text">Каждая буква заменяется парой чисел: номер строки и номер столбца. Например, буква «С» находится в строке 4, столбце 1 → шифр «41».</p>
             <div style="background:rgba(0,20,40,0.6); padding:10px; border-radius:4px; font-family:monospace; margin:10px 0; text-align:center;">
-              <span>ПРИВЕТ → 35 32 11 23 15 42</span>
+              <span>ПРИВЕТ → 35 36 24 13 16 42</span>
             </div>
           </div>
         </div>
@@ -1020,12 +1027,89 @@
         'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
         'footer.line2': 'Este artículo es una explicación simplificada para transmitir los principios. Los sistemas criptográficos reales usan algoritmos mucho más complejos.',
       },
+      zh: {
+        'meta.title': '波利比奥斯方阵：理论 | Ludus Lab',
+        'meta.description': '讲解古老的波利比奥斯密码——一种基于坐标的加密方法：表格如何工作，为什么它能起到保护作用，以及历史上它是如何被使用的。',
+        'nav.home': '首页',
+        'nav.play': '开始游戏',
+        'article.category': '古代密码学',
+        'article.title': '波利比奥斯方阵',
+        'article.subtitle': '最古老的坐标密码，把字母变成数字——至今仍在启发编码设计者',
+        'meta.readtime': '⏱️ 阅读约 5 分钟',
+        'meta.level': '📊 基础级',
+        'meta.era': '🗝️ 公元前 2 世纪',
+        'block1.heading': '我们为什么需要它？',
+        'block1.p1': '想象你是<span class="highlight">波利比奥斯</span>，一位古希腊历史学家和战略家。你需要在相距很远的部队之间传递信号——用火炬或旗帜。怎样用简单而可靠的信号来编码字母表中的每个字母？',
+        'block1.p2': '波利比奥斯想出了一个绝妙的办法：一张<span class="highlight">方形表格</span>，每个字母都对应一对数字——行号和列号。只要发送两个数字，接收方就能还原出字母。历史上最早的密码之一就这样诞生了——如今它仍被用于教学和娱乐。',
+        'block1.p3': '与凯撒密码（简单的代换）不同，波利比奥斯方阵<span class="highlight">把字母变成数对</span>。这不仅隐藏了含义，而且便于用任何方式传输：烟、光、声音。如果打乱表中字母的顺序，密码的强度还会大大提高。',
+        'block2.heading': '它是如何工作的？',
+        'block2.intro': '这种密码的基础是一张填满字母表字母的<span class="highlight">方形表格</span>。俄文通常使用 <span class="highlight">6×6</span> 的表格（33 个字母 + Ё）；英文使用 <span class="highlight">5×5</span> 的表格（字母 I 和 J 合并）。行和列从 1 开始编号。汉字有几千个，放不进这样的小方阵，所以游戏里请用俄文或英文字母。',
+        'step1.title': '构造方阵',
+        'step1.text': '把字母表的字母逐行写入。例如俄文版（6×6）：',
+        'step1.note': '下面的例子使用俄文字母表——游戏本身也可以选择英文版。',
+        'step2.title': '加密字母 → 坐标',
+        'step2.text': '每个字母都被替换成一对数字：行号和列号。例如，字母“С”位于第 4 行第 1 列 → 密文“41”。',
+        'step3.title': '传输与解密',
+        'step3.text': '接收方知道同一张表，把密文拆成一对对数字。对每一对，找到行和列，读出交叉处的字母。原始消息就这样被恢复出来。',
+        'step3.example': '<strong>例如：</strong>“35”→ 第 3 行第 5 列 → 字母“П”。',
+        'step4.title': '保密的表格',
+        'step4.text': '通过<span class="highlight">打乱表中的字母</span>可以提高密码的强度。如果攻击者不知道字母的排列，即使拿到密文也无法恢复消息。这就多了一个密钥——方阵的填写顺序。',
+        'diagram.title': '波利比奥斯方阵是如何工作的',
+        'diagram.encrypt.title': '🔐 加密（字母 → 数字）',
+        'diagram.encrypt.example': '<strong>例如：</strong><br>字母 <code>М</code>（俄文字母表）<br>在表中找到：第 3 行第 2 列<br><span class="gold-highlight">密文：32</span>',
+        'diagram.encrypt.formula': '<strong>公式：</strong><br><code>C = (row, col)</code>，其中 row、col 是字母在表中的坐标。',
+        'diagram.decrypt.title': '🔓 解密（数字 → 字母）',
+        'diagram.decrypt.example': '<strong>例如：</strong><br>密文 <code>54</code><br>在表中找到：第 5 行第 4 列<br><span class="gold-highlight">字母：ъ</span>',
+        'diagram.decrypt.formula': '<strong>公式：</strong><br><code>P = table[row][col]</code>，由坐标反推出字母。',
+        'diagram.final.title': '为什么说它很巧妙？',
+        'diagram.final.desc': '波利比奥斯方阵是历史上第一个<strong>基于坐标的加密系统</strong>。它能通过简单的信号（两个数字）传输任何字母，不需要复杂的计算，而且很容易扩展。即使在今天，二维码和网格坐标中仍在使用这一原理。',
+        'diagram.final.param': '简单 + 可靠 = 密码学经典',
+        'diagram.note': '* 在我们的游戏中，你可以一步步看到每个字母如何变成坐标，表格会以绿色和蓝色高亮显示。',
+        'insight.label': '关键结论：',
+        'insight.text': '<span class="highlight">波利比奥斯方阵把字母变成数字，又把数字变回字母</span>。它为之后所有的代换密码和基于矩阵的系统开辟了道路。它很容易手工完成，却能防止别人随意读懂。',
+        'block3.heading': '现在来看真正的魔法',
+        'block3.intro': '在交互式模拟中，你<span class="highlight">实际上会做什么</span>？',
+        'action1': '你将用俄文或英文字母<strong>输入自己的消息</strong>——游戏会自动检查字符是否有效（汉字不能放进方阵）',
+        'action2': '你将<strong>选择字母表</strong>（俄文 6×6 或英文 5×5），并看到相应的表格',
+        'action3': '你将<strong>逐步执行加密</strong>——每个字母所在的格子先亮起绿色，然后它的行和列亮起蓝色',
+        'action4': '你将通过可视化的信道<strong>把密文发给鲍勃</strong>——坐标经由公开信道传输',
+        'action5': '你将反向<strong>解密消息</strong>：每对数字再次点亮一行、一列和得到的字母',
+        'action6': '你将<strong>确认传输成功</strong>——系统会比较原始消息和解密后的消息',
+        'block3.outro': '在游戏中，你不只是阅读关于波利比奥斯方阵的内容——而是<span class="highlight">亲身经历整个加密和解密过程</span>。表格的可视化动画会帮助你牢牢记住这种古老而巧妙的方法。',
+        'advanced.summary': '给好奇的人',
+        'advanced.history.heading': '历史背景',
+        'advanced.history.text': '古希腊历史学家<strong>波利比奥斯</strong>（约公元前 200–118 年）在他的著作《历史》中描述了这种方法。他用这个方阵通过火炬传递信号：一张希腊字母的 5×5 表格，火炬的数量表示行和列。这样就能把任何字母传送到几公里之外。',
+        'advanced.relevance.heading': '为什么这种密码至今仍有意义？',
+        'advanced.relevance.text': '波利比奥斯方阵是许多更复杂密码的基础。例如，第一次世界大战中使用的 <strong>ADFGVX 密码</strong>就基于一张以字母 A、D、F、G、V、X 标注的 6×6 表格。这种方法还用于<strong>密码谜题</strong>、二维码（作为一种数据编码方式），甚至用来教孩子加密的基础知识。',
+        'advanced.topics.heading': '进一步学习的主题',
+        'topic1.title': 'ADFGVX 密码',
+        'topic1.desc': '一战时期德军的战地密码，先用波利比奥斯方阵，再进行换位。',
+        'topic2.title': '坐标编码',
+        'topic2.desc': '坐标原理如何出现在现代数字通信中：从 GPS 到二维码。',
+        'topic3.title': '表格的变化形式',
+        'topic3.desc': '打乱字母、用关键词填写方阵——加强密码的方法。',
+        'topic4.title': '波利比奥斯方阵的密码分析',
+        'topic4.desc': '如果知道坐标对的频率，如何破解这种密码，以及如何避免被破解。',
+        'topic5.title': '从波利比奥斯到 RSA',
+        'topic5.desc': '密码的演变：从简单的代换到非对称密码学。',
+        'advanced.practical.heading': '如今的实际用途',
+        'practical1': '在学校和课程中讲授密码学基础',
+        'practical2': 'CTF（夺旗赛）竞赛中的一个环节',
+        'practical3': '制作桌面密码解谜游戏和谜题',
+        'practical4': '演示“通过坐标编码信息”的原理',
+        'actions.intro': '现在你已经理解了坐标加密的原理，正是亲手试一试的好时机！',
+        'actions.play': '▶ 进入游戏',
+        'actions.back': '← 返回主题列表',
+        'actions.outro': '在交互式模拟中，你可以加密自己的消息，同时实时观看表格的动画。',
+        'footer.line1': '© 2025 Ludus Lab · 用简单的游戏理解复杂的事物',
+        'footer.line2': '本文是一个简化的讲解，旨在传达基本原理。真实的密码系统使用复杂得多的算法。',
+      },
     };
 
     function applyLanguage(lang) {
       if (!I18N[lang]) lang = 'ru';
       const dict = I18N[lang];
-      document.documentElement.lang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
       document.title = dict['meta.title'];
       const descTag = document.getElementById('pageDescription');
       if (descTag) descTag.setAttribute('content', dict['meta.description']);

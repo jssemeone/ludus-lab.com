@@ -229,6 +229,8 @@
       color: #ffcc80; box-shadow: 0 0 10px rgba(255, 165, 0, 0.1); font-size: 0.95rem;
     }
     .disclaimer.info { background: rgba(0, 162, 255, 0.1); border-left-color: var(--accent-blue); color: var(--text-secondary); }
+    .ext-link { color: var(--accent-gold); text-decoration: none; border-bottom: 1px dashed currentColor; transition: color 0.2s ease; }
+    .ext-link:hover { color: var(--accent-blue); }
 
     /* ===== TEAM SECTION ===== */
     .team-member {
@@ -507,6 +509,7 @@
         <p data-i18n="project.p1">Welcome to <span class="highlight">Ludus Lab</span> — a laboratory where abstract concepts become tangible.</p>
         <div class="disclaimer" data-i18n="project.disclaimer">⚠️ Our games are simplified models. We trade precision for clarity to help build <span class="highlight nowrap">intuitive understanding</span>.</div>
         <p data-i18n="project.p2">We live in a world of complex technologies: quantum cryptography, blockchain, machine learning. What if you could actually "touch" quantum entanglement?</p>
+        <p data-i18n="project.format">Every topic comes as a pair: a <span class="highlight">short article</span> tells the story and the idea, and a <span class="highlight">game</span> lets you test it with your own hands. Everything runs right in the browser — on a computer or a phone, free, with no sign-up, in four languages.</p>
         <p data-i18n="project.p3"><span class="highlight">Ludus Lab isn't a lecture course.</span> It's a lab for experiments, where mistakes are part of learning and understanding comes through action.</p>
 
         <div class="concept-grid">
@@ -516,6 +519,7 @@
         </div>
 
         <div class="disclaimer info" style="margin-top:25px;" data-i18n="project.mission">🎯 <strong>Mission:</strong> Make cutting-edge technology understandable through interactive experience, not dry formulas.</div>
+        <p style="margin-top:20px;" data-i18n="project.name">🏛️ <strong>Why “Ludus”?</strong> In Latin, <em>ludus</em> means both “game” and “school”: the Romans used it for play and for the elementary school where children learned to read and count. That is the whole idea of the project: learning by playing.</p>
       </div>
     </section>
 
@@ -529,11 +533,12 @@
           <div class="disclaimer" data-i18n="me.disclaimer">⚠️ Our games deliberately simplify the real protocols.<br>We focus on capturing <span class="highlight">the essence of the process</span>, not reproducing every detail exactly.</div>
           <p data-i18n="me.p3">That's where I ran into a paradox: the technology we build is so complex it's almost impossible to explain in words. I realized: <span class="highlight nowrap">some things shouldn't be told, but shown.</span></p>
           <p data-i18n="me.p4">That's how the idea for Ludus Lab was born. Not out of a desire to teach, but out of a need to understand it myself and help others do the same. There's no posturing here — just a genuine wish to make sense of complex things through simple games.</p>
-          <p data-i18n="me.p5">Helping me along the way are my "colleagues" — my vibe-coding tools:</p>
+          <p data-i18n="me.p5">My tools:</p>
           <div class="tools-list">
             <span class="tool-tag">HTML/CSS/JavaScript</span><span class="tool-tag">Canvas API</span>
             <span class="tool-tag" data-i18n="me.tools.patience">Patience</span><span class="tool-tag" data-i18n="me.tools.curiosity">Curiosity</span><span class="tool-tag" data-i18n="me.tools.coffee">Coffee ☕</span>
           </div>
+          <div class="disclaimer info" style="margin-top:20px;" data-i18n="me.discuss">💬 <strong>Let’s talk.</strong> I publish detailed breakdowns of the games on Pikabu, a Russian-language community, in the series <a class="ext-link" href="https://pikabu.ru/series/vekhi_kriptografii_cherez_geymifikatsiyu_58604" target="_blank" rel="noopener">“Milestones of cryptography through gamification”</a>. Found an inaccuracy in a model, want to argue about the simplifications or suggest a new topic? Leave a comment under the posts — I read everything.</div>
         </div>
 
         <!-- TIMELINE -->
@@ -544,6 +549,7 @@
             <div class="timeline-item"><span class="timeline-year">2023</span><h4 data-i18n="me.timeline.2023.title">Commercializing quantum technology</h4><p data-i18n="me.timeline.2023.desc">Working on the practical deployment of quantum solutions.</p></div>
             <div class="timeline-item"><span class="timeline-year">2024</span><h4 data-i18n="me.timeline.2024.title">First game prototypes</h4><p data-i18n="me.timeline.2024.desc">Realizing that game mechanics can be a powerful teaching tool.</p></div>
             <div class="timeline-item"><span class="timeline-year">2025</span><h4 data-i18n="me.timeline.2025.title">Ludus Lab is born</h4><p data-i18n="me.timeline.2025.desc">Shaping the concept of the platform. The first games go live.</p></div>
+            <div class="timeline-item"><span class="timeline-year">2026</span><h4 data-i18n="me.timeline.2026.title">Going public</h4><p data-i18n="me.timeline.2026.desc">A series of game breakdowns on Pikabu. The site now speaks four languages: Russian, English, Spanish and Chinese.</p></div>
             <div class="timeline-item"><span class="timeline-year" data-i18n="me.timeline.now.year">Now</span><h4 data-i18n="me.timeline.now.title">Growing and expanding</h4><p data-i18n="me.timeline.now.desc">Gradually adding new games and topics.</p></div>
           </div>
         </div>
@@ -551,8 +557,9 @@
     </section>
 
     <footer>
-      <p data-i18n="footer.line1">© 2025 Ludus Lab · Made with curiosity and a desire to understand</p>
+      <p data-i18n="footer.line1">© 2025–2026 Ludus Lab · Made with curiosity and a desire to understand</p>
       <p style="font-size:0.8rem;margin-top:8px;" data-i18n="footer.line2">Join the exploration of the complex through the simple</p>
+      <p style="font-size:0.8rem;margin-top:8px;" data-i18n="footer.line3">💬 Discuss the games and suggest new topics on <a class="ext-link" href="https://pikabu.ru/series/vekhi_kriptografii_cherez_geymifikatsiyu_58604" target="_blank" rel="noopener">Pikabu</a> (in Russian)</p>
     </footer>
   </div>
 
@@ -613,7 +620,7 @@
         'me.disclaimer': '⚠️ Наши игры сознательно упрощают реальные протоколы.<br>Мы сосредоточены на передаче <span class="highlight">сути процесса</span>, а не на точном воспроизведении каждой детали.',
         'me.p3': 'Именно здесь я столкнулся с парадоксом: технологии, которые мы создаём, настолько сложны, что их почти невозможно объяснить словами. Я понял: <span class="highlight nowrap">некоторые вещи нужно не рассказывать, а показывать.</span>',
         'me.p4': 'Так родилась идея Ludus Lab. Не из желания учить, а из потребности разобраться самому и помочь другим. Здесь нет позёрства — есть искреннее желание разобраться в сложных вещах через простые игры.',
-        'me.p5': 'В этом мне помогают мои "коллеги" — инструменты для вайб-кодинга:',
+        'me.p5': 'Мои инструменты:',
         'me.tools.patience': 'Терпение', 'me.tools.curiosity': 'Любопытство', 'me.tools.coffee': 'Кофе ☕',
         'me.timeline.heading': 'Мой путь',
         'me.timeline.2021.title': 'Знакомство с квантовыми технологиями', 'me.timeline.2021.desc': 'Переход в область квантовых коммуникаций. Осознание, что некоторые вещи нужно визуализировать.',
@@ -621,8 +628,14 @@
         'me.timeline.2024.title': 'Первые прототипы игр', 'me.timeline.2024.desc': 'Понимание, что игровая механика может быть мощным образовательным инструментом.',
         'me.timeline.2025.title': 'Рождение Ludus Lab', 'me.timeline.2025.desc': 'Формирование концепции платформы. Первые игры публикуются онлайн.',
         'me.timeline.now.year': 'Сейчас', 'me.timeline.now.title': 'Развитие и расширение', 'me.timeline.now.desc': 'Постепенное добавление новых игр и тем.',
-        'footer.line1': '© 2025 Ludus Lab · Сделано с любопытством и желанием разобраться',
+        'footer.line1': '© 2025–2026 Ludus Lab · Сделано с любопытством и желанием разобраться',
         'footer.line2': 'Присоединяйтесь к исследованию сложного через простое',
+        'project.format': 'Каждая тема устроена как пара: <span class="highlight">короткая статья</span> рассказывает историю и идею, а <span class="highlight">игра</span> даёт проверить её своими руками. Всё работает прямо в браузере — на компьютере и на телефоне, бесплатно, без регистрации и на четырёх языках.',
+        'project.name': '🏛️ <strong>Почему «Ludus»?</strong> По-латыни <em>ludus</em> — это одновременно «игра» и «школа»: в Древнем Риме так называли и забаву, и начальную школу, где детей учили читать и считать. В названии — вся идея проекта: учиться, играя.',
+        'me.discuss': '💬 <strong>Давайте обсуждать.</strong> Подробные разборы игр я публикую на Пикабу в серии <a class="ext-link" href="https://pikabu.ru/series/vekhi_kriptografii_cherez_geymifikatsiyu_58604" target="_blank" rel="noopener">«Вехи криптографии через геймификацию»</a>. Нашли неточность в модели, хотите поспорить об упрощениях или предложить новую тему — пишите в комментариях к постам, я читаю всё.',
+        'me.timeline.2026.title': 'Выход к людям',
+        'me.timeline.2026.desc': 'Серия разборов игр на Пикабу. Сайт заговорил на четырёх языках: русском, английском, испанском и китайском.',
+        'footer.line3': '💬 Обсудить игры и предложить новые темы — на <a class="ext-link" href="https://pikabu.ru/series/vekhi_kriptografii_cherez_geymifikatsiyu_58604" target="_blank" rel="noopener">Пикабу</a>',
         'btn.learn': 'Теория', 'btn.play': 'Играть',
       },
       en: {
@@ -679,7 +692,7 @@
         'me.disclaimer': '⚠️ Our games deliberately simplify the real protocols.<br>We focus on capturing <span class="highlight">the essence of the process</span>, not reproducing every detail exactly.',
         'me.p3': "That's where I ran into a paradox: the technology we build is so complex it's almost impossible to explain in words. I realized: <span class=\"highlight nowrap\">some things shouldn't be told, but shown.</span>",
         'me.p4': "That's how the idea for Ludus Lab was born. Not out of a desire to teach, but out of a need to understand it myself and help others do the same. There's no posturing here — just a genuine wish to make sense of complex things through simple games.",
-        'me.p5': 'Helping me along the way are my "colleagues" — my vibe-coding tools:',
+        'me.p5': 'My tools:',
         'me.tools.patience': 'Patience', 'me.tools.curiosity': 'Curiosity', 'me.tools.coffee': 'Coffee ☕',
         'me.timeline.heading': 'My Journey',
         'me.timeline.2021.title': 'Discovering quantum technology', 'me.timeline.2021.desc': 'Moving into quantum communications. Realizing that some things need to be visualized.',
@@ -687,8 +700,14 @@
         'me.timeline.2024.title': 'First game prototypes', 'me.timeline.2024.desc': 'Realizing that game mechanics can be a powerful teaching tool.',
         'me.timeline.2025.title': 'Ludus Lab is born', 'me.timeline.2025.desc': 'Shaping the concept of the platform. The first games go live.',
         'me.timeline.now.year': 'Now', 'me.timeline.now.title': 'Growing and expanding', 'me.timeline.now.desc': 'Gradually adding new games and topics.',
-        'footer.line1': '© 2025 Ludus Lab · Made with curiosity and a desire to understand',
+        'footer.line1': '© 2025–2026 Ludus Lab · Made with curiosity and a desire to understand',
         'footer.line2': 'Join the exploration of the complex through the simple',
+        'project.format': 'Every topic comes as a pair: a <span class="highlight">short article</span> tells the story and the idea, and a <span class="highlight">game</span> lets you test it with your own hands. Everything runs right in the browser — on a computer or a phone, free, with no sign-up, in four languages.',
+        'project.name': '🏛️ <strong>Why “Ludus”?</strong> In Latin, <em>ludus</em> means both “game” and “school”: the Romans used it for play and for the elementary school where children learned to read and count. That is the whole idea of the project: learning by playing.',
+        'me.discuss': '💬 <strong>Let’s talk.</strong> I publish detailed breakdowns of the games on Pikabu, a Russian-language community, in the series <a class="ext-link" href="https://pikabu.ru/series/vekhi_kriptografii_cherez_geymifikatsiyu_58604" target="_blank" rel="noopener">“Milestones of cryptography through gamification”</a>. Found an inaccuracy in a model, want to argue about the simplifications or suggest a new topic? Leave a comment under the posts — I read everything.',
+        'me.timeline.2026.title': 'Going public',
+        'me.timeline.2026.desc': 'A series of game breakdowns on Pikabu. The site now speaks four languages: Russian, English, Spanish and Chinese.',
+        'footer.line3': '💬 Discuss the games and suggest new topics on <a class="ext-link" href="https://pikabu.ru/series/vekhi_kriptografii_cherez_geymifikatsiyu_58604" target="_blank" rel="noopener">Pikabu</a> (in Russian)',
         'btn.learn': 'Theory', 'btn.play': 'Play',
       },
       es: {
@@ -745,7 +764,7 @@
         'me.disclaimer': '⚠️ Nuestros juegos simplifican deliberadamente los protocolos reales.<br>Nos centramos en transmitir <span class="highlight">la esencia del proceso</span>, no en reproducir cada detalle con exactitud.',
         'me.p3': 'Ahí me encontré con una paradoja: la tecnología que creamos es tan compleja que casi no se puede explicar con palabras. Entendí que <span class="highlight nowrap">algunas cosas no hay que contarlas, sino mostrarlas.</span>',
         'me.p4': 'Así nació la idea de Ludus Lab. No por deseo de enseñar, sino por la necesidad de entenderlo yo mismo y ayudar a otros. Aquí no hay pose — solo un deseo sincero de entender cosas complejas a través de juegos simples.',
-        'me.p5': 'En esto me ayudan mis "colegas" — mis herramientas de vibe-coding:',
+        'me.p5': 'Mis herramientas:',
         'me.tools.patience': 'Paciencia', 'me.tools.curiosity': 'Curiosidad', 'me.tools.coffee': 'Café ☕',
         'me.timeline.heading': 'Mi camino',
         'me.timeline.2021.title': 'Descubriendo la tecnología cuántica', 'me.timeline.2021.desc': 'Paso al campo de las comunicaciones cuánticas. Comprendí que algunas cosas hay que visualizarlas.',
@@ -753,8 +772,14 @@
         'me.timeline.2024.title': 'Primeros prototipos de juegos', 'me.timeline.2024.desc': 'Comprendí que la mecánica de juego puede ser una poderosa herramienta educativa.',
         'me.timeline.2025.title': 'Nace Ludus Lab', 'me.timeline.2025.desc': 'Se define el concepto de la plataforma. Los primeros juegos se publican en línea.',
         'me.timeline.now.year': 'Ahora', 'me.timeline.now.title': 'Crecimiento y expansión', 'me.timeline.now.desc': 'Incorporación gradual de nuevos juegos y temas.',
-        'footer.line1': '© 2025 Ludus Lab · Hecho con curiosidad y ganas de entender',
+        'footer.line1': '© 2025–2026 Ludus Lab · Hecho con curiosidad y ganas de entender',
         'footer.line2': 'Únete a explorar lo complejo a través de lo simple',
+        'project.format': 'Cada tema viene en pareja: un <span class="highlight">artículo breve</span> cuenta la historia y la idea, y un <span class="highlight">juego</span> te permite comprobarla con tus propias manos. Todo funciona directamente en el navegador — en el ordenador o en el móvil, gratis, sin registro y en cuatro idiomas.',
+        'project.name': '🏛️ <strong>¿Por qué «Ludus»?</strong> En latín, <em>ludus</em> significa a la vez «juego» y «escuela»: los romanos lo usaban para el juego y para la escuela elemental donde los niños aprendían a leer y a contar. Esa es toda la idea del proyecto: aprender jugando.',
+        'me.discuss': '💬 <strong>Hablemos.</strong> Publico análisis detallados de los juegos en Pikabu, una comunidad en ruso, en la serie <a class="ext-link" href="https://pikabu.ru/series/vekhi_kriptografii_cherez_geymifikatsiyu_58604" target="_blank" rel="noopener">«Hitos de la criptografía a través de la gamificación»</a>. ¿Has encontrado una inexactitud en un modelo, quieres discutir las simplificaciones o proponer un tema nuevo? Deja un comentario en las publicaciones — lo leo todo.',
+        'me.timeline.2026.title': 'Abriéndonos al mundo',
+        'me.timeline.2026.desc': 'Una serie de análisis de los juegos en Pikabu. El sitio ya habla cuatro idiomas: ruso, inglés, español y chino.',
+        'footer.line3': '💬 Comenta los juegos y propón nuevos temas en <a class="ext-link" href="https://pikabu.ru/series/vekhi_kriptografii_cherez_geymifikatsiyu_58604" target="_blank" rel="noopener">Pikabu</a> (en ruso)',
         'btn.learn': 'Teoría', 'btn.play': 'Jugar',
       },
       zh: {
@@ -811,7 +836,7 @@
         'me.disclaimer': '⚠️ 我们的游戏有意简化了真实的协议。<br>我们专注于传达<span class="highlight">过程的本质</span>，而不是精确再现每一个细节。',
         'me.p3': '正是在这里，我遇到了一个悖论：我们创造的技术如此复杂，几乎无法用语言解释。我意识到：<span class="highlight nowrap">有些东西不该讲述，而该展示。</span>',
         'me.p4': 'Ludus Lab 的想法就这样诞生了。不是出于想教别人的愿望，而是出于自己想弄明白、也想帮助别人的需要。这里没有故作姿态——只有通过简单的游戏理解复杂事物的真诚愿望。',
-        'me.p5': '在这件事上帮助我的，是我的“同事们”——氛围编程（vibe coding）工具：',
+        'me.p5': '我的工具：',
         'me.tools.patience': '耐心', 'me.tools.curiosity': '好奇心', 'me.tools.coffee': '咖啡 ☕',
         'me.timeline.heading': '我的历程',
         'me.timeline.2021.title': '结识量子技术', 'me.timeline.2021.desc': '转入量子通信领域。意识到有些东西需要可视化。',
@@ -819,8 +844,14 @@
         'me.timeline.2024.title': '第一批游戏原型', 'me.timeline.2024.desc': '意识到游戏机制可以成为强大的教学工具。',
         'me.timeline.2025.title': 'Ludus Lab 诞生', 'me.timeline.2025.desc': '平台理念成形。第一批游戏上线。',
         'me.timeline.now.year': '现在', 'me.timeline.now.title': '成长与扩展', 'me.timeline.now.desc': '逐步加入新的游戏和主题。',
-        'footer.line1': '© 2025 Ludus Lab · 怀着好奇心与求知欲制作',
+        'footer.line1': '© 2025–2026 Ludus Lab · 怀着好奇心与求知欲制作',
         'footer.line2': '一起通过简单的方式探索复杂的事物',
+        'project.format': '每个主题都由两部分组成：一篇<span class="highlight">短文</span>讲述历史与思想，一个<span class="highlight">游戏</span>让你亲手验证它。一切都直接在浏览器中运行——电脑和手机均可，免费、无需注册，支持四种语言。',
+        'project.name': '🏛️ <strong>为什么叫“Ludus”？</strong>在拉丁语中，<em>ludus</em> 既是“游戏”，也是“学校”：古罗马人既用它指游戏，也用它指教孩子读写算术的初级学校。这正是本项目的全部理念：在游戏中学习。',
+        'me.discuss': '💬 <strong>欢迎讨论。</strong>我在俄语社区 Pikabu 上发布游戏的详细解析，系列名为<a class="ext-link" href="https://pikabu.ru/series/vekhi_kriptografii_cherez_geymifikatsiyu_58604" target="_blank" rel="noopener">《通过游戏化看密码学的里程碑》</a>。发现模型有不准确之处、想讨论简化方式，或想推荐新主题？欢迎在帖子下留言——每条我都会看。',
+        'me.timeline.2026.title': '走向公众',
+        'me.timeline.2026.desc': '在 Pikabu 上发布系列游戏解析。网站现已支持四种语言：俄语、英语、西班牙语和中文。',
+        'footer.line3': '💬 在 <a class="ext-link" href="https://pikabu.ru/series/vekhi_kriptografii_cherez_geymifikatsiyu_58604" target="_blank" rel="noopener">Pikabu</a> 上讨论游戏、推荐新主题（俄语）',
         'btn.learn': '理论', 'btn.play': '开始游戏',
       },
     };

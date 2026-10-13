@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -24,7 +24,7 @@
   <noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <!-- /Yandex.Metrika counter -->
   
-  <title id="pageTitle">Центр выработки ключей</title>
+  <title id="pageTitle">Key Generation Center</title>
   <style>
     * {
       margin: 0;
@@ -405,99 +405,102 @@
       }
     }
   </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/games/cvk/">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/games/cvk/">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/games/cvk/">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/games/cvk/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/games/cvk/">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/games/cvk/">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
   <div class="lang-switch" role="group" aria-label="Language">
-    <button class="lang-btn" data-lang-btn="ru">RU</button>
-    <button class="lang-btn" data-lang-btn="en">EN</button>
-    <button class="lang-btn" data-lang-btn="es">ES</button>
-    <button class="lang-btn" data-lang-btn="zh">中文</button>
+    <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/games/cvk/" hreflang="ru" lang="ru">RU</a>
+    <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/games/cvk/" hreflang="en" lang="en">EN</a>
+    <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/games/cvk/" hreflang="es" lang="es">ES</a>
+    <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/games/cvk/" hreflang="zh-Hans" lang="zh-CN">中文</a>
   </div>
   <div class="container">
     <header class="game-header">
-      <h1 data-i18n="game.title">Центр выработки ключей</h1>
+      <h1 data-i18n="game.title">Key Generation Center</h1>
       <div class="header-decoration"></div>
-      <p class="subtitle" data-i18n="game.subtitle">Ludus Lab · Сложные вещи — простыми играми</p>
+      <p class="subtitle" data-i18n="game.subtitle">Ludus Lab · Complex things made simple through games</p>
     </header>
 
     <!-- Свертываемый блок описания (как протокол в E91) -->
     <div class="protocol-container">
       <div class="protocol-header" id="protocolHeader">
-        <h2><span data-i18n="protocol.toggle">Описание работы центра выработки ключей</span> <span class="toggle-icon">+</span></h2>
+        <h2><span data-i18n="protocol.toggle">How the key generation center works</span> <span class="toggle-icon">+</span></h2>
       </div>
       <div class="protocol-description" id="protocolContent">
-        <p data-i18n="protocol.intro">Центр выработки ключей (CVK) — это симулятор генерации криптографических ключей на основе энтропии пользователя. В отличие от алгоритмических генераторов, он использует непредсказуемые движения курсора для создания истинно случайных последовательностей.</p>
+        <p data-i18n="protocol.intro">The Key Generation Center (CVK) is a simulator of cryptographic key generation based on user entropy. Unlike algorithmic generators, it uses unpredictable cursor movement to create truly random sequences.</p>
 
         <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">Сбор энтропии</span></div>
-          <p data-i18n="protocol.step1.desc">Система собирает три источника энтропии: координату X курсора, координату Y и текущее время в миллисекундах. Чем хаотичнее движение мыши, тем выше качество энтропии.</p>
+          <div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">Collecting entropy</span></div>
+          <p data-i18n="protocol.step1.desc">The system collects three sources of entropy: the cursor's X coordinate, its Y coordinate, and the current time in milliseconds. The more chaotic the mouse movement, the higher the quality of the entropy.</p>
         </div>
 
         <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">Парность значений</span></div>
-          <p data-i18n="protocol.step2.desc">Для каждого из трёх значений определяется, является ли оно нечётным (парность = 1) или чётным (парность = 0).</p>
-          <p data-i18n="protocol.step2.example">Примеры: X=125 → нечётное → 1; Y=84 → чётное → 0; Время=1623456789 → нечётное → 1</p>
+          <div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">Parity of the values</span></div>
+          <p data-i18n="protocol.step2.desc">For each of the three values, the system determines whether it is odd (parity = 1) or even (parity = 0).</p>
+          <p data-i18n="protocol.step2.example">Examples: X=125 → odd → 1; Y=84 → even → 0; Time=1623456789 → odd → 1</p>
         </div>
 
         <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">Операция XOR</span></div>
-          <p data-i18n="protocol.step3.desc1">Три бита парности (X, Y, время) складываются по модулю 2 (операция XOR).</p>
-          <p data-i18n="protocol.step3.desc2">XOR работает по принципу: результат равен 1, если количество единиц (нечётных значений) нечётно.</p>
-          <ul data-i18n="protocol.step3.list">
-            <li>0+0+0 = 0 → чётное количество единиц → бит = 0</li>
-            <li>1+0+1 = 2 → чётное количество единиц → бит = 0</li>
-            <li>1+1+1 = 3 → нечётное количество единиц → бит = 1</li>
-            <li>1+0+0 = 1 → нечётное количество единиц → бит = 1</li>
-          </ul>
+          <div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">The XOR operation</span></div>
+          <p data-i18n="protocol.step3.desc1">The three parity bits (X, Y, time) are added modulo 2 (the XOR operation).</p>
+          <p data-i18n="protocol.step3.desc2">XOR works as follows: the result is 1 if the number of ones (odd values) is odd.</p>
+          <ul data-i18n="protocol.step3.list"><li>0+0+0 = 0 → even number of ones → bit = 0</li><li>1+0+1 = 2 → even number of ones → bit = 0</li><li>1+1+1 = 3 → odd number of ones → bit = 1</li><li>1+0+0 = 1 → odd number of ones → bit = 1</li></ul>
         </div>
 
         <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">Формирование бита ключа</span></div>
-          <p data-i18n="protocol.step4.desc">Результат операции XOR становится одним битом будущего криптографического ключа. Эта операция повторяется для каждого нового положения курсора через фиксированные интервалы времени.</p>
+          <div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">Forming a key bit</span></div>
+          <p data-i18n="protocol.step4.desc">The result of the XOR operation becomes one bit of the future cryptographic key. This operation repeats for each new cursor position at fixed time intervals.</p>
         </div>
 
         <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">Сборка ключа</span></div>
-          <p data-i18n="protocol.step5.desc">Биты последовательно собираются в ячейки ключа. Когда набирается достаточное количество битов (в данной симуляции — 16), формируется полный криптографический ключ.</p>
+          <div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">Assembling the key</span></div>
+          <p data-i18n="protocol.step5.desc">Bits are sequentially collected into key cells. Once enough bits have been gathered (16 in this simulation), the full cryptographic key is formed.</p>
         </div>
 
         <div class="protocol-step">
-          <div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">Безопасность</span></div>
-          <p data-i18n="protocol.step6.desc">Ключ, сгенерированный таким способом, обладает высокой криптографической стойкостью, так как его невозможно предсказать без знания точной траектории движения курсора и времени каждого замера.</p>
+          <div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">Security</span></div>
+          <p data-i18n="protocol.step6.desc">A key generated this way has high cryptographic strength, since it cannot be predicted without knowing the exact cursor trajectory and the timing of each sample.</p>
         </div>
 
-        <p data-i18n="protocol.practical"><strong>Практическое применение:</strong> Подобные методы используются в системах, требующих высокой степени случайности — криптографических протоколах, генерации сессионных ключей, инициализации векторов в шифровании.</p>
+        <p data-i18n="protocol.practical"><strong>Practical use:</strong> Methods like this are used in systems that require a high degree of randomness — cryptographic protocols, session key generation, initialization vectors in encryption.</p>
       </div>
     </div>
 
     <button class="action-button" id="startButton">
-      <i class="fas fa-key"></i> <span data-i18n="btn.generate">Сгенерировать ключ</span>
+      <i class="fas fa-key"></i> <span data-i18n="btn.generate">Generate key</span>
     </button>
 
     <div class="game-area">
       <canvas id="gameCanvas" width="600" height="320"></canvas>
 
       <div class="visualizer">
-        <div><span data-i18n="vis.xLabel">X = </span><span id="xVal">—</span> <span data-i18n="vis.oddQ">→ нечётное?</span> <span id="xParity">?</span></div>
-        <div><span data-i18n="vis.yLabel">Y = </span><span id="yVal">—</span> <span data-i18n="vis.oddQ">→ нечётное?</span> <span id="yParity">?</span></div>
-        <div><span data-i18n="vis.timeLabel">ВРЕМЯ = </span><span id="timeVal">—</span> <span data-i18n="vis.oddQ">→ нечётное?</span> <span id="tParity">?</span></div>
-        <div><span data-i18n="vis.xorLabel">XOR: нечётных значений = </span><span id="oddCount">0</span></div>
-        <div><span data-i18n="vis.bitLabel">БИТ = </span><span id="bitVal">?</span></div>
-        <div id="statusLine" data-i18n="status.pressStart">Нажмите «Сгенерировать ключ»</div>
+        <div><span data-i18n="vis.xLabel">X = </span><span id="xVal">—</span> <span data-i18n="vis.oddQ">→ odd?</span> <span id="xParity">?</span></div>
+        <div><span data-i18n="vis.yLabel">Y = </span><span id="yVal">—</span> <span data-i18n="vis.oddQ">→ odd?</span> <span id="yParity">?</span></div>
+        <div><span data-i18n="vis.timeLabel">TIME = </span><span id="timeVal">—</span> <span data-i18n="vis.oddQ">→ odd?</span> <span id="tParity">?</span></div>
+        <div><span data-i18n="vis.xorLabel">XOR: number of odd values = </span><span id="oddCount">0</span></div>
+        <div><span data-i18n="vis.bitLabel">BIT = </span><span id="bitVal">?</span></div>
+        <div id="statusLine" data-i18n="status.pressStart">Click "Generate key"</div>
       </div>
 
       <div class="key-display" id="keyDisplay">
         <div class="visualizer">
-          <p><strong data-i18n="key.successTitle">Мастер-ключ успешно сгенерирован:</strong></p>
+          <p><strong data-i18n="key.successTitle">Master key generated successfully:</strong></p>
           <p style="word-break: break-all; font-family: monospace; font-size: 1.1rem; text-align: center; margin: 10px 0; padding: 10px; background: rgba(0,20,40,0.5); border-radius: 5px;" id="generatedKey"></p>
-          <p data-i18n="key.copyHint">Вы можете скопировать его для дальнейшего использования.</p>
+          <p data-i18n="key.copyHint">You can copy it for later use.</p>
         </div>
         <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
           <button class="action-button" style="width: 200px; margin: 0;" onclick="copyKey()">
-            <i class="fas fa-copy"></i> <span data-i18n="btn.copy">Скопировать ключ</span>
+            <i class="fas fa-copy"></i> <span data-i18n="btn.copy">Copy key</span>
           </button>
           <button class="action-button" style="width: 200px; margin: 0;" id="newKeyBtn">
-            <i class="fas fa-redo"></i> <span data-i18n="btn.newkey">Новый ключ</span>
+            <i class="fas fa-redo"></i> <span data-i18n="btn.newkey">New key</span>
           </button>
         </div>
       </div>
@@ -505,11 +508,11 @@
 
     <!-- Навигационные ссылки как в E91 (внизу) -->
     <div class="navigation-links">
-      <a href="https://ludus-lab.ru/theory/keygen.html" class="nav-link secondary">
-        <i class="fas fa-book-open"></i> <span data-i18n="nav.theory">Прочитать теорию</span>
+      <a href="/theory/keygen.html" class="nav-link secondary">
+        <i class="fas fa-book-open"></i> <span data-i18n="nav.theory">Read the theory</span>
       </a>
-      <a href="https://ludus-lab.ru/" class="nav-link primary">
-        <i class="fas fa-home"></i> <span data-i18n="nav.home">Вернуться в лабораторию</span>
+      <a href="/" class="nav-link primary">
+        <i class="fas fa-home"></i> <span data-i18n="nav.home">Back to the lab</span>
       </a>
     </div>
   </div>
@@ -666,7 +669,7 @@
     }
     function initLanguage() {
       let saved = null;
-      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      saved = 'en';
       if (!saved) { const browserLang = (navigator.language || 'ru').slice(0, 2); saved = I18N[browserLang] ? browserLang : 'ru'; }
       applyLanguage(saved);
     }

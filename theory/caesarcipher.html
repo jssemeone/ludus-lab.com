@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title id="pageTitle">Шифр Цезаря: теория | Ludus Lab</title>
-  <meta id="pageDescription" name="description" content="Объяснение самого древнего шифра в истории. Как работает сдвиг, почему его легко взломать и как он стал основой криптографии.">
+  <title id="pageTitle">Caesar Cipher: Theory | Ludus Lab</title>
+  <meta id="pageDescription" name="description" content="An explanation of the oldest cipher in history. How the shift works, why it is easy to break, and how it became the foundation of cryptography.">
   
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -537,22 +537,30 @@
       .btn-primary, .btn-secondary { padding: 10px 12px; font-size: 0.85rem; }
     }
   </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/theory/caesarcipher.html">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/theory/caesarcipher.html">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/theory/caesarcipher.html">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/theory/caesarcipher.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/theory/caesarcipher.html">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/theory/caesarcipher.html">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
   <div class="lang-switch" role="group" aria-label="Language">
-    <button class="lang-btn" data-lang-btn="ru">RU</button>
-    <button class="lang-btn" data-lang-btn="en">EN</button>
-    <button class="lang-btn" data-lang-btn="es">ES</button>
-    <button class="lang-btn" data-lang-btn="zh">中文</button>
+    <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/theory/caesarcipher.html" hreflang="ru" lang="ru">RU</a>
+    <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/theory/caesarcipher.html" hreflang="en" lang="en">EN</a>
+    <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/theory/caesarcipher.html" hreflang="es" lang="es">ES</a>
+    <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/theory/caesarcipher.html" hreflang="zh-Hans" lang="zh-CN">中文</a>
   </div>
 
   <!-- Навигация -->
   <nav class="theory-nav">
-    <a href="https://ludus-lab.ru/" class="nav-logo">LUDUS LAB</a>
+    <a href="/" class="nav-logo">LUDUS LAB</a>
     <div class="nav-links">
-      <a href="https://ludus-lab.ru/" class="nav-link" data-i18n="nav.home">Главная</a>
+      <a href="/" class="nav-link" data-i18n="nav.home">Home</a>
       <!-- Ссылка на игру по шифру Цезаря -->
-      <a href="https://ludus-lab.ru/games/caesarcipher/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+      <a href="/games/caesarcipher/" class="nav-link" data-i18n="nav.play">Play</a>
     </div>
   </nav>
 
@@ -560,48 +568,46 @@
   <div class="theory-container">
     <!-- Заголовок статьи -->
     <header class="article-header">
-      <div class="article-category" data-i18n="article.category">Основы криптографии</div>
-      <h1 class="article-title" data-i18n="article.title">Шифр Цезаря</h1>
-      <p class="article-subtitle" data-i18n="article.subtitle">
-        Простейший шифр сдвига, который использовал Юлий Цезарь две тысячи лет назад. Именно с него началась история криптографии.
-      </p>
+      <div class="article-category" data-i18n="article.category">Cryptography basics</div>
+      <h1 class="article-title" data-i18n="article.title">Caesar Cipher</h1>
+      <p class="article-subtitle" data-i18n="article.subtitle">The simplest shift cipher, used by Julius Caesar two thousand years ago. This is where the history of cryptography began.</p>
       <div class="article-meta">
-        <div class="meta-item" data-i18n="meta.readtime">⏱️ 4 мин чтения</div>
-        <div class="meta-item" data-i18n="meta.level">📊 Начальный уровень</div>
-        <div class="meta-item" data-i18n="meta.era">🗝️ I век до н.э.</div>
+        <div class="meta-item" data-i18n="meta.readtime">⏱️ 4 min read</div>
+        <div class="meta-item" data-i18n="meta.level">📊 Beginner level</div>
+        <div class="meta-item" data-i18n="meta.era">🗝️ 1st century BCE</div>
       </div>
     </header>
 
     <!-- Блок "Зачем изучать шифр Цезаря?" -->
     <section class="content-block">
-      <h2 data-i18n="block1.heading">Зачем изучать шифр Цезаря?</h2>
-      <p data-i18n="block1.p1">Представьте, что вы — полководец в Древнем Риме. Вам нужно передать приказ войскам, но гонец может попасть в руки врага. Как сделать так, чтобы даже при перехвате сообщения никто, кроме ваших генералов, не понял его смысла?</p>
+      <h2 data-i18n="block1.heading">Why study the Caesar cipher?</h2>
+      <p data-i18n="block1.p1">Imagine you are a general in ancient Rome. You need to send an order to your troops, but the messenger could be captured by the enemy. How do you make sure that even if the message is intercepted, no one but your generals can understand it?</p>
 
-      <p data-i18n="block1.p2">Именно эту задачу решил Юлий Цезарь более 2000 лет назад. Его метод — <span class="highlight">простой сдвиг букв алфавита</span> — стал первым шагом к современной криптографии.</p>
+      <p data-i18n="block1.p2">That is exactly the problem Julius Caesar solved more than 2000 years ago. His method — <span class="highlight">a simple shift of the alphabet's letters</span> — became the first step toward modern cryptography.</p>
 
-      <p data-i18n="block1.p3">Сегодня шифр Цезаря не используется для реальной защиты данных — его можно взломать за секунды. Но он остаётся <span class="highlight">идеальным учебным инструментом</span>, потому что наглядно показывает фундаментальные принципы:</p>
+      <p data-i18n="block1.p3">Today the Caesar cipher isn't used to protect real data — it can be cracked in seconds. But it remains <span class="highlight">a perfect teaching tool</span>, because it clearly demonstrates fundamental principles:</p>
 
       <ul style="margin-left: 20px; color: #a0c0d0; margin-top: 15px;">
-        <li data-i18n="block1.li1"><strong>Ключ</strong> — секретный параметр, известный только отправителю и получателю</li>
-        <li data-i18n="block1.li2"><strong>Алгоритм</strong> — правило преобразования данных</li>
-        <li data-i18n="block1.li3"><strong>Обратимость</strong> — возможность восстановить исходное сообщение</li>
-        <li data-i18n="block1.li4"><strong>Модульная арифметика</strong> — математическая основа большинства шифров</li>
+        <li data-i18n="block1.li1"><strong>Key</strong> — a secret parameter known only to the sender and the receiver</li>
+        <li data-i18n="block1.li2"><strong>Algorithm</strong> — the rule used to transform the data</li>
+        <li data-i18n="block1.li3"><strong>Reversibility</strong> — the ability to recover the original message</li>
+        <li data-i18n="block1.li4"><strong>Modular arithmetic</strong> — the mathematical foundation of most ciphers</li>
       </ul>
     </section>
 
     <!-- Блок "Как работает шифр?" -->
     <section class="content-block">
-      <h2 data-i18n="block2.heading">Как работает шифр Цезаря?</h2>
+      <h2 data-i18n="block2.heading">How does the Caesar cipher work?</h2>
 
-      <p data-i18n="block2.intro">Принцип прост до гениальности: каждая буква в сообщении заменяется на другую букву, отстоящую от неё на фиксированное число позиций в алфавите. Это число называется <span class="highlight">сдвигом</span> или <span class="highlight">ключом</span>.</p>
+      <p data-i18n="block2.intro">The idea is brilliantly simple: every letter in the message is replaced with another letter a fixed number of positions away in the alphabet. That number is called the <span class="highlight">shift</span> or the <span class="highlight">key</span>.</p>
 
       <div class="explanation-steps">
         <!-- Шаг 1 -->
         <div class="step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h3 data-i18n="step1.title">Присвоение позиций</h3>
-            <p data-i18n="step1.text">Каждой букве алфавита присваивается числовая позиция: А=0, Б=1, В=2... Я=32 (для русского алфавита).</p>
+            <h3 data-i18n="step1.title">Assigning positions</h3>
+            <p data-i18n="step1.text">Every letter of the alphabet gets a numeric position: А=0, Б=1, В=2... Я=32 (for the Russian alphabet).</p>
           </div>
         </div>
 
@@ -609,8 +615,8 @@
         <div class="step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h3 data-i18n="step2.title">Применение сдвига</h3>
-            <p data-i18n="step2.text">К позиции каждой буквы добавляется ключ: <span class="highlight">новая_позиция = (старая_позиция + ключ) mod N</span>, где N — размер алфавита.</p>
+            <h3 data-i18n="step2.title">Applying the shift</h3>
+            <p data-i18n="step2.text">The key is added to each letter's position: <span class="highlight">new_position = (old_position + key) mod N</span>, where N is the size of the alphabet.</p>
           </div>
         </div>
 
@@ -618,199 +624,167 @@
         <div class="step">
           <div class="step-number">3</div>
           <div class="step-content">
-            <h3 data-i18n="step3.title">Обратное преобразование</h3>
-            <p data-i18n="step3.text">Для расшифровки получатель вычитает ключ: <span class="highlight">старая_позиция = (новая_позиция - ключ + N) mod N</span>.</p>
+            <h3 data-i18n="step3.title">Reversing the transformation</h3>
+            <p data-i18n="step3.text">To decrypt, the receiver subtracts the key: <span class="highlight">old_position = (new_position - key + N) mod N</span>.</p>
           </div>
         </div>
       </div>
 
       <!-- ДИАГРАММА ЦЕЗАРЯ -->
       <div class="caesar-diagram">
-        <div class="diagram-title" data-i18n="diagram.title">Математика шифра Цезаря</div>
+        <div class="diagram-title" data-i18n="diagram.title">The math behind the Caesar cipher</div>
 
         <div class="diagram-grid">
           <!-- Карточка шифрования -->
           <div class="diagram-card">
-            <div class="diagram-card-title" data-i18n="diagram.encrypt.title">
-              🔐 Шифрование
-            </div>
+            <div class="diagram-card-title" data-i18n="diagram.encrypt.title">🔐 Encryption</div>
             <div class="diagram-formula">C = (P + K) mod N</div>
-            <div class="diagram-example" data-i18n="diagram.encrypt.example">
-              <strong>Пример:</strong><br>Шифруем букву <code>П</code> со сдвигом <code>3</code><br>
-              П = 16-я буква (0-индекс), K = 3<br>
-              (16 + 3) mod 33 = 19 → <code>Т</code>
-            </div>
+            <div class="diagram-example" data-i18n="diagram.encrypt.example"><strong>Example:</strong><br>Encrypting the letter <code>П</code> with shift <code>3</code><br>П = 16th letter (0-indexed), K = 3<br>(16 + 3) mod 33 = 19 → <code>Т</code></div>
           </div>
 
           <!-- Карточка расшифровки -->
           <div class="diagram-card">
-            <div class="diagram-card-title" data-i18n="diagram.decrypt.title">
-              🔓 Расшифровка
-            </div>
+            <div class="diagram-card-title" data-i18n="diagram.decrypt.title">🔓 Decryption</div>
             <div class="diagram-formula">P = (C − K + N) mod N</div>
-            <div class="diagram-example" data-i18n="diagram.decrypt.example">
-              <strong>Пример:</strong><br>Расшифровываем <code>Т</code> со сдвигом <code>3</code><br>
-              Т = 19, K = 3, N = 33<br>
-              (19 − 3 + 33) mod 33 = 16 → <code>П</code>
-            </div>
+            <div class="diagram-example" data-i18n="diagram.decrypt.example"><strong>Example:</strong><br>Decrypting <code>Т</code> with shift <code>3</code><br>Т = 19, K = 3, N = 33<br>(19 − 3 + 33) mod 33 = 16 → <code>П</code></div>
           </div>
         </div>
 
         <!-- Финальный блок -->
         <div class="final-key">
-          <div class="final-key-title" data-i18n="diagram.final.title">Почему это работает?</div>
-          <div class="final-key-description" data-i18n="diagram.final.desc">
-            Операция <code>mod N</code> обеспечивает «зацикливание» алфавита: после последней буквы снова идёт первая. Это простое, но мощное математическое свойство лежит в основе многих современных шифров.
-          </div>
-          <div class="key-parameter" data-i18n="diagram.final.param">Ключ может быть от 1 до N−1</div>
+          <div class="final-key-title" data-i18n="diagram.final.title">Why does this work?</div>
+          <div class="final-key-description" data-i18n="diagram.final.desc">The <code>mod N</code> operation makes the alphabet "wrap around": after the last letter comes the first one again. This simple but powerful mathematical property underlies many modern ciphers.</div>
+          <div class="key-parameter" data-i18n="diagram.final.param">The key can be anywhere from 1 to N−1</div>
         </div>
 
-        <div class="diagram-note" data-i18n="diagram.note">
-          * В игре криптодиск вращается, наглядно показывая соответствие букв открытого текста и шифротекста.
-        </div>
+        <div class="diagram-note" data-i18n="diagram.note">* In the game, a cipher disk rotates, visually showing how plaintext letters map to ciphertext letters.</div>
       </div>
       <!-- КОНЕЦ ДИАГРАММЫ -->
 
       <div class="key-insight">
-        <strong data-i18n="insight.label">Ключевая мысль:</strong>
-        <span data-i18n="insight.text">Магия шифра Цезаря — в <span class="highlight">модульной арифметике</span>. Операция "mod N" обеспечивает "зацикливание" алфавита: после последней буквы снова идёт первая. Это простой, но мощный принцип, лежащий в основе современных криптографических алгоритмов.</span>
+        <strong data-i18n="insight.label">Key takeaway:</strong>
+        <span data-i18n="insight.text">The magic of the Caesar cipher lies in <span class="highlight">modular arithmetic</span>. The "mod N" operation makes the alphabet "wrap around": after the last letter comes the first one again. It's a simple but powerful principle underlying modern cryptographic algorithms.</span>
       </div>
     </section>
 
     <!-- Блок "Что вы сделаете в игре" -->
     <section class="content-block">
-      <h2 data-i18n="block3.heading">Испытайте шифр на практике</h2>
-      <p data-i18n="block3.intro">В интерактивной симуляции "Шифр Цезаря" вы не просто прочитаете теорию — вы станете криптографом:</p>
+      <h2 data-i18n="block3.heading">Try the cipher yourself</h2>
+      <p data-i18n="block3.intro">In the interactive "Caesar Cipher" simulation you won't just read the theory — you'll become a cryptographer:</p>
 
       <ul class="action-list">
         <li>
           <span class="action-icon">✍️</span>
-          <div class="action-text" data-i18n="action1">
-            <span>Вы <strong>введёте своё сообщение</strong> — до 50 символов на русском или английском языке</span>
-          </div>
+          <div class="action-text" data-i18n="action1">You'll <strong>type your own message</strong> — up to 50 characters in Russian or English</div>
         </li>
         <li>
           <span class="action-icon">🔢</span>
-          <div class="action-text" data-i18n="action2">
-            <span>Вы <strong>выберете ключ шифрования</strong> — сдвиг от 0 до 90 позиций в любую сторону</span>
-          </div>
+          <div class="action-text" data-i18n="action2">You'll <strong>choose an encryption key</strong> — a shift from 0 to 90 positions in either direction</div>
         </li>
         <li>
           <span class="action-icon">🔄</span>
-          <div class="action-text" data-i18n="action3">
-            <span>Вы <strong>увидите работу криптодиска</strong> — два вращающихся кольца показывают соответствие открытого текста и шифра</span>
-          </div>
+          <div class="action-text" data-i18n="action3">You'll <strong>watch the cipher disk in action</strong> — two rotating rings show how plaintext maps to ciphertext</div>
         </li>
         <li>
           <span class="action-icon">⚡</span>
-          <div class="action-text" data-i18n="action4">
-            <span>Вы <strong>запустите пошаговое шифрование</strong> — символ за символом, с визуализацией каждого преобразования</span>
-          </div>
+          <div class="action-text" data-i18n="action4">You'll <strong>run step-by-step encryption</strong> — character by character, with every transformation visualized</div>
         </li>
         <li>
           <span class="action-icon">📡</span>
-          <div class="action-text" data-i18n="action5">
-            <span>Вы <strong>смоделируете передачу данных</strong> — ключ и шифротекст отправляются от Алисы к Бобу по разным каналам</span>
-          </div>
+          <div class="action-text" data-i18n="action5">You'll <strong>simulate data transmission</strong> — the key and ciphertext travel from Alice to Bob over separate channels</div>
         </li>
         <li>
           <span class="action-icon">🔓</span>
-          <div class="action-text" data-i18n="action6">
-            <span>Вы <strong>выполните расшифровку</strong> — Боб применяет обратный сдвиг и восстанавливает исходное сообщение</span>
-          </div>
+          <div class="action-text" data-i18n="action6">You'll <strong>perform the decryption</strong> — Bob applies the reverse shift and recovers the original message</div>
         </li>
       </ul>
 
-      <p data-i18n="block3.outro">Вы увидите, как <span class="highlight">зелёный диск</span> (открытый текст) и <span class="highlight">синий диск</span> (шифротекст) вращаются, наглядно демонстрируя симметрию шифрования и расшифрования.</p>
+      <p data-i18n="block3.outro">You'll see the <span class="highlight">green disk</span> (plaintext) and the <span class="highlight">blue disk</span> (ciphertext) rotate, vividly showing the symmetry between encryption and decryption.</p>
 
       <div class="key-insight">
-        <strong data-i18n="insight2.label">Главный урок:</strong>
-        <span data-i18n="insight2.text">Игра показывает не только математику шифра, но и <span class="highlight">протокол безопасной передачи</span>: сначала передаётся ключ, затем — зашифрованное сообщение. Это фундаментальная идея, которая лежит в основе всех современных систем защиты данных.</span>
+        <strong data-i18n="insight2.label">Main lesson:</strong>
+        <span data-i18n="insight2.text">The game shows not just the math of the cipher, but also a <span class="highlight">secure transmission protocol</span>: the key is sent first, then the encrypted message. This is a fundamental idea underlying all modern data-protection systems.</span>
       </div>
     </section>
 
     <!-- Дополнительный материал -->
     <details class="advanced-section">
-      <summary data-i18n="advanced.summary">Для любознательных</summary>
+      <summary data-i18n="advanced.summary">For the curious</summary>
       <div class="advanced-content">
-        <h3 data-i18n="advanced.history.heading">Историческая справка</h3>
-        <p data-i18n="advanced.history.text">Шифр, которым пользовался Юлий Цезарь, описан римским историком Светонием. Цезарь сдвигал буквы на 3 позиции, но принцип работает с любым ключом. Долгое время этот метод считался достаточно надёжным, пока арабские учёные не разработали частотный анализ (IX век).</p>
+        <h3 data-i18n="advanced.history.heading">Historical background</h3>
+        <p data-i18n="advanced.history.text">The cipher Julius Caesar used was described by the Roman historian Suetonius. Caesar shifted letters by 3 positions, but the principle works with any key. For a long time the method was considered secure enough, until Arab scholars developed frequency analysis (9th century).</p>
 
-        <h3 data-i18n="advanced.weak.heading">Почему шифр Цезаря нестойкий?</h3>
-        <p data-i18n="advanced.weak.intro">Несмотря на историческую важность, шифр Цезаря легко взломать:</p>
+        <h3 data-i18n="advanced.weak.heading">Why is the Caesar cipher weak?</h3>
+        <p data-i18n="advanced.weak.intro">Despite its historical importance, the Caesar cipher is easy to break:</p>
         <ul style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="weak1"><strong>Малое пространство ключей</strong> — всего N-1 возможных сдвигов (для русского алфавита — 32)</li>
-          <li data-i18n="weak2"><strong>Частотный анализ</strong> — буквы в языке встречаются с разной частотой; сопоставив частоты в шифротексте с эталонными, можно восстановить ключ</li>
-          <li data-i18n="weak3"><strong>Атака полным перебором</strong> — даже вручную можно попробовать все 32 варианта за пару минут</li>
+          <li data-i18n="weak1"><strong>Small key space</strong> — only N−1 possible shifts (32 for the Russian alphabet)</li>
+          <li data-i18n="weak2"><strong>Frequency analysis</strong> — letters occur with different frequencies in a language; comparing ciphertext frequencies to reference ones can recover the key</li>
+          <li data-i18n="weak3"><strong>Brute-force attack</strong> — you can try all 32 options by hand in a couple of minutes</li>
         </ul>
 
-        <h3 data-i18n="advanced.topics.heading">Темы для углублённого изучения</h3>
-        <p data-i18n="advanced.topics.intro">Если вы хотите погрузиться глубже в криптографию, вот ключевые темы:</p>
+        <h3 data-i18n="advanced.topics.heading">Topics for further study</h3>
+        <p data-i18n="advanced.topics.intro">If you want to dive deeper into cryptography, here are some key topics:</p>
 
         <div class="topics-grid">
           <div class="topic-card">
-            <h4 data-i18n="topic1.title">Частотный анализ</h4>
-            <p data-i18n="topic1.desc">Как статистика языка помогает взламывать шифры: частоты букв, биграмм, триграмм</p>
+            <h4 data-i18n="topic1.title">Frequency analysis</h4>
+            <p data-i18n="topic1.desc">How language statistics help break ciphers: letter, bigram, and trigram frequencies</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic2.title">Шифр Виженера</h4>
-            <p data-i18n="topic2.desc">Полиалфавитный шифр, который считался невзламываемым три столетия</p>
+            <h4 data-i18n="topic2.title">Vigenère cipher</h4>
+            <p data-i18n="topic2.desc">A polyalphabetic cipher considered unbreakable for three centuries</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic3.title">Одноразовый блокнот</h4>
-            <p data-i18n="topic3.desc">Единственный теоретически невзламываемый шифр: ключ = длина сообщения, используется один раз</p>
+            <h4 data-i18n="topic3.title">One-time pad</h4>
+            <p data-i18n="topic3.desc">The only theoretically unbreakable cipher: a key as long as the message, used only once</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic4.title">Современные блочные шифры</h4>
-            <p data-i18n="topic4.desc">Как идеи простой подстановки эволюционировали в AES, ГОСТ «Кузнечик» и другие алгоритмы</p>
+            <h4 data-i18n="topic4.title">Modern block ciphers</h4>
+            <p data-i18n="topic4.desc">How simple substitution evolved into AES, the Russian "Kuznyechik" standard, and other algorithms</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic5.title">Криптоанализ в Python</h4>
-            <p data-i18n="topic5.desc">Практические скрипты для частотного анализа и атак на шифр Цезаря</p>
+            <h4 data-i18n="topic5.title">Cryptanalysis in Python</h4>
+            <p data-i18n="topic5.desc">Practical scripts for frequency analysis and attacks on the Caesar cipher</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic6.title">Российские стандарты</h4>
-            <p data-i18n="topic6.desc">ГОСТ 28147-89 «Магма», ГОСТ Р 34.12-2015 «Кузнечик», хеш-функция «Стрибог»</p>
+            <h4 data-i18n="topic6.title">Russian standards</h4>
+            <p data-i18n="topic6.desc">GOST 28147-89 "Magma," GOST R 34.12-2015 "Kuznyechik," and the "Streebog" hash function</p>
           </div>
         </div>
 
-        <h3 data-i18n="advanced.facts.heading">Интересные факты</h3>
+        <h3 data-i18n="advanced.facts.heading">Fun facts</h3>
         <ul style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="fact1">Шифр Цезаря использовался в русской армии во время Первой мировой войны — и регулярно взламывался противником</li>
-          <li data-i18n="fact2">В иврите существует традиция шифрования "Атбаш" — замена первой буквы алфавита на последнюю, второй на предпоследнюю и т.д.</li>
-          <li data-i18n="fact3">ROT13 — вариант шифра Цезаря со сдвигом 13, популярный в интернете для скрытия спойлеров; его особенность: шифрование и расшифрование совпадают</li>
-          <li data-i18n="fact4">В игре используется расширенный алфавит (кириллица + латиница + цифры + знаки), что увеличивает пространство ключей до 90+ вариантов</li>
+          <li data-i18n="fact1">The Caesar cipher was used by the Russian army during World War I — and was routinely broken by the enemy</li>
+          <li data-i18n="fact2">In Hebrew there is a cipher tradition called "Atbash" — swapping the first letter of the alphabet with the last, the second with the second-to-last, and so on</li>
+          <li data-i18n="fact3">ROT13 is a Caesar cipher variant with a shift of 13, popular online for hiding spoilers; its quirk is that encryption and decryption are the same operation</li>
+          <li data-i18n="fact4">The game uses an extended alphabet (Cyrillic + Latin + digits + symbols), which expands the key space to over 90 options</li>
         </ul>
       </div>
     </details>
 
     <!-- Кнопки действий -->
     <div class="article-actions" id="article-actions">
-      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">
-        Теперь, когда вы понимаете математику и историю шифра Цезаря, самое время попробовать его в действии!
-      </p>
+      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Now that you understand the math and history of the Caesar cipher, it's the perfect time to try it in action!</p>
 
       <div class="action-buttons">
         <!-- Ссылка на игру по Цезарю -->
-        <a href="https://ludus-lab.ru/games/caesarcipher/index.html" class="btn-primary" data-i18n="actions.play">▶ Запустить симуляцию</a>
-        <a href="https://ludus-lab.ru/#theory-section" class="btn-secondary" data-i18n="actions.back">← Вернуться к списку тем</a>
+        <a href="/games/caesarcipher/" class="btn-primary" data-i18n="actions.play">▶ Launch the simulation</a>
+        <a href="/#theory-section" class="btn-secondary" data-i18n="actions.back">← Back to the topic list</a>
       </div>
 
-      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">
-        В интерактивной симуляции вы сможете зашифровать своё сообщение и увидеть каждый шаг процесса
-      </p>
+      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">In the interactive simulation you can encrypt your own message and watch every step of the process</p>
     </div>
   </div>
 
   <!-- Футер -->
   <footer class="theory-footer">
-    <p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
-    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Эта статья — упрощённое объяснение для понимания принципов. Реальные криптографические системы используют более сложные алгоритмы и должны соответствовать требованиям регуляторов, включая ФСБ России для систем, используемых в РФ.</p>
+    <p data-i18n="footer.line1">© 2025 Ludus Lab · Complex things through simple games</p>
+    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">This article is a simplified explanation meant to convey the principles. Real cryptographic systems use far more complex algorithms and must comply with regulatory requirements, including FSB requirements for systems used in Russia.</p>
   </footer>
 
   <script>
@@ -1142,7 +1116,7 @@
 
     (function initLanguage() {
       let saved = null;
-      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      saved = 'en';
       if (!saved) {
         const browserLang = (navigator.language || 'ru').slice(0, 2);
         saved = I18N[browserLang] ? browserLang : 'ru';

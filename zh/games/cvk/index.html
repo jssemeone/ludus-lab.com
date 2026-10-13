@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Favicon -->
+<link rel="icon" type="image/x-icon" href="../../favicon.ico">
+<link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+
+    ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+  
+  <title id="pageTitle">密钥生成中心</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+    .lang-btn { background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3); font-size: 0.7rem; letter-spacing: 0.5px; padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+    .lang-btn.active { background: rgba(255, 215, 0, 0.18); border-color: #ffd700; color: #ffd700; box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+    @media (max-width: 600px) { .lang-switch { top: 8px; right: 8px; } .lang-btn { font-size: 0.6rem; padding: 3px 7px; } }
+
+    body {
+      background: linear-gradient(to bottom, #0a1a2a, #050d15);
+      color: #c5d5e0;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 15px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 10, 20, 0.8);
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #00a2ff;
+      border-radius: 5px;
+      border: 2px solid rgba(0, 10, 20, 0.8);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00c2ff;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(135deg, rgba(30, 144, 255, 0.03) 0%, rgba(0, 206, 209, 0.03) 100%),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M20,20 Q40,5 60,20 T100,20" fill="none" stroke="%235a2a1a" stroke-width="0.5" opacity="0.2"/></svg>');
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .game-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      color: #00a2ff;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(0, 162, 255, 0.3);
+      letter-spacing: 1px;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      animation: flicker 5s infinite;
+    }
+
+    .header-decoration {
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, #ffd700 50%, transparent 100%);
+      margin: 6px auto 15px;
+      max-width: 500px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #8ab0c5;
+      max-width: 700px;
+      margin: 0 auto;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+    }
+
+    /* Стили для протокола/описания (как в E91) */
+    .protocol-container {
+      margin-bottom: 20px;
+    }
+    
+    .protocol-header {
+      cursor: pointer;
+      padding: 12px;
+      background: rgba(5, 20, 30, 0.8);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+    
+    .protocol-header:hover {
+      background: rgba(10, 30, 45, 0.8);
+    }
+    
+    .protocol-header h2 {
+      color: #00a2ff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      font-size: 1.2rem;
+    }
+    
+    .toggle-icon {
+      font-size: 1.4rem;
+      width: 18px;
+      text-align: center;
+    }
+    
+    .protocol-description {
+      background: rgba(5, 20, 30, 0.6);
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+      padding: 15px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    
+    .protocol-step {
+      margin-bottom: 15px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(0, 162, 255, 0.2);
+    }
+    
+    .protocol-step:last-child {
+      border-bottom: none;
+    }
+    
+    .protocol-step-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #00a2ff;
+    }
+    
+    .protocol-step-number {
+      background: #00a2ff;
+      color: #050d15;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    
+    .protocol-description ul {
+      padding-left: 18px;
+      margin: 8px 0;
+    }
+    
+    .protocol-description li {
+      margin-bottom: 4px;
+    }
+
+    .highlight {
+      color: #00a2ff;
+      font-weight: 600;
+    }
+
+    .action-button {
+      background: linear-gradient(to bottom, #001a2d, #000c1a);
+      color: #00a2ff;
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.05rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-shadow: 0 0 3px rgba(0, 162, 255, 0.3);
+      font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: flicker 5s infinite;
+      margin: 20px auto;
+      width: 300px;
+      max-width: 90%;
+    }
+
+    .action-button:hover {
+      background: linear-gradient(to bottom, #002540, #001225);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 162, 255, 0.4);
+    }
+
+    .game-area {
+      background: rgba(5, 20, 30, 0.85);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 
+        0 0 20px rgba(0, 162, 255, 0.3),
+        inset 0 0 15px rgba(0, 100, 150, 0.2);
+      margin-bottom: 25px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #gameCanvas {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0, 162, 255, 0.2);
+    }
+
+    .visualizer {
+      background: rgba(0, 10, 20, 0.7);
+      border: 1px solid rgba(0, 162, 255, 0.4);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 20px 0;
+      font-family: monospace;
+      font-size: 0.95rem;
+    }
+
+    .visualizer div {
+      margin: 4px 0;
+    }
+
+    #statusLine {
+      color: #00a2ff;
+      font-weight: bold;
+      min-height: 1.3em;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .key-display {
+      display: none;
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0, 162, 255, 0.2);
+    }
+
+    /* Стили для навигационных ссылок как в E91 (внизу) */
+    .navigation-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 25px auto 15px;
+      flex-wrap: wrap;
+    }
+    
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 15px;
+      background: rgba(0, 10, 20, 0.7);
+      color: #8ab0c5;
+      text-decoration: none;
+      border: 1px solid rgba(0, 162, 255, 0.3);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      gap: 6px;
+    }
+    
+    .nav-link:hover {
+      color: #00a2ff;
+      border-color: #00a2ff;
+      background: rgba(0, 20, 35, 0.7);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 162, 255, 0.2);
+    }
+    
+    .nav-link.primary {
+      background: rgba(0, 40, 80, 0.7);
+      color: #00a2ff;
+      border-color: rgba(0, 162, 255, 0.5);
+    }
+    
+    .nav-link.secondary {
+      background: rgba(212, 175, 55, 0.1);
+      color: #d4af37;
+      border-color: rgba(212, 175, 55, 0.3);
+    }
+    
+    .nav-link.secondary:hover {
+      color: #ffd700;
+      border-color: #d4af37;
+    }
+
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 22%, 24%, 55% { opacity: 0.8; }
+    }
+
+    /* Адаптивность для мобильных */
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+      
+      h1 {
+        font-size: 1.7rem;
+      }
+      
+      .subtitle {
+        font-size: 0.9rem;
+      }
+      
+      .game-area {
+        padding: 15px;
+      }
+      
+      .protocol-header {
+        padding: 10px;
+      }
+      
+      .protocol-header h2 {
+        font-size: 1.1rem;
+      }
+      
+      .protocol-description {
+        padding: 12px;
+        font-size: 0.85rem;
+      }
+      
+      .action-button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        width: 250px;
+      }
+      
+      .visualizer {
+        padding: 12px;
+        font-size: 0.85rem;
+      }
+      
+      .navigation-links {
+        gap: 10px;
+        margin: 20px auto 12px;
+      }
+      
+      .nav-link {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .navigation-links {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .action-button {
+        width: 220px;
+      }
+    }
+  </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/zh/games/cvk/">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/games/cvk/">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/games/cvk/">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/games/cvk/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/games/cvk/">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/games/cvk/">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
+</head>
+<body>
+  <div class="lang-switch" role="group" aria-label="Language">
+    <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/games/cvk/" hreflang="ru" lang="ru">RU</a>
+    <a class="lang-btn" data-lang-btn="en" href="https://ludus-lab.com/games/cvk/" hreflang="en" lang="en">EN</a>
+    <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/games/cvk/" hreflang="es" lang="es">ES</a>
+    <a class="lang-btn active" data-lang-btn="zh" href="https://ludus-lab.com/zh/games/cvk/" hreflang="zh-Hans" lang="zh-CN">中文</a>
+  </div>
+  <div class="container">
+    <header class="game-header">
+      <h1 data-i18n="game.title">密钥生成中心</h1>
+      <div class="header-decoration"></div>
+      <p class="subtitle" data-i18n="game.subtitle">Ludus Lab · 用游戏把复杂的事情变简单</p>
+    </header>
+
+    <!-- Свертываемый блок описания (как протокол в E91) -->
+    <div class="protocol-container">
+      <div class="protocol-header" id="protocolHeader">
+        <h2><span data-i18n="protocol.toggle">密钥生成中心是如何工作的</span> <span class="toggle-icon">+</span></h2>
+      </div>
+      <div class="protocol-description" id="protocolContent">
+        <p data-i18n="protocol.intro">密钥生成中心（CVK）是一个基于用户熵生成密码密钥的模拟器。与算法生成器不同，它利用不可预测的光标移动来生成真正随机的序列。</p>
+
+        <div class="protocol-step">
+          <div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">收集熵</span></div>
+          <p data-i18n="protocol.step1.desc">系统收集三个熵源：光标的 X 坐标、Y 坐标，以及以毫秒为单位的当前时间。鼠标移动得越混乱，熵的质量就越高。</p>
+        </div>
+
+        <div class="protocol-step">
+          <div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">数值的奇偶性</span></div>
+          <p data-i18n="protocol.step2.desc">对这三个数值中的每一个，系统判断它是奇数（奇偶位 = 1）还是偶数（奇偶位 = 0）。</p>
+          <p data-i18n="protocol.step2.example">例如：X=125 → 奇数 → 1；Y=84 → 偶数 → 0；时间=1623456789 → 奇数 → 1</p>
+        </div>
+
+        <div class="protocol-step">
+          <div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">异或运算</span></div>
+          <p data-i18n="protocol.step3.desc1">三个奇偶位（X、Y、时间）按模 2 相加（异或运算）。</p>
+          <p data-i18n="protocol.step3.desc2">异或的规则是：如果 1 的个数（奇数值的个数）是奇数，结果就是 1。</p>
+          <ul data-i18n="protocol.step3.list"><li>0+0+0 = 0 → 1 的个数为偶数 → 比特 = 0</li><li>1+0+1 = 2 → 1 的个数为偶数 → 比特 = 0</li><li>1+1+1 = 3 → 1 的个数为奇数 → 比特 = 1</li><li>1+0+0 = 1 → 1 的个数为奇数 → 比特 = 1</li></ul>
+        </div>
+
+        <div class="protocol-step">
+          <div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">生成一个密钥比特</span></div>
+          <p data-i18n="protocol.step4.desc">异或运算的结果成为未来密码密钥的一个比特。每隔固定的时间间隔，针对每一个新的光标位置重复这一运算。</p>
+        </div>
+
+        <div class="protocol-step">
+          <div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">组装密钥</span></div>
+          <p data-i18n="protocol.step5.desc">比特依次填入密钥的各个格子。收集到足够的比特后（本模拟中为 16 位），完整的密码密钥就形成了。</p>
+        </div>
+
+        <div class="protocol-step">
+          <div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">安全性</span></div>
+          <p data-i18n="protocol.step6.desc">用这种方式生成的密钥具有很高的密码强度，因为不知道确切的光标轨迹和每次采样的时间，就无法预测它。</p>
+        </div>
+
+        <p data-i18n="protocol.practical"><strong>实际应用：</strong>类似的方法用于需要高度随机性的系统——密码协议、会话密钥生成、加密中的初始化向量。</p>
+      </div>
+    </div>
+
+    <button class="action-button" id="startButton">
+      <i class="fas fa-key"></i> <span data-i18n="btn.generate">生成密钥</span>
+    </button>
+
+    <div class="game-area">
+      <canvas id="gameCanvas" width="600" height="320"></canvas>
+
+      <div class="visualizer">
+        <div><span data-i18n="vis.xLabel">X = </span><span id="xVal">—</span> <span data-i18n="vis.oddQ">→ 奇数？</span> <span id="xParity">?</span></div>
+        <div><span data-i18n="vis.yLabel">Y = </span><span id="yVal">—</span> <span data-i18n="vis.oddQ">→ 奇数？</span> <span id="yParity">?</span></div>
+        <div><span data-i18n="vis.timeLabel">时间 = </span><span id="timeVal">—</span> <span data-i18n="vis.oddQ">→ 奇数？</span> <span id="tParity">?</span></div>
+        <div><span data-i18n="vis.xorLabel">异或：奇数值的个数 = </span><span id="oddCount">0</span></div>
+        <div><span data-i18n="vis.bitLabel">比特 = </span><span id="bitVal">?</span></div>
+        <div id="statusLine" data-i18n="status.pressStart">点击“生成密钥”</div>
+      </div>
+
+      <div class="key-display" id="keyDisplay">
+        <div class="visualizer">
+          <p><strong data-i18n="key.successTitle">主密钥生成成功：</strong></p>
+          <p style="word-break: break-all; font-family: monospace; font-size: 1.1rem; text-align: center; margin: 10px 0; padding: 10px; background: rgba(0,20,40,0.5); border-radius: 5px;" id="generatedKey"></p>
+          <p data-i18n="key.copyHint">你可以复制它以备后用。</p>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+          <button class="action-button" style="width: 200px; margin: 0;" onclick="copyKey()">
+            <i class="fas fa-copy"></i> <span data-i18n="btn.copy">复制密钥</span>
+          </button>
+          <button class="action-button" style="width: 200px; margin: 0;" id="newKeyBtn">
+            <i class="fas fa-redo"></i> <span data-i18n="btn.newkey">新密钥</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Навигационные ссылки как в E91 (внизу) -->
+    <div class="navigation-links">
+      <a href="/zh/theory/keygen.html" class="nav-link secondary">
+        <i class="fas fa-book-open"></i> <span data-i18n="nav.theory">阅读理论</span>
+      </a>
+      <a href="/zh/" class="nav-link primary">
+        <i class="fas fa-home"></i> <span data-i18n="nav.home">返回实验室</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const keyDisplay = document.getElementById('keyDisplay');
+    const startButton = document.getElementById('startButton');
+    const newKeyBtn = document.getElementById('newKeyBtn');
+    const generatedKeyEl = document.getElementById('generatedKey');
+    const protocolHeader = document.getElementById('protocolHeader');
+    const protocolContent = document.getElementById('protocolContent');
+
+    const xValEl = document.getElementById('xVal');
+    const yValEl = document.getElementById('yVal');
+    const timeValEl = document.getElementById('timeVal');
+    const xParityEl = document.getElementById('xParity');
+    const yParityEl = document.getElementById('yParity');
+    const tParityEl = document.getElementById('tParity');
+    const oddCountEl = document.getElementById('oddCount');
+    const bitValEl = document.getElementById('bitVal');
+    const statusLineEl = document.getElementById('statusLine');
+
+    // ===== I18N =====
+    const I18N = {
+      ru: {
+        'meta.title': 'Центр выработки ключей',
+        'game.title': 'Центр выработки ключей', 'game.subtitle': 'Ludus Lab · Сложные вещи — простыми играми',
+        'protocol.toggle': 'Описание работы центра выработки ключей',
+        'protocol.intro': 'Центр выработки ключей (CVK) — это симулятор генерации криптографических ключей на основе энтропии пользователя. В отличие от алгоритмических генераторов, он использует непредсказуемые движения курсора для создания истинно случайных последовательностей.',
+        'protocol.step1.title': 'Сбор энтропии', 'protocol.step1.desc': 'Система собирает три источника энтропии: координату X курсора, координату Y и текущее время в миллисекундах. Чем хаотичнее движение мыши, тем выше качество энтропии.',
+        'protocol.step2.title': 'Парность значений', 'protocol.step2.desc': 'Для каждого из трёх значений определяется, является ли оно нечётным (парность = 1) или чётным (парность = 0).', 'protocol.step2.example': 'Примеры: X=125 → нечётное → 1; Y=84 → чётное → 0; Время=1623456789 → нечётное → 1',
+        'protocol.step3.title': 'Операция XOR', 'protocol.step3.desc1': 'Три бита парности (X, Y, время) складываются по модулю 2 (операция XOR).', 'protocol.step3.desc2': 'XOR работает по принципу: результат равен 1, если количество единиц (нечётных значений) нечётно.',
+        'protocol.step3.list': '<li>0+0+0 = 0 → чётное количество единиц → бит = 0</li><li>1+0+1 = 2 → чётное количество единиц → бит = 0</li><li>1+1+1 = 3 → нечётное количество единиц → бит = 1</li><li>1+0+0 = 1 → нечётное количество единиц → бит = 1</li>',
+        'protocol.step4.title': 'Формирование бита ключа', 'protocol.step4.desc': 'Результат операции XOR становится одним битом будущего криптографического ключа. Эта операция повторяется для каждого нового положения курсора через фиксированные интервалы времени.',
+        'protocol.step5.title': 'Сборка ключа', 'protocol.step5.desc': 'Биты последовательно собираются в ячейки ключа. Когда набирается достаточное количество битов (в данной симуляции — 16), формируется полный криптографический ключ.',
+        'protocol.step6.title': 'Безопасность', 'protocol.step6.desc': 'Ключ, сгенерированный таким способом, обладает высокой криптографической стойкостью, так как его невозможно предсказать без знания точной траектории движения курсора и времени каждого замера.',
+        'protocol.practical': '<strong>Практическое применение:</strong> Подобные методы используются в системах, требующих высокой степени случайности — криптографических протоколах, генерации сессионных ключей, инициализации векторов в шифровании.',
+        'btn.generate': 'Сгенерировать ключ', 'btn.copy': 'Скопировать ключ', 'btn.newkey': 'Новый ключ',
+        'vis.xLabel': 'X = ', 'vis.yLabel': 'Y = ', 'vis.timeLabel': 'ВРЕМЯ = ', 'vis.oddQ': '→ нечётное?', 'vis.xorLabel': 'XOR: нечётных значений = ', 'vis.bitLabel': 'БИТ = ',
+        'status.pressStart': 'Нажмите «Сгенерировать ключ»', 'status.moveForEntropy': 'Двигайте курсором для генерации энтропии', 'status.capturing': 'Захват энтропии...', 'status.moveCursor': 'Двигайте курсором', 'status.keyGenerated': 'Ключ сгенерирован',
+        'parity.yes': 'да', 'parity.no': 'нет',
+        'canvas.collected': 'Собрано бит: {count} / {total}',
+        'key.successTitle': 'Мастер-ключ успешно сгенерирован:', 'key.copyHint': 'Вы можете скопировать его для дальнейшего использования.',
+        'alert.copied': 'Ключ скопирован!',
+        'nav.theory': 'Прочитать теорию', 'nav.home': 'Вернуться в лабораторию',
+      },
+      en: {
+        'meta.title': 'Key Generation Center',
+        'game.title': 'Key Generation Center', 'game.subtitle': 'Ludus Lab · Complex things made simple through games',
+        'protocol.toggle': 'How the key generation center works',
+        'protocol.intro': 'The Key Generation Center (CVK) is a simulator of cryptographic key generation based on user entropy. Unlike algorithmic generators, it uses unpredictable cursor movement to create truly random sequences.',
+        'protocol.step1.title': 'Collecting entropy', 'protocol.step1.desc': 'The system collects three sources of entropy: the cursor\'s X coordinate, its Y coordinate, and the current time in milliseconds. The more chaotic the mouse movement, the higher the quality of the entropy.',
+        'protocol.step2.title': 'Parity of the values', 'protocol.step2.desc': 'For each of the three values, the system determines whether it is odd (parity = 1) or even (parity = 0).', 'protocol.step2.example': 'Examples: X=125 → odd → 1; Y=84 → even → 0; Time=1623456789 → odd → 1',
+        'protocol.step3.title': 'The XOR operation', 'protocol.step3.desc1': 'The three parity bits (X, Y, time) are added modulo 2 (the XOR operation).', 'protocol.step3.desc2': 'XOR works as follows: the result is 1 if the number of ones (odd values) is odd.',
+        'protocol.step3.list': '<li>0+0+0 = 0 → even number of ones → bit = 0</li><li>1+0+1 = 2 → even number of ones → bit = 0</li><li>1+1+1 = 3 → odd number of ones → bit = 1</li><li>1+0+0 = 1 → odd number of ones → bit = 1</li>',
+        'protocol.step4.title': 'Forming a key bit', 'protocol.step4.desc': 'The result of the XOR operation becomes one bit of the future cryptographic key. This operation repeats for each new cursor position at fixed time intervals.',
+        'protocol.step5.title': 'Assembling the key', 'protocol.step5.desc': 'Bits are sequentially collected into key cells. Once enough bits have been gathered (16 in this simulation), the full cryptographic key is formed.',
+        'protocol.step6.title': 'Security', 'protocol.step6.desc': 'A key generated this way has high cryptographic strength, since it cannot be predicted without knowing the exact cursor trajectory and the timing of each sample.',
+        'protocol.practical': '<strong>Practical use:</strong> Methods like this are used in systems that require a high degree of randomness — cryptographic protocols, session key generation, initialization vectors in encryption.',
+        'btn.generate': 'Generate key', 'btn.copy': 'Copy key', 'btn.newkey': 'New key',
+        'vis.xLabel': 'X = ', 'vis.yLabel': 'Y = ', 'vis.timeLabel': 'TIME = ', 'vis.oddQ': '→ odd?', 'vis.xorLabel': 'XOR: number of odd values = ', 'vis.bitLabel': 'BIT = ',
+        'status.pressStart': 'Click "Generate key"', 'status.moveForEntropy': 'Move the cursor to generate entropy', 'status.capturing': 'Capturing entropy...', 'status.moveCursor': 'Move the cursor', 'status.keyGenerated': 'Key generated',
+        'parity.yes': 'yes', 'parity.no': 'no',
+        'canvas.collected': 'Bits collected: {count} / {total}',
+        'key.successTitle': 'Master key generated successfully:', 'key.copyHint': 'You can copy it for later use.',
+        'alert.copied': 'Key copied!',
+        'nav.theory': 'Read the theory', 'nav.home': 'Back to the lab',
+      },
+      es: {
+        'meta.title': 'Centro de generación de claves',
+        'game.title': 'Centro de generación de claves', 'game.subtitle': 'Ludus Lab · Cosas complejas explicadas con juegos simples',
+        'protocol.toggle': 'Cómo funciona el centro de generación de claves',
+        'protocol.intro': 'El Centro de generación de claves (CVK) es un simulador de generación de claves criptográficas basado en la entropía del usuario. A diferencia de los generadores algorítmicos, usa el movimiento impredecible del cursor para crear secuencias verdaderamente aleatorias.',
+        'protocol.step1.title': 'Recolección de entropía', 'protocol.step1.desc': 'El sistema recopila tres fuentes de entropía: la coordenada X del cursor, la coordenada Y y la hora actual en milisegundos. Cuanto más caótico sea el movimiento del ratón, mayor será la calidad de la entropía.',
+        'protocol.step2.title': 'Paridad de los valores', 'protocol.step2.desc': 'Para cada uno de los tres valores se determina si es impar (paridad = 1) o par (paridad = 0).', 'protocol.step2.example': 'Ejemplos: X=125 → impar → 1; Y=84 → par → 0; Tiempo=1623456789 → impar → 1',
+        'protocol.step3.title': 'Operación XOR', 'protocol.step3.desc1': 'Los tres bits de paridad (X, Y, tiempo) se suman módulo 2 (operación XOR).', 'protocol.step3.desc2': 'El XOR funciona así: el resultado es 1 si la cantidad de unos (valores impares) es impar.',
+        'protocol.step3.list': '<li>0+0+0 = 0 → cantidad par de unos → bit = 0</li><li>1+0+1 = 2 → cantidad par de unos → bit = 0</li><li>1+1+1 = 3 → cantidad impar de unos → bit = 1</li><li>1+0+0 = 1 → cantidad impar de unos → bit = 1</li>',
+        'protocol.step4.title': 'Formación de un bit de la clave', 'protocol.step4.desc': 'El resultado de la operación XOR se convierte en un bit de la futura clave criptográfica. Esta operación se repite para cada nueva posición del cursor a intervalos fijos de tiempo.',
+        'protocol.step5.title': 'Ensamblaje de la clave', 'protocol.step5.desc': 'Los bits se recopilan secuencialmente en las celdas de la clave. Cuando se reúnen suficientes bits (16 en esta simulación), se forma la clave criptográfica completa.',
+        'protocol.step6.title': 'Seguridad', 'protocol.step6.desc': 'Una clave generada de esta forma tiene una alta fortaleza criptográfica, ya que no se puede predecir sin conocer la trayectoria exacta del cursor y el momento de cada muestra.',
+        'protocol.practical': '<strong>Uso práctico:</strong> Métodos como este se usan en sistemas que requieren un alto grado de aleatoriedad: protocolos criptográficos, generación de claves de sesión, vectores de inicialización en cifrado.',
+        'btn.generate': 'Generar clave', 'btn.copy': 'Copiar clave', 'btn.newkey': 'Nueva clave',
+        'vis.xLabel': 'X = ', 'vis.yLabel': 'Y = ', 'vis.timeLabel': 'TIEMPO = ', 'vis.oddQ': '→ ¿impar?', 'vis.xorLabel': 'XOR: valores impares = ', 'vis.bitLabel': 'BIT = ',
+        'status.pressStart': 'Pulsa «Generar clave»', 'status.moveForEntropy': 'Mueve el cursor para generar entropía', 'status.capturing': 'Capturando entropía...', 'status.moveCursor': 'Mueve el cursor', 'status.keyGenerated': 'Clave generada',
+        'parity.yes': 'sí', 'parity.no': 'no',
+        'canvas.collected': 'Bits recopilados: {count} / {total}',
+        'key.successTitle': 'Clave maestra generada correctamente:', 'key.copyHint': 'Puedes copiarla para usarla más adelante.',
+        'alert.copied': '¡Clave copiada!',
+        'nav.theory': 'Leer la teoría', 'nav.home': 'Volver al laboratorio',
+      },
+      zh: {
+        'meta.title': '密钥生成中心',
+        'game.title': '密钥生成中心',
+        'game.subtitle': 'Ludus Lab · 用游戏把复杂的事情变简单',
+        'protocol.toggle': '密钥生成中心是如何工作的',
+        'protocol.intro': '密钥生成中心（CVK）是一个基于用户熵生成密码密钥的模拟器。与算法生成器不同，它利用不可预测的光标移动来生成真正随机的序列。',
+        'protocol.step1.title': '收集熵',
+        'protocol.step1.desc': '系统收集三个熵源：光标的 X 坐标、Y 坐标，以及以毫秒为单位的当前时间。鼠标移动得越混乱，熵的质量就越高。',
+        'protocol.step2.title': '数值的奇偶性',
+        'protocol.step2.desc': '对这三个数值中的每一个，系统判断它是奇数（奇偶位 = 1）还是偶数（奇偶位 = 0）。',
+        'protocol.step2.example': '例如：X=125 → 奇数 → 1；Y=84 → 偶数 → 0；时间=1623456789 → 奇数 → 1',
+        'protocol.step3.title': '异或运算',
+        'protocol.step3.desc1': '三个奇偶位（X、Y、时间）按模 2 相加（异或运算）。',
+        'protocol.step3.desc2': '异或的规则是：如果 1 的个数（奇数值的个数）是奇数，结果就是 1。',
+        'protocol.step3.list': '<li>0+0+0 = 0 → 1 的个数为偶数 → 比特 = 0</li><li>1+0+1 = 2 → 1 的个数为偶数 → 比特 = 0</li><li>1+1+1 = 3 → 1 的个数为奇数 → 比特 = 1</li><li>1+0+0 = 1 → 1 的个数为奇数 → 比特 = 1</li>',
+        'protocol.step4.title': '生成一个密钥比特',
+        'protocol.step4.desc': '异或运算的结果成为未来密码密钥的一个比特。每隔固定的时间间隔，针对每一个新的光标位置重复这一运算。',
+        'protocol.step5.title': '组装密钥',
+        'protocol.step5.desc': '比特依次填入密钥的各个格子。收集到足够的比特后（本模拟中为 16 位），完整的密码密钥就形成了。',
+        'protocol.step6.title': '安全性',
+        'protocol.step6.desc': '用这种方式生成的密钥具有很高的密码强度，因为不知道确切的光标轨迹和每次采样的时间，就无法预测它。',
+        'protocol.practical': '<strong>实际应用：</strong>类似的方法用于需要高度随机性的系统——密码协议、会话密钥生成、加密中的初始化向量。',
+        'btn.generate': '生成密钥',
+        'btn.copy': '复制密钥',
+        'btn.newkey': '新密钥',
+        'vis.xLabel': 'X = ',
+        'vis.yLabel': 'Y = ',
+        'vis.timeLabel': '时间 = ',
+        'vis.oddQ': '→ 奇数？',
+        'vis.xorLabel': '异或：奇数值的个数 = ',
+        'vis.bitLabel': '比特 = ',
+        'status.pressStart': '点击“生成密钥”',
+        'status.moveForEntropy': '移动光标以产生熵',
+        'status.capturing': '正在采集熵……',
+        'status.moveCursor': '移动光标',
+        'status.keyGenerated': '密钥已生成',
+        'parity.yes': '是',
+        'parity.no': '否',
+        'canvas.collected': '已收集比特：{count} / {total}',
+        'key.successTitle': '主密钥生成成功：',
+        'key.copyHint': '你可以复制它以备后用。',
+        'alert.copied': '密钥已复制！',
+        'nav.theory': '阅读理论',
+        'nav.home': '返回实验室',
+      },
+    };
+    let currentLang = 'ru';
+    function t(key, vars) {
+      const dict = I18N[currentLang] || I18N.ru;
+      let str = dict[key] !== undefined ? dict[key] : (I18N.ru[key] !== undefined ? I18N.ru[key] : key);
+      if (vars) for (const k in vars) str = str.replace(new RegExp('\\{' + k + '\\}', 'g'), vars[k]);
+      return str;
+    }
+    function applyLanguage(lang) {
+      if (!I18N[lang]) lang = 'ru';
+      currentLang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+      document.title = t('meta.title');
+      document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n')); });
+      document.querySelectorAll('.lang-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.langBtn === lang); });
+      try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+    }
+    function initLanguage() {
+      let saved = null;
+      saved = 'zh';
+      if (!saved) { const browserLang = (navigator.language || 'ru').slice(0, 2); saved = I18N[browserLang] ? browserLang : 'ru'; }
+      applyLanguage(saved);
+    }
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn)));
+    initLanguage();
+
+    const KEY_LENGTH = 16;
+    const CAPTURE_INTERVAL = 2000;
+    const SPARKS_PER_EVENT = 32;
+    const GRAVITY = 0.25;
+    const ATTRACTION_THRESHOLD = (3 / 4) * canvas.height;
+    const BOOSTED_ATTRACTION_SPEED = 8.0;
+    const CELL_SIZE = 28;
+
+    let mouseX = canvas.width / 2;
+    let mouseY = canvas.height / 2;
+    let bits = [];
+    let sparks = [];
+    let nextCaptureTime = 0;
+    let gameActive = false;
+    let frozenValues = null;
+    let freezeUntil = 0;
+    let generationComplete = false;
+
+    const bitTargets = [];
+    for (let i = 0; i < KEY_LENGTH; i++) {
+      bitTargets.push({
+        x: 55 + i * 30,
+        y: canvas.height - 32
+      });
+    }
+
+    // Функция для сворачивания/разворачивания описания (как в E91)
+    function toggleProtocol() {
+      const isExpanded = protocolContent.style.display === 'block';
+      const toggleIcon = protocolHeader.querySelector('.toggle-icon');
+      if (isExpanded) {
+        protocolContent.style.display = 'none';
+        toggleIcon.textContent = '+';
+      } else {
+        protocolContent.style.display = 'block';
+        toggleIcon.textContent = '-';
+      }
+    }
+
+    // Инициализация сворачиваемого блока
+    protocolHeader.addEventListener('click', toggleProtocol);
+
+    function handlePointerMove(e) {
+      if (generationComplete || !gameActive) return;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      let clientX = e.clientX;
+      let clientY = e.clientY;
+      if (e.touches && e.touches[0]) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      }
+      mouseX = Math.max(0, Math.min(canvas.width, (clientX - rect.left) * scaleX));
+      mouseY = Math.max(0, Math.min(ATTRACTION_THRESHOLD - 15, (clientY - rect.top) * scaleY));
+    }
+
+    function startGame() {
+      if (gameActive || generationComplete) return;
+      gameActive = true;
+      startButton.style.display = 'none';
+      nextCaptureTime = Date.now() + CAPTURE_INTERVAL;
+      statusLineEl.textContent = t('status.moveForEntropy');
+    }
+
+    function finishKeyGeneration() {
+      gameActive = false;
+      generationComplete = true;
+      keyDisplay.style.display = 'block';
+      generatedKeyEl.textContent = bits.join('');
+    }
+
+    function restart() {
+      bits = [];
+      sparks = [];
+      frozenValues = null;
+      freezeUntil = 0;
+      gameActive = false;
+      generationComplete = false;
+      keyDisplay.style.display = 'none';
+      startButton.style.display = ''; // ✅ корректный сброс
+      mouseX = canvas.width / 2;
+      mouseY = canvas.height / 2;
+      statusLineEl.textContent = t('status.pressStart');
+    }
+
+    startButton.addEventListener('click', startGame);
+    newKeyBtn?.addEventListener('click', restart);
+
+    function updateVisualizer() {
+      if (generationComplete) {
+        xValEl.textContent = '—';
+        yValEl.textContent = '—';
+        timeValEl.textContent = '—';
+        xParityEl.textContent = '?';
+        yParityEl.textContent = '?';
+        tParityEl.textContent = '?';
+        oddCountEl.textContent = '0';
+        bitValEl.textContent = '?';
+        statusLineEl.textContent = t('status.keyGenerated');
+        return;
+      }
+      if (!gameActive) {
+        xValEl.textContent = '—';
+        yValEl.textContent = '—';
+        timeValEl.textContent = '—';
+        xParityEl.textContent = '?';
+        yParityEl.textContent = '?';
+        tParityEl.textContent = '?';
+        oddCountEl.textContent = '0';
+        bitValEl.textContent = '?';
+        statusLineEl.textContent = t('status.pressStart');
+        return;
+      }
+
+      const now = Date.now();
+      const xInt = Math.floor(mouseX);
+      const yInt = Math.floor(mouseY);
+      const tInt = Math.floor(now);
+
+      const xOdd = xInt % 2;
+      const yOdd = yInt % 2;
+      const tOdd = tInt % 2;
+      const oddCount = xOdd + yOdd + tOdd;
+      const bit = oddCount % 2; // это XOR трёх битов
+
+      if (now < freezeUntil && frozenValues) {
+        xValEl.textContent = frozenValues.x;
+        yValEl.textContent = frozenValues.y;
+        timeValEl.textContent = frozenValues.time;
+        xParityEl.textContent = frozenValues.xOdd ? t('parity.yes') : t('parity.no');
+        yParityEl.textContent = frozenValues.yOdd ? t('parity.yes') : t('parity.no');
+        tParityEl.textContent = frozenValues.tOdd ? t('parity.yes') : t('parity.no');
+        oddCountEl.textContent = frozenValues.oddCount;
+        bitValEl.textContent = frozenValues.bit;
+        statusLineEl.textContent = t('status.capturing');
+        return;
+      }
+
+      frozenValues = null;
+      statusLineEl.textContent = t('status.moveCursor');
+
+      xValEl.textContent = xInt;
+      yValEl.textContent = yInt;
+      timeValEl.textContent = tInt;
+      xParityEl.textContent = xOdd ? t('parity.yes') : t('parity.no');
+      yParityEl.textContent = yOdd ? t('parity.yes') : t('parity.no');
+      tParityEl.textContent = tOdd ? t('parity.yes') : t('parity.no');
+      oddCountEl.textContent = oddCount;
+      bitValEl.textContent = bit;
+    }
+
+    class Spark {
+      constructor(x, y, targetX, targetY, color) {
+        this.x = x;
+        this.y = y;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 3 + Math.random() * 4;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.targetX = targetX;
+        this.targetY = targetY;
+        this.color = color;
+        this.age = 0;
+        const dx = targetX - x;
+        const dy = targetY - y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        this.lifetime = 40 + Math.min(30, dist * 0.15);
+        this.reached = false;
+        this.inAttractionZone = false;
+      }
+      update() {
+        if (this.reached) return;
+        this.age++;
+        if (this.y > ATTRACTION_THRESHOLD && !this.inAttractionZone) {
+          this.inAttractionZone = true;
+        }
+        if (this.inAttractionZone) {
+          const dx = this.targetX - this.x;
+          const dy = this.targetY - this.y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 6) {
+            this.reached = true;
+            return;
+          }
+          const nx = dx / dist;
+          const ny = dy / dist;
+          const speed = BOOSTED_ATTRACTION_SPEED;
+          this.x += nx * speed;
+          this.y += ny * speed;
+        } else {
+          this.vy += GRAVITY;
+          this.vx *= 0.97;
+          this.vy *= 0.97;
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 0 || this.x > canvas.width) this.vx *= -0.5;
+          if (this.y < 0) this.vy *= -0.5;
+        }
+      }
+      draw() {
+        if (this.reached || this.age > this.lifetime) return;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        const size = 0.75 + Math.random() * 0.75;
+        ctx.arc(this.x, this.y, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      isAlive() {
+        if (this.inAttractionZone && !this.reached) return true;
+        return !this.reached && this.age <= this.lifetime;
+      }
+    }
+
+    function captureEntropy() {
+      if (!gameActive || bits.length >= KEY_LENGTH || generationComplete) return;
+
+      const now = Date.now();
+      const xInt = Math.floor(mouseX);
+      const yInt = Math.floor(mouseY);
+      const tInt = Math.floor(now);
+
+      const xOdd = xInt % 2;
+      const yOdd = yInt % 2;
+      const tOdd = tInt % 2;
+      const oddCount = xOdd + yOdd + tOdd;
+      const bit = oddCount % 2;
+
+      const slotIndex = bits.length;
+      const { x: targetX, y: targetY } = bitTargets[slotIndex];
+
+      frozenValues = { 
+        x: xInt, y: yInt, time: tInt,
+        xOdd, yOdd, tOdd, oddCount, bit 
+      };
+      freezeUntil = now + 800;
+
+      const color0 = 'rgba(0, 255, 128, 0.9)';
+      const color1 = 'rgba(230, 208, 0, 0.9)';
+      const colorNeutral = 'rgba(255, 68, 68, 0.85)';
+
+      const mainColor = bit ? color1 : color0;
+      for (let i = 0; i < 24; i++) {
+        sparks.push(new Spark(mouseX, mouseY, targetX, targetY, mainColor));
+      }
+      for (let i = 0; i < 8; i++) {
+        sparks.push(new Spark(mouseX, mouseY, targetX, targetY, colorNeutral));
+      }
+
+      setTimeout(() => {
+        if (generationComplete || bits.length !== slotIndex) return;
+        bits.push(bit);
+        if (bits.length === KEY_LENGTH) {
+          setTimeout(finishKeyGeneration, 200);
+        }
+      }, 800);
+
+      nextCaptureTime = Date.now() + CAPTURE_INTERVAL;
+    }
+
+    function getFlickerAlpha() {
+      const t = Date.now() % 5000;
+      const phase = t / 50;
+      const mod = phase % 100;
+      if ((mod >= 19 && mod <= 25) || (mod >= 54 && mod <= 56)) {
+        return 0.8;
+      }
+      return 1.0;
+    }
+
+    function drawScene() {
+      ctx.fillStyle = 'rgba(5, 20, 30, 0.85)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = 'rgba(0, 15, 25, 0.4)';
+      ctx.fillRect(0, ATTRACTION_THRESHOLD, canvas.width, canvas.height - ATTRACTION_THRESHOLD);
+      ctx.strokeStyle = 'rgba(0, 162, 255, 0.3)';
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(0, ATTRACTION_THRESHOLD);
+      ctx.lineTo(canvas.width, ATTRACTION_THRESHOLD);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const flickerAlpha = getFlickerAlpha();
+      for (let i = 0; i < KEY_LENGTH; i++) {
+        const { x, y } = bitTargets[i];
+        const filled = i < bits.length;
+        const bit = filled ? bits[i] : null;
+
+        if (filled) {
+          ctx.strokeStyle = `rgba(0, 162, 255, ${0.5 * flickerAlpha})`;
+          ctx.shadowColor = 'rgba(0, 162, 255, 0.5)';
+          ctx.shadowBlur = 8 * flickerAlpha;
+        } else {
+          ctx.strokeStyle = 'rgba(0, 50, 80, 0.4)';
+          ctx.shadowBlur = 0;
+        }
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(x - CELL_SIZE/2, y - CELL_SIZE/2, CELL_SIZE, CELL_SIZE, 6);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        if (filled) {
+          const color = bit ? '#e6d000' : '#00ff80';
+          ctx.fillStyle = color;
+          ctx.font = "bold 18px 'Bebas Neue', monospace";
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.shadowColor = color;
+          ctx.shadowBlur = 12;
+          ctx.fillText(bit.toString(), x, y);
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      if (gameActive && !generationComplete) {
+        ctx.strokeStyle = 'rgba(0, 162, 255, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.shadowColor = 'rgba(0, 162, 255, 0.5)';
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, 10, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = '#4080ff';
+        ctx.shadowColor = 'rgba(64, 128, 255, 0.7)';
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      ctx.fillStyle = '#8ab0c5';
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(t('canvas.collected', { count: bits.length, total: KEY_LENGTH }), 15, 22);
+    }
+
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+        if (w < 2 * r) r = w / 2;
+        if (h < 2 * r) r = h / 2;
+        this.beginPath();
+        this.moveTo(x + r, y);
+        this.arcTo(x + w, y, x + w, y + h, r);
+        this.arcTo(x + w, y + h, x, y + h, r);
+        this.arcTo(x, y + h, x, y, r);
+        this.arcTo(x, y, x + w, y, r);
+        this.closePath();
+        return this;
+      };
+    }
+
+    function loop() {
+      drawScene();
+      updateVisualizer();
+
+      if (gameActive && !generationComplete) {
+        if (Date.now() >= nextCaptureTime && bits.length < KEY_LENGTH) {
+          captureEntropy();
+        }
+
+        sparks.forEach(s => { s.update(); s.draw(); });
+        sparks = sparks.filter(s => s.isAlive());
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    function copyKey() {
+      const binStr = bits.join('');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(binStr).then(() => {
+          alert(t('alert.copied'));
+        }).catch(() => fallbackCopy(binStr));
+      } else {
+        fallbackCopy(binStr);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const el = document.createElement('textarea');
+      el.value = text;
+      el.style.position = 'fixed';
+      el.style.opacity = '0';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      alert(t('alert.copied'));
+    }
+
+    canvas.addEventListener('mousemove', handlePointerMove);
+    canvas.addEventListener('touchmove', handlePointerMove, { passive: false });
+
+    loop();
+  </script>
+</body>
+</html>

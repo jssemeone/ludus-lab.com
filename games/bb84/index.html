@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="pageTitle">Квантовый ключ: BB84 - Ludus Lab</title>
+<title id="pageTitle">Quantum Key: BB84 - Ludus Lab</title>
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="../../favicon.ico">
 <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
@@ -1748,36 +1748,44 @@ transition: all 0.2s;
 .final-key-grid .key-bit.active { width: 100%; height: 36px; }
 }
 </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/games/bb84/">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/games/bb84/">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/games/bb84/">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/games/bb84/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/games/bb84/">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/games/bb84/">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
 <div class="lang-switch" role="group" aria-label="Language">
-  <button class="lang-btn" data-lang-btn="ru">RU</button>
-  <button class="lang-btn" data-lang-btn="en">EN</button>
-  <button class="lang-btn" data-lang-btn="es">ES</button>
-  <button class="lang-btn" data-lang-btn="zh">中文</button>
+  <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/games/bb84/" hreflang="ru" lang="ru">RU</a>
+  <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/games/bb84/" hreflang="en" lang="en">EN</a>
+  <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/games/bb84/" hreflang="es" lang="es">ES</a>
+  <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/games/bb84/" hreflang="zh-Hans" lang="zh-CN">中文</a>
 </div>
 <div class="container">
 <header class="game-header">
-<h1 data-i18n="game.title">КВАНТОВЫЙ КЛЮЧ: BB84</h1>
+<h1 data-i18n="game.title">QUANTUM KEY: BB84</h1>
 <div class="header-decoration"></div>
-<p class="subtitle" data-i18n="game.subtitle">Ludus Lab · Сложные вещи — простыми играми</p>
+<p class="subtitle" data-i18n="game.subtitle">Ludus Lab · Complex things made simple through games</p>
 </header>
 
 <!-- ══════════════════════════════════════════════════════
      ЗАСТАВКА — показывается один раз перед началом игры
      ══════════════════════════════════════════════════════ -->
 <div class="welcome-screen" id="welcomeScreen">
-  <h2 data-i18n="welcome.heading">Добро пожаловать в игру «Квантовый ключ: BB84»</h2>
-  <p data-i18n="welcome.p1">Эта игра поможет на практике понять, как Алиса и Боб договариваются об общем секретном ключе с помощью квантовой физики — и почему любая попытка подслушивания будет обнаружена.</p>
-  <p data-i18n="welcome.p2">Игра состоит из 4 этапов, которые открываются по очереди:</p>
+  <h2 data-i18n="welcome.heading">Welcome to the "Quantum Key: BB84" game</h2>
+  <p data-i18n="welcome.p1">This game will help you understand hands-on how Alice and Bob agree on a shared secret key using quantum physics — and why any eavesdropping attempt gets detected.</p>
+  <p data-i18n="welcome.p2">The game has 4 stages, unlocked one after another:</p>
   <ul class="welcome-stages-list">
-    <li><strong data-i18n="welcome.stage1.title">1. Квантовый канал</strong> — <span data-i18n="welcome.stage1.desc">Алиса отправляет кубиты Бобу</span></li>
-    <li><strong data-i18n="welcome.stage2.title">2. Просеивание</strong> — <span data-i18n="welcome.stage2.desc">сравнение базисов и сборка сырого ключа</span></li>
-    <li><strong data-i18n="welcome.stage3.title">3. Проверка QBER</strong> — <span data-i18n="welcome.stage3.desc">поиск следов подслушивания</span></li>
-    <li><strong data-i18n="welcome.stage4.title">4. Секретный ключ</strong> — <span data-i18n="welcome.stage4.desc">итоговый общий ключ Алисы и Боба</span></li>
+    <li><strong data-i18n="welcome.stage1.title">1. Quantum channel</strong> — <span data-i18n="welcome.stage1.desc">Alice sends qubits to Bob</span></li>
+    <li><strong data-i18n="welcome.stage2.title">2. Sifting</strong> — <span data-i18n="welcome.stage2.desc">comparing bases and building the raw key</span></li>
+    <li><strong data-i18n="welcome.stage3.title">3. QBER check</strong> — <span data-i18n="welcome.stage3.desc">looking for signs of eavesdropping</span></li>
+    <li><strong data-i18n="welcome.stage4.title">4. Secret key</strong> — <span data-i18n="welcome.stage4.desc">error correction, compression and the final key</span></li>
   </ul>
   <button class="action-button" id="startGameBtn">
-    <span data-i18n="welcome.start">Начать игру</span>
+    <span data-i18n="welcome.start">Start the game</span>
   </button>
 </div>
 
@@ -1785,50 +1793,47 @@ transition: all 0.2s;
 
 <div class="protocol-container">
 <div class="protocol-header" id="protocolHeader">
-<h2><span data-i18n="protocol.toggle">Описание протокола BB84</span> <span class="toggle-icon">+</span></h2>
+<h2><span data-i18n="protocol.toggle">BB84 Protocol Overview</span> <span class="toggle-icon">+</span></h2>
 </div>
 <div class="protocol-description" id="protocolContent">
-<p data-i18n="protocol.intro">Протокол BB84 — это первый в мире алгоритм квантового распределения ключей, предложенный Чарльзом Беннетом и Жилем Брассаром в 1984 году.</p>
+<p data-i18n="protocol.intro">BB84 is the world's first quantum key distribution algorithm, proposed by Charles Bennett and Gilles Brassard in 1984.</p>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">Подготовка кубит</span></div>
-<p data-i18n="protocol.step1.p1">Алиса генерирует случайную последовательность бит (0 и 1) и для каждого бита случайным образом выбирает базис измерения:</p>
-<ul data-i18n="protocol.step1.list">
-<li><strong>Прямой базис (Rectilinear):</strong> 0° (вертикальная поляризация) для 0, 90° (горизонтальная) для 1</li>
-<li><strong>Диагональный базис (Diagonal):</strong> 45° для 0, 135° для 1</li>
-</ul>
-<p data-i18n="protocol.step1.p2">В игре: Вы выбираете поляризацию вручную или используете автоматическую отправку.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">Qubit preparation</span></div>
+<p data-i18n="protocol.step1.p1">Alice generates a random sequence of bits (0 and 1) and randomly chooses a measurement basis for each bit:</p>
+<ul data-i18n="protocol.step1.list"><li><strong>Rectilinear basis:</strong> 0° (vertical polarization) for 0, 90° (horizontal) for 1</li><li><strong>Diagonal basis:</strong> 45° for 0, 135° for 1</li></ul>
+<p data-i18n="protocol.step1.p2">In the game: you choose the polarization manually or use automatic sending.</p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">Передача по квантовому каналу</span></div>
-<p data-i18n="protocol.step2.p1">Алиса отправляет каждый фотон (кубит) Бобу через квантовый канал. Квантовые состояния нельзя копировать (теорема о запрете клонирования).</p>
-<p data-i18n="protocol.step2.p2">В игре: Фотон движется по квантовому каналу от Алисы к Бобу.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">Transmission over the quantum channel</span></div>
+<p data-i18n="protocol.step2.p1">Alice sends each photon (qubit) to Bob over the quantum channel. Quantum states cannot be copied (the no-cloning theorem).</p>
+<p data-i18n="protocol.step2.p2">In the game: the photon travels over the quantum channel from Alice to Bob.</p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">Измерение кубит</span></div>
-<p data-i18n="protocol.step3.p1">Боб для каждого приходящего фотона случайно выбирает базис измерения (прямой или диагональный) и измеряет фотон в этом базисе.</p>
-<p data-i18n="protocol.step3.p2">В игре: Боб автоматически выбирает случайный базис и показывает результат измерения.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">Measuring the qubits</span></div>
+<p data-i18n="protocol.step3.p1">For each incoming photon, Bob randomly chooses a measurement basis (rectilinear or diagonal) and measures the photon in that basis.</p>
+<p data-i18n="protocol.step3.p2">In the game: Bob automatically picks a random basis and shows the measurement result.</p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">Обмен базисами по классическому каналу</span></div>
-<p data-i18n="protocol.step4.p1">После передачи всех фотонов Алиса и Боб по классическому (обычному) каналу сообщают друг другу, какие базисы они использовали для каждого бита, но не значения бит.</p>
-<p data-i18n="protocol.step4.p2">В игре: При нажатии "Просеять ключ" активируется классический канал для обмена информацией о базисах.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">Exchanging bases over the classical channel</span></div>
+<p data-i18n="protocol.step4.p1">After sending all the photons, Alice and Bob use the classical (ordinary) channel to tell each other which basis they used for each bit — but not the bit values.</p>
+<p data-i18n="protocol.step4.p2">In the game: clicking "Sift key" activates the classical channel to exchange basis information.</p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">Просеивание ключа</span></div>
-<p data-i18n="protocol.step5.p1">Алиса и Боб сохраняют только те биты, для которых базисы совпали (примерно 50% от всех отправленных). Остальные биты отбрасываются.</p>
-<p data-i18n="protocol.step5.p2">В игре: Создается сырой ключ из совпадающих измерений.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">Key sifting</span></div>
+<p data-i18n="protocol.step5.p1">Alice and Bob keep only the bits for which the bases matched (about 50% of everything sent). The rest are discarded.</p>
+<p data-i18n="protocol.step5.p2">In the game: a raw key is built from the matching measurements.</p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">Обнаружение подслушивания</span></div>
-<p data-i18n="protocol.step6.p1">В реальном протоколе Алиса и Боб сравнивают часть оставшихся бит (которые затем отбрасываются). Если Ева подслушивала, она вносила ошибки, которые обнаруживаются при сравнении.</p>
-<p data-i18n="protocol.step6.p2">В игре: Перехваченные Евой биты отмечаются и исключаются из финального ключа.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">Eavesdropping detection</span></div>
+<p data-i18n="protocol.step6.p1">In the real protocol, Alice and Bob compare part of the remaining bits (which are then discarded). If Eve was eavesdropping, she introduced errors that are detected during the comparison.</p>
+<p data-i18n="protocol.step6.p2">In the game: 30 random bits of the sifted key are compared publicly to estimate the QBER. The “Eve” switch shows how eavesdropping raises the error rate.</p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">7</span> <span data-i18n="protocol.step7.title">Формирование секретного ключа</span></div>
-<p data-i18n="protocol.step7.p1">Если уровень ошибок ниже определенного порога, оставшиеся биты образуют секретный ключ. В противном случае ключ отбрасывается и процесс повторяется.</p>
-<p data-i18n="protocol.step7.p2">В игре: Формируется финальный 8-битный ключ из неперехваченных совпадающих бит.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">7</span> <span data-i18n="protocol.step7.title">Building the secret key</span></div>
+<p data-i18n="protocol.step7.p1">If the error rate is below a certain threshold, the remaining bits form the secret key. Otherwise the key is discarded and the process repeats.</p>
+<p data-i18n="protocol.step7.p2">In the game: if QBER < 11%, the remaining bits go through error correction and are compressed (XOR) into an 8-bit key; if QBER ≥ 11%, the key is discarded.</p>
 </div>
-<p data-i18n="protocol.security"><strong>Безопасность протокола:</strong> Безопасность BB84 основана на фундаментальных принципах квантовой механики — любые попытки измерить квантовое состояние изменяют его, что позволяет обнаружить подслушивание.</p>
+<p data-i18n="protocol.security"><strong>Protocol security:</strong> BB84's security rests on fundamental principles of quantum mechanics — any attempt to measure a quantum state disturbs it, which makes eavesdropping detectable.</p>
 </div>
 </div>
 <div class="game-area">
@@ -1848,10 +1853,10 @@ transition: all 0.2s;
 <div id="quantum-stage" class="stage-content">
 
   <div class="stage-intro" id="stageIntro1">
-    <h3 data-i18n="stageintro.1.title">Этап 1: Квантовый канал</h3>
-    <p data-i18n="stageintro.1.desc">Алиса выбирает случайную поляризацию для каждого кубита и отправляет их Бобу. Боб для каждого кубита независимо выбирает случайный базис измерения. Вы управляете отправкой Алисы через панель управления.</p>
+    <h3 data-i18n="stageintro.1.title">Stage 1: Quantum channel</h3>
+    <p data-i18n="stageintro.1.desc">Alice chooses a random polarization for each qubit and sends it to Bob. Bob independently picks a random measurement basis for each qubit. You control Alice's sending through the control panel.</p>
     <button class="action-button" id="stageIntro1Btn">
-      <span data-i18n="stageintro.1.btn">Начать отправку кубит</span>
+      <span data-i18n="stageintro.1.btn">Start sending qubits</span>
     </button>
   </div>
 
@@ -1861,8 +1866,8 @@ transition: all 0.2s;
   <div class="quantum-setup">
     <div class="character alice">
       <div class="character-icon">A</div>
-      <div class="character-name" data-i18n="char.alice">Алиса</div>
-      <div class="character-status" id="aliceStatus" data-i18n="status.aliceReady">Готова отправить кубит</div>
+      <div class="character-name" data-i18n="char.alice">Alice</div>
+      <div class="character-status" id="aliceStatus" data-i18n="status.aliceReady">Ready to send a qubit</div>
     </div>
     <div class="channels-container">
       <div class="quantum-channel active" id="quantumChannel">
@@ -1874,8 +1879,8 @@ transition: all 0.2s;
     </div>
     <div class="character bob">
       <div class="character-icon">B</div>
-      <div class="character-name" data-i18n="char.bob">Боб</div>
-      <div class="character-status" id="bobStatus" data-i18n="status.bobWaiting">Ожидает кубит</div>
+      <div class="character-name" data-i18n="char.bob">Bob</div>
+      <div class="character-status" id="bobStatus" data-i18n="status.bobWaiting">Waiting for a qubit</div>
     </div>
   </div>
 
@@ -1885,74 +1890,74 @@ transition: all 0.2s;
     <!-- Левая панель: управление -->
     <div class="left-panel">
       <div class="controls">
-        <h2 class="section-title" data-i18n="controls.heading">Панель управления</h2>
+        <h2 class="section-title" data-i18n="controls.heading">Control panel</h2>
         <div class="polarization-controls">
           <div class="polarization-option selected" data-basis="rectilinear" data-value="0">
             <div class="basis-symbol">|</div>
-            <div class="basis-label" data-i18n="basis.rectilinear">Прямой</div>
+            <div class="basis-label" data-i18n="basis.rectilinear">Rectilinear</div>
             <div class="polarization-value" style="font-size:0.65rem;">0° = 0</div>
           </div>
           <div class="polarization-option" data-basis="rectilinear" data-value="1">
             <div class="basis-symbol">—</div>
-            <div class="basis-label" data-i18n="basis.rectilinear">Прямой</div>
+            <div class="basis-label" data-i18n="basis.rectilinear">Rectilinear</div>
             <div class="polarization-value" style="font-size:0.65rem;">90° = 1</div>
           </div>
           <div class="polarization-option" data-basis="diagonal" data-value="0">
             <div class="basis-symbol">/</div>
-            <div class="basis-label" data-i18n="basis.diagonal">Диагональный</div>
+            <div class="basis-label" data-i18n="basis.diagonal">Diagonal</div>
             <div class="polarization-value" style="font-size:0.65rem;">45° = 0</div>
           </div>
           <div class="polarization-option" data-basis="diagonal" data-value="1">
             <div class="basis-symbol">\</div>
-            <div class="basis-label" data-i18n="basis.diagonal">Диагональный</div>
+            <div class="basis-label" data-i18n="basis.diagonal">Diagonal</div>
             <div class="polarization-value" style="font-size:0.65rem;">135° = 1</div>
           </div>
         </div>
         <div class="eve-control">
-          <div class="eve-control-head" data-i18n="eve.title">🕵️ Ева в канале (режим Бога)</div>
+          <div class="eve-control-head" data-i18n="eve.title">🕵️ Eve on the channel (God mode)</div>
           <div class="eve-options">
-            <button class="eve-option" data-eve="off" data-i18n="eve.off">Нет</button>
-            <button class="eve-option" data-eve="random" data-i18n="eve.random">Случайно</button>
+            <button class="eve-option" data-eve="off" data-i18n="eve.off">None</button>
+            <button class="eve-option" data-eve="random" data-i18n="eve.random">Random</button>
             <button class="eve-option" data-eve="full" data-i18n="eve.full">100%</button>
           </div>
-          <div class="eve-hint" data-i18n="eve.hint"></div>
+          <div class="eve-hint" data-i18n="eve.hint">“None” — a clean channel. “100%” — Eve intercepts every photon. “Random” — Eve may or may not be there and intercepts an unknown share of photons: try to tell from the QBER. Channel noise (~2%) is always present.</div>
         </div>
         <div class="action-buttons">
           <div class="button-row mode-buttons">
             <button class="action-button" id="manualModeBtn" style="flex:1;">
               <div>
-                <div data-i18n="mode.manual.title">Ручной режим</div>
-                <div class="mode-description" data-i18n="mode.manual.desc">Отправит один фотон</div>
+                <div data-i18n="mode.manual.title">Manual mode</div>
+                <div class="mode-description" data-i18n="mode.manual.desc">Sends a single photon</div>
               </div>
             </button>
             <button class="action-button" id="semiAutoBtn" style="flex:1;">
               <div>
-                <div data-i18n="mode.semi.title">Полуавтоматический режим</div>
-                <div class="mode-description" data-i18n="mode.semi.desc">Фотоны автоматически, базисы вручную</div>
+                <div data-i18n="mode.semi.title">Semi-automatic mode</div>
+                <div class="mode-description" data-i18n="mode.semi.desc">Photons are sent automatically, bases are chosen manually</div>
               </div>
             </button>
             <button class="action-button" id="autoModeBtn" style="flex:1;">
               <div>
-                <div data-i18n="mode.auto.title">Автоматический режим</div>
-                <div class="mode-description" data-i18n="mode.auto.desc">Всё автоматически</div>
+                <div data-i18n="mode.auto.title">Automatic mode</div>
+                <div class="mode-description" data-i18n="mode.auto.desc">Photons are sent automatically, bases are chosen automatically</div>
               </div>
             </button>
           </div>
         </div>
         <div class="alert-container">
-          <div class="eve-alert" id="eveAlert" data-i18n="alert.eve">⚠️ Ева перехватила кубит!</div>
-          <div class="sift-notification" id="siftNotification" data-i18n="notif.siftReady">✅ Достаточно данных для просеивания!</div>
+          <div class="eve-alert" id="eveAlert" data-i18n="alert.eve">⚠️ Eve intercepted the qubit! This may affect the final key.</div>
+          <div class="sift-notification" id="siftNotification" data-i18n="notif.siftReady">✅ Enough data to sift the key!</div>
         </div>
         <div class="game-stats">
           <div class="stat-box">
-            <div class="stat-label" data-i18n="stat.matches">Совпадений базисов</div>
+            <div class="stat-label" data-i18n="stat.matches">Basis matches</div>
             <div class="stat-value" id="matchCount">0</div>
-            <div class="stat-sub" data-i18n="stat.matches.sub">из всех отправленных</div>
+            <div class="stat-sub" data-i18n="stat.matches.sub">of all sent</div>
           </div>
           <div class="stat-box">
-            <div class="stat-label" data-i18n="stat.qber">QBER (режим Бога)</div>
+            <div class="stat-label" data-i18n="stat.qber">QBER (God mode)</div>
             <div class="stat-value qber-ok" id="qberDisplay">—</div>
-            <div class="stat-sub" data-i18n="stat.qber.sub">0–5% норма · 5–11% подозрит. · >11% опасно</div>
+            <div class="stat-sub" data-i18n="stat.qber.sub">0–5% noise · 5–11% suspicious · ≥11% danger</div>
           </div>
         </div>
       </div>
@@ -1961,14 +1966,14 @@ transition: all 0.2s;
     <!-- Правая панель: таблица измерений Боба -->
     <div class="right-panel">
       <div class="key-section" style="margin-top:0;">
-        <h2 class="section-title" data-i18n="bobtable.heading">Таблица измерений Боба</h2>
+        <h2 class="section-title" data-i18n="bobtable.heading">Bob's measurement table</h2>
         <div class="char-table-container">
           <table class="char-table" id="bobTable">
             <thead>
               <tr>
                 <th data-i18n="table.num">#</th>
-                <th data-i18n="table.bobBasis">Базис Боба</th>
-                <th data-i18n="table.bobValue">Значение Боба</th>
+                <th data-i18n="table.bobBasis">Bob's basis</th>
+                <th data-i18n="table.bobValue">Bob's value</th>
               </tr>
             </thead>
             <tbody id="bobTableBody"></tbody>
@@ -1981,14 +1986,14 @@ transition: all 0.2s;
 
   <!-- Объяснение -->
   <div class="explanation" id="explanation">
-    <p data-i18n="explanation.initial.p1">Выберите один из четырех вариантов поляризации кубита и отправьте его Бобу.</p>
-    <p data-i18n="explanation.initial.p2">Когда отправите достаточно кубит, нажмите «Просеять ключ».</p>
+    <p data-i18n="explanation.initial.p1">Choose one of the four qubit polarization options and send it to Bob. Bob will randomly choose a basis to measure it.</p>
+    <p data-i18n="explanation.initial.p2">Once you've sent enough qubits, click "Sift key" to compare bases.</p>
   </div>
 
   <!-- Кнопка внизу -->
   <div class="bottom-buttons">
     <button class="action-button" id="siftKey" disabled>
-      <span data-i18n="btn.sift">Просеять ключ</span>
+      <span data-i18n="btn.sift">Sift key</span>
     </button>
   </div>
 
@@ -2003,10 +2008,10 @@ transition: all 0.2s;
 <div id="sifting-stage" class="stage-content hidden">
 
   <div class="stage-intro" id="stageIntro2">
-    <h3 data-i18n="stageintro.2.title">Этап 2: Просеивание</h3>
-    <p data-i18n="sifting.stage.desc">Алиса и Боб публично сравнивают базисы (не значения!) каждого кубита. Совпадающие базисы — бит остаётся в ключе; разные — отбрасывается.</p>
+    <h3 data-i18n="stageintro.2.title">Stage 2: Sifting</h3>
+    <p data-i18n="sifting.stage.desc">Alice and Bob publicly compare only the bases (not the values!) of each qubit — matching bases mean both ended up with the same bit, which joins the shared key; mismatched bases are discarded. Values are shown in the table right away for clarity (God mode) — in reality the two sides never send each other the values.</p>
     <button class="action-button" id="stageIntro2Btn">
-      <span data-i18n="stageintro.2.btn">Начать просеивание</span>
+      <span data-i18n="stageintro.2.btn">Start sifting</span>
     </button>
   </div>
 
@@ -2016,7 +2021,7 @@ transition: all 0.2s;
   <div class="public-channel-viz">
     <div class="mini-avatar">A</div>
     <div class="channel-mid">
-      <div class="channel-label" data-i18n="sifting.channel.label">Обмен базисами по открытому каналу</div>
+      <div class="channel-label" data-i18n="sifting.channel.label">Exchanging bases over the public channel</div>
       <div class="channel-bar" id="siftChannelBar"></div>
     </div>
     <div class="mini-avatar">B</div>
@@ -2026,14 +2031,14 @@ transition: all 0.2s;
     <div class="button-row mode-buttons">
       <button class="action-button" id="siftManualBtn">
         <div>
-          <div data-i18n="siftmode.manual.title">Ручное сравнение</div>
-          <div class="mode-description" data-i18n="siftmode.manual.desc">Раскрывать биты по одному</div>
+          <div data-i18n="siftmode.manual.title">Manual comparison</div>
+          <div class="mode-description" data-i18n="siftmode.manual.desc">Reveal bits one at a time</div>
         </div>
       </button>
       <button class="action-button" id="siftAutoBtn">
         <div>
-          <div data-i18n="siftmode.auto.title">Автоматическое сравнение</div>
-          <div class="mode-description" data-i18n="siftmode.auto.desc">Сравнить все биты сразу</div>
+          <div data-i18n="siftmode.auto.title">Automatic comparison</div>
+          <div class="mode-description" data-i18n="siftmode.auto.desc">Compare all bits at once</div>
         </div>
       </button>
     </div>
@@ -2042,30 +2047,30 @@ transition: all 0.2s;
   <div class="sift-summary-bar" id="siftProgressBar">
     <div class="sift-pill">
       <span class="sift-pill-num" id="siftProgress-revealed">0</span>
-      <span data-i18n="sifting.stat.revealed">раскрыто</span>
+      <span data-i18n="sifting.stat.revealed">revealed</span>
     </div>
     <div class="sift-pill s-green">
       <span class="sift-pill-num" id="siftProgress-matches">0</span>
-      <span data-i18n="sifting.stat.matches">совпадений</span>
+      <span data-i18n="sifting.stat.matches">matches</span>
     </div>
   </div>
 
   <div class="sifting-layout">
     <div>
-      <div class="table-caption" data-i18n="sifting.compare.heading">Сравнение базисов</div>
+      <div class="table-caption" data-i18n="sifting.compare.heading">Basis comparison</div>
       <div class="char-table-container">
         <table class="char-table" id="compareTable">
-          <thead><tr><th data-i18n="table.num">#</th><th data-i18n="char.alice">Алиса</th><th data-i18n="char.bob">Боб</th><th data-i18n="table.result">Результат</th></tr></thead>
+          <thead><tr><th data-i18n="table.num">#</th><th data-i18n="char.alice">Alice</th><th data-i18n="char.bob">Bob</th><th data-i18n="table.result">Result</th></tr></thead>
           <tbody id="compareTableBody"></tbody>
         </table>
       </div>
     </div>
     <div>
-      <div class="table-caption" data-i18n="sifting.result.heading">Просеянный ключ</div>
-      <p class="table-subcaption" data-i18n="sifting.result.desc">Это общий ключ Алисы и Боба: при совпавших базисах их значения должны быть одинаковыми. Расхождения (шум или Ева) покажет проверка QBER на следующем этапе.</p>
+      <div class="table-caption" data-i18n="sifting.result.heading">Sifted key</div>
+      <p class="table-subcaption" data-i18n="sifting.result.desc">This is Alice and Bob's shared key: when bases matched, their values should be identical. Discrepancies (noise or Eve) will show up in the QBER check on the next stage.</p>
       <div class="char-table-container sifted-table-container">
         <table class="char-table" id="siftedTable">
-          <thead><tr><th data-i18n="table.num">#</th><th data-i18n="table.match">Совпадение</th><th data-i18n="table.siftedBit">Бит ключа</th></tr></thead>
+          <thead><tr><th data-i18n="table.num">#</th><th data-i18n="table.match">Match</th><th data-i18n="table.siftedBit">Key bit</th></tr></thead>
           <tbody id="siftedTableBody"></tbody>
         </table>
       </div>
@@ -2074,7 +2079,7 @@ transition: all 0.2s;
 
   <div class="bottom-buttons">
     <button class="action-button" id="continueToQberBtn" disabled>
-      <span data-i18n="btn.continueToQber">Перейти к проверке QBER</span>
+      <span data-i18n="btn.continueToQber">Continue to QBER check</span>
     </button>
   </div>
 
@@ -2089,10 +2094,10 @@ transition: all 0.2s;
 <div id="qber-stage" class="stage-content hidden">
 
   <div class="stage-intro" id="stageIntro3">
-    <h3 data-i18n="stageintro.3.title">Этап 3: Проверка QBER</h3>
-    <p data-i18n="stageintro.3.desc">Алиса и Боб публично сравнивают часть просеянного ключа, чтобы оценить долю ошибок (QBER). Если ошибок слишком много — в канале была Ева, и ключ придётся отбросить.</p>
+    <h3 data-i18n="stageintro.3.title">Stage 3: QBER check</h3>
+    <p data-i18n="stageintro.3.desc">Alice and Bob publicly compare part of the sifted key to estimate the error rate (QBER). If there are too many errors, Eve was on the channel and the key must be discarded.</p>
     <button class="action-button" id="stageIntro3Btn">
-      <span data-i18n="stageintro.3.btn">Начать проверку QBER</span>
+      <span data-i18n="stageintro.3.btn">Start the QBER check</span>
     </button>
   </div>
 
@@ -2102,41 +2107,41 @@ transition: all 0.2s;
   <div class="sift-summary-bar">
     <div class="sift-pill">
       <span class="sift-pill-num" id="siftStat-total">0</span>
-      <span data-i18n="sifting.stat.sent">кубит</span>
+      <span data-i18n="sifting.stat.sent">qubits</span>
     </div>
     <div class="sift-pill s-green">
       <span class="sift-pill-num" id="siftStat-matches">0</span>
-      <span data-i18n="sifting.stat.matches">совпадений</span>
+      <span data-i18n="sifting.stat.matches">matches</span>
     </div>
     <div class="sift-pill s-gold">
       <span class="sift-pill-num" id="siftStat-sacrifice">30</span>
-      <span data-i18n="sifting.stat.sacrifice">на QBER</span>
+      <span data-i18n="sifting.stat.sacrifice">for QBER</span>
     </div>
     <div class="sift-pill s-cyan">
       <span class="sift-pill-num" id="siftStat-forkey">8</span>
-      <span data-i18n="sifting.stat.forkey">в ключ</span>
+      <span data-i18n="sifting.stat.forkey">into key</span>
     </div>
   </div>
-  <div class="table-caption" data-i18n="sifting.result.heading">Просеянный ключ</div>
+  <div class="table-caption" data-i18n="sifting.result.heading">Sifted key</div>
   <div class="char-table-container">
     <table class="char-table" id="fullSiftedKeyTable">
-      <thead><tr><th data-i18n="table.num">#</th><th data-i18n="table.siftedBit">Бит ключа</th><th data-i18n="table.checkMark">Публичная проверка</th></tr></thead>
+      <thead><tr><th data-i18n="table.num">#</th><th data-i18n="table.siftedBit">Key bit</th><th data-i18n="table.checkMark">Public check</th></tr></thead>
       <tbody id="fullSiftedKeyBody"></tbody>
     </table>
   </div>
 
   <div id="eaveCheckSection" class="eave-check-section">
-    <h2 class="section-title" data-i18n="eaveCheck.heading">Проверка на прослушивание</h2>
-    <p id="eaveCheckDescDynamic" data-i18n="eaveCheck.desc">Алиса и Боб публично сравнивают 30 случайных просеянных бит.</p>
+    <h2 class="section-title" data-i18n="eaveCheck.heading">Eavesdropping check</h2>
+    <p id="eaveCheckDescDynamic" data-i18n="eaveCheck.desc">Alice and Bob publicly compare 30 randomly chosen bits of the sifted key and compute the error rate (QBER). Revealed bits can no longer be used in the key.</p>
     <div id="eaveCheckGrid" class="eave-check-grid"></div>
     <div id="eaveVerdict" class="eave-verdict"></div>
   </div>
   <div class="bottom-buttons">
     <button id="eaveConfirmBtn" class="action-button" style="display:none;">
-      <span data-i18n="eaveCheck.confirm">✅ Сформировать ключ из оставшихся бит</span>
+      <span data-i18n="eaveCheck.confirm">✅ Continue to key formation</span>
     </button>
     <button id="eaveResetBtn" class="action-button" style="display:none;">
-      <span data-i18n="eaveCheck.reset">🔄 Начать заново</span>
+      <span data-i18n="eaveCheck.reset">🔄 Start over</span>
     </button>
   </div>
 
@@ -2151,36 +2156,34 @@ transition: all 0.2s;
 <div id="key-stage" class="stage-content hidden">
 
   <div class="stage-intro" id="stageIntro4">
-    <h3 data-i18n="stageintro.4.title">Этап 4: Секретный ключ</h3>
-    <p data-i18n="stageintro.4.desc">Проверка прошла успешно — из оставшихся чистых бит собран общий секретный ключ Алисы и Боба.</p>
+    <h3 data-i18n="stageintro.4.title">Stage 4: Secret key</h3>
+    <p data-i18n="stageintro.4.desc">QBER is below the threshold. Two steps remain: fix the rare errors (reconciliation) and compress the bits to erase what Eve might have learned (privacy amplification).</p>
     <button class="action-button" id="stageIntro4Btn">
-      <span data-i18n="stageintro.4.btn">Показать ключ</span>
+      <span data-i18n="stageintro.4.btn">Show the key</span>
     </button>
   </div>
 
   <div class="stage-body hidden" id="stageBody4">
   <div class="key-stage-inner">
     <div id="finalKeySection">
-      <h2 class="section-title" data-i18n="finalkey.heading">🔐 Квантовый ключ</h2>
-      <p data-i18n="finalkey.desc">Секретный ключ сформирован из совпадающих измерений</p>
+      <h2 class="section-title" data-i18n="finalkey.heading">Quantum key</h2>
+      <p data-i18n="finalkey.desc">Compressed from the remaining bits after error correction</p>
       <div class="key-grid final-key-grid" id="finalKeyGrid"></div>
       <div class="key-display" id="keyDisplay">
         <div class="key-actions">
           <button class="action-button" id="copyKeyBtn">
-            <span data-i18n="btn.copy">Скопировать ключ</span>
+            <span data-i18n="btn.copy">Copy key</span>
           </button>
           <button class="action-button" id="newKeyBtn">
-            <span data-i18n="btn.newkey">Новый ключ</span>
+            <span data-i18n="btn.newkey">New key</span>
           </button>
         </div>
-        <div id="keyCopiedNotification" data-i18n="notif.copied">Ключ успешно скопирован!</div>
+        <div id="keyCopiedNotification" data-i18n="notif.copied">Key successfully copied to clipboard!</div>
       </div>
     </div>
     <div class="success-explanation" id="successExplanation" style="display:none;"></div>
     <div class="success-explanation pa-explanation" id="paExplanation" style="display:none;"></div>
-    <div class="bit-history-info" id="bitHistoryInfo" data-i18n="rawkey.hint" style="display:none; opacity:0;">
-      Нажмите на любой бит финального ключа, чтобы посмотреть его историю
-    </div>
+    <div class="bit-history-info" id="bitHistoryInfo" data-i18n="rawkey.hint" style="display:none; opacity:0;">Click any bit of the final key to see its history</div>
   </div>
 
   </div><!-- /stageBody4 -->
@@ -2192,16 +2195,16 @@ transition: all 0.2s;
 
 <!-- Общий дисклеймер -->
 <div class="disclaimer" style="margin-top:18px;">
-  <p data-i18n="disclaimer.text"><strong>Примечание:</strong> В данной симуляции реализован полноценный механизм обнаружения Евы: из просеянных бит случайно выбираются 30 для публичного сравнения (жертвенные биты). Если QBER (доля ошибок) ≤ 11% — ключ считается безопасным; если QBER > 11% — сессия сбрасывается.</p>
+  <p data-i18n="disclaimer.text"><strong>What is simplified:</strong> channel noise is a fixed ~2%; Eve uses the simplest intercept-resend attack; error correction and privacy amplification are shown schematically (real systems use protocols like Cascade or LDPC plus universal hashing, with keys thousands of bits long). The 11% QBER threshold is the well-known BB84 security bound.</p>
 </div>
 
 <!-- Навигация — видна на всех этапах -->
 <div class="stage-nav">
-  <a href="https://ludus-lab.ru/theory/bb84.html" class="nav-link secondary">
-    <svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 6.2C10.2 4.8 7.8 4 5 4v13c2.8 0 5.2.8 7 2.2 1.8-1.4 4.2-2.2 7-2.2V4c-2.8 0-5.2.8-7 2.2z"/></svg> <span data-i18n="nav.theory">Прочитать теорию</span>
+  <a href="/theory/bb84.html" class="nav-link secondary">
+    <svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 6.2C10.2 4.8 7.8 4 5 4v13c2.8 0 5.2.8 7 2.2 1.8-1.4 4.2-2.2 7-2.2V4c-2.8 0-5.2.8-7 2.2z"/></svg> <span data-i18n="nav.theory">Read the theory</span>
   </a>
-  <a href="https://ludus-lab.ru/" class="nav-link primary">
-    <svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 3.2 3 11h3v9h5v-6h2v6h5v-9h3z"/></svg> <span data-i18n="nav.home">Вернуться в лабораторию</span>
+  <a href="/" class="nav-link primary">
+    <svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 3.2 3 11h3v9h5v-6h2v6h5v-9h3z"/></svg> <span data-i18n="nav.home">Back to the lab</span>
   </a>
 </div>
 
@@ -2841,7 +2844,7 @@ function applyLanguage(lang) {
 
 function initLanguage() {
   let saved = null;
-  try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+  saved = 'en';
   if (!saved) { const browserLang = (navigator.language || 'ru').slice(0, 2); saved = I18N[browserLang] ? browserLang : 'ru'; }
   applyLanguage(saved);
 }

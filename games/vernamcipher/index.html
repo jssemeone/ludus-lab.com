@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title id="pageTitle">Шифр Вернама — Побитовое XOR-шифрование</title>
+<title id="pageTitle">Vernam Cipher — Bitwise XOR Encryption</title>
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="../../favicon.ico">
 <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
@@ -413,126 +413,134 @@ h1 { font-size: 1.6rem; color: var(--color-blue); margin-bottom: var(--space-xs)
   .channel-container { height: 200px; } .character { width: 80px; } .character-icon { width: 45px; height: 45px; font-size: 1.3rem; margin: 0 auto var(--space-xxs); } .character-name { font-size: 0.75rem; } .character-status { font-size: 0.6rem; height: 22px; } .channels-wrapper { min-width: 100px; margin: 0 var(--space-xs); height: 90px; gap: var(--space-sm); } .key-channel, .cipher-channel { height: 30px; } .data-packet { width: 24px; height: 24px; font-size: 0.7rem; } .transmission-box { padding: var(--space-lg); min-height: 80px; } .transmission-box h3 { font-size: 0.8rem; margin-bottom: var(--space-xs); } .key-display { font-size: 0.9rem; padding: var(--space-xs) var(--space-lg); min-width: 150px; } .main-layout { gap: var(--space-sm); } .left-panel, .right-panel { gap: var(--space-sm); } .message-char { width: 22px; height: 22px; font-size: 0.75rem; } .message-char.current { font-size: 0.95rem; } .message-char.space { width: 18px; } .bit-cell { width: 20px; height: 20px; font-size: 0.75rem; } .encoding-cards, .decoding-cards { grid-template-columns: 1fr; } .key-length-grid { grid-template-columns: 1fr; } .key-length-option.full-width { grid-column: 1 / -1; } 
 }
 </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/games/vernamcipher/">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/games/vernamcipher/">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/games/vernamcipher/">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/games/vernamcipher/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/games/vernamcipher/">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/games/vernamcipher/">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
 <div class="lang-switch" role="group" aria-label="Language">
-  <button class="lang-btn" data-lang-btn="ru">RU</button>
-  <button class="lang-btn" data-lang-btn="en">EN</button>
-  <button class="lang-btn" data-lang-btn="es">ES</button>
-  <button class="lang-btn" data-lang-btn="zh">中文</button>
+  <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/games/vernamcipher/" hreflang="ru" lang="ru">RU</a>
+  <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/games/vernamcipher/" hreflang="en" lang="en">EN</a>
+  <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/games/vernamcipher/" hreflang="es" lang="es">ES</a>
+  <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/games/vernamcipher/" hreflang="zh-Hans" lang="zh-CN">中文</a>
 </div>
 <div class="container">
-<header><h1 data-i18n="game.title">Шифр Вернама</h1><div class="line"></div><div class="subtitle" data-i18n="game.subtitle">XOR-шифрование · Побитовая операция</div></header>
+<header><h1 data-i18n="game.title">Vernam Cipher</h1><div class="line"></div><div class="subtitle" data-i18n="game.subtitle">XOR encryption · Bitwise operation</div></header>
 
-<div class="protocol-container"><div class="protocol-header" id="protocolHeader"><h2 data-i18n="protocol.toggle">Как работает шифр Вернама?</h2><span class="toggle-icon">+</span></div><div class="protocol-description" id="protocolContent">
-  <p data-i18n="protocol.intro"><span class="highlight-gold">Шифр Вернама</span> (одноразовый блокнот) — метод шифрования, теоретически невзламываемый при трёх условиях: ключ случаен, равен длине сообщения и используется единожды.</p>
-  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">Выбор кодировки</span></div><p data-i18n="protocol.step1.desc">Символы сообщения преобразуются в биты. Доступные кодировки: <b>Код Бодо</b> (5 бит/символ), <b>ASCII 7/8 бит</b>, <b>UTF-8</b> (переменная длина). Таблица символов обновляется динамически.</p></div>
-  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">Ввод сообщения</span></div><p data-i18n="protocol.step2.desc">Текст конвертируется в битовую последовательность согласно выбранной кодировке. Неподдерживаемые символы подсвечиваются предупреждением.</p></div>
-  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">Генерация ключа</span></div><p data-i18n="protocol.step3.desc">Ключ генерируется случайно (0/1 с равной вероятностью). Опции длины: 64–2048 бит или <b>«По длине сообщения»</b> (идеальный одноразовый блокнот). Если ключ короче сообщения — он циклически повторяется (снижает стойкость).</p></div>
-  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">Шифрование (XOR)</span></div><p data-i18n="protocol.step4.desc">Каждый бит сообщения складывается с битом ключа по правилу <b>исключающего ИЛИ (XOR)</b>: <code>0⊕0=0, 0⊕1=1, 1⊕0=1, 1⊕1=0</code>. Режимы: пошаговый (визуализация побитовой операции) или мгновенный.</p></div>
-  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">Передача</span></div><div class="step-desc" data-i18n="protocol.step5.desc">Алиса отправляет Бобу:<ul><li><span class="highlight-gold">Ключ</span> — по <i>защищённому каналу</i> (анимация: золотой пакет по кривой траектории)</li><li><span class="highlight">Шифротекст</span> — по <i>открытому каналу</i> (анимация: синий пакет по прямой)</li></ul>Оба пакета отображаются в <b>HEX-формате</b> (биты группируются по 8, конвертируются в шестнадцатеричные символы). Прибытие синхронизировано.</div></div>
-  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">Расшифровка</span></div><p data-i18n="protocol.step6.desc">Боб применяет тот же ключ к шифротексту через XOR: <code>шифротекст ⊕ ключ = исходное сообщение</code>. Благодаря свойству обратимости XOR, операция идентична шифрованию.</p></div>
-  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">7</span> <span data-i18n="protocol.step7.title">Обратная кодировка</span></div><p data-i18n="protocol.step7.desc">Расшифрованные биты конвертируются обратно в символы. Пользователь выбирает кодировку декодирования — система проверяет совпадение с исходным сообщением и показывает предпросмотр.</p></div>
-  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">8</span> <span data-i18n="protocol.step8.title">Результат</span></div><p data-i18n="protocol.step8.desc">Финальное сравнение: исходное сообщение, ключ (HEX), шифротекст (HEX), расшифрованный текст. При успешном совпадении отображается подтверждение и статистика.</p></div>
-  <p style="margin-top:12px; color:var(--text-secondary);" data-i18n="protocol.legend"><strong>Легенда визуализации:</strong><br><span style="color:var(--color-green);">●</span> Сообщение / результат &nbsp;|&nbsp; <span style="color:var(--color-gold);">●</span> Ключ &nbsp;|&nbsp; <span style="color:var(--color-blue);">●</span> Шифротекст &nbsp;|&nbsp; <span style="color:var(--color-gold);">⊕</span> XOR-операция</p>
-  <p style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);" data-i18n="protocol.note"><b>Важно:</b> В реальной криптографии ключ должен быть истинно случайным, никогда не повторяться и передаваться по защищённому каналу. Данная демонстрация — образовательная модель.</p>
+<div class="protocol-container"><div class="protocol-header" id="protocolHeader"><h2 data-i18n="protocol.toggle">How does the Vernam cipher work?</h2><span class="toggle-icon">+</span></div><div class="protocol-description" id="protocolContent">
+  <p data-i18n="protocol.intro">The <span class="highlight-gold">Vernam cipher</span> (one-time pad) is an encryption method that is theoretically unbreakable under three conditions: the key is random, equal in length to the message, and used only once.</p>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">Choosing an encoding</span></div><p data-i18n="protocol.step1.desc">Message characters are converted into bits. Available encodings: <b>Baudot code</b> (5 bits/char), <b>ASCII 7/8 bit</b>, <b>UTF-8</b> (variable length). The character table updates dynamically.</p></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">Entering the message</span></div><p data-i18n="protocol.step2.desc">The text is converted into a bit sequence according to the selected encoding. Unsupported characters are highlighted with a warning.</p></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">Key generation</span></div><p data-i18n="protocol.step3.desc">The key is generated randomly (0/1 with equal probability). Length options: 64–2048 bits or <b>"Match message length"</b> (a true one-time pad). If the key is shorter than the message, it repeats cyclically (reducing security).</p></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">Encryption (XOR)</span></div><p data-i18n="protocol.step4.desc">Each message bit is combined with a key bit using <b>exclusive OR (XOR)</b>: <code>0⊕0=0, 0⊕1=1, 1⊕0=1, 1⊕1=0</code>. Modes: step-by-step (visualizing the bitwise operation) or instant.</p></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">Transmission</span></div><div class="step-desc" data-i18n="protocol.step5.desc">Alice sends Bob:<ul><li>The <span class="highlight-gold">key</span> — over a <i>secure channel</i> (animation: gold packet on a curved path)</li><li>The <span class="highlight">ciphertext</span> — over an <i>open channel</i> (animation: blue packet on a straight path)</li></ul>Both packets are displayed in <b>HEX format</b> (bits grouped by 8, converted into hexadecimal symbols). Arrival is synchronized.</div></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">Decryption</span></div><p data-i18n="protocol.step6.desc">Bob applies the same key to the ciphertext using XOR: <code>ciphertext ⊕ key = original message</code>. Thanks to XOR's reversibility, this operation is identical to encryption.</p></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">7</span> <span data-i18n="protocol.step7.title">Reverse encoding</span></div><p data-i18n="protocol.step7.desc">The decrypted bits are converted back into characters. The user chooses a decoding encoding — the system checks the result against the original message and shows a preview.</p></div>
+  <div class="protocol-step"><div class="protocol-step-title"><span class="protocol-step-number">8</span> <span data-i18n="protocol.step8.title">Result</span></div><p data-i18n="protocol.step8.desc">Final comparison: original message, key (HEX), ciphertext (HEX), decrypted text. On a successful match, a confirmation and statistics are shown.</p></div>
+  <p style="margin-top:12px; color:var(--text-secondary);" data-i18n="protocol.legend"><strong>Visualization legend:</strong><br><span style="color:var(--color-green);">●</span> Message / result &nbsp;|&nbsp; <span style="color:var(--color-gold);">●</span> Key &nbsp;|&nbsp; <span style="color:var(--color-blue);">●</span> Ciphertext &nbsp;|&nbsp; <span style="color:var(--color-gold);">⊕</span> XOR operation</p>
+  <p style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);" data-i18n="protocol.note"><b>Important:</b> In real cryptography the key must be truly random, never reused, and transmitted over a secure channel. This demo is an educational model.</p>
 </div></div>
 
 <div class="game-area">
-<div class="stage-indicator" role="tablist" data-i18n-aria-label="stage.ariaLabel" aria-label="Этапы шифрования"><div class="stage-dot active" id="stage1" data-i18n-title="stage.encoding" title="Кодировка"></div><div class="stage-dot" id="stage2" data-i18n-title="stage.message" title="Сообщение"></div><div class="stage-dot" id="stage3" data-i18n-title="stage.key" title="Ключ"></div><div class="stage-dot" id="stage4" data-i18n-title="stage.encrypt" title="Шифрование"></div><div class="stage-dot" id="stage5" data-i18n-title="stage.transmit" title="Передача"></div><div class="stage-dot" id="stage6" data-i18n-title="stage.decrypt" title="Расшифровка"></div><div class="stage-dot" id="stage7" data-i18n-title="stage.decoding" title="Обратная кодировка"></div><div class="stage-dot" id="stage8" data-i18n-title="stage.result" title="Результат"></div></div>
+<div class="stage-indicator" role="tablist" data-i18n-aria-label="stage.ariaLabel" aria-label="Encryption stages"><div class="stage-dot active" id="stage1" data-i18n-title="stage.encoding" title="Encoding"></div><div class="stage-dot" id="stage2" data-i18n-title="stage.message" title="Message"></div><div class="stage-dot" id="stage3" data-i18n-title="stage.key" title="Key"></div><div class="stage-dot" id="stage4" data-i18n-title="stage.encrypt" title="Encryption"></div><div class="stage-dot" id="stage5" data-i18n-title="stage.transmit" title="Transmission"></div><div class="stage-dot" id="stage6" data-i18n-title="stage.decrypt" title="Decryption"></div><div class="stage-dot" id="stage7" data-i18n-title="stage.decoding" title="Decoding"></div><div class="stage-dot" id="stage8" data-i18n-title="stage.result" title="Result"></div></div>
 
 <!-- ЭТАП 1 -->
-<div id="encoding-stage" class="stage-content"><div class="main-layout"><div class="left-panel"><div style="padding: var(--space-lg);"><h3 data-i18n="encoding.heading">Выберите кодировку</h3><p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-xl);" data-i18n="encoding.desc">Кодировка определяет, как символы преобразуются в биты</p><div class="encoding-cards"><div class="encoding-card selected" data-encoding="baudot" tabindex="0" role="button"><div class="encoding-card-header"><span class="encoding-card-name" data-i18n="encoding.baudot.name">Код Бодо</span><span class="encoding-card-bits" data-i18n="encoding.baudot.bits">5 бит</span></div><div class="encoding-card-desc" data-i18n="encoding.baudot.desc">Исторический телеграфный код (ITA1/ITA2).</div><div class="encoding-card-example">A = 11000, B = 10011</div></div><div class="encoding-card" data-encoding="ascii7" tabindex="0" role="button"><div class="encoding-card-header"><span class="encoding-card-name">ASCII 7</span><span class="encoding-card-bits" data-i18n="encoding.ascii7.bits">7 бит</span></div><div class="encoding-card-desc" data-i18n="encoding.ascii7.desc">Стандартный ASCII (0-127).</div><div class="encoding-card-example">A = 1000001, Space = 0100000</div></div><div class="encoding-card" data-encoding="ascii8" tabindex="0" role="button"><div class="encoding-card-header"><span class="encoding-card-name">ASCII 8</span><span class="encoding-card-bits" data-i18n="encoding.ascii8.bits">8 бит</span></div><div class="encoding-card-desc" data-i18n="encoding.ascii8.desc">Расширенный ASCII (0-255).</div><div class="encoding-card-example">A = 01000001, Ä = 11000100</div></div><div class="encoding-card" data-encoding="utf8" tabindex="0" role="button"><div class="encoding-card-header"><span class="encoding-card-name">UTF-8</span><span class="encoding-card-bits" data-i18n="encoding.utf8.bits">8-32 бит</span></div><div class="encoding-card-desc" data-i18n="encoding.utf8.desc">Unicode переменной длины.</div><div class="encoding-card-example">A = 01000001, Ж = 1101000010010110</div></div></div><div class="action-button-container"><button class="action-button gold-primary" id="goToMessageBtn" data-i18n="btn.next">Далее</button></div></div></div><div class="right-panel"><div class="alphabet-legend"><div class="legend-item"><div class="legend-dot xor"></div><span data-i18n="encoding.legend">Выбранная кодировка</span></div></div><div class="char-table-container" id="encodingTableContainer"><table class="char-table" id="encodingTable"><thead><tr><th data-i18n="table.char">Символ</th><th data-i18n="table.code">Код</th><th data-i18n="table.bits">Биты</th></tr></thead><tbody id="encodingTableBody"></tbody></table></div></div></div></div>
+<div id="encoding-stage" class="stage-content"><div class="main-layout"><div class="left-panel"><div style="padding: var(--space-lg);"><h3 data-i18n="encoding.heading">Choose an encoding</h3><p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: var(--space-xl);" data-i18n="encoding.desc">The encoding determines how characters are converted into bits</p><div class="encoding-cards"><div class="encoding-card selected" data-encoding="baudot" tabindex="0" role="button"><div class="encoding-card-header"><span class="encoding-card-name" data-i18n="encoding.baudot.name">Baudot code</span><span class="encoding-card-bits" data-i18n="encoding.baudot.bits">5 bits</span></div><div class="encoding-card-desc" data-i18n="encoding.baudot.desc">Historical telegraph code (ITA1/ITA2).</div><div class="encoding-card-example">A = 11000, B = 10011</div></div><div class="encoding-card" data-encoding="ascii7" tabindex="0" role="button"><div class="encoding-card-header"><span class="encoding-card-name">ASCII 7</span><span class="encoding-card-bits" data-i18n="encoding.ascii7.bits">7 bits</span></div><div class="encoding-card-desc" data-i18n="encoding.ascii7.desc">Standard ASCII (0-127).</div><div class="encoding-card-example">A = 1000001, Space = 0100000</div></div><div class="encoding-card" data-encoding="ascii8" tabindex="0" role="button"><div class="encoding-card-header"><span class="encoding-card-name">ASCII 8</span><span class="encoding-card-bits" data-i18n="encoding.ascii8.bits">8 bits</span></div><div class="encoding-card-desc" data-i18n="encoding.ascii8.desc">Extended ASCII (0-255).</div><div class="encoding-card-example">A = 01000001, Ä = 11000100</div></div><div class="encoding-card" data-encoding="utf8" tabindex="0" role="button"><div class="encoding-card-header"><span class="encoding-card-name">UTF-8</span><span class="encoding-card-bits" data-i18n="encoding.utf8.bits">8-32 bits</span></div><div class="encoding-card-desc" data-i18n="encoding.utf8.desc">Variable-length Unicode.</div><div class="encoding-card-example">A = 01000001, Ж = 1101000010010110</div></div></div><div class="action-button-container"><button class="action-button gold-primary" id="goToMessageBtn" data-i18n="btn.next">Next</button></div></div></div><div class="right-panel"><div class="alphabet-legend"><div class="legend-item"><div class="legend-dot xor"></div><span data-i18n="encoding.legend">Selected encoding</span></div></div><div class="char-table-container" id="encodingTableContainer"><table class="char-table" id="encodingTable"><thead><tr><th data-i18n="table.char">Char</th><th data-i18n="table.code">Code</th><th data-i18n="table.bits">Bits</th></tr></thead><tbody id="encodingTableBody"></tbody></table></div></div></div></div>
 
 <!-- ЭТАП 2 -->
-<div id="message-stage" class="stage-content hidden"><div class="message-top-panel"><div class="transmission-box"><h3 data-i18n="message.heading">Введите сообщение</h3><div class="input-wrapper"><input type="text" id="messageInput" data-i18n-placeholder="message.placeholder" placeholder="Введите текст..." maxlength="100" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--color-gold); border-radius:4px; padding:10px; color:var(--color-green); font-family:monospace; font-size:1rem; text-align:center;" data-i18n-aria-label="message.ariaLabel" aria-label="Поле ввода сообщения"></div><div style="margin-top:8px; font-size:0.7rem; color:var(--text-secondary);" aria-live="polite"><span id="charCounter">0</span> <span data-i18n="message.charsLabel">символов</span> · <span id="bitCounter">0</span> <span data-i18n="unit.bits">бит</span></div><div id="estimatedTime" style="margin-top:5px; font-size:0.7rem; color:var(--color-blue); display:none;"><span id="timeText"></span></div><div id="encodingWarning" style="margin-top:5px; font-size:0.7rem; color:var(--color-red); display:none;" role="alert"><span id="warningText"></span></div></div></div><div class="main-layout"><div class="left-panel"><div class="bit-visualizer"><div class="bit-row"><span class="bit-label plain" data-i18n="message.bitsRowLabel">Сообщение (биты)</span><div class="bit-container" id="messageBitsContainer" aria-live="polite"></div></div></div></div><div class="right-panel"><div class="char-table-container"><table class="char-table" id="messageTable"><thead><tr><th data-i18n="table.char">Символ</th><th data-i18n="table.code">Код</th><th data-i18n="table.bits">Биты</th></tr></thead><tbody id="messageTableBody"></tbody></table></div></div></div><div class="bottom-buttons"><button class="action-button secondary" id="goToEncodingBtn" data-i18n="btn.back">Назад</button><button class="action-button gold-primary" id="goToKeyBtn" data-i18n="btn.next">Далее</button></div></div>
+<div id="message-stage" class="stage-content hidden"><div class="message-top-panel"><div class="transmission-box"><h3 data-i18n="message.heading">Enter a message</h3><div class="input-wrapper"><input type="text" id="messageInput" data-i18n-placeholder="message.placeholder" placeholder="Type text..." maxlength="100" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--color-gold); border-radius:4px; padding:10px; color:var(--color-green); font-family:monospace; font-size:1rem; text-align:center;" data-i18n-aria-label="message.ariaLabel" aria-label="Message input field"></div><div style="margin-top:8px; font-size:0.7rem; color:var(--text-secondary);" aria-live="polite"><span id="charCounter">0</span> <span data-i18n="message.charsLabel">characters</span> · <span id="bitCounter">0</span> <span data-i18n="unit.bits">bits</span></div><div id="estimatedTime" style="margin-top:5px; font-size:0.7rem; color:var(--color-blue); display:none;"><span id="timeText"></span></div><div id="encodingWarning" style="margin-top:5px; font-size:0.7rem; color:var(--color-red); display:none;" role="alert"><span id="warningText"></span></div></div></div><div class="main-layout"><div class="left-panel"><div class="bit-visualizer"><div class="bit-row"><span class="bit-label plain" data-i18n="message.bitsRowLabel">Message (bits)</span><div class="bit-container" id="messageBitsContainer" aria-live="polite"></div></div></div></div><div class="right-panel"><div class="char-table-container"><table class="char-table" id="messageTable"><thead><tr><th data-i18n="table.char">Char</th><th data-i18n="table.code">Code</th><th data-i18n="table.bits">Bits</th></tr></thead><tbody id="messageTableBody"></tbody></table></div></div></div><div class="bottom-buttons"><button class="action-button secondary" id="goToEncodingBtn" data-i18n="btn.back">Back</button><button class="action-button gold-primary" id="goToKeyBtn" data-i18n="btn.next">Next</button></div></div>
 
 <!-- ЭТАП 3 -->
 <div id="key-stage" class="stage-content hidden">
   <div class="main-layout">
     <div class="left-panel">
       <div class="key-options-panel">
-        <h3 data-i18n="key.heading">Параметры ключа</h3>
-        <p class="hint" data-i18n="key.hint">Выберите длину ключа для генерации</p>
+        <h3 data-i18n="key.heading">Key parameters</h3>
+        <p class="hint" data-i18n="key.hint">Choose a key length to generate</p>
         <div class="key-length-grid">
-          <label class="key-length-option"><input type="radio" name="keyLength" value="64"><span class="option-content" data-i18n="key.length.64">64 бит</span></label>
-          <label class="key-length-option"><input type="radio" name="keyLength" value="128"><span class="option-content" data-i18n="key.length.128">128 бит</span></label>
-          <label class="key-length-option"><input type="radio" name="keyLength" value="256"><span class="option-content" data-i18n="key.length.256">256 бит</span></label>
-          <label class="key-length-option"><input type="radio" name="keyLength" value="512"><span class="option-content" data-i18n="key.length.512">512 бит</span></label>
-          <label class="key-length-option"><input type="radio" name="keyLength" value="1024"><span class="option-content" data-i18n="key.length.1024">1024 бита</span></label>
-          <label class="key-length-option"><input type="radio" name="keyLength" value="2048"><span class="option-content" data-i18n="key.length.2048">2048 бит</span></label>
-          <label class="key-length-option full-width"><input type="radio" name="keyLength" value="auto"><span class="option-content" data-i18n="key.length.auto">По длине сообщения</span><span class="option-bits" id="autoBitsLabel">(автоматически)</span></label>
+          <label class="key-length-option"><input type="radio" name="keyLength" value="64"><span class="option-content" data-i18n="key.length.64">64 bits</span></label>
+          <label class="key-length-option"><input type="radio" name="keyLength" value="128"><span class="option-content" data-i18n="key.length.128">128 bits</span></label>
+          <label class="key-length-option"><input type="radio" name="keyLength" value="256"><span class="option-content" data-i18n="key.length.256">256 bits</span></label>
+          <label class="key-length-option"><input type="radio" name="keyLength" value="512"><span class="option-content" data-i18n="key.length.512">512 bits</span></label>
+          <label class="key-length-option"><input type="radio" name="keyLength" value="1024"><span class="option-content" data-i18n="key.length.1024">1024 bits</span></label>
+          <label class="key-length-option"><input type="radio" name="keyLength" value="2048"><span class="option-content" data-i18n="key.length.2048">2048 bits</span></label>
+          <label class="key-length-option full-width"><input type="radio" name="keyLength" value="auto"><span class="option-content" data-i18n="key.length.auto">Match message length</span><span class="option-bits" id="autoBitsLabel">(автоматически)</span></label>
         </div>
-        <button class="action-button gold" id="generateKeyBtn" disabled data-i18n="key.generateBtn">Сгенерировать ключ</button>
-        <div class="key-disclaimer warning" id="keyDisclaimer"><span data-i18n="key.disclaimer.waiting">Ожидается выбор длины ключа...</span></div>
+        <button class="action-button gold" id="generateKeyBtn" disabled data-i18n="key.generateBtn">Generate key</button>
+        <div class="key-disclaimer warning" id="keyDisclaimer"><span data-i18n="key.disclaimer.waiting">Waiting for a key length to be selected...</span></div>
       </div>
     </div>
     <div class="right-panel">
       <div class="bit-visualizer">
         <div class="bit-row">
-          <span class="bit-label key" data-i18n="key.padLabel">Ключ</span>
+          <span class="bit-label key" data-i18n="key.padLabel">Key</span>
           <div class="bit-container" id="keyPadBits" style="gap:0; max-height:350px;">
-            <span style="color:var(--text-muted); font-size:0.8rem;" data-i18n="key.padPlaceholder">Выберите длину и нажмите "Сгенерировать"</span>
+            <span style="color:var(--text-muted); font-size:0.8rem;" data-i18n="key.padPlaceholder">Choose a length and click "Generate"</span>
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="bottom-buttons">
-    <button class="action-button secondary" id="backToMsgBtn" data-i18n="btn.back">Назад</button>
-    <button class="action-button gold" id="startEncryptBtn" disabled data-i18n="key.encryptBtn">Шифровать</button>
+    <button class="action-button secondary" id="backToMsgBtn" data-i18n="btn.back">Back</button>
+    <button class="action-button gold" id="startEncryptBtn" disabled data-i18n="key.encryptBtn">Encrypt</button>
   </div>
 </div>
 
 <!-- ЭТАП 4 -->
 <div id="encryption-stage" class="stage-content hidden"><div class="main-layout"><div class="left-panel"><div class="action-button-container" id="encryptModeContainer">
-  <button class="action-button gold-primary" id="nextBitBtn" data-i18n="encrypt.nextBitBtn">Следующий бит</button>
-  <button class="action-button instant" id="instantEncryptBtn" data-i18n="encrypt.instantBtn">Мгновенное шифрование</button>
-</div><div class="xor-visualizer"><div class="xor-title" data-i18n="encrypt.xorTitle">XOR Операция</div><div class="xor-demo" id="xorDemoContent" aria-live="polite"></div></div><div class="action-button-container hidden" id="encryptActionContainer"><button class="action-button success hidden" id="nextStageEncryptBtn" data-i18n="btn.next">Далее</button></div></div><div class="right-panel"><div class="sync-bits-container" id="syncBitsContainer"></div></div></div></div>
+  <button class="action-button gold-primary" id="nextBitBtn" data-i18n="encrypt.nextBitBtn">Next bit</button>
+  <button class="action-button instant" id="instantEncryptBtn" data-i18n="encrypt.instantBtn">Instant encryption</button>
+</div><div class="xor-visualizer"><div class="xor-title" data-i18n="encrypt.xorTitle">XOR Operation</div><div class="xor-demo" id="xorDemoContent" aria-live="polite"></div></div><div class="action-button-container hidden" id="encryptActionContainer"><button class="action-button success hidden" id="nextStageEncryptBtn" data-i18n="btn.next">Next</button></div></div><div class="right-panel"><div class="sync-bits-container" id="syncBitsContainer"></div></div></div></div>
 
 <!-- ЭТАП 5 -->
-<div id="transmission-stage" class="stage-content hidden"><div class="main-layout"><div class="left-panel"><div class="transmission-container"><div class="transmission-box"><h3 data-i18n="transmit.keyHeading">Ключ (HEX)</h3><div class="hex-info-box"><span data-i18n="transmit.keyInfo">Биты сгруппированы по 8 и представлены в <b>HEX</b> (шестнадцатеричной системе). 1 HEX-символ = 4 бита. Это стандартный компактный формат для чтения и передачи бинарных данных.</span></div><div class="key-display" id="keyDisplayTransmit" style="font-size:0.85rem;">—</div></div><div class="transmission-box"><h3 data-i18n="transmit.cipherHeading">Шифротекст (HEX)</h3><div class="key-display" id="cipherDisplayTransmit" style="font-size:0.85rem;"></div></div></div><div class="action-button-container" id="transmitBtnContainer"><button class="action-button" id="transmitBtn" data-i18n="transmit.sendBtn">Отправить ключ и шифротекст</button></div></div><div class="right-panel">
+<div id="transmission-stage" class="stage-content hidden"><div class="main-layout"><div class="left-panel"><div class="transmission-container"><div class="transmission-box"><h3 data-i18n="transmit.keyHeading">Key (HEX)</h3><div class="hex-info-box"><span data-i18n="transmit.keyInfo">Bits are grouped by 8 and shown in <b>HEX</b> (hexadecimal). 1 HEX digit = 4 bits. This is the standard compact format for reading and transmitting binary data.</span></div><div class="key-display" id="keyDisplayTransmit" style="font-size:0.85rem;">—</div></div><div class="transmission-box"><h3 data-i18n="transmit.cipherHeading">Ciphertext (HEX)</h3><div class="key-display" id="cipherDisplayTransmit" style="font-size:0.85rem;"></div></div></div><div class="action-button-container" id="transmitBtnContainer"><button class="action-button" id="transmitBtn" data-i18n="transmit.sendBtn">Send key and ciphertext</button></div></div><div class="right-panel">
     <div class="channel-container" id="channelContainer">
       <div class="transmission-setup">
-        <div class="character alice"><div class="character-icon">A</div><div class="character-name" data-i18n="char.alice">Алиса</div><div class="character-status" id="aliceStatus" data-i18n="status.ready">Готова</div></div>
+        <div class="character alice"><div class="character-icon">A</div><div class="character-name" data-i18n="char.alice">Alice</div><div class="character-status" id="aliceStatus" data-i18n="status.ready">Ready</div></div>
         <div class="channels-wrapper">
-          <div class="key-channel" id="keyChannelTransmit"><span class="channel-label" data-i18n="channel.key">Ключ</span></div>
-          <div class="cipher-channel" id="cipherChannelTransmit"><span class="channel-label" data-i18n="channel.cipher">Шифротекст</span></div>
+          <div class="key-channel" id="keyChannelTransmit"><span class="channel-label" data-i18n="channel.key">Key</span></div>
+          <div class="cipher-channel" id="cipherChannelTransmit"><span class="channel-label" data-i18n="channel.cipher">Ciphertext</span></div>
         </div>
-        <div class="character bob"><div class="character-icon">B</div><div class="character-name" data-i18n="char.bob">Боб</div><div class="character-status" id="bobStatus" data-i18n="status.waiting">Ожидает</div></div>
+        <div class="character bob"><div class="character-icon">B</div><div class="character-name" data-i18n="char.bob">Bob</div><div class="character-status" id="bobStatus" data-i18n="status.waiting">Waiting</div></div>
       </div>
-      <div class="route-info"><span class="key-route" data-i18n="route.keyChannel">Ключ: защищённый канал</span><span class="cipher-route" data-i18n="route.cipherChannel">Шифротекст: открытый канал</span></div>
+      <div class="route-info"><span class="key-route" data-i18n="route.keyChannel">Key: secure channel</span><span class="cipher-route" data-i18n="route.cipherChannel">Ciphertext: open channel</span></div>
     </div>
   </div></div></div>
 
 <!-- ЭТАП 6 -->
 <div id="decryption-stage" class="stage-content hidden"><div class="main-layout"><div class="left-panel"><div class="action-button-container" id="decryptModeContainer">
-  <button class="action-button gold-primary" id="nextDecryptBitBtn" data-i18n="decrypt.nextBitBtn">Следующий бит</button>
-  <button class="action-button instant" id="instantDecryptBtn" data-i18n="decrypt.instantBtn">Мгновенная расшифровка</button>
-</div><div class="xor-visualizer"><div class="xor-title" data-i18n="decrypt.xorTitle">XOR Расшифровка</div><div class="xor-demo" id="decryptXorDemo" aria-live="polite"></div></div></div><div class="right-panel"><div class="sync-bits-container" id="decryptSyncBitsContainer"></div></div></div></div>
+  <button class="action-button gold-primary" id="nextDecryptBitBtn" data-i18n="decrypt.nextBitBtn">Next bit</button>
+  <button class="action-button instant" id="instantDecryptBtn" data-i18n="decrypt.instantBtn">Instant decryption</button>
+</div><div class="xor-visualizer"><div class="xor-title" data-i18n="decrypt.xorTitle">XOR Decryption</div><div class="xor-demo" id="decryptXorDemo" aria-live="polite"></div></div></div><div class="right-panel"><div class="sync-bits-container" id="decryptSyncBitsContainer"></div></div></div></div>
 
 <!-- ЭТАП 7 -->
 <div id="decoding-stage" class="stage-content hidden">
   <div class="decoding-layout">
     <div class="decoding-section">
-      <div class="decoding-section-title" data-i18n="decoding.bitsHeading">Расшифрованные биты</div>
+      <div class="decoding-section-title" data-i18n="decoding.bitsHeading">Decrypted bits</div>
       <div class="bit-container" id="decodedBitsDisplay" style="max-height:200px; justify-content:flex-start;" aria-live="polite"></div>
     </div>
     <div class="decoding-section">
-      <div class="decoding-section-title" data-i18n="decoding.chooseHeading">Выберите кодировку</div>
+      <div class="decoding-section-title" data-i18n="decoding.chooseHeading">Choose an encoding</div>
       <div class="decoding-cards" id="decodingCardsContainer">
-        <div class="decoding-card" data-encoding="baudot" tabindex="0" role="button" aria-pressed="false"><div class="encoding-card-header"><span class="encoding-card-name" data-i18n="encoding.baudot.name">Код Бодо</span><span class="encoding-card-bits" data-i18n="encoding.baudot.bits">5 бит</span></div><div class="encoding-card-desc" data-i18n="decoding.card.baudot">Исторический телеграфный код</div></div>
-        <div class="decoding-card" data-encoding="ascii7" tabindex="0" role="button" aria-pressed="false"><div class="encoding-card-header"><span class="encoding-card-name">ASCII 7</span><span class="encoding-card-bits" data-i18n="encoding.ascii7.bits">7 бит</span></div><div class="encoding-card-desc" data-i18n="decoding.card.ascii7">Стандартный ASCII</div></div>
-        <div class="decoding-card" data-encoding="ascii8" tabindex="0" role="button" aria-pressed="false"><div class="encoding-card-header"><span class="encoding-card-name">ASCII 8</span><span class="encoding-card-bits" data-i18n="encoding.ascii8.bits">8 бит</span></div><div class="encoding-card-desc" data-i18n="decoding.card.ascii8">Расширенный ASCII</div></div>
-        <div class="decoding-card" data-encoding="utf8" tabindex="0" role="button" aria-pressed="false"><div class="encoding-card-header"><span class="encoding-card-name">UTF-8</span><span class="encoding-card-bits" data-i18n="encoding.utf8.bits">8-32 бит</span></div><div class="encoding-card-desc" data-i18n="decoding.card.utf8">Unicode переменной длины</div></div>
+        <div class="decoding-card" data-encoding="baudot" tabindex="0" role="button" aria-pressed="false"><div class="encoding-card-header"><span class="encoding-card-name" data-i18n="encoding.baudot.name">Baudot code</span><span class="encoding-card-bits" data-i18n="encoding.baudot.bits">5 bits</span></div><div class="encoding-card-desc" data-i18n="decoding.card.baudot">Historical telegraph code</div></div>
+        <div class="decoding-card" data-encoding="ascii7" tabindex="0" role="button" aria-pressed="false"><div class="encoding-card-header"><span class="encoding-card-name">ASCII 7</span><span class="encoding-card-bits" data-i18n="encoding.ascii7.bits">7 bits</span></div><div class="encoding-card-desc" data-i18n="decoding.card.ascii7">Standard ASCII</div></div>
+        <div class="decoding-card" data-encoding="ascii8" tabindex="0" role="button" aria-pressed="false"><div class="encoding-card-header"><span class="encoding-card-name">ASCII 8</span><span class="encoding-card-bits" data-i18n="encoding.ascii8.bits">8 bits</span></div><div class="encoding-card-desc" data-i18n="decoding.card.ascii8">Extended ASCII</div></div>
+        <div class="decoding-card" data-encoding="utf8" tabindex="0" role="button" aria-pressed="false"><div class="encoding-card-header"><span class="encoding-card-name">UTF-8</span><span class="encoding-card-bits" data-i18n="encoding.utf8.bits">8-32 bits</span></div><div class="encoding-card-desc" data-i18n="decoding.card.utf8">Variable-length Unicode</div></div>
       </div>
     </div>
     <div class="decoding-section">
-      <div class="decoding-section-title" data-i18n="decoding.previewHeading">Предпросмотр декодирования</div>
-      <div class="decoding-result-display" id="decodingPreview" aria-live="polite" data-i18n="decoding.previewPlaceholder">Выберите кодировку для предпросмотра...</div>
+      <div class="decoding-section-title" data-i18n="decoding.previewHeading">Decoding preview</div>
+      <div class="decoding-result-display" id="decodingPreview" aria-live="polite" data-i18n="decoding.previewPlaceholder">Choose an encoding to preview...</div>
     </div>
     <div class="action-button-container" style="margin-top: var(--space-xl);">
-      <button class="action-button gold-primary" id="finishDecodingBtn" data-i18n="decoding.finishBtn">Завершить</button>
+      <button class="action-button gold-primary" id="finishDecodingBtn" data-i18n="decoding.finishBtn">Finish</button>
     </div>
   </div>
 </div>
@@ -540,15 +548,15 @@ h1 { font-size: 1.6rem; color: var(--color-blue); margin-bottom: var(--space-xs)
 <!-- ЭТАП 8 -->
 <div id="final-stage" class="stage-content hidden">
   <div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 800px; margin: 0 auto;">
-    <div class="final-title" data-i18n="final.heading">Результат передачи</div>
+    <div class="final-title" data-i18n="final.heading">Transmission result</div>
     <div class="stats-grid" style="width: 100%;">
-      <div class="stat-card key"><div class="stat-label" data-i18n="final.keyLabel">Ключ (HEX)</div><div class="stat-value key-value" id="finalKey"></div></div>
-      <div class="stat-card cipher"><div class="stat-label" data-i18n="final.cipherLabel">Шифротекст (HEX)</div><div class="stat-value cipher-value" id="finalCipher"></div></div>
-      <div class="stat-card original"><div class="stat-label" data-i18n="final.originalLabel">Исходное сообщение</div><div class="stat-value original-value" id="finalOriginal"></div></div>
-      <div class="stat-card decrypted"><div class="stat-label" data-i18n="final.decryptedLabel">Расшифрованное</div><div class="stat-value decrypted-value" id="finalDecrypted"></div></div>
+      <div class="stat-card key"><div class="stat-label" data-i18n="final.keyLabel">Key (HEX)</div><div class="stat-value key-value" id="finalKey"></div></div>
+      <div class="stat-card cipher"><div class="stat-label" data-i18n="final.cipherLabel">Ciphertext (HEX)</div><div class="stat-value cipher-value" id="finalCipher"></div></div>
+      <div class="stat-card original"><div class="stat-label" data-i18n="final.originalLabel">Original message</div><div class="stat-value original-value" id="finalOriginal"></div></div>
+      <div class="stat-card decrypted"><div class="stat-label" data-i18n="final.decryptedLabel">Decrypted</div><div class="stat-value decrypted-value" id="finalDecrypted"></div></div>
     </div>
     <div class="action-button-container" style="width: 100%; max-width: 400px; margin-top: var(--space-xl);">
-      <button class="action-button" id="resetGameBtn" data-i18n="final.resetBtn">Новая передача</button>
+      <button class="action-button" id="resetGameBtn" data-i18n="final.resetBtn">New transmission</button>
     </div>
   </div>
 </div>
@@ -560,17 +568,17 @@ h1 { font-size: 1.6rem; color: var(--color-blue); margin-bottom: var(--space-xs)
       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
     </svg>
-    <span data-i18n="nav.theory">Прочитать теорию</span>
+    <span data-i18n="nav.theory">Read the theory</span>
   </a>
-  <a href="https://ludus-lab.ru/" class="nav-link primary">
+  <a href="/" class="nav-link primary">
     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
       <polyline points="9 22 9 12 15 12 15 22"/>
     </svg>
-    <span data-i18n="nav.home">Вернуться в лабораторию</span>
+    <span data-i18n="nav.home">Back to the lab</span>
   </a>
 </div></div>
-<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalMessage"><div class="modal-content" id="modalContent"><div class="modal-title" id="modalTitle" data-i18n="modal.defaultTitle">Информация</div><div class="modal-message" id="modalMessage" data-i18n="modal.defaultMsg">Текст сообщения</div><div class="modal-buttons"><button class="action-button" id="closeModalBtn" data-i18n="modal.okBtn">OK</button></div></div></div>
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalMessage"><div class="modal-content" id="modalContent"><div class="modal-title" id="modalTitle" data-i18n="modal.defaultTitle">Information</div><div class="modal-message" id="modalMessage" data-i18n="modal.defaultMsg">Message text</div><div class="modal-buttons"><button class="action-button" id="closeModalBtn" data-i18n="modal.okBtn">OK</button></div></div></div>
 </div>
 
 <script>
@@ -909,7 +917,7 @@ h1 { font-size: 1.6rem; color: var(--color-blue); margin-bottom: var(--space-xs)
 
   function initLanguage() {
     let saved = null;
-    try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+    saved = 'en';
     if (!saved) { const browserLang = (navigator.language || 'ru').slice(0, 2); saved = I18N[browserLang] ? browserLang : 'ru'; }
     applyLanguage(saved);
   }

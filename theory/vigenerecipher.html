@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title id="pageTitle">Шифр Виженера: теория | Ludus Lab</title>
-  <meta id="pageDescription" name="description" content="Объяснение классического полиалфавитного шифра Виженера. Как работает таблица, почему он был прорывом и как его взломать.">
+  <title id="pageTitle">Vigenère Cipher: Theory | Ludus Lab</title>
+  <meta id="pageDescription" name="description" content="An explanation of the classic polyalphabetic Vigenère cipher. How the table works, why it was a breakthrough, and how it was eventually broken.">
   
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -543,22 +543,30 @@
     .step-content { min-width: 0; max-width: 100%; }
     .step-content > div { max-width: 100%; overflow-x: auto; }
   </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/theory/vigenerecipher.html">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/theory/vigenerecipher.html">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/theory/vigenerecipher.html">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/theory/vigenerecipher.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/theory/vigenerecipher.html">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/theory/vigenerecipher.html">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
   <div class="lang-switch" role="group" aria-label="Language">
-    <button class="lang-btn" data-lang-btn="ru">RU</button>
-    <button class="lang-btn" data-lang-btn="en">EN</button>
-    <button class="lang-btn" data-lang-btn="es">ES</button>
-    <button class="lang-btn" data-lang-btn="zh">中文</button>
+    <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/theory/vigenerecipher.html" hreflang="ru" lang="ru">RU</a>
+    <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/theory/vigenerecipher.html" hreflang="en" lang="en">EN</a>
+    <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/theory/vigenerecipher.html" hreflang="es" lang="es">ES</a>
+    <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/theory/vigenerecipher.html" hreflang="zh-Hans" lang="zh-CN">中文</a>
   </div>
 
   <!-- Навигация -->
   <nav class="theory-nav">
-    <a href="https://ludus-lab.ru/" class="nav-logo">LUDUS LAB</a>
+    <a href="/" class="nav-logo">LUDUS LAB</a>
     <div class="nav-links">
-      <a href="https://ludus-lab.ru/" class="nav-link" data-i18n="nav.home">Главная</a>
+      <a href="/" class="nav-link" data-i18n="nav.home">Home</a>
       <!-- ИЗМЕНЕНО: убрана кнопка "Теория" -->
-      <a href="https://ludus-lab.ru/games/vigenerecipher/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+      <a href="/games/vigenerecipher/" class="nav-link" data-i18n="nav.play">Play</a>
     </div>
   </nav>
 
@@ -566,44 +574,42 @@
   <div class="theory-container">
     <!-- Заголовок статьи -->
     <header class="article-header">
-      <div class="article-category" data-i18n="article.category">Основы криптографии</div>
-      <h1 class="article-title" data-i18n="article.title">Шифр Виженера</h1>
-      <p class="article-subtitle" data-i18n="article.subtitle">
-        Полиалфавитный шифр, который считался «невзламываемым» три столетия и изменил историю криптографии
-      </p>
+      <div class="article-category" data-i18n="article.category">Cryptography fundamentals</div>
+      <h1 class="article-title" data-i18n="article.title">Vigenère Cipher</h1>
+      <p class="article-subtitle" data-i18n="article.subtitle">A polyalphabetic cipher considered "unbreakable" for three centuries — one that changed the course of cryptography</p>
       <div class="article-meta">
-        <div class="meta-item" data-i18n="meta.readtime">⏱️ 4 мин чтения</div>
-        <div class="meta-item" data-i18n="meta.level">📊 Начальный уровень</div>
-        <div class="meta-item" data-i18n="meta.era">🗝️ XVI век</div>
+        <div class="meta-item" data-i18n="meta.readtime">⏱️ 4 min read</div>
+        <div class="meta-item" data-i18n="meta.level">📊 Beginner level</div>
+        <div class="meta-item" data-i18n="meta.era">🗝️ 16th century</div>
       </div>
     </header>
 
     <!-- Блок "Зачем это нужно?" -->
     <section class="content-block">
-      <h2 data-i18n="block1.heading">Зачем это нужно?</h2>
-      <p data-i18n="block1.p1">Представьте: вы — <span class="highlight">Алиса</span>, дипломат эпохи Возрождения. Вам нужно отправить секретное послание <span class="highlight">Бобу</span>, но почта ненадёжна — письма перехватывают, вскрывают, копируют.</p>
+      <h2 data-i18n="block1.heading">Why do we need this?</h2>
+      <p data-i18n="block1.p1">Imagine you are <span class="highlight">Alice</span>, a Renaissance-era diplomat. You need to send a secret message to <span class="highlight">Bob</span>, but the mail isn't safe — letters get intercepted, opened, copied.</p>
 
-      <p data-i18n="block1.p2">Простой шифр замены (где А→Х, Б→Ц и т.д.) легко взломать частотным анализом: в русском языке буква «О» встречается чаще всех — значит, самый частый символ в шифротексте, скорее всего, и есть «О».</p>
+      <p data-i18n="block1.p2">A simple substitution cipher (where A→X, B→C, and so on) is easy to break with frequency analysis: in any given language, certain letters appear far more often than others — so the most common symbol in the ciphertext is likely the most common letter of the alphabet.</p>
 
-      <p data-i18n="block1.p3"><span class="highlight">Шифр Виженера решает эту проблему</span>. Вместо одного алфавита он использует <span class="highlight">множество алфавитов</span>, переключаясь между ними по ключевому слову. Одна и та же буква открытого текста шифруется по-разному в зависимости от позиции — и частотный анализ перестаёт работать.</p>
+      <p data-i18n="block1.p3"><span class="highlight">The Vigenère cipher solves this problem</span>. Instead of one alphabet, it uses <span class="highlight">many alphabets</span>, switching between them according to a keyword. The same plaintext letter gets encrypted differently depending on its position — so frequency analysis stops working.</p>
 
-      <p data-i18n="block1.p4">Этот метод был настолько надёжен, что его называли <span class="highlight">«le chiffre indéchiffrable»</span> — «не взламываемый шифр». Лишь в 1863 году Фридрих Касиски опубликовал метод его взлома.</p>
+      <p data-i18n="block1.p4">The method was considered so reliable that it was called <span class="highlight">"le chiffre indéchiffrable"</span> — "the indecipherable cipher." It wasn't until 1863 that Friedrich Kasiski published a method for breaking it.</p>
     </section>
 
     <!-- Блок "Как это работает?" -->
     <section class="content-block">
-      <h2 data-i18n="block2.heading">Как это работает?</h2>
+      <h2 data-i18n="block2.heading">How does it work?</h2>
 
-      <p data-i18n="block2.intro">В основе шифра — <span class="highlight">таблица Виженера</span>: квадрат 33×33 (для русского алфавита), где каждая строка — это сдвинутый алфавит.</p>
+      <p data-i18n="block2.intro">At the heart of the cipher is the <span class="highlight">Vigenère table</span>: a 33×33 square (for the Russian alphabet), where each row is the alphabet shifted by one more position.</p>
 
       <div class="explanation-steps">
         <!-- Шаг 1 -->
         <div class="step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h3 data-i18n="step1.title">Подготовка таблицы</h3>
-            <p data-i18n="step1.text">Первая строка — обычный алфавит. Каждая следующая строка сдвинута на одну позицию влево. Строка с номером <code>K</code> начинается с <code>K-й</code> буквы алфавита.</p>
-            <p data-i18n="step1.example.intro">Пример для английского (первые 3 строки):</p>
+            <h3 data-i18n="step1.title">Preparing the table</h3>
+            <p data-i18n="step1.text">The first row is the plain alphabet. Each following row is shifted one position to the left. Row number <code>K</code> starts with the <code>K-th</code> letter of the alphabet.</p>
+            <p data-i18n="step1.example.intro">Example for English (first 3 rows):</p>
             <div style="background:rgba(0,20,40,0.6); padding:10px; border-radius:4px; font-family:monospace; font-size:0.9rem; margin:10px 0;">
               ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
               BCDEFGHIJKLMNOPQRSTUVWXYZA<br>
@@ -616,11 +622,11 @@
         <div class="step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h3 data-i18n="step2.title">Выбор ключа</h3>
-            <p data-i18n="step2.text">Алиса и Боб договариваются о <span class="highlight">ключевом слове</span>, например <code>КЛЮЧ</code>. Это слово циклически повторяется под сообщением:</p>
+            <h3 data-i18n="step2.title">Choosing a key</h3>
+            <p data-i18n="step2.text">Alice and Bob agree on a <span class="highlight">keyword</span>, for example <code>KEY</code>. This word repeats cyclically underneath the message:</p>
             <div style="background:rgba(0,20,40,0.6); padding:10px; border-radius:4px; font-family:monospace; margin:10px 0; text-align:center;">
-              <span data-i18n="step2.msgLabel">Сообщение:</span> П Р И В Е Т М И Р У !<br>
-                   <span data-i18n="step2.keyLabel">Ключ:</span>      К Л Ю Ч К Л Ю Ч К Л
+              <span data-i18n="step2.msgLabel">Message:</span> П Р И В Е Т М И Р У !<br>
+                   <span data-i18n="step2.keyLabel">Key:</span>      К Л Ю Ч К Л Ю Ч К Л
             </div>
           </div>
         </div>
@@ -629,15 +635,15 @@
         <div class="step">
           <div class="step-number">3</div>
           <div class="step-content">
-            <h3 data-i18n="step3.title">Шифрование</h3>
-            <p data-i18n="step3.intro">Для каждой буквы сообщения:</p>
+            <h3 data-i18n="step3.title">Encryption</h3>
+            <p data-i18n="step3.intro">For each letter of the message:</p>
             <ul style="margin-left:20px; color:#a0c0d0;">
-              <li data-i18n="step3.li1">Находим строку по букве <strong>ключа</strong></li>
-              <li data-i18n="step3.li2">Находим столбец по букве <strong>сообщения</strong></li>
-              <li data-i18n="step3.li3">На пересечении — <strong>зашифрованная буква</strong></li>
+              <li data-i18n="step3.li1">Find the row using the <strong>key</strong> letter</li>
+              <li data-i18n="step3.li2">Find the column using the <strong>message</strong> letter</li>
+              <li data-i18n="step3.li3">The intersection gives the <strong>encrypted letter</strong></li>
             </ul>
-            <p data-i18n="step3.formula"><strong>Формула:</strong> <code>C = (P + K) mod N</code></p>
-            <p data-i18n="step3.formula.legend">где <code>P</code> — позиция открытого текста, <code>K</code> — позиция ключа, <code>N</code> — размер алфавита, <code>C</code> — шифротекст.</p>
+            <p data-i18n="step3.formula"><strong>Formula:</strong> <code>C = (P + K) mod N</code></p>
+            <p data-i18n="step3.formula.legend">where <code>P</code> is the plaintext position, <code>K</code> is the key position, <code>N</code> is the alphabet size, and <code>C</code> is the ciphertext.</p>
           </div>
         </div>
 
@@ -645,196 +651,164 @@
         <div class="step">
           <div class="step-number">4</div>
           <div class="step-content">
-            <h3 data-i18n="step4.title">Расшифровка</h3>
-            <p data-i18n="step4.intro">Боб использует ту же таблицу, но в обратном порядке:</p>
+            <h3 data-i18n="step4.title">Decryption</h3>
+            <p data-i18n="step4.intro">Bob uses the same table, but in reverse:</p>
             <ul style="margin-left:20px; color:#a0c0d0;">
-              <li data-i18n="step4.li1">Строка = буква ключа</li>
-              <li data-i18n="step4.li2">В этой строке ищем символ шифротекста</li>
-              <li data-i18n="step4.li3">Столбец, где он находится — исходная буква</li>
+              <li data-i18n="step4.li1">Row = the key letter</li>
+              <li data-i18n="step4.li2">In that row, find the ciphertext symbol</li>
+              <li data-i18n="step4.li3">The column it sits in gives the original letter</li>
             </ul>
-            <p data-i18n="step4.formula"><strong>Формула:</strong> <code>P = (C − K + N) mod N</code></p>
+            <p data-i18n="step4.formula"><strong>Formula:</strong> <code>P = (C − K + N) mod N</code></p>
           </div>
         </div>
       </div>
       
       <!-- ДИАГРАММА ВИЖЕНЕРА -->
       <div class="vigenere-diagram">
-        <div class="diagram-title" data-i18n="diagram.title">Математика шифра Виженера</div>
+        <div class="diagram-title" data-i18n="diagram.title">The math behind the Vigenère cipher</div>
 
         <div class="diagram-grid">
           <!-- Карточка шифрования -->
           <div class="diagram-card">
-            <div class="diagram-title" style="font-size:1rem; border:none; padding:0; margin-bottom:10px; text-align:left;" data-i18n="diagram.encrypt.title">
-              🔐 Шифрование
-            </div>
+            <div class="diagram-title" style="font-size:1rem; border:none; padding:0; margin-bottom:10px; text-align:left;" data-i18n="diagram.encrypt.title">🔐 Encryption</div>
             <div class="diagram-formula">C = (P + K) mod N</div>
-            <div class="diagram-example" data-i18n="diagram.encrypt.example">
-              <strong>Пример:</strong><br>Шифруем <code>П</code> с ключом <code>К</code><br>
-              П = 16-я буква (0-индекс), К = 11-я<br>
-              (16 + 11) mod 33 = 27 → <code>Ъ</code>
-            </div>
+            <div class="diagram-example" data-i18n="diagram.encrypt.example"><strong>Example:</strong><br>Encrypting <code>П</code> with key <code>К</code><br>П = 16th letter (0-indexed), К = 11th<br>(16 + 11) mod 33 = 27 → <code>Ъ</code></div>
           </div>
 
           <!-- Карточка расшифровки -->
           <div class="diagram-card">
-            <div class="diagram-title" style="font-size:1rem; border:none; padding:0; margin-bottom:10px; text-align:left;" data-i18n="diagram.decrypt.title">
-              🔓 Расшифровка
-            </div>
+            <div class="diagram-title" style="font-size:1rem; border:none; padding:0; margin-bottom:10px; text-align:left;" data-i18n="diagram.decrypt.title">🔓 Decryption</div>
             <div class="diagram-formula">P = (C − K + N) mod N</div>
-            <div class="diagram-example" data-i18n="diagram.decrypt.example">
-              <strong>Пример:</strong><br>Расшифровываем <code>Ъ</code> с ключом <code>К</code><br>
-              Ъ = 27, К = 11, N = 33<br>
-              (27 − 11 + 33) mod 33 = 16 → <code>П</code>
-            </div>
+            <div class="diagram-example" data-i18n="diagram.decrypt.example"><strong>Example:</strong><br>Decrypting <code>Ъ</code> with key <code>К</code><br>Ъ = 27, К = 11, N = 33<br>(27 − 11 + 33) mod 33 = 16 → <code>П</code></div>
           </div>
         </div>
 
         <!-- Финальный блок -->
         <div class="final-key">
-          <div class="final-key-title" data-i18n="diagram.final.title">Почему это работало?</div>
-          <div class="final-key-description" data-i18n="diagram.final.desc">
-            Каждая буква открытого текста шифруется <strong>разными буквами</strong> в зависимости от позиции ключа. Частотный анализ, который ломает простые шифры замены, становится бесполезным — буква «О» может превратиться в «А», «М», «Щ» и т.д.
-          </div>
-          <div class="key-parameter" data-i18n="diagram.final.param">Длина ключа > 5 → высокая стойкость</div>
+          <div class="final-key-title" data-i18n="diagram.final.title">Why did this work?</div>
+          <div class="final-key-description" data-i18n="diagram.final.desc">Every plaintext letter is encrypted into <strong>different letters</strong> depending on the key's position. The frequency analysis that breaks simple substitution ciphers becomes useless — the letter "O" might turn into "A," "M," "Щ," and so on.</div>
+          <div class="key-parameter" data-i18n="diagram.final.param">Key length > 5 → high resistance</div>
         </div>
 
-        <div class="diagram-note" data-i18n="diagram.note">
-          * В игре таблица визуализирована: строки и столбцы подсвечиваются при каждом шаге, чтобы вы видели процесс «вживую».
-        </div>
+        <div class="diagram-note" data-i18n="diagram.note">* In the game, the table is visualized: rows and columns light up at every step, so you can watch the process happen live.</div>
       </div>
       <!-- КОНЕЦ ДИАГРАММЫ -->
 
       <div class="key-insight">
-        <strong data-i18n="insight.label">Ключевая мысль:</strong> <span class="highlight" data-i18n="insight.text">Сила Виженера — в повторении ключа</span><span data-i18n="insight.rest">. Чем длиннее и случайнее ключ, тем сложнее его взломать. Но именно цикличность ключа стала его слабостью: метод Касиски использует повторения в шифротексте, чтобы найти длину ключа, а затем применить частотный анализ к каждой «подстроке».</span>
+        <strong data-i18n="insight.label">Key takeaway:</strong> <span class="highlight" data-i18n="insight.text">Vigenère's strength lies in repeating the key</span><span data-i18n="insight.rest">. The longer and more random the key, the harder it is to break. But that very cyclicality became its weakness: the Kasiski method uses repetitions in the ciphertext to find the key length, then applies frequency analysis to each "substring" separately.</span>
       </div>
     </section>
 
     <!-- Блок "А теперь — главная магия" -->
     <section class="content-block">
-      <h2 data-i18n="block3.heading">А теперь — главная магия</h2>
-      <p data-i18n="block3.intro">Что вы <span class="highlight">сделаете</span> в симуляции?</p>
+      <h2 data-i18n="block3.heading">And now for the real magic</h2>
+      <p data-i18n="block3.intro">What will you <span class="highlight">actually do</span> in the simulation?</p>
 
       <ul class="action-list">
         <li>
           <span class="action-icon">⌨️</span>
-          <div class="action-text" data-i18n="action1">
-            <span>Вы <strong>введёте своё сообщение</strong> на русском или английском — игра автоматически отфильтрует недопустимые символы</span>
-          </div>
+          <div class="action-text" data-i18n="action1">You'll <strong>type your own message</strong> in Russian or English — the game automatically filters out invalid characters</div>
         </li>
         <li>
           <span class="action-icon">🔑</span>
-          <div class="action-text" data-i18n="action2">
-            <span>Вы <strong>зададите ключевое слово</strong> и увидите, как оно циклически повторяется под сообщением</span>
-          </div>
+          <div class="action-text" data-i18n="action2">You'll <strong>set a keyword</strong> and watch it repeat cyclically underneath the message</div>
         </li>
         <li>
           <span class="action-icon">📊</span>
-          <div class="action-text" data-i18n="action3">
-            <span>Вы <strong>увидите таблицу Виженера в действии</strong> — строки и столбцы будут подсвечиваться при каждом шаге шифрования</span>
-          </div>
+          <div class="action-text" data-i18n="action3">You'll <strong>see the Vigenère table in action</strong> — rows and columns light up at every step of encryption</div>
         </li>
         <li>
           <span class="action-icon">📡</span>
-          <div class="action-text" data-i18n="action4">
-            <span>Вы <strong>отправите ключ и шифротекст Бобу</strong> через визуализированные каналы связи — ключ по защищённому маршруту, шифротекст по открытому</span>
-          </div>
+          <div class="action-text" data-i18n="action4">You'll <strong>send the key and the ciphertext to Bob</strong> over visualized communication channels — the key over a secure route, the ciphertext over an open one</div>
         </li>
         <li>
           <span class="action-icon">🔍</span>
-          <div class="action-text" data-i18n="action5">
-            <span>Вы <strong>пройдёте расшифровку шаг за шагом</strong> и увидите, как Боб восстанавливает исходное сообщение с помощью той же таблицы</span>
-          </div>
+          <div class="action-text" data-i18n="action5">You'll <strong>walk through decryption step by step</strong> and see how Bob recovers the original message using the same table</div>
         </li>
         <li>
           <span class="action-icon">✅</span>
-          <div class="action-text" data-i18n="action6">
-            <span>Вы <strong>получите подтверждение</strong> — система сравнит исходное и расшифрованное сообщение, чтобы убедиться в корректности процесса</span>
-          </div>
+          <div class="action-text" data-i18n="action6">You'll <strong>get confirmation</strong> — the system compares the original and decrypted messages to verify the process worked correctly</div>
         </li>
       </ul>
 
-      <p data-i18n="block3.outro">В игре вы не просто читаете о Виженере — вы <span class="highlight">проживаете весь цикл</span>: от ввода сообщения до успешной передачи. Вы увидите, как абстрактная формула превращается в наглядную анимацию, и поймёте, почему этот шифр был прорывом для своего времени.</p>
+      <p data-i18n="block3.outro">In the game you don't just read about Vigenère — you <span class="highlight">live through the whole cycle</span>: from typing the message to a successful transfer. You'll see an abstract formula turn into a vivid animation, and understand why this cipher was a breakthrough for its time.</p>
     </section>
 
     <!-- Дополнительный материал -->
     <details class="advanced-section">
-      <summary data-i18n="advanced.summary">Для любознательных</summary>
+      <summary data-i18n="advanced.summary">For the curious</summary>
       <div class="advanced-content">
-        <h3 data-i18n="advanced.history.heading">Историческая справка</h3>
-        <p data-i18n="advanced.history.text">Шифр впервые описал <strong>Джован Баттиста Беллазо</strong> в 1553 году, но ошибочно приписали <strong>Блезу де Виженеру</strong>, который описал его в 1586 году. Название прижилось, и сегодня мы говорим «шифр Виженера».</p>
+        <h3 data-i18n="advanced.history.heading">Historical background</h3>
+        <p data-i18n="advanced.history.text">The cipher was first described by <strong>Giovan Battista Bellaso</strong> in 1553, but was mistakenly attributed to <strong>Blaise de Vigenère</strong>, who described it in 1586. The name stuck, and today we still call it the "Vigenère cipher."</p>
 
-        <h3 data-i18n="advanced.broken.heading">Почему его взломали?</h3>
-        <p data-i18n="advanced.broken.text1">В 1863 году прусский офицер <strong>Фридрих Касиски</strong> опубликовал метод, который использует повторения в шифротексте. Если одна и та же фраза открытого текста зашифрована одним и тем же фрагментом ключа, в шифротексте появится одинаковая последовательность. Расстояние между такими повторениями часто кратно длине ключа.</p>
-        <p data-i18n="advanced.broken.text2">Зная длину ключа, криптоаналитик разбивает шифротекст на группы (все буквы, зашифрованные первым символом ключа, вторым и т.д.) и применяет частотный анализ к каждой группе отдельно.</p>
+        <h3 data-i18n="advanced.broken.heading">Why was it broken?</h3>
+        <p data-i18n="advanced.broken.text1">In 1863, the Prussian officer <strong>Friedrich Kasiski</strong> published a method that exploits repetitions in the ciphertext. If the same plaintext phrase is encrypted with the same fragment of the key, the same sequence will appear in the ciphertext. The distance between such repetitions is often a multiple of the key length.</p>
+        <p data-i18n="advanced.broken.text2">Once the key length is known, a cryptanalyst splits the ciphertext into groups (all letters encrypted with the first key symbol, the second, and so on) and applies frequency analysis to each group separately.</p>
 
-        <h3 data-i18n="advanced.topics.heading">Темы для углублённого изучения</h3>
-        <p data-i18n="advanced.topics.intro">Если вы хотите погрузиться глубже в криптографию, вот ключевые темы:</p>
+        <h3 data-i18n="advanced.topics.heading">Topics for further study</h3>
+        <p data-i18n="advanced.topics.intro">If you want to dive deeper into cryptography, here are the key topics:</p>
 
         <div class="topics-grid">
           <div class="topic-card">
-            <h4 data-i18n="topic1.title">Частотный анализ</h4>
-            <p data-i18n="topic1.desc">Как статистика языка помогает взламывать шифры: частоты букв, биграмм, триграмм</p>
+            <h4 data-i18n="topic1.title">Frequency analysis</h4>
+            <p data-i18n="topic1.desc">How language statistics help break ciphers: letter, bigram, and trigram frequencies</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic2.title">Метод Касиски</h4>
-            <p data-i18n="topic2.desc">Алгоритм поиска длины ключа по повторениям в шифротексте</p>
+            <h4 data-i18n="topic2.title">The Kasiski method</h4>
+            <p data-i18n="topic2.desc">An algorithm for finding key length from repetitions in the ciphertext</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic3.title">Индекс совпадения</h4>
-            <p data-i18n="topic3.desc">Статистический тест Фридмана для определения длины ключа</p>
+            <h4 data-i18n="topic3.title">Index of coincidence</h4>
+            <p data-i18n="topic3.desc">Friedman's statistical test for determining key length</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic4.title">Одноразовый блокнот</h4>
-            <p data-i18n="topic4.desc">Единственный теоретически невзламываемый шифр: ключ = длина сообщения, используется один раз</p>
+            <h4 data-i18n="topic4.title">The one-time pad</h4>
+            <p data-i18n="topic4.desc">The only theoretically unbreakable cipher: key length = message length, used only once</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic5.title">Современные блочные шифры</h4>
-            <p data-i18n="topic5.desc">Как идеи полиалфавитного шифрования эволюционировали в AES, ChaCha20 и другие алгоритмы</p>
+            <h4 data-i18n="topic5.title">Modern block ciphers</h4>
+            <p data-i18n="topic5.desc">How the ideas behind polyalphabetic ciphers evolved into AES, ChaCha20, and other algorithms</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic6.title">Криптоанализ в Python</h4>
-            <p data-i18n="topic6.desc">Практические скрипты для частотного анализа и атак на шифр Виженера</p>
+            <h4 data-i18n="topic6.title">Cryptanalysis in Python</h4>
+            <p data-i18n="topic6.desc">Practical scripts for frequency analysis and attacks on the Vigenère cipher</p>
           </div>
         </div>
 
-        <h3 data-i18n="advanced.practical.heading">Практическое применение сегодня</h3>
-        <p data-i18n="advanced.practical.intro">Хотя шифр Виженера не используется для защиты реальных данных, он остаётся:</p>
+        <h3 data-i18n="advanced.practical.heading">Practical uses today</h3>
+        <p data-i18n="advanced.practical.intro">Although the Vigenère cipher isn't used to protect real data anymore, it remains:</p>
         <ul style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="practical1">Отличным учебным примером полиалфавитного шифрования</li>
-          <li data-i18n="practical2">Основой для понимания более сложных алгоритмов</li>
-          <li data-i18n="practical3">Элементом CTF-соревнований и криптографических квестов</li>
-          <li data-i18n="practical4">Историческим мостом между классической и современной криптографией</li>
+          <li data-i18n="practical1">An excellent teaching example of polyalphabetic encryption</li>
+          <li data-i18n="practical2">A foundation for understanding more complex algorithms</li>
+          <li data-i18n="practical3">A staple of CTF competitions and cryptography puzzles</li>
+          <li data-i18n="practical4">A historical bridge between classical and modern cryptography</li>
         </ul>
       </div>
     </details>
 
     <!-- Кнопки действий -->
     <div class="article-actions" id="article-actions">
-      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">
-        Теперь, когда вы понимаете основы, самое время попробовать на практике и увидеть шифр в действии!
-      </p>
+      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Now that you understand the basics, it's the perfect time to try it in practice and see the cipher in action!</p>
 
       <div class="action-buttons">
         <!-- ИЗМЕНЕНО: ссылка на игру обновлена -->
-        <a href="https://ludus-lab.ru/games/vigenerecipher/index.html" class="btn-primary" data-i18n="actions.play">▶ Перейти к игре</a>
-        <a href="https://ludus-lab.ru/#theory-section" class="btn-secondary" data-i18n="actions.back">← Вернуться к списку тем</a>
+        <a href="/games/vigenerecipher/" class="btn-primary" data-i18n="actions.play">▶ Go to the game</a>
+        <a href="/#theory-section" class="btn-secondary" data-i18n="actions.back">← Back to the topic list</a>
       </div>
 
-      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">
-        В интерактивной симуляции вы сможете зашифровать своё сообщение и увидеть каждый шаг процесса
-      </p>
+      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">In the interactive simulation you can encrypt your own message and watch every step of the process.</p>
     </div>
   </div>
 
   <!-- Футер -->
   <footer class="theory-footer">
-    <p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
-    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Эта статья — упрощённое объяснение для понимания принципов. Реальные криптографические системы используют более сложные алгоритмы.</p>
+    <p data-i18n="footer.line1">© 2025 Ludus Lab · Complex things through simple games</p>
+    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">This article is a simplified explanation meant to convey the principles. Real cryptographic systems use far more complex algorithms.</p>
   </footer>
 
   <script>
@@ -1200,7 +1174,7 @@
 
     (function initLanguage() {
       let saved = null;
-      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      saved = 'en';
       if (!saved) {
         const browserLang = (navigator.language || 'ru').slice(0, 2);
         saved = I18N[browserLang] ? browserLang : 'ru';

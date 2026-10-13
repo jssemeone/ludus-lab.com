@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title id="pageTitle">Сеть Фейстеля: как родился DES | Ludus Lab</title>
-<meta id="pageDescription" name="description" content="Как сеть Фейстеля решает проблему обратимости шифра и почему на этой структуре построены DES и российская Магма. Разбор для тех, кто хочет понять принцип, а не только формулы.">
+<title id="pageTitle">The Feistel Network: How DES Was Born | Ludus Lab</title>
+<meta id="pageDescription" name="description" content="How a Feistel network solves the reversibility problem of a cipher, and why DES and Russia’s Magma are built on this structure. A walkthrough for people who want the idea, not just the formulas.">
 <!-- Favicon -->
 <link rel="icon" href="favicon.ico" type="image/x-icon">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -520,21 +520,29 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 }
 </style>
 
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/theory/feistel.html">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/theory/feistel.html">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/theory/feistel.html">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/theory/feistel.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/theory/feistel.html">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/theory/feistel.html">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
 <div class="lang-switch" role="group" aria-label="Language">
-<button class="lang-btn" data-lang-btn="ru">RU</button>
-<button class="lang-btn" data-lang-btn="en">EN</button>
-<button class="lang-btn" data-lang-btn="es">ES</button>
-<button class="lang-btn" data-lang-btn="zh">中文</button>
+<a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/theory/feistel.html" hreflang="ru" lang="ru">RU</a>
+<a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/theory/feistel.html" hreflang="en" lang="en">EN</a>
+<a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/theory/feistel.html" hreflang="es" lang="es">ES</a>
+<a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/theory/feistel.html" hreflang="zh-Hans" lang="zh-CN">中文</a>
 </div>
 
 <!-- Навигация -->
 <nav class="theory-nav">
-<a href="https://ludus-lab.ru/" class="nav-logo">LUDUS LAB</a>
+<a href="/" class="nav-logo">LUDUS LAB</a>
 <div class="nav-links">
-<a href="https://ludus-lab.ru/" class="nav-link" data-i18n="nav.home">Главная</a>
-<a href="https://ludus-lab.ru/games/feistel/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+<a href="/" class="nav-link" data-i18n="nav.home">Home</a>
+<a href="/games/feistel/" class="nav-link" data-i18n="nav.play">Play</a>
 </div>
 </nav>
 
@@ -542,109 +550,109 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <div class="theory-container">
 <!-- Заголовок статьи -->
 <header class="article-header">
-<div class="article-category" data-i18n="article.category">Современная криптография</div>
-<h1 class="article-title" data-i18n="article.title">Сеть Фейстеля</h1>
-<p class="article-subtitle" data-i18n="article.subtitle">Как одна конструкция решила старую проблему шифрования — и легла в основу DES, российской Магмы и десятков других алгоритмов</p>
+<div class="article-category" data-i18n="article.category">Modern cryptography</div>
+<h1 class="article-title" data-i18n="article.title">The Feistel Network</h1>
+<p class="article-subtitle" data-i18n="article.subtitle">How one construction solved an old encryption problem — and became the basis of DES, Russia’s Magma, and dozens of other algorithms</p>
 <div class="article-meta">
-<div class="meta-item" data-i18n="meta.readtime">⏱️ 5 мин чтения</div>
-<div class="meta-item" data-i18n="meta.level">📊 Средний уровень</div>
-<div class="meta-item" data-i18n="meta.security">🔑 Фундамент DES и Магмы</div>
+<div class="meta-item" data-i18n="meta.readtime">⏱️ 5 min read</div>
+<div class="meta-item" data-i18n="meta.level">📊 Intermediate level</div>
+<div class="meta-item" data-i18n="meta.security">🔑 Foundation of DES and Magma</div>
 </div>
 </header>
 
 <!-- Блок 1: проблема -->
 <section class="content-block">
-<h2 data-i18n="block1.heading">Проблема, которую решал Фейстель</h2>
-<p data-i18n="block1.p1">Чтобы расшифровать блочный шифр, нужно каким-то образом отменить то перемешивание, которым его зашифровали. Придумать одну хорошую перемешивающую функцию — уже непростая задача. А придумать вдобавок к ней чистую математическую <span class="highlight">обратную функцию</span> и реализовать обе —вдвое больше работы, и вдвое больше шансов ошибиться.</p>
-<p data-i18n="block1.p2">В начале 1970-х в IBM <span class="highlight-gold">Хорст Фейстель</span> предложил структурный трюк: разрезать блок данных пополам на <span class="highlight-symmetric">L</span> и <span class="highlight-symmetric">R</span>, прогнать одну половину — вместе с подключом раунда — через функцию F, которая может быть сколь угодно сложной и необратимой, сложить результат с другой половиной, а затем поменять половины местами. Повторить несколько раз.</p>
+<h2 data-i18n="block1.heading">The problem Feistel solved</h2>
+<p data-i18n="block1.p1">To decrypt a block cipher you have to somehow undo whatever scrambling encrypted it. Coming up with one good scrambling function is hard enough. Coming up with a clean mathematical <span class="highlight">inverse</span> as well, and implementing both, doubles the work — and doubles the chances of getting something wrong.</p>
+<p data-i18n="block1.p2">In the early 1970s at IBM, <span class="highlight-gold">Horst Feistel</span> proposed a structural trick: cut the data block in half into <span class="highlight-symmetric">L</span> and <span class="highlight-symmetric">R</span>, run one half — together with a round key — through a function F that can be as complicated and irreversible as you like, add the result to the other half, then swap the halves. Repeat several times.</p>
 <div class="key-insight">
-<strong data-i18n="insight1.label">Ключевая мысль:</strong>
-<span data-i18n="insight1.text">Хитрость не в функции F, а в самой <span class="highlight-gold">структуре</span>. Сложение по модулю 2 (XOR) само себя отменяет, а обмен половинами тривиально обратим. Поэтому весь раунд целиком обратим — даже если функция F необратима сама по себе. Расшифровка — это тот же самый алгоритм, только подключи применяются в обратном порядке.</span>
+<strong data-i18n="insight1.label">Key takeaway:</strong>
+<span data-i18n="insight1.text">The trick isn’t in the function F, it’s in the <span class="highlight-gold">structure</span> itself. XOR undoes itself, and swapping halves is trivially reversible. So the whole round is reversible — even when F itself isn’t. Decryption is the exact same algorithm, just with the round keys applied in reverse order.</span>
 </div>
 </section>
 
 <!-- Блок 2: как устроена -->
 <section class="content-block">
-<h2 data-i18n="block2.heading">Как устроена сеть Фейстеля</h2>
-<p data-i18n="block2.intro">Если разобрать раунд на шаги, вся конструкция окажется на удивление простой:</p>
+<h2 data-i18n="block2.heading">How a Feistel network is built</h2>
+<p data-i18n="block2.intro">Broken down into steps, the whole construction turns out to be surprisingly simple:</p>
 <div class="explanation-steps">
 <div class="step">
 <div class="step-number">1</div>
 <div class="step-content">
-<h3 data-i18n="step1.title">Разбиение блока</h3>
-<p data-i18n="step1.text">Блок данных делится пополам на левую половину <span class="highlight-symmetric">L</span> и правую <span class="highlight-symmetric">R</span>. В DES это 32 и 32 бита от 64-битного блока, в игре Ludus Lab — 4 и 4 бита от одного байта.</p>
+<h3 data-i18n="step1.title">Splitting the block</h3>
+<p data-i18n="step1.text">The data block is cut in half into a left half <span class="highlight-symmetric">L</span> and a right half <span class="highlight-symmetric">R</span>. In DES that’s 32 and 32 bits out of a 64-bit block; in the Ludus Lab game it’s 4 and 4 bits out of a single byte.</p>
 </div>
 </div>
 <div class="step">
 <div class="step-number">2</div>
 <div class="step-content">
-<h3 data-i18n="step2.title">Функция раунда</h3>
-<p data-i18n="step2.text">Правая половина <span class="highlight-symmetric">R</span> складывается с подключом этого раунда и проходит через функцию F — в DES и Магме это набор <span class="highlight">S-блоков</span>, таблиц замен, которые и дают шифру нелинейность.</p>
+<h3 data-i18n="step2.title">The round function</h3>
+<p data-i18n="step2.text">The right half <span class="highlight-symmetric">R</span> is combined with this round’s subkey and run through function F — in DES and Magma that’s a set of <span class="highlight">S-boxes</span>, substitution tables, which give the cipher its non-linearity.</p>
 </div>
 </div>
 <div class="step">
 <div class="step-number">3</div>
 <div class="step-content">
-<h3 data-i18n="step3.title">Сложение и обмен</h3>
-<p data-i18n="step3.text">Результат F складывается по модулю 2 с левой половиной <span class="highlight-symmetric">L</span> — так получается новая правая половина. После этого половины меняются местами.</p>
+<h3 data-i18n="step3.title">Adding and swapping</h3>
+<p data-i18n="step3.text">F’s result is XORed with the left half <span class="highlight-symmetric">L</span>, producing the new right half. Then the halves are swapped.</p>
 </div>
 </div>
 <div class="step">
 <div class="step-number">4</div>
 <div class="step-content">
-<h3 data-i18n="step4.title">Повтор на много раундов</h3>
-<p data-i18n="step4.text">Всё повторяется снова и снова, каждый раз с новым подключом: 16 раз в DES, 32 раза в Магме. Чем больше раундов, тем труднее найти закономерность между открытым текстом и шифротекстом.</p>
+<h3 data-i18n="step4.title">Repeat for many rounds</h3>
+<p data-i18n="step4.text">The whole thing repeats over and over, each time with a new subkey: 16 times in DES, 32 times in Magma. More rounds make it harder to find any pattern between plaintext and ciphertext.</p>
 </div>
 </div>
 <div class="step">
 <div class="step-number">5</div>
 <div class="step-content">
-<h3 data-i18n="step5.title">Финальный обмен и расшифровка</h3>
-<p data-i18n="step5.text">После последнего раунда половины меняются местами ещё раз — это и даёт главное свойство сети Фейстеля: чтобы расшифровать, Боб запускает <span class="highlight">точно такой же алгоритм</span>, но подаёт подключи в обратном порядке.</p>
+<h3 data-i18n="step5.title">Final swap and decryption</h3>
+<p data-i18n="step5.text">After the last round the halves are swapped one more time — and this is what gives a Feistel network its main property: to decrypt, Bob runs <span class="highlight">the exact same algorithm</span>, just feeding in the subkeys in reverse order.</p>
 </div>
 </div>
 </div>
 <div class="simple-encryption-scheme">
-<div class="scheme-title" data-i18n="scheme1.title">Один раунд сети Фейстеля</div>
+<div class="scheme-title" data-i18n="scheme1.title">One round of a Feistel network</div>
 <div class="scheme-flow">
-<div class="scheme-item"><div class="scheme-box scheme-original">L, R</div><div class="scheme-label" data-i18n="scheme1.label.halves">Половины блока</div></div>
+<div class="scheme-item"><div class="scheme-box scheme-original">L, R</div><div class="scheme-label" data-i18n="scheme1.label.halves">The block’s halves</div></div>
 <div class="scheme-arrow">→</div>
-<div class="scheme-item"><div class="scheme-box scheme-key">F(R, K)</div><div class="scheme-label" data-i18n="scheme1.label.func">R + подключ → S-блоки</div></div>
+<div class="scheme-item"><div class="scheme-box scheme-key">F(R, K)</div><div class="scheme-label" data-i18n="scheme1.label.func">R + subkey → S-boxes</div></div>
 <div class="scheme-arrow">→</div>
-<div class="scheme-item"><div class="scheme-box scheme-cipher">L ⊕ F</div><div class="scheme-label" data-i18n="scheme1.label.xor">Складываем с L</div></div>
+<div class="scheme-item"><div class="scheme-box scheme-cipher">L ⊕ F</div><div class="scheme-label" data-i18n="scheme1.label.xor">Add to L</div></div>
 <div class="scheme-arrow">→</div>
-<div class="scheme-item"><div class="scheme-box scheme-original">R, L'</div><div class="scheme-label" data-i18n="scheme1.label.swap">Половины меняются местами</div></div>
+<div class="scheme-item"><div class="scheme-box scheme-original">R, L'</div><div class="scheme-label" data-i18n="scheme1.label.swap">Halves are swapped</div></div>
 </div>
-<p class="scheme-note" data-i18n="scheme1.note">F может быть какой угодно сложной и необратимой — обратима сама схема "раздели, перемешай, поменяй местами".</p>
+<p class="scheme-note" data-i18n="scheme1.note">F can be as complicated and irreversible as you like — it’s the "split, mix, swap" scheme itself that is reversible.</p>
 </div>
 </section>
 
 <!-- Блок 3: история -->
 <section class="content-block">
-<h2 data-i18n="block3.heading">От Lucifer до наших дней</h2>
-<p data-i18n="block3.intro">Идея Фейстеля не осталась теорией — на ней построена значительная часть симметричной криптографии XX века:</p>
+<h2 data-i18n="block3.heading">From Lucifer to today</h2>
+<p data-i18n="block3.intro">Feistel’s idea didn’t stay theoretical — a large share of 20th-century symmetric cryptography is built on it:</p>
 <div class="historical-ciphers">
 <div class="cipher-card">
-<h4 data-i18n="cipher1.title">Lucifer (IBM, начало 1970-х)</h4>
-<p data-i18n="cipher1.text">Первый шифр на структуре Фейстеля, созданный самим Хорстом Фейстелем и его командой в IBM.</p>
-<p data-i18n="cipher1.key">Прямой предок DES</p>
+<h4 data-i18n="cipher1.title">Lucifer (IBM, early 1970s)</h4>
+<p data-i18n="cipher1.text">The first cipher built on a Feistel structure, created by Horst Feistel and his team at IBM.</p>
+<p data-i18n="cipher1.key">The direct ancestor of DES</p>
 </div>
 <div class="cipher-card">
 <h4 data-i18n="cipher2.title">DES (NBS, 1977)</h4>
-<p data-i18n="cipher2.text">Доработанный Lucifer стал стандартом США на четверть века — 64-битный блок, 56-битный ключ, 16 раундов.</p>
-<p data-i18n="cipher2.key">Ключ: 56 бит — сегодня этого мало</p>
+<p data-i18n="cipher2.text">A refined Lucifer became the US standard for a quarter century — a 64-bit block, a 56-bit key, 16 rounds.</p>
+<p data-i18n="cipher2.key">Key: 56 bits — not enough today</p>
 </div>
 <div class="cipher-card">
-<h4 data-i18n="cipher3.title">ГОСТ 28147-89 «Магма» (СССР, 1989)</h4>
-<p data-i18n="cipher3.text">Независимая советская разработка на той же идее: 64-битный блок, но ключ 256 бит и 32 раунда.</p>
-<p data-i18n="cipher3.key">Сегодня — ГОСТ Р 34.12-2015</p>
+<h4 data-i18n="cipher3.title">GOST 28147-89 "Magma" (USSR, 1989)</h4>
+<p data-i18n="cipher3.text">An independent Soviet design on the same idea: a 64-bit block, but a 256-bit key and 32 rounds.</p>
+<p data-i18n="cipher3.key">Today: GOST R 34.12-2015</p>
 </div>
 </div>
-<p data-i18n="block3.mid">Схема Фейстеля оказалась настолько удачной, что легла в основу ещё нескольких поколений шифров:</p>
+<p data-i18n="block3.mid">The Feistel scheme turned out to be so successful that it became the basis of several more generations of ciphers:</p>
 <div class="modern-algorithms">
 <span class="algorithm-tag important">DES</span>
 <span class="algorithm-tag important">3DES</span>
-<span class="algorithm-tag russian" data-i18n="tag.magma">МАГМА (ГОСТ)</span>
+<span class="algorithm-tag russian" data-i18n="tag.magma">MAGMA (GOST)</span>
 <span class="algorithm-tag">Blowfish</span>
 <span class="algorithm-tag">CAST-128</span>
 <span class="algorithm-tag">Twofish</span>
@@ -652,86 +660,86 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <span class="algorithm-tag">KASUMI</span>
 </div>
 <div class="warning-box">
-<strong data-i18n="warning1.label">А что не Фейстель?</strong>
-<span data-i18n="warning1.text">AES и российский «Кузнечик» устроены иначе — это <span class="highlight">подстановочно-перестановочные сети</span> (SP-сети), не сети Фейстеля. Обе идеи решают одну задачу, но по-разному.</span>
+<strong data-i18n="warning1.label">What ISN’T a Feistel network?</strong>
+<span data-i18n="warning1.text">AES and Russia’s "Kuznyechik" are built differently — they’re <span class="highlight">substitution-permutation networks</span> (SP-networks), not Feistel networks. Both ideas solve the same problem, just in different ways.</span>
 </div>
 </section>
 
 <!-- Блок 4: практика -->
 <section class="content-block">
-<h2 data-i18n="block4.heading">Испытайте сеть Фейстеля на практике</h2>
-<p data-i18n="block4.intro">В интерактивной демонстрации Ludus Lab вы сможете:</p>
+<h2 data-i18n="block4.heading">Try a Feistel network yourself</h2>
+<p data-i18n="block4.intro">In the Ludus Lab interactive demo you can:</p>
 <ul class="action-list">
-<li><span class="action-icon">🔤</span><div class="action-text" data-i18n="action1"><span><strong>Превратить текст в биты</strong> — увидеть, как UTF-8 разбивает ваше сообщение на байты, и выбрать один для шифрования</span></div></li>
-<li><span class="action-icon">🔑</span><div class="action-text" data-i18n="action2"><span><strong>Задать общий ключ</strong> и посмотреть, как из него по шагам получаются четыре разных подключа раундов</span></div></li>
-<li><span class="action-icon">🌊</span><div class="action-text" data-i18n="action3"><span><strong>Проверить лавинный эффект</strong> S-блока — увидеть, как один изменённый бит входа меняет сразу несколько бит результата</span></div></li>
-<li><span class="action-icon">🔄</span><div class="action-text" data-i18n="action4"><span><strong>Пройти все 4 раунда шифрования</strong> бит за битом — со сложением по модулю 2, S-блоком и обменом половинами</span></div></li>
-<li><span class="action-icon">✅</span><div class="action-text" data-i18n="action5"><span><strong>Расшифровать результат</strong> тем же алгоритмом с подключами в обратном порядке — и убедиться, что сообщение восстановилось</span></div></li>
+<li><span class="action-icon">🔤</span><div class="action-text" data-i18n="action1"><span><strong>Turn text into bits</strong> — see how UTF-8 splits your message into bytes, and pick one to encrypt</span></div></li>
+<li><span class="action-icon">🔑</span><div class="action-text" data-i18n="action2"><span><strong>Set a shared key</strong> and watch, step by step, how it produces four different round subkeys</span></div></li>
+<li><span class="action-icon">🌊</span><div class="action-text" data-i18n="action3"><span><strong>Check the avalanche effect</strong> of the S-box — see how one changed input bit changes several output bits at once</span></div></li>
+<li><span class="action-icon">🔄</span><div class="action-text" data-i18n="action4"><span><strong>Walk through all 4 encryption rounds</strong> bit by bit — with XOR, the S-box, and swapping halves</span></div></li>
+<li><span class="action-icon">✅</span><div class="action-text" data-i18n="action5"><span><strong>Decrypt the result</strong> with the same algorithm and the subkeys in reverse order — and confirm the message comes back intact</span></div></li>
 </ul>
 <div class="key-insight">
-<strong data-i18n="insight2.label">Главный урок игры:</strong>
-<span data-i18n="insight2.text">Расшифровка работает не потому, что кто-то отменяет функцию F, а потому что <span class="highlight-gold">сама структура</span> сети Фейстеля симметрична относительно порядка подключей. Разберитесь в этом на одном байте — и принцип DES, Магмы и десятков других шифров станет понятен.</span>
+<strong data-i18n="insight2.label">The game’s main lesson:</strong>
+<span data-i18n="insight2.text">Decryption works not because someone undoes the function F, but because the <span class="highlight-gold">structure itself</span> of a Feistel network is symmetric with respect to the order of the subkeys. Work through it on a single byte, and the principle behind DES, Magma, and dozens of other ciphers becomes clear.</span>
 </div>
 </section>
 
 <!-- Дополнительный материал -->
 <details class="advanced-section">
-<summary data-i18n="advanced.summary">Для любознательных</summary>
+<summary data-i18n="advanced.summary">For the curious</summary>
 <div class="advanced-content">
-<h3 data-i18n="advanced.compare.heading">DES и Магма рядом</h3>
-<p data-i18n="advanced.compare.text">Оба алгоритма — сети Фейстеля, но с разным масштабом и разной судьбой:</p>
+<h3 data-i18n="advanced.compare.heading">DES and Magma side by side</h3>
+<p data-i18n="advanced.compare.text">Both algorithms are Feistel networks, but at very different scales and with very different fates:</p>
 <table class="comparison-table">
-<tr><th style="width: 25%;" data-i18n="table.param">Параметр</th><th class="western-cell">DES</th><th class="russian-cell" data-i18n="table.head.ru">Магма (ГОСТ 28147-89)</th></tr>
-<tr><td data-i18n="table.row1.label">Страна разработки</td><td class="western-cell" data-i18n="table.row1.west">США</td><td class="russian-cell" data-i18n="table.row1.ru">СССР / Россия</td></tr>
-<tr><td data-i18n="table.row2.label">Год принятия</td><td class="western-cell">1977</td><td class="russian-cell" data-i18n="table.row2.ru">1989 (сегодня — ГОСТ Р 34.12-2015)</td></tr>
-<tr><td data-i18n="table.row3.label">Архитектура</td><td class="western-cell" data-i18n="table.row3.val">Сеть Фейстеля</td><td class="russian-cell" data-i18n="table.row3.val">Сеть Фейстеля</td></tr>
-<tr><td data-i18n="table.row4.label">Размер блока</td><td class="western-cell" data-i18n="table.bits64">64 бита</td><td class="russian-cell" data-i18n="table.bits64">64 бита</td></tr>
-<tr><td data-i18n="table.row5.label">Длина ключа</td><td class="western-cell" data-i18n="table.bits56">56 бит</td><td class="russian-cell" data-i18n="table.bits256">256 бит</td></tr>
-<tr><td data-i18n="table.row6.label">Число раундов</td><td class="western-cell">16</td><td class="russian-cell">32</td></tr>
-<tr><td data-i18n="table.row7.label">S-блоки</td><td class="western-cell" data-i18n="table.row7.west">Зафиксированы стандартом с 1977 года</td><td class="russian-cell" data-i18n="table.row7.ru">Изначально ведомственный секрет; единый набор закреплён лишь в 2015-м</td></tr>
-<tr><td data-i18n="table.row8.label">Регулятор</td><td class="western-cell" data-i18n="table.row8.west">NIST (США)</td><td class="russian-cell"><span class="highlight-neon" data-i18n="table.row8.ru">ФСБ России</span></td></tr>
+<tr><th style="width: 25%;" data-i18n="table.param">Parameter</th><th class="western-cell">DES</th><th class="russian-cell" data-i18n="table.head.ru">Magma (GOST 28147-89)</th></tr>
+<tr><td data-i18n="table.row1.label">Country of origin</td><td class="western-cell" data-i18n="table.row1.west">USA</td><td class="russian-cell" data-i18n="table.row1.ru">USSR / Russia</td></tr>
+<tr><td data-i18n="table.row2.label">Year adopted</td><td class="western-cell">1977</td><td class="russian-cell" data-i18n="table.row2.ru">1989 (today GOST R 34.12-2015)</td></tr>
+<tr><td data-i18n="table.row3.label">Architecture</td><td class="western-cell" data-i18n="table.row3.val">Feistel network</td><td class="russian-cell" data-i18n="table.row3.val">Feistel network</td></tr>
+<tr><td data-i18n="table.row4.label">Block size</td><td class="western-cell" data-i18n="table.bits64">64 bits</td><td class="russian-cell" data-i18n="table.bits64">64 bits</td></tr>
+<tr><td data-i18n="table.row5.label">Key length</td><td class="western-cell" data-i18n="table.bits56">56 bits</td><td class="russian-cell" data-i18n="table.bits256">256 bits</td></tr>
+<tr><td data-i18n="table.row6.label">Number of rounds</td><td class="western-cell">16</td><td class="russian-cell">32</td></tr>
+<tr><td data-i18n="table.row7.label">S-boxes</td><td class="western-cell" data-i18n="table.row7.west">Fixed by the standard since 1977</td><td class="russian-cell" data-i18n="table.row7.ru">Originally an agency secret; a single fixed set only arrived in 2015</td></tr>
+<tr><td data-i18n="table.row8.label">Regulator</td><td class="western-cell" data-i18n="table.row8.west">NIST (USA)</td><td class="russian-cell"><span class="highlight-neon" data-i18n="table.row8.ru">FSB of Russia</span></td></tr>
 </table>
-<h3 data-i18n="advanced.diff.heading">Тайна S-блоков и дифференциальный криптоанализ</h3>
-<p data-i18n="advanced.diff.p1">В 1990 году криптографы <strong>Эли Бихам</strong> и <strong>Ади Шамир</strong> опубликовали <span class="highlight">дифференциальный криптоанализ</span> — мощную атаку на блочные шифры. Публика была поражена: оказалось, что S-блоки DES на удивление хорошо устойчивы именно к этой атаке.</p>
-<p data-i18n="advanced.diff.p2">Ответ нашёлся позже: по словам одного из инженеров IBM, <span class="highlight-gold">Дона Копперсмита</span>, команда IBM знала о дифференциальном криптоанализе ещё в начале 1970-х и намеренно спроектировала S-блоки DES так, чтобы противостоять ему — но по требованию АНБ держала это в секрете почти два десятилетия.</p>
-<h3 data-i18n="advanced.brute.heading">Конец DES: взлом перебором</h3>
-<p data-i18n="advanced.brute.p1">56-битный ключ DES даёт около 7×10<sup>16</sup> вариантов — в 1977 году этого хватало. К 1998 году фонд <span class="highlight">Electronic Frontier Foundation</span> построил специализированную машину «Deep Crack» стоимостью около 250 000 долларов, которая перебрала ключ примерно за 56 часов.</p>
-<p data-i18n="advanced.brute.p2">Это публично доказало, что 56 бит недостаточно. На замену пришёл переходный <strong>3DES</strong> (тройное применение DES), а затем, в 2001 году, — <strong>AES</strong>, выбранный по итогам открытого международного конкурса.</p>
+<h3 data-i18n="advanced.diff.heading">The secret of the S-boxes and differential cryptanalysis</h3>
+<p data-i18n="advanced.diff.p1">In 1990, cryptographers <strong>Eli Biham</strong> and <strong>Adi Shamir</strong> published <span class="highlight">differential cryptanalysis</span>, a powerful attack on block ciphers. The community was stunned: DES’s S-boxes turned out to already be remarkably resistant to exactly this attack.</p>
+<p data-i18n="advanced.diff.p2">The explanation came later: according to IBM engineer <span class="highlight-gold">Don Coppersmith</span>, IBM’s team had known about differential cryptanalysis since the early 1970s and deliberately designed DES’s S-boxes to resist it — but at the NSA’s request kept it secret for nearly two decades.</p>
+<h3 data-i18n="advanced.brute.heading">The end of DES: cracked by brute force</h3>
+<p data-i18n="advanced.brute.p1">A 56-bit DES key has about 7×10<sup>16</sup> possible values — plenty in 1977. By 1998 the <span class="highlight">Electronic Frontier Foundation</span> had built a dedicated machine, "Deep Crack," costing about $250,000, that found a key by brute force in roughly 56 hours.</p>
+<p data-i18n="advanced.brute.p2">That publicly proved 56 bits was no longer enough. The stopgap was <strong>3DES</strong> (DES applied three times), followed in 2001 by <strong>AES</strong>, chosen through an open international competition.</p>
 <div class="topics-grid">
-<div class="topic-card"><h4 data-i18n="topic1.title">Blowfish и Twofish</h4><p data-i18n="topic1.desc">Открытые альтернативы DES без патентных ограничений, разработанные Брюсом Шнайером в 1990-х</p></div>
-<div class="topic-card"><h4 data-i18n="topic2.title">Camellia</h4><p data-i18n="topic2.desc">Совместная разработка японских компаний, международный стандарт ISO/IEC, используется в TLS</p></div>
-<div class="topic-card"><h4 data-i18n="topic3.title">KASUMI</h4><p data-i18n="topic3.desc">Сеть Фейстеля в основе алгоритмов конфиденциальности сетей 3G/UMTS</p></div>
+<div class="topic-card"><h4 data-i18n="topic1.title">Blowfish and Twofish</h4><p data-i18n="topic1.desc">Open, patent-free alternatives to DES, designed by Bruce Schneier in the 1990s</p></div>
+<div class="topic-card"><h4 data-i18n="topic2.title">Camellia</h4><p data-i18n="topic2.desc">A joint development by Japanese companies, an international ISO/IEC standard, used in TLS</p></div>
+<div class="topic-card"><h4 data-i18n="topic3.title">KASUMI</h4><p data-i18n="topic3.desc">A Feistel network at the core of the 3G/UMTS confidentiality algorithms</p></div>
 </div>
-<h3 data-i18n="advanced.facts.heading">Интересные факты</h3>
+<h3 data-i18n="advanced.facts.heading">Interesting facts</h3>
 <ul style="margin-left: 20px; color: #a0c0d0;">
-<li data-i18n="facts.li1">Оригинальный Lucifer работал со 128-битным ключом; АНБ настояло на сокращении до 56 бит перед принятием DES</li>
-<li data-i18n="facts.li2">DES оставался официальным стандартом США более 20 лет, пока в 2001 году его не сменил AES</li>
-<li data-i18n="facts.li3">S-блоки исходного ГОСТ 28147-89 не были частью открытого стандарта — их могли задавать разные ведомства</li>
-<li data-i18n="facts.li4">AES и «Кузнечик» — не сети Фейстеля, а подстановочно-перестановочные сети (SP-сети)</li>
-<li data-i18n="facts.li5">Расшифровка в сети Фейстеля использует ту же самую схему, что и шифрование, — только подключи идут в обратном порядке</li>
+<li data-i18n="facts.li1">The original Lucifer used a 128-bit key; the NSA insisted on shrinking it to 56 bits before DES was adopted</li>
+<li data-i18n="facts.li2">DES remained the official US standard for over 20 years, until AES replaced it in 2001</li>
+<li data-i18n="facts.li3">The S-boxes of the original GOST 28147-89 weren’t part of the public standard — different agencies could set their own</li>
+<li data-i18n="facts.li4">AES and "Kuznyechik" are not Feistel networks — they are substitution-permutation networks (SP-networks)</li>
+<li data-i18n="facts.li5">Decryption in a Feistel network uses the exact same scheme as encryption — just with the subkeys in reverse order</li>
 </ul>
 <div class="key-insight" style="margin-top: 20px;">
-<strong data-i18n="insight3.label">Философский момент:</strong>
-<span data-i18n="insight3.text">Сеть Фейстеля — редкий случай, когда простая структурная идея оказалась мощнее сложной математики. За полвека она пережила смену эпох: от механических шифровальных машин до постквантовой криптографии — и до сих пор используется там, где нужна проверенная временем конструкция.</span>
+<strong data-i18n="insight3.label">A philosophical note:</strong>
+<span data-i18n="insight3.text">The Feistel network is a rare case where a simple structural idea turned out to be more powerful than complex mathematics. Over half a century it has outlived entire eras — from mechanical cipher machines to the dawn of post-quantum cryptography — and it’s still used wherever a time-tested construction is needed.</span>
 </div>
 </div>
 </details>
 
 <!-- Кнопки действий -->
 <div class="article-actions" id="article-actions">
-<p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Теперь вы понимаете, почему функция F не обязана быть обратимой, и как из этой идеи выросли DES, Магма и десятки других шифров</p>
+<p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Now you understand why the function F doesn’t have to be invertible, and how that one idea grew into DES, Magma, and dozens of other ciphers</p>
 <div class="action-buttons">
-<a href="https://ludus-lab.ru/games/feistel/index.html" class="btn-primary" data-i18n="actions.play">🚀 Запустить демонстрацию сети Фейстеля</a>
-<a href="https://ludus-lab.ru/#theory-section" class="btn-secondary" data-i18n="actions.back">← Вернуться к списку тем</a>
+<a href="/games/feistel/" class="btn-primary" data-i18n="actions.play">🚀 Launch the Feistel network demo</a>
+<a href="/#theory-section" class="btn-secondary" data-i18n="actions.back">← Back to the topic list</a>
 </div>
-<p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">В демонстрации вы на одном байте пройдёте весь путь от открытого текста до шифротекста и обратно — и увидите, почему эта структура работает</p>
+<p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">In the demo you’ll walk a single byte all the way from plaintext to ciphertext and back — and see exactly why this structure works</p>
 </div>
 </div>
 
 <!-- Футер -->
 <footer class="theory-footer">
-<p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
-<p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Эта статья — упрощённое объяснение принципов. Реальные DES и Магма используют более сложные перестановки, расширения и расписания ключей, чем показано в интерактивной демонстрации.</p>
+<p data-i18n="footer.line1">© 2025 Ludus Lab · Complex things through simple games</p>
+<p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">This article is a simplified explanation of the principles. Real DES and Magma use more elaborate permutations, expansions, and key schedules than the interactive demo shows.</p>
 </footer>
 
 <script>
@@ -1175,7 +1183,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 
     (function initLanguage() {
       let saved = null;
-      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      saved = 'en';
       if (!saved) {
         const browserLang = (navigator.language || 'ru').slice(0, 2);
         saved = I18N[browserLang] ? browserLang : 'ru';

@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /games/symmetric/
+Disallow: /theory/symmetric.html
+Disallow: /games/asymmetric/
+
+Sitemap: https://ludus-lab.com/sitemap.xml

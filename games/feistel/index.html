@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Сеть Фейстеля — рождение DES</title>
+<title>Feistel Network — the Birth of DES</title>
 <link rel="icon" href="../../favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 <!-- Yandex.Metrika counter -->
@@ -568,24 +568,32 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
   .nav-link.secondary:hover { color: #ffd700; border-color: #d4af37; }
   @media (max-width: 768px) { .navigation-links { gap: 10px; margin: 20px auto 12px; } .nav-link { padding: 6px 12px; font-size: 0.85rem; } }
 </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/games/feistel/">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/games/feistel/">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/games/feistel/">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/games/feistel/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/games/feistel/">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/games/feistel/">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
 <div class="lang-switch" role="group" aria-label="Language">
-  <button class="lang-btn" data-lang-btn="ru">RU</button>
-  <button class="lang-btn" data-lang-btn="en">EN</button>
-  <button class="lang-btn" data-lang-btn="es">ES</button>
-  <button class="lang-btn" data-lang-btn="zh">中文</button>
+  <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/games/feistel/" hreflang="ru" lang="ru">RU</a>
+  <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/games/feistel/" hreflang="en" lang="en">EN</a>
+  <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/games/feistel/" hreflang="es" lang="es">ES</a>
+  <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/games/feistel/" hreflang="zh-Hans" lang="zh-CN">中文</a>
 </div>
 
 <div class="container">
   <header>
-    <h1 data-i18n="game.title">Сеть Фейстеля</h1>
+    <h1 data-i18n="game.title">Feistel Network</h1>
     <div class="line"></div>
-    <p class="tagline" data-i18n="game.tagline">Как из одной идеи родился DES — и почти вся симметричная криптография</p>
+    <p class="tagline" data-i18n="game.tagline">How one idea gave birth to DES — and to most of symmetric cryptography</p>
   </header>
 
   <div class="info-toggle" id="infoToggle">
-    <span data-i18n="info.toggle">ℹ️ Как работает шифр?</span><span class="plus">+</span>
+    <span data-i18n="info.toggle">ℹ️ How does the cipher work?</span><span class="plus">+</span>
   </div>
   <div class="info-body">
     <div class="info-body-inner" id="infoInner"></div>
@@ -603,8 +611,8 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
     <div class="right-panel">
       <div class="map-card">
         <div class="map-head">
-          <div class="map-title" data-i18n="map.title">Карта шифрования</div>
-          <button class="map-expand" id="mapExpand" type="button"><span aria-hidden="true">⤢</span><span data-i18n="map.expand">Подробно</span></button>
+          <div class="map-title" data-i18n="map.title">Encryption map</div>
+          <button class="map-expand" id="mapExpand" type="button"><span aria-hidden="true">⤢</span><span data-i18n="map.expand">Details</span></button>
         </div>
         <div id="mapBody"></div>
       </div>
@@ -613,11 +621,11 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
   </div>
 
   <div class="navigation-links">
-    <a href="https://ludus-lab.ru/theory/feistel.html" class="nav-link secondary">
-      <svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 6.2C10.2 4.8 7.8 4 5 4v13c2.8 0 5.2.8 7 2.2 1.8-1.4 4.2-2.2 7-2.2V4c-2.8 0-5.2.8-7 2.2z"/></svg> <span data-i18n="nav.theory">Прочитать теорию</span>
+    <a href="/theory/feistel.html" class="nav-link secondary">
+      <svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 6.2C10.2 4.8 7.8 4 5 4v13c2.8 0 5.2.8 7 2.2 1.8-1.4 4.2-2.2 7-2.2V4c-2.8 0-5.2.8-7 2.2z"/></svg> <span data-i18n="nav.theory">Read the theory</span>
     </a>
-    <a href="https://ludus-lab.ru/" class="nav-link primary">
-      <svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 3.2 3 11h3v9h5v-6h2v6h5v-9h3z"/></svg> <span data-i18n="nav.home">Вернуться в лабораторию</span>
+    <a href="/" class="nav-link primary">
+      <svg class="nav-link-icon" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 3.2 3 11h3v9h5v-6h2v6h5v-9h3z"/></svg> <span data-i18n="nav.home">Back to the lab</span>
     </a>
   </div>
 </div>
@@ -849,7 +857,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'kd.h': 'Шаг 4 — доставка ключа',
       'x.kd': 'Ключ вырабатывает и рассылает третья сторона — ключевой центр; отвечает за ключи орган криптографической защиты. Алиса и Боб получают одинаковый ключ защищённым путём и никогда не пересылают его друг другу.',
       'kd.p1': 'Самое уязвимое место симметричного шифра — не алгоритм, а ключ: у отправителя и получателя он должен быть одинаковым, а больше ни у кого его быть не должно. Передать ключ тем же каналом, что и сообщение, нельзя: перехватчик получит и то, и другое.',
-      'kd.p2': 'В России порядок задан Инструкцией ФАПСИ № 152 (2001) — для СКЗИ, которыми защищают информацию ограниченного доступа, не составляющую гостайну. Ключи вырабатывает и рассылает <b>орган криптографической защиты</b> (ОКЗ): подразделение организации, организация-лицензиат ФСБ или даже один назначенный человек. ОКЗ изготавливает ключевые документы, ведёт их поэкземплярный учёт и доставляет абонентам на ключевых носителях — фельдъегерской или специальной связью либо с нарочным. Вводит ключ в СКЗИ допущенный человек: сотрудник ОКЗ или обученный пользователь. Технически ключи может готовить программа — ключевой центр или ЦУС защищённой сети, — но отвечают за них люди. Как ключ вырабатывается из случайности, показано в игре <a class="highlight" href="../cvk/index.html">«Центр выработки ключей»</a>.',
+      'kd.p2': 'В России порядок задан Инструкцией ФАПСИ № 152 (2001) — для СКЗИ, которыми защищают информацию ограниченного доступа, не составляющую гостайну. Ключи вырабатывает и рассылает <b>орган криптографической защиты</b> (ОКЗ): подразделение организации, организация-лицензиат ФСБ или даже один назначенный человек. ОКЗ изготавливает ключевые документы, ведёт их поэкземплярный учёт и доставляет абонентам на ключевых носителях — фельдъегерской или специальной связью либо с нарочным. Вводит ключ в СКЗИ допущенный человек: сотрудник ОКЗ или обученный пользователь. Технически ключи может готовить программа — ключевой центр или ЦУС защищённой сети, — но отвечают за них люди. Как ключ вырабатывается из случайности, показано в игре <a class="highlight" href="../cvk/">«Центр выработки ключей»</a>.',
       'kd.p3': 'Обратите внимание: между Алисой и Бобом ключ не идёт вообще. Позже по открытому каналу пойдёт только шифротекст, и Ева, даже перехватив его, ключа не получит.',
       'kd.waiting': 'Ключ пока есть только в ключевом центре.',
       'kd.flying': 'Ключ в пути — защищённой доставкой…',
@@ -1070,7 +1078,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'kd.h': 'Step 4 — key delivery',
       'x.kd': 'The key is generated and distributed by a third party — the key centre; a cryptographic protection body is responsible for the keys. Alice and Bob receive the same key by a protected route and never send it to each other.',
       'kd.p1': 'The weakest point of a symmetric cipher isn’t the algorithm but the key: the sender and the receiver must have the same one, and nobody else may have it. The key can’t be sent over the same channel as the message — an eavesdropper would get both.',
-      'kd.p2': 'In Russia the procedure is set by FAPSI Instruction No. 152 (2001), for cryptographic protection tools (SKZI) that protect restricted information other than state secrets. Keys are generated and distributed by a <b>cryptographic protection body</b> (OKZ): a unit of the organisation, an FSB-licensed company, or even a single appointed person. The OKZ produces the key documents, keeps a per-copy register of them and delivers them to the users on key media — by state courier or a special communication service, or by hand. The key is loaded into the device by an authorised person: an OKZ employee or a trained user. Technically the keys may be prepared by software — the key centre or the network control centre of a protected network — but people are responsible for them. How a key is generated from randomness is shown in the <a class="highlight" href="../cvk/index.html">“Key Generation Center”</a> game.',
+      'kd.p2': 'In Russia the procedure is set by FAPSI Instruction No. 152 (2001), for cryptographic protection tools (SKZI) that protect restricted information other than state secrets. Keys are generated and distributed by a <b>cryptographic protection body</b> (OKZ): a unit of the organisation, an FSB-licensed company, or even a single appointed person. The OKZ produces the key documents, keeps a per-copy register of them and delivers them to the users on key media — by state courier or a special communication service, or by hand. The key is loaded into the device by an authorised person: an OKZ employee or a trained user. Technically the keys may be prepared by software — the key centre or the network control centre of a protected network — but people are responsible for them. How a key is generated from randomness is shown in the <a class="highlight" href="../cvk/">“Key Generation Center”</a> game.',
       'kd.p3': 'Note that no key travels between Alice and Bob at all. Later only the ciphertext goes over the open channel — and even if Eve intercepts it, she won’t get the key.',
       'kd.waiting': 'So far only the key centre has the key.',
       'kd.flying': 'The key is on its way by protected delivery…',
@@ -1291,7 +1299,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'kd.h': 'Paso 4 — entrega de la clave',
       'x.kd': 'La clave la genera y la distribuye un tercero: el centro de claves; de las claves responde un órgano de protección criptográfica. Alicia y Bob reciben la misma clave por una vía protegida y nunca se la envían entre ellos.',
       'kd.p1': 'El punto más débil de un cifrado simétrico no es el algoritmo, sino la clave: el emisor y el receptor deben tener la misma, y nadie más debe tenerla. La clave no puede enviarse por el mismo canal que el mensaje: un espía obtendría ambas cosas.',
-      'kd.p2': 'En Rusia el procedimiento lo fija la Instrucción n.º 152 de la FAPSI (2001), para los medios de protección criptográfica (SKZI) que protegen información de acceso restringido que no es secreto de Estado. Las claves las genera y distribuye un <b>órgano de protección criptográfica</b> (OKZ): una unidad de la organización, una empresa con licencia del FSB o incluso una sola persona designada. El OKZ elabora los documentos de clave, lleva un registro de cada ejemplar y los entrega a los usuarios en soportes de clave, por correo de valija oficial o servicio especial de comunicaciones, o en mano. La clave la carga en el equipo una persona autorizada: un empleado del OKZ o un usuario formado. Técnicamente las claves puede prepararlas un programa —el centro de claves o el centro de gestión de una red protegida—, pero de ellas responden personas. Cómo se genera una clave a partir del azar se muestra en el juego <a class="highlight" href="../cvk/index.html">«Centro de generación de claves»</a>.',
+      'kd.p2': 'En Rusia el procedimiento lo fija la Instrucción n.º 152 de la FAPSI (2001), para los medios de protección criptográfica (SKZI) que protegen información de acceso restringido que no es secreto de Estado. Las claves las genera y distribuye un <b>órgano de protección criptográfica</b> (OKZ): una unidad de la organización, una empresa con licencia del FSB o incluso una sola persona designada. El OKZ elabora los documentos de clave, lleva un registro de cada ejemplar y los entrega a los usuarios en soportes de clave, por correo de valija oficial o servicio especial de comunicaciones, o en mano. La clave la carga en el equipo una persona autorizada: un empleado del OKZ o un usuario formado. Técnicamente las claves puede prepararlas un programa —el centro de claves o el centro de gestión de una red protegida—, pero de ellas responden personas. Cómo se genera una clave a partir del azar se muestra en el juego <a class="highlight" href="../cvk/">«Centro de generación de claves»</a>.',
       'kd.p3': 'Fíjate en que entre Alicia y Bob no viaja ninguna clave. Más tarde por el canal abierto solo irá el texto cifrado, y aunque Eva lo intercepte, no obtendrá la clave.',
       'kd.waiting': 'Por ahora solo el centro de claves tiene la clave.',
       'kd.flying': 'La clave va de camino por entrega protegida…',
@@ -1525,7 +1533,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
       'kd.h': '第 4 步——密钥分发',
       'x.kd': '密钥由第三方——密钥中心——生成和分发；由密码保护机构对密钥负责。爱丽丝和鲍勃通过受保护的途径收到同一个密钥，彼此之间从不互相发送密钥。',
       'kd.p1': '对称密码最薄弱的环节不是算法，而是密钥：发送方和接收方必须拥有同一个密钥，而其他任何人都不能拥有。密钥不能和消息走同一个信道——否则窃听者会同时拿到两者。',
-      'kd.p2': '在俄罗斯，这一程序由 FAPSI（俄罗斯联邦政府通信与信息署）第 152 号指令（2001）规定，适用于保护国家秘密以外的受限信息的密码保护设备（SKZI）。密钥由<b>密码保护机构</b>（OKZ）生成和分发：可以是单位内部的部门、持有 FSB 许可证的公司，甚至一名指定人员。OKZ 制作密钥文件，逐份登记，并通过国家信使、特别通信服务或专人递送，把装有密钥的介质交给用户。密钥由获授权的人员——OKZ 工作人员或受过培训的用户——装入设备。技术上，密钥可以由软件准备——即受保护网络的密钥中心或网络控制中心——但对密钥负责的是人。密钥如何由随机性生成，可以在<a class="highlight" href="../cvk/index.html">“密钥生成中心”</a>游戏中看到。',
+      'kd.p2': '在俄罗斯，这一程序由 FAPSI（俄罗斯联邦政府通信与信息署）第 152 号指令（2001）规定，适用于保护国家秘密以外的受限信息的密码保护设备（SKZI）。密钥由<b>密码保护机构</b>（OKZ）生成和分发：可以是单位内部的部门、持有 FSB 许可证的公司，甚至一名指定人员。OKZ 制作密钥文件，逐份登记，并通过国家信使、特别通信服务或专人递送，把装有密钥的介质交给用户。密钥由获授权的人员——OKZ 工作人员或受过培训的用户——装入设备。技术上，密钥可以由软件准备——即受保护网络的密钥中心或网络控制中心——但对密钥负责的是人。密钥如何由随机性生成，可以在<a class="highlight" href="../cvk/">“密钥生成中心”</a>游戏中看到。',
       'kd.p3': '请注意，爱丽丝和鲍勃之间根本不传递任何密钥。之后只有密文经过公开信道——即使伊芙截获了它，也得不到密钥。',
       'kd.waiting': '目前只有密钥中心有密钥。',
       'kd.flying': '密钥正在通过受保护的途径分发……',
@@ -1575,7 +1583,7 @@ ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLa
   }
   function initLanguage() {
     let saved = null;
-    try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+    saved = 'en';
     if (!saved) { const browserLang = (navigator.language || 'ru').slice(0, 2); saved = I18N[browserLang] ? browserLang : 'ru'; }
     applyLanguage(saved);
   }

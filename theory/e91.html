@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title id="pageTitle">Протокол E91: запутанность против перехвата | Ludus Lab</title>
-  <meta id="pageDescription" name="description" content="Как квантовая запутанность создает абсолютно защищённые ключи шифрования. Объяснение протокола Экарта (E91) с использованием неравенств Белла.">
+  <title id="pageTitle">The E91 Protocol: Entanglement Versus Eavesdropping | Ludus Lab</title>
+  <meta id="pageDescription" name="description" content="How quantum entanglement gives eavesdropping away. Ekert's protocol (E91) and the Bell test explained in plain words.">
   
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -531,22 +531,30 @@
       .nav-link { width: 100%; margin-bottom: 5px; }
     }
   </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/theory/e91.html">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/theory/e91.html">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/theory/e91.html">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/theory/e91.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/theory/e91.html">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/theory/e91.html">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
   <div class="lang-switch" role="group" aria-label="Language">
-    <button class="lang-btn" data-lang-btn="ru">RU</button>
-    <button class="lang-btn" data-lang-btn="en">EN</button>
-    <button class="lang-btn" data-lang-btn="es">ES</button>
-    <button class="lang-btn" data-lang-btn="zh">中文</button>
+    <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/theory/e91.html" hreflang="ru" lang="ru">RU</a>
+    <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/theory/e91.html" hreflang="en" lang="en">EN</a>
+    <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/theory/e91.html" hreflang="es" lang="es">ES</a>
+    <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/theory/e91.html" hreflang="zh-Hans" lang="zh-CN">中文</a>
   </div>
 
   <!-- Навигация -->
   <nav class="theory-nav">
     <a href="/" class="nav-logo">LUDUS LAB</a>
     <div class="nav-links">
-      <a href="/" class="nav-link" data-i18n="nav.home">Главная</a>
+      <a href="/" class="nav-link" data-i18n="nav.home">Home</a>
       <!-- ИЗМЕНЕНО: убрана кнопка "Теория" -->
-      <a href="https://ludus-lab.ru/games/e91/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+      <a href="/games/e91/" class="nav-link" data-i18n="nav.play">Play</a>
     </div>
   </nav>
 
@@ -554,90 +562,90 @@
   <div class="theory-container">
     <!-- Заголовок статьи -->
     <header class="article-header">
-      <div class="article-category" data-i18n="article.category">Квантовая запутанность</div>
-      <h1 class="article-title" data-i18n="article.title">Протокол E91</h1>
-      <p class="article-subtitle" data-i18n="article.subtitle">Как запутанные фотоны превращают подслушивание в то, что невозможно скрыть</p>
+      <div class="article-category" data-i18n="article.category">Quantum entanglement</div>
+      <h1 class="article-title" data-i18n="article.title">The E91 Protocol</h1>
+      <p class="article-subtitle" data-i18n="article.subtitle">How entangled photons turn eavesdropping into something that cannot be hidden</p>
       <div class="article-meta">
-        <div class="meta-item" data-i18n="meta.readtime">⏱️ 5 мин чтения</div>
-        <div class="meta-item" data-i18n="meta.level">📊 Сложный уровень</div>
-        <div class="meta-item" data-i18n="meta.era">🔬 1991 год</div>
+        <div class="meta-item" data-i18n="meta.readtime">⏱️ 5 min read</div>
+        <div class="meta-item" data-i18n="meta.level">📊 Advanced level</div>
+        <div class="meta-item" data-i18n="meta.era">🔬 1991</div>
       </div>
     </header>
 
     <!-- Блок "Что делает E91 уникальным?" -->
     <section class="content-block">
-      <h2 data-i18n="block1.heading">Что делает E91 уникальным?</h2>
-      <p data-i18n="block1.p1">Представьте две волшебные монетки. Каждая по отдельности падает совершенно случайно. Но если Алиса и Боб подбросят их «под одним углом», монетки всегда выпадут противоположными сторонами — как бы далеко друг от друга ни были. Это и есть <span class="highlight-entangled">квантовая запутанность</span>: каждый результат случаен, а вместе они согласованы.</p>
+      <h2 data-i18n="block1.heading">What makes E91 unique?</h2>
+      <p data-i18n="block1.p1">Imagine two magic coins. Each one alone lands completely at random. But if Alice and Bob toss them “at the same angle”, the coins always land on opposite sides — no matter how far apart they are. That is <span class="highlight-entangled">quantum entanglement</span>: each result is random, yet together they are coordinated.</p>
 
-      <p data-i18n="block1.p2">Протокол E91, предложенный Артуром Экертом в 1991 году, использует это свойство, чтобы получать ключи, <span class="highlight">подслушивание которых невозможно скрыть</span>. В отличие от BB84, где Алиса сама готовит фотоны, в E91 их рассылает источник запутанных пар, а подслушивание выдаёт <span class="highlight-entangled">проверка Белла</span>.</p>
+      <p data-i18n="block1.p2">The E91 protocol, proposed by Artur Ekert in 1991, uses this property to obtain keys <span class="highlight">whose eavesdropping cannot be hidden</span>. Unlike BB84, where Alice prepares the photons herself, in E91 they come from a source of entangled pairs, and eavesdropping is given away by the <span class="highlight-entangled">Bell test</span>.</p>
 
       <div class="entanglement-visualization">
-        <div class="entanglement-title" data-i18n="entangle.title">Квантовая запутанность</div>
+        <div class="entanglement-title" data-i18n="entangle.title">Quantum entanglement</div>
         <div class="entanglement-diagram">
           <div class="photon-pair">
             <div class="photon photon-alice">A</div>
-            <div style="color: #00a2ff; font-size: 0.9rem;" data-i18n="entangle.alice">Алиса</div>
+            <div style="color: #00a2ff; font-size: 0.9rem;" data-i18n="entangle.alice">Alice</div>
           </div>
 
           <div class="entanglement-link"></div>
 
           <div class="photon-pair">
             <div class="photon photon-bob">B</div>
-            <div style="color: #ff8c00; font-size: 0.9rem;" data-i18n="entangle.bob">Боб</div>
+            <div style="color: #ff8c00; font-size: 0.9rem;" data-i18n="entangle.bob">Bob</div>
           </div>
         </div>
-        <p style="color: #8ab0c5; margin-top: 15px;" data-i18n="entangle.caption">Результаты измерений запутанных фотонов связаны на любом расстоянии, хотя каждый по отдельности случаен. Передать так сообщение нельзя — связь видна, только когда Алиса и Боб сравнят записи.</p>
+        <p style="color: #8ab0c5; margin-top: 15px;" data-i18n="entangle.caption">The measurement results of entangled photons are linked at any distance, although each one alone is random. You cannot send a message this way — the link only shows up when Alice and Bob compare notes.</p>
       </div>
 
       <div class="key-insight">
-        <strong data-i18n="insight1.label">Ключевая мысль:</strong> <span data-i18n="insight1.text">E91 не просто защищает от подслушивания — он <span class="highlight-gold">обнаруживает саму попытку</span>. Чтобы узнать бит, Еве нужно измерить фотон, а измерение разрушает запутанность. Фотоны начинают вести себя как обычные, и доля побед в игре Белла падает до 75% и ниже.</span>
+        <strong data-i18n="insight1.label">Key takeaway:</strong> <span data-i18n="insight1.text">E91 doesn't just protect against eavesdropping — it <span class="highlight-gold">detects the very attempt</span>. To learn a bit, Eve has to measure the photon, and measurement destroys entanglement. The photons start behaving like ordinary ones, and the Bell game win rate drops to 75% or lower.</span>
       </div>
     </section>
 
     <!-- Блок "Три волшебных базиса" -->
     <section class="content-block">
-      <h2 data-i18n="block2.heading">Три угла у каждого</h2>
+      <h2 data-i18n="block2.heading">Three angles each</h2>
 
-      <p data-i18n="block2.p1">Алиса и Боб измеряют поляризацию фотонов, поворачивая поляризатор. У каждого <span class="highlight">три угла</span>, и для каждой пары угол выбирается случайно.</p>
+      <p data-i18n="block2.p1">Alice and Bob measure the photons' polarization by turning a polarizer. Each of them has <span class="highlight">three angles</span>, and for every pair the angle is chosen at random.</p>
 
       <div class="basis-grid">
         <div class="basis-card">
-          <h4 data-i18n="basis1.title">Алиса</h4>
+          <h4 data-i18n="basis1.title">Alice</h4>
           <div class="basis-symbol vertical"><span class="ang" style="transform:rotate(0deg)">|</span><span class="ang" style="transform:rotate(22.5deg)">|</span><span class="ang" style="transform:rotate(45deg)">|</span></div>
-          <p data-i18n="basis1.desc">0°, 22.5° и 45°</p>
+          <p data-i18n="basis1.desc">0°, 22.5° and 45°</p>
         </div>
 
         <div class="basis-card">
-          <h4 data-i18n="basis2.title">Боб</h4>
+          <h4 data-i18n="basis2.title">Bob</h4>
           <div class="basis-symbol diagonal"><span class="ang" style="transform:rotate(22.5deg)">|</span><span class="ang" style="transform:rotate(45deg)">|</span><span class="ang" style="transform:rotate(67.5deg)">|</span></div>
-          <p data-i18n="basis2.desc">22.5°, 45° и 67.5°</p>
+          <p data-i18n="basis2.desc">22.5°, 45° and 67.5°</p>
         </div>
 
         <div class="basis-card">
-          <h4 data-i18n="basis3.title">Совпадения</h4>
+          <h4 data-i18n="basis3.title">Matches</h4>
           <div class="basis-symbol horizontal">🔑</div>
-          <p data-i18n="basis3.desc">22.5°/22.5° и 45°/45° — биты идут в ключ</p>
+          <p data-i18n="basis3.desc">22.5°/22.5° and 45°/45° — the bits go into the key</p>
         </div>
       </div>
 
-      <p data-i18n="block2.p2">Чем ближе углы Алисы и Боба, тем чаще их биты противоположны: при одинаковых углах — всегда, при разнице 22.5° — в 85% случаев, при 45° — как монетка, при 67.5° — лишь в 15%.</p>
+      <p data-i18n="block2.p2">The closer Alice's and Bob's angles are, the more often their bits are opposite: at equal angles — always, at a 22.5° difference — 85% of the time, at 45° — a coin flip, at 67.5° — only 15%.</p>
 
-      <p data-i18n="block2.p3">Именно такая зависимость от угла <span class="highlight">невозможна в классическом мире</span>. Её и проверяют, чтобы убедиться, что фотоны по-прежнему запутаны.</p>
+      <p data-i18n="block2.p3">Exactly this dependence on the angle is <span class="highlight">impossible in the classical world</span>. It is what gets checked to make sure the photons are still entangled.</p>
     </section>
 
     <!-- Блок "Как это работает?" -->
     <section class="content-block">
-      <h2 data-i18n="block3.heading">Как это работает?</h2>
+      <h2 data-i18n="block3.heading">How does it work?</h2>
 
-      <p data-i18n="block3.intro">E91 использует запутанные пары фотонов, которые распределяются между Алисой и Бобом. Давайте разберём процесс по шагам:</p>
+      <p data-i18n="block3.intro">E91 uses entangled photon pairs distributed between Alice and Bob. Let's walk through the process step by step:</p>
 
       <div class="explanation-steps">
         <!-- Шаг 1 -->
         <div class="step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h3 data-i18n="step1.title">Распределение запутанных пар</h3>
-            <p data-i18n="step1.text">Источник создаёт <span class="highlight-entangled">запутанные пары фотонов</span> и посылает один фотон Алисе, другой — Бобу. Если оба измерят фотоны под одним углом, их биты всегда окажутся противоположными.</p>
+            <h3 data-i18n="step1.title">Distributing entangled pairs</h3>
+            <p data-i18n="step1.text">The source creates <span class="highlight-entangled">entangled photon pairs</span> and sends one photon to Alice and the other to Bob. If both measure their photons at the same angle, their bits always turn out opposite.</p>
           </div>
         </div>
 
@@ -645,8 +653,8 @@
         <div class="step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h3 data-i18n="step2.title">Случайные измерения</h3>
-            <p data-i18n="step2.text">Алиса и Боб <span class="highlight">независимо и случайно</span> выбирают угол из своих трёх и записывают результат: 0 — фотон прошёл через поляризатор, 1 — нет.</p>
+            <h3 data-i18n="step2.title">Random measurements</h3>
+            <p data-i18n="step2.text">Alice and Bob <span class="highlight">independently and at random</span> pick one of their three angles and record the result: 0 — the photon passed the polarizer, 1 — it did not.</p>
           </div>
         </div>
 
@@ -654,8 +662,8 @@
         <div class="step">
           <div class="step-number">3</div>
           <div class="step-content">
-            <h3 data-i18n="step3.title">Квантовые корреляции</h3>
-            <p data-i18n="step3.text">При одинаковых углах биты <span class="highlight-entangled">всегда противоположны</span>. При разных — чем больше разница, тем чаще биты совпадают. Каждый бит сам по себе случаен.</p>
+            <h3 data-i18n="step3.title">Quantum correlations</h3>
+            <p data-i18n="step3.text">At equal angles the bits are <span class="highlight-entangled">always opposite</span>. At different angles, the bigger the difference, the more often the bits match. Each bit alone is random.</p>
           </div>
         </div>
 
@@ -663,8 +671,8 @@
         <div class="step">
           <div class="step-number">4</div>
           <div class="step-content">
-            <h3 data-i18n="step4.title">Объявление углов</h3>
-            <p data-i18n="step4.text">По открытому каналу Алиса и Боб сообщают, <span class="highlight">какие углы они выбирали</span>, — но не результаты.</p>
+            <h3 data-i18n="step4.title">Announcing the angles</h3>
+            <p data-i18n="step4.text">Over the public channel, Alice and Bob announce <span class="highlight">which angles they chose</span> — but not the results.</p>
           </div>
         </div>
 
@@ -672,24 +680,24 @@
         <div class="step">
           <div class="step-number">5</div>
           <div class="step-content">
-            <h3 data-i18n="step5.title">Разделение пар</h3>
-            <p data-i18n="step5.text">Пары с одинаковыми углами идут в ключ: Боб переворачивает свои биты и получает копию бит Алисы. Пары с углами Алисы 0°/45° и Боба 22.5°/67.5° идут на <span class="highlight">проверку Белла</span>. Остальные отбрасываются.</p>
+            <h3 data-i18n="step5.title">Sorting the pairs</h3>
+            <p data-i18n="step5.text">Pairs with equal angles go into the key: Bob flips his bits and gets a copy of Alice's bits. Pairs with Alice at 0°/45° and Bob at 22.5°/67.5° go to the <span class="highlight">Bell test</span>. The rest are discarded.</p>
           </div>
         </div>
 
         <div class="step">
           <div class="step-number">6</div>
           <div class="step-content">
-            <h3 data-i18n="step6.title">Проверка Белла — игра на угадывание</h3>
-            <p data-i18n="step6.text">Проверочные пары Алиса и Боб раскрывают полностью. В каждом раунде есть цель: при 0°/67.5° биты должны совпасть, в остальных сочетаниях — различаться. Будь у фотонов заранее заготовленные ответы («шпаргалка»), никакая шпаргалка не дала бы <span class="highlight">больше 75% побед</span>. Запутанные фотоны выигрывают <span class="highlight-entangled">около 85%</span>.</p>
+            <h3 data-i18n="step6.title">The Bell test — a guessing game</h3>
+            <p data-i18n="step6.text">Alice and Bob reveal the test pairs completely. Each round has a goal: at 0°/67.5° the bits should match, in the other combinations they should differ. If the photons had pre-arranged answers (a “cheat sheet”), no cheat sheet could win <span class="highlight">more than 75% of rounds</span>. Entangled photons win <span class="highlight-entangled">about 85%</span>.</p>
           </div>
         </div>
 
         <div class="step">
           <div class="step-number">7</div>
           <div class="step-content">
-            <h3 data-i18n="step7.title">Ключ</h3>
-            <p data-i18n="step7.text">Если побед заметно больше 75%, а ошибок в ключе мало, запутанность цела и Ева знает о ключе мало: ключ исправляют и сжимают. Если побед 75% или меньше — фотоны вели себя как обычные, значит, их кто-то измерял, и ключ отбрасывают.</p>
+            <h3 data-i18n="step7.title">The key</h3>
+            <p data-i18n="step7.text">If the win rate is clearly above 75% and the key has few errors, entanglement is intact and Eve knows little about the key: the key is corrected and compressed. If the win rate is 75% or lower, the photons behaved like ordinary ones — someone measured them — and the key is discarded.</p>
           </div>
         </div>
       </div>
@@ -697,117 +705,115 @@
 
     <!-- Блок "Что вы сделаете в игре" -->
     <section class="content-block">
-      <h2 data-i18n="block4.heading">А теперь — главная магия</h2>
-      <p data-i18n="block4.intro">В симуляции протокола E91 вы:</p>
+      <h2 data-i18n="block4.heading">Now for the real magic</h2>
+      <p data-i18n="block4.intro">In the E91 simulation, you will:</p>
 
       <ul class="action-list">
         <li>
           <span class="action-icon">🌀</span>
-          <div class="action-text" data-i18n="action1"><strong>Проведёте разминку</strong> — увидите, как часто биты Алисы и Боба противоположны при разной разнице углов</div>
+          <div class="action-text" data-i18n="action1"><strong>Do a warm-up</strong> — see how often Alice's and Bob's bits are opposite for different angle differences</div>
         </li>
         <li>
           <span class="action-icon">🎯</span>
-          <div class="action-text" data-i18n="action2"><strong>Запустите источник запутанных пар</strong> — Алиса и Боб выбирают углы случайно, как в настоящем протоколе</div>
+          <div class="action-text" data-i18n="action2"><strong>Start the source of entangled pairs</strong> — Alice and Bob choose angles at random, as in the real protocol</div>
         </li>
         <li>
           <span class="action-icon">👁️</span>
-          <div class="action-text" data-i18n="action3"><strong>Решите, будет ли в канале Ева</strong>: её нет, она перехватывает каждую пару или включён случайный режим, где её присутствие придётся распознать</div>
+          <div class="action-text" data-i18n="action3"><strong>Decide whether Eve is on the channel</strong>: no Eve, Eve intercepting every pair, or a random mode where you have to detect her</div>
         </li>
         <li>
           <span class="action-icon">🔍</span>
-          <div class="action-text" data-i18n="action4"><strong>Разделите пары</strong> по объявленным углам: в ключ, на проверку Белла или в отброс</div>
+          <div class="action-text" data-i18n="action4"><strong>Sort the pairs</strong> by the announced angles: into the key, the Bell test, or the discard pile</div>
         </li>
         <li>
           <span class="action-icon">📖</span>
-          <div class="action-text" data-i18n="action5"><strong>Сыграете в игру Белла</strong> — увидите, выиграли ли фотоны больше 75% раундов, доступных обычным фотонам</div>
+          <div class="action-text" data-i18n="action5"><strong>Play the Bell game</strong> — see whether the photons won more than the 75% of rounds ordinary photons can reach</div>
         </li>
         <li>
           <span class="action-icon">⚡</span>
-          <div class="action-text" data-i18n="action6"><strong>Соберёте ключ</strong> — Боб перевернёт свои биты, ошибки исправятся, а ключ сожмётся до 8 бит</div>
+          <div class="action-text" data-i18n="action6"><strong>Build the key</strong> — Bob flips his bits, errors get fixed, and the key is compressed to 8 bits</div>
         </li>
       </ul>
 
-      <p data-i18n="block4.outro">Вы не просто читаете о квантовой запутанности — вы <span class="highlight-entangled">проверяете её</span> сами. Вы увидите, как разница между 75% и 85% побед превращается в детектор подслушивания, и поймёте, почему E91 называют одним из самых красивых протоколов квантовой криптографии.</p>
+      <p data-i18n="block4.outro">You don't just read about quantum entanglement — you <span class="highlight-entangled">test it</span> yourself. You'll see how the gap between 75% and 85% wins becomes an eavesdropping detector, and understand why E91 is called one of the most beautiful protocols in quantum cryptography.</p>
     </section>
 
     <!-- Дополнительный материал -->
     <details class="advanced-section">
-      <summary data-i18n="advanced.summary">Для любознательных</summary>
+      <summary data-i18n="advanced.summary">For the curious</summary>
       <div class="advanced-content">
-        <h3 data-i18n="advanced.bell.heading">Неравенства Белла: математический детектор лжи</h3>
-        <p data-i18n="advanced.bell.text1">Неравенства Белла — это математические условия, которые должны выполняться в <strong>любой классической локальной теории</strong>. Если вы измеряете запутанные частицы и нарушаете эти неравенства — значит, система <span class="highlight-entangled">действительно квантовая и запутанная</span>.</p>
+        <h3 data-i18n="advanced.bell.heading">Bell inequalities: a mathematical lie detector</h3>
+        <p data-i18n="advanced.bell.text1">Bell inequalities are mathematical conditions that must hold in <strong>any classical local theory</strong>. If you measure entangled particles and violate these inequalities, it means the system is <span class="highlight-entangled">genuinely quantum and entangled</span>.</p>
 
-        <p data-i18n="advanced.bell.text2">В E91 проверка Белла использует пары, где углы Алисы и Боба <span class="highlight">не совпали</span>. Физики записывают её через корреляции E = (совпадений − различий) / всего и число S = E₁ − E₂ + E₃ + E₄ (неравенство CHSH). Доля побед в игре Белла равна 1/2 + |S|/8: классический предел |S| ≤ 2 — это 75%, квантовый максимум 2√2 ≈ 2.83 — около 85%.</p>
+        <p data-i18n="advanced.bell.text2">In E91 the Bell test uses the pairs where Alice's and Bob's angles <span class="highlight">did not match</span>. Physicists write it with correlations E = (matches − mismatches) / total and the number S = E₁ − E₂ + E₃ + E₄ (the CHSH inequality). The Bell game win rate equals 1/2 + |S|/8: the classical limit |S| ≤ 2 is 75%, the quantum maximum 2√2 ≈ 2.83 is about 85%.</p>
 
         <div class="topics-grid">
           <div class="topic-card">
-            <h4 data-i18n="topic1.title">Теорема Белла</h4>
-            <p data-i18n="topic1.desc">Доказательство того, что никакая локальная скрытая переменная теория не может воспроизвести все предсказания квантовой механики</p>
+            <h4 data-i18n="topic1.title">Bell's theorem</h4>
+            <p data-i18n="topic1.desc">Proof that no local hidden-variable theory can reproduce all the predictions of quantum mechanics</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic2.title">Парадокс ЭПР</h4>
-            <p data-i18n="topic2.desc">Мысленный эксперимент Эйнштейна-Подольского-Розена, который пытался показать "неполноту" квантовой механики, но привёл к открытию запутанности</p>
+            <h4 data-i18n="topic2.title">The EPR paradox</h4>
+            <p data-i18n="topic2.desc">The Einstein-Podolsky-Rosen thought experiment, which tried to show quantum mechanics was "incomplete" but instead led to the discovery of entanglement</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic3.title">Эксперименты Аспекта</h4>
-            <p data-i18n="topic3.desc">Первые экспериментальные подтверждения нарушения неравенств Белла в 1980-х годах, доказавшие реальность квантовой запутанности</p>
+            <h4 data-i18n="topic3.title">Aspect's experiments</h4>
+            <p data-i18n="topic3.desc">The first experimental confirmations of Bell inequality violations in the 1980s, proving the reality of quantum entanglement</p>
           </div>
         </div>
 
-        <h3 data-i18n="advanced.why3.heading">Почему именно три угла?</h3>
-        <p data-i18n="advanced.why3.text">Для проверки Белла каждому нужно по <strong>два угла</strong>: Алисе — 0° и 45°, Бобу — 22.5° и 67.5°. А для ключа нужны <strong>одинаковые углы</strong> — 22.5° и 45°. Три угла у каждого — наименьший набор, который даёт и то, и другое. В статье Экерта углы 0°, 45°, 90° даны для спинов; для поляризации фотонов они вдвое меньше.</p>
+        <h3 data-i18n="advanced.why3.heading">Why exactly three angles?</h3>
+        <p data-i18n="advanced.why3.text">For the Bell test each side needs <strong>two angles</strong>: Alice 0° and 45°, Bob 22.5° and 67.5°. The key needs <strong>equal angles</strong> — 22.5° and 45°. Three angles each is the smallest set that gives both. Ekert's paper gives the angles 0°, 45°, 90° for spins; for photon polarization they are halved.</p>
 
-        <h3 data-i18n="advanced.compare.heading">Сравнение с BB84</h3>
-        <p data-i18n="advanced.compare.intro">Чем E91 отличается от BB84:</p>
+        <h3 data-i18n="advanced.compare.heading">Comparison with BB84</h3>
+        <p data-i18n="advanced.compare.intro">How E91 differs from BB84:</p>
         <ul style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="compare1"><strong>Источнику можно не доверять</strong>: даже если его поставила Ева, проверка Белла покажет, честные ли пары он рассылает</li>
-          <li data-i18n="compare2"><strong>Ключа нет до измерения</strong>: биты рождаются в момент измерения у Алисы и Боба, украсть их заранее невозможно</li>
-          <li data-i18n="compare3"><strong>Цена</strong>: нужны источники запутанных пар и больше измерений, поэтому в коммерческих системах чаще встречаются протоколы семейства BB84</li>
-          <li data-i18n="compare4"><strong>Наследие</strong>: идея E91 легла в основу протоколов, независимых от устройств (DI-QKD), где безопасность проверяется только по статистике Белла</li>
+          <li data-i18n="compare1"><strong>The source need not be trusted</strong>: even if Eve installed it, the Bell test shows whether it sends honest pairs</li>
+          <li data-i18n="compare2"><strong>No key before measurement</strong>: the bits are born when Alice and Bob measure, so they cannot be stolen in advance</li>
+          <li data-i18n="compare3"><strong>The price</strong>: it needs entangled-pair sources and more measurements, so commercial systems more often use BB84-family protocols</li>
+          <li data-i18n="compare4"><strong>Legacy</strong>: the idea of E91 underlies device-independent protocols (DI-QKD), where security is checked from Bell statistics alone</li>
         </ul>
 
-        <h3 data-i18n="advanced.history.heading">Историческая справка</h3>
-        <p data-i18n="advanced.history.text1">Протокол E91 был предложен <strong>Артуром Экертом (Artur Ekert)</strong> в 1991 году. Это был первый протокол квантового распределения ключей, который явно использовал <span class="highlight-entangled">нарушение неравенств Белла</span> для обнаружения подслушивания.</p>
+        <h3 data-i18n="advanced.history.heading">Historical background</h3>
+        <p data-i18n="advanced.history.text1">The E91 protocol was proposed by <strong>Artur Ekert</strong> in 1991. It was the first quantum key distribution protocol to explicitly use the <span class="highlight-entangled">violation of Bell inequalities</span> to detect eavesdropping.</p>
 
-        <p data-i18n="advanced.history.text2">Интересный факт: Экерт был вдохновлён не только криптографией, но и фундаментальными вопросами квантовой механики. Его протокол стал мостом между "чистой" квантовой физикой и практическими приложениями в информационной безопасности.</p>
+        <p data-i18n="advanced.history.text2">Fun fact: Ekert was inspired not just by cryptography but by fundamental questions in quantum mechanics. His protocol became a bridge between "pure" quantum physics and practical applications in information security.</p>
 
-        <h3 data-i18n="advanced.modern.heading">Современные реализации</h3>
-        <p data-i18n="advanced.modern.intro">Сегодня протокол E91 и его варианты применяются в:</p>
+        <h3 data-i18n="advanced.modern.heading">Modern implementations</h3>
+        <p data-i18n="advanced.modern.intro">Today, the E91 protocol and its variants are used in:</p>
         <ul style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="modern1">Оптоволоконных сетях с источниками запутанных пар</li>
-          <li data-i18n="modern2">Спутниковой связи: в 2020 году китайский спутник «Мо-цзы» раздал запутанные фотоны двум станциям в 1120 км друг от друга, и они выработали общий ключ</li>
-          <li data-i18n="modern3">Протоколах, независимых от устройств (DI-QKD): первые экспериментальные демонстрации — 2022 год</li>
-          <li data-i18n="modern4">Фундаментальных проверках квантовой нелокальности</li>
-          <li data-i18n="modern5">Прототипах квантового интернета</li>
+          <li data-i18n="modern1">Fiber networks with entangled-pair sources</li>
+          <li data-i18n="modern2">Satellite links: in 2020 the Chinese satellite Micius sent entangled photons to two stations 1,120 km apart, which produced a shared key</li>
+          <li data-i18n="modern3">Device-independent protocols (DI-QKD): the first experimental demonstrations came in 2022</li>
+          <li data-i18n="modern4">Fundamental tests of quantum nonlocality</li>
+          <li data-i18n="modern5">Prototype quantum internet systems</li>
         </ul>
 
         <div class="key-insight" style="margin-top: 20px;">
-          <strong data-i18n="insight2.label">Философский аспект:</strong> <span data-i18n="insight2.text">E91 использует <span class="highlight-gold">саму природу реальности</span> как охранную систему: защиту даёт не сложность вычислений, а законы квантовой физики. Уязвимыми остаются только несовершенства реальной аппаратуры — поэтому физики так ценят проверку Белла, которая не требует доверять приборам.</span>
+          <strong data-i18n="insight2.label">A philosophical note:</strong> <span data-i18n="insight2.text">E91 uses <span class="highlight-gold">the very nature of reality</span> as a security system: protection comes not from computational difficulty but from the laws of quantum physics. Only imperfections of real hardware remain vulnerable — which is why physicists value the Bell test, since it doesn't require trusting the devices.</span>
         </div>
       </div>
     </details>
 
     <!-- Кнопки действий -->
     <div class="article-actions" id="article-actions">
-      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">
-        Теперь, когда вы понимаете магию квантовой запутанности и протокола E91, самое время создать свой собственный запутанный ключ!
-      </p>
+      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Now that you understand the magic of quantum entanglement and the E91 protocol, it's the perfect time to create your own entangled key!</p>
 
       <div class="action-buttons">
-        <a href="https://ludus-lab.ru/games/e91/index.html" class="btn-primary" data-i18n="actions.play">▶ Создать запутанный ключ</a>
-        <a href="/#theory-section" class="btn-secondary" data-i18n="actions.back">← Вернуться к списку тем</a>
+        <a href="/games/e91/" class="btn-primary" data-i18n="actions.play">▶ Create an entangled key</a>
+        <a href="/#theory-section" class="btn-secondary" data-i18n="actions.back">← Back to the topic list</a>
       </div>
 
-      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">В игре вы проведёте разминку с запутанными фотонами, запустите источник, сыграете в игру Белла и увидите, как она выдаёт Еву</p>
+      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">In the game you'll warm up with entangled photons, start the source, play the Bell game and see how it gives Eve away</p>
     </div>
   </div>
 
   <!-- Футер -->
   <footer class="theory-footer">
-    <p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
-    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Эта статья — упрощённое объяснение принципов. Реальные реализации протокола E91 могут иметь дополнительные детали.</p>
+    <p data-i18n="footer.line1">© 2025 Ludus Lab · Complex things through simple games</p>
+    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">This article is a simplified explanation of the principles. Real implementations of the E91 protocol may involve additional details.</p>
   </footer>
 
   <script>
@@ -1172,7 +1178,7 @@
 
     (function initLanguage() {
       let saved = null;
-      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      saved = 'en';
       if (!saved) {
         const browserLang = (navigator.language || 'ru').slice(0, 2);
         saved = I18N[browserLang] ? browserLang : 'ru';

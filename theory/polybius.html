@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title id="pageTitle">Квадрат Полибия: теория | Ludus Lab</title>
-  <meta id="pageDescription" name="description" content="Объяснение древнего шифра Полибия — координатного метода шифрования. Как работает таблица, почему она надёжна и как применялась в истории.">
+  <title id="pageTitle">Polybius Square: Theory | Ludus Lab</title>
+  <meta id="pageDescription" name="description" content="An explanation of the ancient Polybius cipher — a coordinate-based encryption method. How the table works, why it is secure, and how it was used historically.">
 
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -545,21 +545,29 @@
     .step-content { min-width: 0; max-width: 100%; }
     .step-content > div { max-width: 100%; overflow-x: auto; }
   </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/theory/polybius.html">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/theory/polybius.html">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/theory/polybius.html">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/theory/polybius.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/theory/polybius.html">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/theory/polybius.html">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
   <div class="lang-switch" role="group" aria-label="Language">
-    <button class="lang-btn" data-lang-btn="ru">RU</button>
-    <button class="lang-btn" data-lang-btn="en">EN</button>
-    <button class="lang-btn" data-lang-btn="es">ES</button>
-    <button class="lang-btn" data-lang-btn="zh">中文</button>
+    <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/theory/polybius.html" hreflang="ru" lang="ru">RU</a>
+    <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/theory/polybius.html" hreflang="en" lang="en">EN</a>
+    <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/theory/polybius.html" hreflang="es" lang="es">ES</a>
+    <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/theory/polybius.html" hreflang="zh-Hans" lang="zh-CN">中文</a>
   </div>
 
   <!-- Навигация -->
   <nav class="theory-nav">
-    <a href="https://ludus-lab.ru/" class="nav-logo">LUDUS LAB</a>
+    <a href="/" class="nav-logo">LUDUS LAB</a>
     <div class="nav-links">
-      <a href="https://ludus-lab.ru/" class="nav-link" data-i18n="nav.home">Главная</a>
-      <a href="https://ludus-lab.ru/games/polybius/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+      <a href="/" class="nav-link" data-i18n="nav.home">Home</a>
+      <a href="/games/polybius/" class="nav-link" data-i18n="nav.play">Play</a>
     </div>
   </nav>
 
@@ -567,41 +575,39 @@
   <div class="theory-container">
     <!-- Заголовок статьи -->
     <header class="article-header">
-      <div class="article-category" data-i18n="article.category">Античная криптография</div>
-      <h1 class="article-title" data-i18n="article.title">Квадрат Полибия</h1>
-      <p class="article-subtitle" data-i18n="article.subtitle">
-        Древнейший координатный шифр, который превращает буквы в числа и до сих пор вдохновляет создателей кодов
-      </p>
+      <div class="article-category" data-i18n="article.category">Ancient cryptography</div>
+      <h1 class="article-title" data-i18n="article.title">Polybius Square</h1>
+      <p class="article-subtitle" data-i18n="article.subtitle">The oldest coordinate cipher, turning letters into numbers — still inspiring code designers today</p>
       <div class="article-meta">
-        <div class="meta-item" data-i18n="meta.readtime">⏱️ 5 мин чтения</div>
-        <div class="meta-item" data-i18n="meta.level">📊 Базовый уровень</div>
-        <div class="meta-item" data-i18n="meta.era">🗝️ II век до н.э.</div>
+        <div class="meta-item" data-i18n="meta.readtime">⏱️ 5 min read</div>
+        <div class="meta-item" data-i18n="meta.level">📊 Basic level</div>
+        <div class="meta-item" data-i18n="meta.era">🗝️ 2nd century BCE</div>
       </div>
     </header>
 
     <!-- Блок "Зачем это нужно?" -->
     <section class="content-block">
-      <h2 data-i18n="block1.heading">Зачем это нужно?</h2>
-      <p data-i18n="block1.p1">Представьте: вы — <span class="highlight">Полибий</span>, греческий историк и стратег. Вам нужно передать сигналы между отрядами на большие расстояния — факелами или флагами. Как закодировать все буквы алфавита простыми и надёжными сигналами?</p>
+      <h2 data-i18n="block1.heading">Why do we need this?</h2>
+      <p data-i18n="block1.p1">Imagine you are <span class="highlight">Polybius</span>, a Greek historian and strategist. You need to send signals between troops over long distances — using torches or flags. How do you encode every letter of the alphabet with simple, reliable signals?</p>
 
-      <p data-i18n="block1.p2">Полибий предложил гениальное решение: <span class="highlight">квадратную таблицу</span>, где каждая буква получает пару чисел — номер строки и номер столбца. Достаточно передать два числа, и получатель восстановит букву. Так родился один из первых в истории шифров, который до сих пор используется в учебных и развлекательных целях.</p>
+      <p data-i18n="block1.p2">Polybius came up with a brilliant solution: a <span class="highlight">square table</span> where every letter gets a pair of numbers — a row number and a column number. Just send two numbers, and the receiver can reconstruct the letter. That is how one of the earliest ciphers in history was born — one still used today for teaching and for fun.</p>
 
-      <p data-i18n="block1.p3">В отличие от шифра Цезаря (простая замена), квадрат Полибия <span class="highlight">превращает буквы в пары чисел</span>. Это не только скрывает смысл, но и удобно для передачи любыми средствами: дымом, светом, звуком. А если менять порядок букв в таблице, стойкость шифра возрастает многократно.</p>
+      <p data-i18n="block1.p3">Unlike the Caesar cipher (a simple substitution), the Polybius square <span class="highlight">turns letters into pairs of numbers</span>. This not only hides the meaning but is also convenient to transmit by any means: smoke, light, sound. And if you shuffle the order of letters in the table, the cipher's strength increases dramatically.</p>
     </section>
 
     <!-- Блок "Как это работает?" -->
     <section class="content-block">
-      <h2 data-i18n="block2.heading">Как это работает?</h2>
+      <h2 data-i18n="block2.heading">How does it work?</h2>
 
-      <p data-i18n="block2.intro">Основа шифра — <span class="highlight">квадратная таблица</span>, заполненная буквами алфавита. Для русского языка обычно используют таблицу <span class="highlight">6×6</span> (33 буквы + Ё), для английского — <span class="highlight">5×5</span> (буквы I и J объединяют). Строки и столбцы нумеруются от 1.</p>
+      <p data-i18n="block2.intro">The basis of the cipher is a <span class="highlight">square table</span> filled with the letters of an alphabet. For Russian, a <span class="highlight">6×6</span> table is typically used (33 letters + Ё); for English, a <span class="highlight">5×5</span> table (letters I and J are merged). Rows and columns are numbered starting from 1.</p>
 
       <div class="explanation-steps">
         <!-- Шаг 1 -->
         <div class="step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h3 data-i18n="step1.title">Построение квадрата</h3>
-            <p data-i18n="step1.text">Буквы алфавита записываются построчно. Например, русский вариант (6×6):</p>
+            <h3 data-i18n="step1.title">Building the square</h3>
+            <p data-i18n="step1.text">The letters of the alphabet are written row by row. For example, the Russian version (6×6):</p>
             <div style="background:rgba(0,20,40,0.6); padding:10px; border-radius:4px; font-family:monospace; font-size:0.9rem; margin:10px 0; display:grid; grid-template-columns:repeat(6,1fr); gap:4px; text-align:center;">
               <span>А(1,1)</span><span>Б(1,2)</span><span>В(1,3)</span><span>Г(1,4)</span><span>Д(1,5)</span><span>Е(1,6)</span>
               <span>Ё(2,1)</span><span>Ж(2,2)</span><span>З(2,3)</span><span>И(2,4)</span><span>Й(2,5)</span><span>К(2,6)</span>
@@ -610,7 +616,7 @@
               <span>Ч(5,1)</span><span>Ш(5,2)</span><span>Щ(5,3)</span><span>Ъ(5,4)</span><span>Ы(5,5)</span><span>Ь(5,6)</span>
               <span>Э(6,1)</span><span>Ю(6,2)</span><span>Я(6,3)</span><span>·</span><span>·</span><span>·</span>
             </div>
-            <p style="font-size:0.85rem; font-style:italic; color:#557585; margin-top:8px;" data-i18n="step1.note">Пример показан для русского алфавита — в самой игре можно выбрать и английский.</p>
+            <p style="font-size:0.85rem; font-style:italic; color:#557585; margin-top:8px;" data-i18n="step1.note">The example below uses the Russian alphabet — the game itself also lets you pick an English layout.</p>
           </div>
         </div>
 
@@ -618,8 +624,8 @@
         <div class="step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h3 data-i18n="step2.title">Шифрование буквы → координаты</h3>
-            <p data-i18n="step2.text">Каждая буква заменяется парой чисел: номер строки и номер столбца. Например, буква «С» находится в строке 4, столбце 1 → шифр «41».</p>
+            <h3 data-i18n="step2.title">Encrypting a letter → coordinates</h3>
+            <p data-i18n="step2.text">Every letter is replaced with a pair of numbers: a row number and a column number. For example, the letter "С" sits at row 4, column 1 → cipher "41".</p>
             <div style="background:rgba(0,20,40,0.6); padding:10px; border-radius:4px; font-family:monospace; margin:10px 0; text-align:center;">
               <span>ПРИВЕТ → 35 36 24 13 16 42</span>
             </div>
@@ -630,9 +636,9 @@
         <div class="step">
           <div class="step-number">3</div>
           <div class="step-content">
-            <h3 data-i18n="step3.title">Передача и расшифровка</h3>
-            <p data-i18n="step3.text">Получатель, зная ту же таблицу, разбивает шифротекст на пары чисел. Для каждой пары находит строку и столбец, читает букву на пересечении. Так восстанавливается исходное сообщение.</p>
-            <p data-i18n="step3.example"><strong>Пример:</strong> «35» → строка 3, столбец 5 → буква «П».</p>
+            <h3 data-i18n="step3.title">Transmission and decryption</h3>
+            <p data-i18n="step3.text">Knowing the same table, the receiver splits the ciphertext into pairs of numbers. For each pair, they find the row and column and read the letter at the intersection. That is how the original message is recovered.</p>
+            <p data-i18n="step3.example"><strong>Example:</strong> "35" → row 3, column 5 → letter "П".</p>
           </div>
         </div>
 
@@ -640,185 +646,145 @@
         <div class="step">
           <div class="step-number">4</div>
           <div class="step-content">
-            <h3 data-i18n="step4.title">Секретная таблица</h3>
-            <p data-i18n="step4.text">Стойкость шифра можно увеличить, <span class="highlight">перемешав буквы</span> в таблице. Если противник не знает расположения букв, даже имея шифротекст, он не сможет восстановить сообщение. Так появляется дополнительный ключ — порядок заполнения квадрата.</p>
+            <h3 data-i18n="step4.title">A secret table</h3>
+            <p data-i18n="step4.text">The cipher's strength can be increased by <span class="highlight">shuffling the letters</span> in the table. If an attacker doesn't know the layout, even with the ciphertext in hand they can't recover the message. This gives you an extra key — the order in which the square is filled.</p>
           </div>
         </div>
       </div>
 
       <!-- ДИАГРАММА ПОЛИБИЯ -->
       <div class="polybius-diagram">
-        <div class="diagram-title" data-i18n="diagram.title">Схема работы квадрата Полибия</div>
+        <div class="diagram-title" data-i18n="diagram.title">How the Polybius square works</div>
 
         <div class="diagram-grid">
           <!-- Карточка шифрования -->
           <div class="diagram-card">
-            <div class="diagram-card-title" data-i18n="diagram.encrypt.title">
-              🔐 Шифрование (буква → числа)
-            </div>
-            <div class="diagram-example" data-i18n="diagram.encrypt.example">
-              <strong>Пример:</strong><br>
-              Буква <code>М</code> (русский алфавит)<br>
-              Находим в таблице: строка 3, столбец 2<br>
-              <span class="gold-highlight">Шифр: 32</span>
-            </div>
-            <div class="diagram-example" style="margin-top:10px;" data-i18n="diagram.encrypt.formula">
-              <strong>Формула:</strong><br>
-              <code>C = (row, col)</code>, где row, col — координаты буквы в таблице.
-            </div>
+            <div class="diagram-card-title" data-i18n="diagram.encrypt.title">🔐 Encryption (letter → numbers)</div>
+            <div class="diagram-example" data-i18n="diagram.encrypt.example"><strong>Example:</strong><br>Letter <code>М</code> (Russian alphabet)<br>Found in the table: row 3, column 2<br><span class="gold-highlight">Cipher: 32</span></div>
+            <div class="diagram-example" style="margin-top:10px;" data-i18n="diagram.encrypt.formula"><strong>Formula:</strong><br><code>C = (row, col)</code>, where row, col are the letter's coordinates in the table.</div>
           </div>
 
           <!-- Карточка расшифровки -->
           <div class="diagram-card">
-            <div class="diagram-card-title" data-i18n="diagram.decrypt.title">
-              🔓 Расшифровка (числа → буква)
-            </div>
-            <div class="diagram-example" data-i18n="diagram.decrypt.example">
-              <strong>Пример:</strong><br>
-              Шифр <code>54</code><br>
-              Находим в таблице: строка 5, столбец 4<br>
-              <span class="gold-highlight">Буква: ъ</span>
-            </div>
-            <div class="diagram-example" style="margin-top:10px;" data-i18n="diagram.decrypt.formula">
-              <strong>Формула:</strong><br>
-              <code>P = table[row][col]</code>, идём от обратного, от координат к букве.
-            </div>
+            <div class="diagram-card-title" data-i18n="diagram.decrypt.title">🔓 Decryption (numbers → letter)</div>
+            <div class="diagram-example" data-i18n="diagram.decrypt.example"><strong>Example:</strong><br>Cipher <code>54</code><br>Found in the table: row 5, column 4<br><span class="gold-highlight">Letter: ъ</span></div>
+            <div class="diagram-example" style="margin-top:10px;" data-i18n="diagram.decrypt.formula"><strong>Formula:</strong><br><code>P = table[row][col]</code>, working backwards from coordinates to a letter.</div>
           </div>
         </div>
 
         <!-- Финальный блок -->
         <div class="final-key">
-          <div class="final-key-title" data-i18n="diagram.final.title">Почему это гениально?</div>
-          <div class="final-key-description" data-i18n="diagram.final.desc">
-            Квадрат Полибия — первая в истории <strong>система координатного шифрования</strong>. Она позволяет передавать любые буквы через простые сигналы (два числа), не требует сложных вычислений и легко масштабируется. Даже сейчас этот принцип используется в QR-кодах и клеточных координатах.
-          </div>
-          <div class="key-parameter" data-i18n="diagram.final.param">Простота + надёжность = классика криптографии</div>
+          <div class="final-key-title" data-i18n="diagram.final.title">Why is this brilliant?</div>
+          <div class="final-key-description" data-i18n="diagram.final.desc">The Polybius square is history's first <strong>coordinate-based encryption system</strong>. It lets you transmit any letter through simple signals (two numbers), requires no complex computation, and scales easily. Even today, this principle is used in QR codes and grid coordinates.</div>
+          <div class="key-parameter" data-i18n="diagram.final.param">Simplicity + reliability = a cryptography classic</div>
         </div>
 
-        <div class="diagram-note" data-i18n="diagram.note">
-          * В нашей игре вы сможете пошагово увидеть, как каждая буква превращается в координаты, а таблица подсвечивается зелёным и синим цветами.
-        </div>
+        <div class="diagram-note" data-i18n="diagram.note">* In our game you can watch step by step as each letter turns into coordinates, with the table highlighted in green and blue.</div>
       </div>
       <!-- КОНЕЦ ДИАГРАММЫ -->
 
       <div class="key-insight">
-        <strong data-i18n="insight.label">Ключевая мысль:</strong>
-        <span data-i18n="insight.text"><span class="highlight">Квадрат Полибия превращает буквы в числа, а числа — обратно в буквы</span>. Это открыло путь к созданию всех последующих шифров замены и матричных систем. Его легко реализовать вручную, но при этом он даёт защиту от случайного прочтения.</span>
+        <strong data-i18n="insight.label">Key takeaway:</strong>
+        <span data-i18n="insight.text"><span class="highlight">The Polybius square turns letters into numbers, and numbers back into letters</span>. This opened the way to every later substitution cipher and matrix-based system. It's easy to do by hand, yet it protects against casual reading.</span>
       </div>
     </section>
 
     <!-- Блок "А теперь — главная магия" -->
     <section class="content-block">
-      <h2 data-i18n="block3.heading">А теперь — главная магия</h2>
-      <p data-i18n="block3.intro">Что вы <span class="highlight">сделаете</span> в интерактивной симуляции?</p>
+      <h2 data-i18n="block3.heading">Now for the real magic</h2>
+      <p data-i18n="block3.intro">What will you <span class="highlight">actually do</span> in the interactive simulation?</p>
 
       <ul class="action-list">
         <li>
           <span class="action-icon">⌨️</span>
-          <div class="action-text" data-i18n="action1">
-            <span>Вы <strong>введёте своё сообщение</strong> на русском или английском — игра автоматически проверит допустимые символы</span>
-          </div>
+          <div class="action-text" data-i18n="action1">You'll <strong>type your own message</strong> in Russian or English — the game automatically checks for valid characters</div>
         </li>
         <li>
           <span class="action-icon">🔠</span>
-          <div class="action-text" data-i18n="action2">
-            <span>Вы <strong>выберете алфавит</strong> (русский 6×6 или английский 5×5) и увидите соответствующую таблицу</span>
-          </div>
+          <div class="action-text" data-i18n="action2">You'll <strong>choose an alphabet</strong> (Russian 6×6 or English 5×5) and see the matching table</div>
         </li>
         <li>
           <span class="action-icon">📊</span>
-          <div class="action-text" data-i18n="action3">
-            <span>Вы <strong>запустите пошаговое шифрование</strong> — для каждой буквы подсветится её ячейка (зелёным), а затем строка и столбец (синим)</span>
-          </div>
+          <div class="action-text" data-i18n="action3">You'll <strong>run step-by-step encryption</strong> — each letter's cell lights up in green, then its row and column in blue</div>
         </li>
         <li>
           <span class="action-icon">📡</span>
-          <div class="action-text" data-i18n="action4">
-            <span>Вы <strong>отправите шифротекст Бобу</strong> через визуализированный канал связи — координаты передаются по открытому каналу</span>
-          </div>
+          <div class="action-text" data-i18n="action4">You'll <strong>send the ciphertext to Bob</strong> over a visualized channel — the coordinates travel over an open channel</div>
         </li>
         <li>
           <span class="action-icon">🔍</span>
-          <div class="action-text" data-i18n="action5">
-            <span>Вы <strong>расшифруете сообщение</strong> в обратном порядке: каждая пара чисел снова подсветит строку, столбец и итоговую букву</span>
-          </div>
+          <div class="action-text" data-i18n="action5">You'll <strong>decrypt the message</strong> in reverse: each pair of numbers again lights up a row, a column, and the resulting letter</div>
         </li>
         <li>
           <span class="action-icon">✅</span>
-          <div class="action-text" data-i18n="action6">
-            <span>Вы <strong>убедитесь в успешной передаче</strong> — система сравнит исходное и расшифрованное сообщения</span>
-          </div>
+          <div class="action-text" data-i18n="action6">You'll <strong>confirm a successful transfer</strong> — the system compares the original and decrypted messages</div>
         </li>
       </ul>
 
-      <p data-i18n="block3.outro">В игре вы не просто читаете о квадрате Полибия — вы <span class="highlight">проживаете весь процесс шифрования и дешифровки</span>. Визуальная анимация таблицы поможет навсегда запомнить этот древний, но гениальный метод.</p>
+      <p data-i18n="block3.outro">In the game you don't just read about the Polybius square — you <span class="highlight">live through the whole encryption and decryption process</span>. The table's visual animation will help this ancient but brilliant method stick with you for good.</p>
     </section>
 
     <!-- Дополнительный материал -->
     <details class="advanced-section">
-      <summary data-i18n="advanced.summary">Для любознательных</summary>
+      <summary data-i18n="advanced.summary">For the curious</summary>
       <div class="advanced-content">
-        <h3 data-i18n="advanced.history.heading">Историческая справка</h3>
-        <p data-i18n="advanced.history.text">Греческий историк <strong>Полибий</strong> (ок. 200–118 гг. до н.э.) описал этот метод в труде «Всеобщая история». Он использовал квадрат для передачи сигналов факелами: 5×5 таблица греческого алфавита, где строки и столбцы обозначались количеством факелов. Так можно было передать любую букву на расстояние до нескольких километров.</p>
+        <h3 data-i18n="advanced.history.heading">Historical background</h3>
+        <p data-i18n="advanced.history.text">The Greek historian <strong>Polybius</strong> (c. 200–118 BCE) described this method in his work "The Histories." He used the square to send signals with torches: a 5×5 table of the Greek alphabet, where the number of torches indicated row and column. This let you transmit any letter over a distance of several kilometers.</p>
 
-        <h3 data-i18n="advanced.relevance.heading">Почему шифр до сих пор актуален?</h3>
-        <p data-i18n="advanced.relevance.text">Квадрат Полибия — основа для многих более сложных шифров. Например, в Первой мировой войне использовался <strong>шифр ADFGVX</strong>, основанный на 6×6 таблице с буквами A,D,F,G,V,X. Также этот метод используется в <strong>криптографических головоломках</strong>, QR-кодах (как способ кодирования данных) и даже в обучении детей основам шифрования.</p>
+        <h3 data-i18n="advanced.relevance.heading">Why is the cipher still relevant?</h3>
+        <p data-i18n="advanced.relevance.text">The Polybius square is the foundation for many more complex ciphers. For example, World War I saw the use of the <strong>ADFGVX cipher</strong>, based on a 6×6 table with the letters A, D, F, G, V, X. The method is also used in <strong>cryptography puzzles</strong>, in QR codes (as a way to encode data), and even in teaching children the basics of encryption.</p>
 
-        <h3 data-i18n="advanced.topics.heading">Темы для углублённого изучения</h3>
+        <h3 data-i18n="advanced.topics.heading">Topics for further study</h3>
         <div class="topics-grid">
           <div class="topic-card">
-            <h4 data-i18n="topic1.title">Шифр ADFGVX</h4>
-            <p data-i18n="topic1.desc">Немецкий полевой шифр Первой мировой войны, использующий квадрат Полибия и последующую транспозицию.</p>
+            <h4 data-i18n="topic1.title">The ADFGVX cipher</h4>
+            <p data-i18n="topic1.desc">A German WWI field cipher that used the Polybius square followed by a transposition step.</p>
           </div>
           <div class="topic-card">
-            <h4 data-i18n="topic2.title">Координатное кодирование</h4>
-            <p data-i18n="topic2.desc">Как принцип координат применяется в современной цифровой связи: от GPS до QR-кодов.</p>
+            <h4 data-i18n="topic2.title">Coordinate encoding</h4>
+            <p data-i18n="topic2.desc">How the coordinate principle shows up in modern digital communication: from GPS to QR codes.</p>
           </div>
           <div class="topic-card">
-            <h4 data-i18n="topic3.title">Модификации таблицы</h4>
-            <p data-i18n="topic3.desc">Перестановка букв, использование ключевых слов для заполнения квадрата — усиление стойкости шифра.</p>
+            <h4 data-i18n="topic3.title">Table modifications</h4>
+            <p data-i18n="topic3.desc">Shuffling letters, using keywords to fill the square — ways to strengthen the cipher.</p>
           </div>
           <div class="topic-card">
-            <h4 data-i18n="topic4.title">Криптоанализ квадрата Полибия</h4>
-            <p data-i18n="topic4.desc">Как взломать шифр, если известна частота появления координат, и как этого избежать.</p>
+            <h4 data-i18n="topic4.title">Cryptanalysis of the Polybius square</h4>
+            <p data-i18n="topic4.desc">How to break the cipher if you know the frequency of coordinate pairs, and how to avoid that.</p>
           </div>
           <div class="topic-card">
-            <h4 data-i18n="topic5.title">От Полибия до RSA</h4>
-            <p data-i18n="topic5.desc">Эволюция шифров: от простых замен до асимметричной криптографии.</p>
+            <h4 data-i18n="topic5.title">From Polybius to RSA</h4>
+            <p data-i18n="topic5.desc">The evolution of ciphers: from simple substitution to asymmetric cryptography.</p>
           </div>
         </div>
 
-        <h3 data-i18n="advanced.practical.heading">Практическое применение сегодня</h3>
+        <h3 data-i18n="advanced.practical.heading">Practical uses today</h3>
         <ul style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="practical1">Обучение основам криптографии в школах и на курсах</li>
-          <li data-i18n="practical2">Элемент CTF-соревнований (Capture The Flag)</li>
-          <li data-i18n="practical3">Создание настольных криптографических квестов и головоломок</li>
-          <li data-i18n="practical4">Демонстрация принципа «кодирование информации через координаты»</li>
+          <li data-i18n="practical1">Teaching the basics of cryptography in schools and courses</li>
+          <li data-i18n="practical2">An element of CTF (Capture The Flag) competitions</li>
+          <li data-i18n="practical3">Creating tabletop cryptography quests and puzzles</li>
+          <li data-i18n="practical4">Demonstrating the principle of "encoding information through coordinates"</li>
         </ul>
       </div>
     </details>
 
     <!-- Кнопки действий -->
     <div class="article-actions" id="article-actions">
-      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">
-        Теперь, когда вы поняли принцип координатного шифрования, самое время опробовать его в деле!
-      </p>
+      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Now that you understand the principle of coordinate encryption, it's the perfect time to try it for yourself!</p>
 
       <div class="action-buttons">
-        <a href="https://ludus-lab.ru/games/polybius/index.html" class="btn-primary" data-i18n="actions.play">▶ Перейти к игре</a>
-        <a href="https://ludus-lab.ru/#theory-section" class="btn-secondary" data-i18n="actions.back">← Вернуться к списку тем</a>
+        <a href="/games/polybius/" class="btn-primary" data-i18n="actions.play">▶ Go to the game</a>
+        <a href="/#theory-section" class="btn-secondary" data-i18n="actions.back">← Back to the topic list</a>
       </div>
 
-      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">
-        В интерактивной симуляции вы сможете зашифровать своё сообщение, наблюдая за анимацией таблицы в реальном времени.
-      </p>
+      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">In the interactive simulation you can encrypt your own message while watching the table animate in real time.</p>
     </div>
   </div>
 
   <!-- Футер -->
   <footer class="theory-footer">
-    <p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
-    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Эта статья — упрощённое объяснение для понимания принципов. Реальные криптографические системы используют более сложные алгоритмы.</p>
+    <p data-i18n="footer.line1">© 2025 Ludus Lab · Complex things through simple games</p>
+    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">This article is a simplified explanation meant to convey the principles. Real cryptographic systems use far more complex algorithms.</p>
   </footer>
 
   <script>
@@ -1129,7 +1095,7 @@
 
     (function initLanguage() {
       let saved = null;
-      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      saved = 'en';
       if (!saved) {
         const browserLang = (navigator.language || 'ru').slice(0, 2);
         saved = I18N[browserLang] ? browserLang : 'ru';

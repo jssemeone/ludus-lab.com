@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title id="pageTitle">Шифр Цезаря — Криптографический диск</title>
+<title id="pageTitle">Caesar Cipher — Cryptographic Disk</title>
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="../../favicon.ico">
 <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
@@ -1275,100 +1275,101 @@ color: #ff6b6b;
 }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/games/caesarcipher/">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/games/caesarcipher/">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/games/caesarcipher/">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/games/caesarcipher/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/games/caesarcipher/">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/games/caesarcipher/">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
 <div class="lang-switch" role="group" aria-label="Language">
-  <button class="lang-btn" data-lang-btn="ru">RU</button>
-  <button class="lang-btn" data-lang-btn="en">EN</button>
-  <button class="lang-btn" data-lang-btn="es">ES</button>
-  <button class="lang-btn" data-lang-btn="zh">中文</button>
+  <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/games/caesarcipher/" hreflang="ru" lang="ru">RU</a>
+  <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/games/caesarcipher/" hreflang="en" lang="en">EN</a>
+  <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/games/caesarcipher/" hreflang="es" lang="es">ES</a>
+  <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/games/caesarcipher/" hreflang="zh-Hans" lang="zh-CN">中文</a>
 </div>
 <div class="container">
 <header>
-<h1 data-i18n="game.title">Шифр Цезаря</h1>
+<h1 data-i18n="game.title">Caesar Cipher</h1>
 <div class="line"></div>
-<div class="subtitle" data-i18n="game.subtitle">Криптографический диск · Защищённая передача</div>
+<div class="subtitle" data-i18n="game.subtitle">Cryptographic disk · Secure transmission</div>
 </header>
 
 <!-- ========== ОПИСАНИЕ ПРОТОКОЛА ========== -->
 <div class="protocol-container">
 <div class="protocol-header" id="protocolHeader">
-<h2><i class="fas fa-info-circle"></i> <span data-i18n="protocol.toggle">Как работает шифр?</span></h2>
+<h2><i class="fas fa-info-circle"></i> <span data-i18n="protocol.toggle">How does the cipher work?</span></h2>
 <span class="toggle-icon">+</span>
 </div>
 <div class="protocol-description" id="protocolContent">
-<p data-i18n="protocol.intro"><span class="highlight">Шифр Цезаря</span> — метод шифрования со сдвигом символов.</p>
+<p data-i18n="protocol.intro"><span class="highlight">The Caesar cipher</span> is an encryption method that shifts characters.</p>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">Выбор алфавита</span></div>
-<p data-i18n="protocol.step1.desc">Игра поддерживает два алфавита: русский (А-Я, Ё) и английский (A–Z). Все буквы автоматически приводятся к верхнему регистру. Пробелы сохраняются, но не шифруются. Цифры и знаки препинания не допускаются.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">1</span> <span data-i18n="protocol.step1.title">Choosing the alphabet</span></div>
+<p data-i18n="protocol.step1.desc">The game supports two alphabets: Russian (А-Я, Ё) and English (A–Z). All letters are automatically converted to uppercase. Spaces are kept but not encrypted. Digits and punctuation marks are not allowed.</p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">Ввод сообщения</span></div>
-<p data-i18n="protocol.step2.desc">Алиса вводит исходное сообщение. Каждый символ проверяется на принадлежность выбранному алфавиту. Недопустимые символы отфильтровываются автоматически.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">2</span> <span data-i18n="protocol.step2.title">Entering the message</span></div>
+<p data-i18n="protocol.step2.desc">Alice enters the original message. Each character is checked against the chosen alphabet. Invalid characters are filtered out automatically.</p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">Настройка ключа</span></div>
-<p data-i18n="protocol.step3.desc">Выбирается сдвиг (0-90) и направление (влево/вправо). Диск визуально показывает соответствие символов.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">3</span> <span data-i18n="protocol.step3.title">Setting up the key</span></div>
+<p data-i18n="protocol.step3.desc">A shift (0-90) and direction (left/right) are chosen. The disk visually shows the character mapping.</p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">Шифрование (пошагово)</span></div>
-<p data-i18n="protocol.step4.intro">Для каждого символа сообщения:</p>
-<ul data-i18n="protocol.step4.list">
-<li>Находится позиция буквы на внутреннем диске</li>
-<li>Диск поворачивается на заданный сдвиг</li>
-<li>Считывается зашифрованный символ с внешнего диска</li>
-<li>Пробелы копируются без изменений</li>
-</ul>
-<p data-i18n="protocol.step4.formula"><strong>Формула:</strong> <code>C = (P + K) mod N</code>, где P — позиция открытого текста, K — сдвиг, N — размер алфавита.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">4</span> <span data-i18n="protocol.step4.title">Encryption (step by step)</span></div>
+<p data-i18n="protocol.step4.intro">For each character of the message:</p>
+<ul data-i18n="protocol.step4.list"><li>The letter's position on the inner disk is found</li><li>The disk is rotated by the given shift</li><li>The encrypted character is read from the outer disk</li><li>Spaces are copied unchanged</li></ul>
+<p data-i18n="protocol.step4.formula"><strong>Formula:</strong> <code>C = (P + K) mod N</code>, where P is the plaintext position, K is the shift, N is the alphabet size.</p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">Передача данных</span></div>
-<p data-i18n="protocol.step5.desc">Ключ (сдвиг) передаётся по защищённому каналу, шифротекст — по открытому.</p>
+<div class="protocol-step-title"><span class="protocol-step-number">5</span> <span data-i18n="protocol.step5.title">Data transmission</span></div>
+<p data-i18n="protocol.step5.desc">The key (shift) is transmitted over a secure channel, the ciphertext over an open one.</p>
 </div>
 <div class="protocol-step">
-<div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">Расшифровка</span></div>
-<p data-i18n="protocol.step6.desc">Боб применяет обратный сдвиг к шифротексту, восстанавливая исходное сообщение.</p>
-<p data-i18n="protocol.step6.formula"><strong>Формула:</strong> <code>P = (C − K + N) mod N</code></p>
+<div class="protocol-step-title"><span class="protocol-step-number">6</span> <span data-i18n="protocol.step6.title">Decryption</span></div>
+<p data-i18n="protocol.step6.desc">Bob applies the reverse shift to the ciphertext, recovering the original message.</p>
+<p data-i18n="protocol.step6.formula"><strong>Formula:</strong> <code>P = (C − K + N) mod N</code></p>
 </div>
-<p style="margin-top:12px; color:#8ab0c5;" data-i18n="protocol.legend"><strong>Цветовая легенда:</strong> <span style="color:#00ff80;">●</span> Исходный текст, <span style="color:#00a2ff;">●</span> Шифротекст</p>
+<p style="margin-top:12px; color:#8ab0c5;" data-i18n="protocol.legend"><strong>Color legend:</strong> <span style="color:#00ff80;">●</span> Plaintext, <span style="color:#00a2ff;">●</span> Ciphertext</p>
 </div>
 </div>
 
 <div class="game-area">
 <div class="stage-indicator">
-<div class="stage-dot active" id="stage1" data-i18n-title="stage.input" title="Ввод"></div>
-<div class="stage-dot" id="stage2" data-i18n-title="stage.key" title="Ключ"></div>
-<div class="stage-dot" id="stage3" data-i18n-title="stage.encrypt" title="Шифрование"></div>
-<div class="stage-dot" id="stage4" data-i18n-title="stage.transmit" title="Передача"></div>
-<div class="stage-dot" id="stage5" data-i18n-title="stage.decrypt" title="Расшифровка"></div>
+<div class="stage-dot active" id="stage1" data-i18n-title="stage.input" title="Input"></div>
+<div class="stage-dot" id="stage2" data-i18n-title="stage.key" title="Key"></div>
+<div class="stage-dot" id="stage3" data-i18n-title="stage.encrypt" title="Encryption"></div>
+<div class="stage-dot" id="stage4" data-i18n-title="stage.transmit" title="Transmission"></div>
+<div class="stage-dot" id="stage5" data-i18n-title="stage.decrypt" title="Decryption"></div>
 </div>
 <div id="alice-input" class="stage-content">
 <div class="main-layout">
 <div class="left-panel">
 <div class="spacer"></div>
 <div class="transmission-box alice-input-wrapper">
-<h3><i class="fas fa-envelope"></i> <span data-i18n="stage1.heading">Алиса: сообщение</span></h3>
+<h3><i class="fas fa-envelope"></i> <span data-i18n="stage1.heading">Alice: message</span></h3>
 <div class="input-wrapper">
-<input type="text" id="messageInput" data-i18n-placeholder="message.placeholder" placeholder="Введите текст..." maxlength="50"
+<input type="text" id="messageInput" data-i18n-placeholder="message.placeholder" placeholder="Enter text..." maxlength="50"
 style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(212,175,55,0.4);
 border-radius: 4px; padding: 10px; color: #ffd700; font-family: monospace; font-size: 1rem; text-align: center;">
 </div>
 <!-- ========== ВЫБОР АЛФАВИТА ========== -->
 <div style="margin-top: 10px;">
-<label class="key-setup-label" style="font-size: 0.8rem; display: block; margin-bottom: 5px;" data-i18n="alphabet.chooseLabel">
-Выберите алфавит:
-</label>
+<label class="key-setup-label" style="font-size: 0.8rem; display: block; margin-bottom: 5px;" data-i18n="alphabet.chooseLabel">Choose alphabet:</label>
 <select id="alphabetSelect" class="key-setup-select" style="width: 100%;">
-<option value="ru" data-i18n="alphabet.ru">Русский (А-Я, Ё)</option>
+<option value="ru" data-i18n="alphabet.ru">Russian (А-Я, Ё)</option>
 <option value="en" data-i18n="alphabet.en">English (A-Z)</option>
 </select>
-<div class="input-hint" id="alphabetHint" data-i18n="hint.ru">Только буквы русского алфавита (регистр не важен)</div>
+<div class="input-hint" id="alphabetHint" data-i18n="hint.ru">Only letters of the Russian alphabet (case-insensitive)</div>
 </div>
 <div class="char-counter" id="charCounter">0/50</div>
 </div>
 <div class="action-button-container" id="enterKeyContainer">
 <button class="action-button" onclick="enterKeyStage()">
-<i class="fas fa-key"></i> <span data-i18n="btn.next">Далее</span>
+<i class="fas fa-key"></i> <span data-i18n="btn.next">Next</span>
 </button>
 </div>
 <div class="spacer"></div>
@@ -1378,11 +1379,11 @@ border-radius: 4px; padding: 10px; color: #ffd700; font-family: monospace; font-
 <div class="alphabet-legend" id="legend1">
 <div class="legend-item">
 <div class="legend-dot open"></div>
-<span data-i18n="legend.plain">Открытый текст</span>
+<span data-i18n="legend.plain">Plaintext</span>
 </div>
 <div class="legend-item">
 <div class="legend-dot cipher"></div>
-<span data-i18n="legend.cipher">Шифротекст</span>
+<span data-i18n="legend.cipher">Ciphertext</span>
 </div>
 </div>
 <div class="canvas-container" style="flex: 1; min-height: 0;">
@@ -1397,10 +1398,10 @@ border-radius: 4px; padding: 10px; color: #ffd700; font-family: monospace; font-
 <div class="left-panel">
 <div class="spacer"></div>
 <div class="transmission-box">
-<h3><i class="fas fa-key"></i> <span data-i18n="keySetup.heading">Настройка ключа</span></h3>
+<h3><i class="fas fa-key"></i> <span data-i18n="keySetup.heading">Key setup</span></h3>
 <div style="display: flex; flex-direction: column; gap: 15px; align-items: center; width: 100%;">
 <div style="width: 100%;">
-<label class="key-setup-label" style="font-size: 0.7rem; display: block; margin-bottom: 5px;" data-i18n="keySetup.shift">Сдвиг</label>
+<label class="key-setup-label" style="font-size: 0.7rem; display: block; margin-bottom: 5px;" data-i18n="keySetup.shift">Shift</label>
 <div class="shift-control">
 <button class="shift-btn" id="shiftDown" onclick="changeShift(-1)">
 <i class="fas fa-chevron-down"></i>
@@ -1412,17 +1413,17 @@ border-radius: 4px; padding: 10px; color: #ffd700; font-family: monospace; font-
 </div>
 </div>
 <div style="width: 100%;">
-<label class="key-setup-label" style="font-size: 0.7rem; display: block; margin-bottom: 5px;" data-i18n="keySetup.direction">Направление</label>
+<label class="key-setup-label" style="font-size: 0.7rem; display: block; margin-bottom: 5px;" data-i18n="keySetup.direction">Direction</label>
 <select id="directionInput" class="key-setup-select" onchange="animateDirectionChange()">
-<option value="right" data-i18n="direction.right">Вправо →</option>
-<option value="left" data-i18n="direction.left">← Влево</option>
+<option value="right" data-i18n="direction.right">Right →</option>
+<option value="left" data-i18n="direction.left">← Left</option>
 </select>
 </div>
 </div>
 </div>
 <div class="action-button-container" id="setupKeyContainer">
 <button class="action-button gold" onclick="animateKeySetup()">
-<i class="fas fa-sync-alt"></i> <span data-i18n="btn.setKey">Установить ключ</span>
+<i class="fas fa-sync-alt"></i> <span data-i18n="btn.setKey">Set key</span>
 </button>
 </div>
 <div class="spacer"></div>
@@ -1432,11 +1433,11 @@ border-radius: 4px; padding: 10px; color: #ffd700; font-family: monospace; font-
 <div class="alphabet-legend" id="legend2">
 <div class="legend-item">
 <div class="legend-dot open"></div>
-<span data-i18n="legend.plain">Открытый текст</span>
+<span data-i18n="legend.plain">Plaintext</span>
 </div>
 <div class="legend-item">
 <div class="legend-dot cipher"></div>
-<span data-i18n="legend.cipher">Шифротекст</span>
+<span data-i18n="legend.cipher">Ciphertext</span>
 </div>
 </div>
 <div class="canvas-container" style="flex: 1; min-height: 0;">
@@ -1455,19 +1456,19 @@ border-radius: 4px; padding: 10px; color: #ffd700; font-family: monospace; font-
 <div class="visualizer">
 <div class="visualizer-grid">
 <div class="viz-item">
-<div class="viz-label" data-i18n="viz.char">Символ</div>
+<div class="viz-label" data-i18n="viz.char">Character</div>
 <div class="viz-value" id="currentChar">—</div>
 </div>
 <div class="viz-item">
-<div class="viz-label" data-i18n="viz.position">Позиция</div>
+<div class="viz-label" data-i18n="viz.position">Position</div>
 <div class="viz-value" id="charPosition">—</div>
 </div>
 <div class="viz-item">
-<div class="viz-label" data-i18n="viz.shift">Сдвиг</div>
+<div class="viz-label" data-i18n="viz.shift">Shift</div>
 <div class="viz-value" id="shiftDisplayValue">—</div>
 </div>
 <div class="viz-item">
-<div class="viz-label" data-i18n="viz.cipher">Шифр</div>
+<div class="viz-label" data-i18n="viz.cipher">Cipher</div>
 <div class="viz-value" id="cipherChar">—</div>
 </div>
 </div>
@@ -1477,19 +1478,19 @@ border-radius: 4px; padding: 10px; color: #ffd700; font-family: monospace; font-
 </div>
 <div id="encryptionResult" class="result-box success hidden">
 <div class="result-title" style="color: #00ff80;">
-<i class="fas fa-check-circle"></i> <span data-i18n="result.ready">Готово</span>
+<i class="fas fa-check-circle"></i> <span data-i18n="result.ready">Ready</span>
 </div>
 <div class="result-text" id="encryptedText"></div>
 </div>
 <div class="action-button-container hidden" id="mainActionContainer">
 <button class="action-button success hidden" id="nextStageBtn" onclick="finishEncryption()">
-<i class="fas fa-step-forward"></i> <span data-i18n="btn.nextStage">Следующий этап</span>
+<i class="fas fa-step-forward"></i> <span data-i18n="btn.nextStage">Next stage</span>
 </button>
 <button class="action-button secondary" id="nextStepBtn" onclick="nextStep()">
-<i class="fas fa-step-forward"></i> <span data-i18n="btn.next">Далее</span>
+<i class="fas fa-step-forward"></i> <span data-i18n="btn.next">Next</span>
 </button>
 <button class="action-button auto-mode" id="autoEncryptBtn" onclick="toggleAutoEncrypt()">
-<i class="fas fa-play-circle"></i> <span data-i18n="btn.autopilot">Автопилот</span>
+<i class="fas fa-play-circle"></i> <span data-i18n="btn.autopilot">Autopilot</span>
 </button>
 </div>
 <div class="spacer"></div>
@@ -1499,11 +1500,11 @@ border-radius: 4px; padding: 10px; color: #ffd700; font-family: monospace; font-
 <div class="alphabet-legend" id="legend3">
 <div class="legend-item">
 <div class="legend-dot open"></div>
-<span data-i18n="legend.plainShort">Открытый</span>
+<span data-i18n="legend.plainShort">Plain</span>
 </div>
 <div class="legend-item">
 <div class="legend-dot cipher"></div>
-<span data-i18n="legend.cipherShort">Шифр</span>
+<span data-i18n="legend.cipherShort">Cipher</span>
 </div>
 </div>
 <div class="canvas-container" style="flex: 1; min-height: 0;">
@@ -1519,17 +1520,17 @@ border-radius: 4px; padding: 10px; color: #ffd700; font-family: monospace; font-
 <div class="spacer"></div>
 <div class="transmission-container">
 <div class="transmission-box">
-<h3><i class="fas fa-key"></i> <span data-i18n="legend.key">Ключ</span></h3>
+<h3><i class="fas fa-key"></i> <span data-i18n="legend.key">Key</span></h3>
 <div class="key-display" id="keyDisplay">Сдвиг: 0 →</div>
 </div>
 <div class="transmission-box">
-<h3><i class="fas fa-envelope"></i> <span data-i18n="legend.cipher">Шифротекст</span></h3>
+<h3><i class="fas fa-envelope"></i> <span data-i18n="legend.cipher">Ciphertext</span></h3>
 <div class="key-display" id="cipherTextDisplay" style="font-size: 1.1rem;"></div>
 </div>
 </div>
 <div class="action-button-container" id="sendBothContainer">
 <button class="action-button" onclick="transmitBoth()">
-<i class="fas fa-satellite-dish"></i> <span data-i18n="btn.sendBoth">Отправить ключ и шифротекст</span>
+<i class="fas fa-satellite-dish"></i> <span data-i18n="btn.sendBoth">Send key and ciphertext</span>
 </button>
 </div>
 <div class="spacer"></div>
@@ -1540,26 +1541,26 @@ border-radius: 4px; padding: 10px; color: #ffd700; font-family: monospace; font-
 <div class="transmission-setup">
 <div class="character alice">
 <div class="character-icon">A</div>
-<div class="character-name" data-i18n="char.alice">Алиса</div>
-<div class="character-status" id="aliceTransmitStatus" data-i18n="status.ready">Готова</div>
+<div class="character-name" data-i18n="char.alice">Alice</div>
+<div class="character-status" id="aliceTransmitStatus" data-i18n="status.ready">Ready</div>
 </div>
 <div class="channels-wrapper">
 <div class="key-channel" id="keyChannel">
-<span class="channel-label" data-i18n="legend.key">Ключ</span>
+<span class="channel-label" data-i18n="legend.key">Key</span>
 </div>
 <div class="cipher-channel" id="cipherChannel">
-<span class="channel-label" data-i18n="legend.cipher">Шифротекст</span>
+<span class="channel-label" data-i18n="legend.cipher">Ciphertext</span>
 </div>
 </div>
 <div class="character bob">
 <div class="character-icon">B</div>
-<div class="character-name" data-i18n="char.bob">Боб</div>
-<div class="character-status" id="bobTransmitStatus" data-i18n="status.waiting">Ожидает</div>
+<div class="character-name" data-i18n="char.bob">Bob</div>
+<div class="character-status" id="bobTransmitStatus" data-i18n="status.waiting">Waiting</div>
 </div>
 </div>
 <div class="route-info" id="routeInfo">
-<span class="key-route"><i class="fas fa-shield-alt"></i> <span data-i18n="route.key">Ключ: защищённый маршрут</span></span>
-<span class="cipher-route"><i class="fas fa-paper-plane"></i> <span data-i18n="route.cipher">Шифротекст: открытый канал</span></span>
+<span class="key-route"><i class="fas fa-shield-alt"></i> <span data-i18n="route.key">Key: secure route</span></span>
+<span class="cipher-route"><i class="fas fa-paper-plane"></i> <span data-i18n="route.cipher">Ciphertext: open channel</span></span>
 </div>
 </div>
 <div class="canvas-container hidden" style="flex: 1; min-height: 0;" id="keyCanvasContainer">
@@ -1568,11 +1569,11 @@ border-radius: 4px; padding: 10px; color: #ffd700; font-family: monospace; font-
 <div class="alphabet-legend hidden" id="legend4">
 <div class="legend-item">
 <div class="legend-dot open"></div>
-<span data-i18n="legend.plainShort">Открытый</span>
+<span data-i18n="legend.plainShort">Plain</span>
 </div>
 <div class="legend-item">
 <div class="legend-dot cipher"></div>
-<span data-i18n="legend.cipherShort">Шифр</span>
+<span data-i18n="legend.cipherShort">Cipher</span>
 </div>
 </div>
 </div>
@@ -1583,7 +1584,7 @@ border-radius: 4px; padding: 10px; color: #ffd700; font-family: monospace; font-
 <div class="main-layout">
 <div class="left-panel">
 <div class="transmission-box">
-<h3><i class="fas fa-key"></i> <span data-i18n="legend.key">Ключ</span></h3>
+<h3><i class="fas fa-key"></i> <span data-i18n="legend.key">Key</span></h3>
 <div class="input-wrapper">
 <input type="text" id="bobKeyInput" readonly
 style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(212,175,55,0.4);
@@ -1596,15 +1597,15 @@ border-radius: 4px; padding: 10px; color: #d4af37; font-family: monospace; font-
 <div class="visualizer">
 <div class="visualizer-grid" style="grid-template-columns: repeat(3, 1fr);">
 <div class="viz-item">
-<div class="viz-label" data-i18n="viz.cipher">Шифр</div>
+<div class="viz-label" data-i18n="viz.cipher">Cipher</div>
 <div class="viz-value" id="decryptCurrentChar">—</div>
 </div>
 <div class="viz-item">
-<div class="viz-label" data-i18n="viz.shift">Сдвиг</div>
+<div class="viz-label" data-i18n="viz.shift">Shift</div>
 <div class="viz-value" id="decryptShift">—</div>
 </div>
 <div class="viz-item">
-<div class="viz-label" data-i18n="legend.plainShort">Открытый</div>
+<div class="viz-label" data-i18n="legend.plainShort">Plain</div>
 <div class="viz-value" id="decryptResult">—</div>
 </div>
 </div>
@@ -1614,19 +1615,19 @@ border-radius: 4px; padding: 10px; color: #d4af37; font-family: monospace; font-
 </div>
 <div id="decryptionResult" class="result-box info hidden">
 <div class="result-title" style="color: #00a2ff;">
-<i class="fas fa-unlock-alt"></i> <span data-i18n="result.decrypted">Расшифровано</span>
+<i class="fas fa-unlock-alt"></i> <span data-i18n="result.decrypted">Decrypted</span>
 </div>
 <div class="result-text" id="decryptedText"></div>
 </div>
 <div class="action-button-container hidden" id="decryptActionContainer">
 <button class="action-button success hidden" id="finishDecryptBtn2" onclick="finishDecryption()">
-<i class="fas fa-check"></i> <span data-i18n="btn.finish">Завершить</span>
+<i class="fas fa-check"></i> <span data-i18n="btn.finish">Finish</span>
 </button>
 <button class="action-button secondary" id="decryptNextBtn" onclick="nextDecryptStep()">
-<i class="fas fa-step-forward"></i> <span data-i18n="btn.next">Далее</span>
+<i class="fas fa-step-forward"></i> <span data-i18n="btn.next">Next</span>
 </button>
 <button class="action-button auto-mode" id="autoDecryptBtn" onclick="toggleAutoDecrypt()">
-<i class="fas fa-play-circle"></i> <span data-i18n="btn.autopilot">Автопилот</span>
+<i class="fas fa-play-circle"></i> <span data-i18n="btn.autopilot">Autopilot</span>
 </button>
 </div>
 <div class="spacer"></div>
@@ -1636,11 +1637,11 @@ border-radius: 4px; padding: 10px; color: #d4af37; font-family: monospace; font-
 <div class="alphabet-legend" id="legend5">
 <div class="legend-item">
 <div class="legend-dot open"></div>
-<span data-i18n="legend.plainShort">Открытый</span>
+<span data-i18n="legend.plainShort">Plain</span>
 </div>
 <div class="legend-item">
 <div class="legend-dot cipher"></div>
-<span data-i18n="legend.cipherShort">Шифр</span>
+<span data-i18n="legend.cipherShort">Cipher</span>
 </div>
 </div>
 <div class="canvas-container" style="flex: 1; min-height: 0;">
@@ -1654,28 +1655,28 @@ border-radius: 4px; padding: 10px; color: #d4af37; font-family: monospace; font-
 <div class="main-layout">
 <div class="left-panel">
 <div class="spacer"></div>
-<div class="final-title" data-i18n="final.heading">Результат передачи</div>
+<div class="final-title" data-i18n="final.heading">Transmission result</div>
 <div class="stats-grid">
 <div class="stat-card key">
-<div class="stat-label" data-i18n="final.key">Ключ (сдвиг)</div>
+<div class="stat-label" data-i18n="final.key">Key (shift)</div>
 <div class="stat-value key-value" id="finalKey"></div>
 </div>
 <div class="stat-card cipher">
-<div class="stat-label" data-i18n="legend.cipher">Шифротекст</div>
+<div class="stat-label" data-i18n="legend.cipher">Ciphertext</div>
 <div class="stat-value cipher-value" id="finalCipher"></div>
 </div>
 <div class="stat-card original">
-<div class="stat-label" data-i18n="final.original">Исходное сообщение</div>
+<div class="stat-label" data-i18n="final.original">Original message</div>
 <div class="stat-value original-value" id="finalOriginal"></div>
 </div>
 <div class="stat-card decrypted">
-<div class="stat-label" data-i18n="final.decrypted">Расшифрованное</div>
+<div class="stat-label" data-i18n="final.decrypted">Decrypted</div>
 <div class="stat-value decrypted-value" id="finalDecrypted"></div>
 </div>
 </div>
 <div class="action-button-container">
 <button class="action-button" onclick="resetGame()" style="margin-top: 15px;">
-<i class="fas fa-redo"></i> <span data-i18n="btn.newTransmission">Новая передача</span>
+<i class="fas fa-redo"></i> <span data-i18n="btn.newTransmission">New transmission</span>
 </button>
 </div>
 <div class="spacer"></div>
@@ -1685,11 +1686,11 @@ border-radius: 4px; padding: 10px; color: #d4af37; font-family: monospace; font-
 <div class="alphabet-legend" id="legend6">
 <div class="legend-item">
 <div class="legend-dot open"></div>
-<span data-i18n="legend.plainShort">Открытый</span>
+<span data-i18n="legend.plainShort">Plain</span>
 </div>
 <div class="legend-item">
 <div class="legend-dot cipher"></div>
-<span data-i18n="legend.cipherShort">Шифр</span>
+<span data-i18n="legend.cipherShort">Cipher</span>
 </div>
 </div>
 <div class="canvas-container" style="flex: 1; min-height: 0;">
@@ -1702,17 +1703,17 @@ border-radius: 4px; padding: 10px; color: #d4af37; font-family: monospace; font-
 </div>
 </div>
 <div class="navigation-links">
-<a href="https://ludus-lab.ru/theory/caesarcipher.html" class="nav-link secondary">
-<i class="fas fa-book-open"></i> <span data-i18n="nav.theory">Прочитать теорию</span>
+<a href="/theory/caesarcipher.html" class="nav-link secondary">
+<i class="fas fa-book-open"></i> <span data-i18n="nav.theory">Read the theory</span>
 </a>
-<a href="https://ludus-lab.ru/" class="nav-link primary">
-<i class="fas fa-home"></i> <span data-i18n="nav.home">Вернуться в лабораторию</span>
+<a href="/" class="nav-link primary">
+<i class="fas fa-home"></i> <span data-i18n="nav.home">Return to the lab</span>
 </a>
 </div>
 <div class="modal-overlay" id="modalOverlay">
 <div class="modal-content" id="modalContent">
-<div class="modal-title" id="modalTitle" data-i18n="modal.defaultTitle">Ошибка</div>
-<div class="modal-message" id="modalMessage" data-i18n="modal.defaultMsg">Текст сообщения</div>
+<div class="modal-title" id="modalTitle" data-i18n="modal.defaultTitle">Error</div>
+<div class="modal-message" id="modalMessage" data-i18n="modal.defaultMsg">Message text</div>
 <div class="modal-buttons">
 <button class="action-button" onclick="closeModal()" data-i18n="modal.okBtn">OK</button>
 </div>
@@ -2020,7 +2021,7 @@ function applyLanguage(lang) {
 
 function initLanguage() {
   let saved = null;
-  try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+  saved = 'en';
   if (!saved) { const browserLang = (navigator.language || 'ru').slice(0, 2); saved = I18N[browserLang] ? browserLang : 'ru'; }
   applyLanguage(saved);
 }

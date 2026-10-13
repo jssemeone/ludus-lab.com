@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title id="pageTitle">Ludus Lab - Всё сложное - просто</title>
+  <title id="pageTitle">Ludus Lab - Complex made simple</title>
 
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -323,240 +323,236 @@
       .lang-btn { font-size: 0.65rem; padding: 3px 7px; }
     }
   </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
   <div class="lang-switch" role="group" aria-label="Language">
-    <button class="lang-btn" data-lang-btn="ru">RU</button>
-    <button class="lang-btn" data-lang-btn="en">EN</button>
-    <button class="lang-btn" data-lang-btn="es">ES</button>
-    <button class="lang-btn" data-lang-btn="zh">中文</button>
+    <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/" hreflang="ru" lang="ru">RU</a>
+    <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/" hreflang="en" lang="en">EN</a>
+    <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/" hreflang="es" lang="es">ES</a>
+    <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/" hreflang="zh-Hans" lang="zh-CN">中文</a>
   </div>
   <div class="container">
     <header>
       <h1>LUDUS LAB</h1>
-      <p class="tagline" data-i18n="header.tagline">Сложные вещи простыми играми</p>
+      <p class="tagline" data-i18n="header.tagline">Complex things through simple games</p>
 
       <!-- ELEGANT INFO LINKS -->
       <div class="info-links">
         <a href="#project-section" class="info-link" onclick="showInfoSection('project'); return false;">
-          <span>ℹ️</span><span data-i18n="nav.about">О проекте</span>
+          <span>ℹ️</span><span data-i18n="nav.about">About</span>
         </a>
         <span class="info-divider">•</span>
         <a href="#me-section" class="info-link" onclick="showInfoSection('me'); return false;">
-          <span>👤</span><span data-i18n="nav.aboutme">Обо мне</span>
+          <span>👤</span><span data-i18n="nav.aboutme">About me</span>
         </a>
       </div>
     </header>
 
     <!-- ===== CRYPTOGRAPHY SECTION ===== -->
-    <div class="category-label" data-i18n="category.crypto">📚 Криптография</div>
+    <div class="category-label" data-i18n="category.crypto">📚 Cryptography</div>
 
     <!-- GAME TABS (3 tabs only) -->
     <nav class="tabs-nav" role="tablist">
-      <button class="tab-btn active" data-tab="basics" role="tab" aria-selected="true" data-i18n="tabs.basics">🔐 Основы</button>
-      <button class="tab-btn" data-tab="modern" role="tab" aria-selected="false" data-i18n="tabs.modern">⚙️ Симметричная</button>
-      <button class="tab-btn" data-tab="quantum" role="tab" aria-selected="false" data-i18n="tabs.quantum">⚛️ Квантовая</button>
+      <button class="tab-btn active" data-tab="basics" role="tab" aria-selected="true" data-i18n="tabs.basics">🔐 Basics</button>
+      <button class="tab-btn" data-tab="modern" role="tab" aria-selected="false" data-i18n="tabs.modern">⚙️ Symmetric</button>
+      <button class="tab-btn" data-tab="quantum" role="tab" aria-selected="false" data-i18n="tabs.quantum">⚛️ Quantum</button>
     </nav>
 
     <!-- ===== TAB 1: ОСНОВЫ КРИПТОГРАФИИ ===== -->
     <section id="tab-basics" class="section active" role="tabpanel">
-      <h2 data-i18n="basics.heading">🔐 Основы криптографии</h2>
-      <p data-i18n="basics.desc">Классические шифры, с которых начиналась наука о защите информации</p>
+      <h2 data-i18n="basics.heading">🔐 Cryptography Basics</h2>
+      <p data-i18n="basics.desc">Classical ciphers that started the science of protecting information</p>
       <div class="section-content">
         <div class="theory-grid">
 
           <!-- 1. Polybius Square (~200 BCE) - OLDEST -->
           <article class="theory-card">
-            <h3 data-i18n="card.polybius.title">Квадрат Полибия</h3>
-            <p class="theory-excerpt" data-i18n="card.polybius.excerpt">Квадрат Полибия: шифрование с помощью координатной сетки 5×5</p>
+            <h3 data-i18n="card.polybius.title">Polybius Square</h3>
+            <p class="theory-excerpt" data-i18n="card.polybius.excerpt">The Polybius square: encryption using a 5×5 coordinate grid</p>
             <div class="theory-meta">
-              <span class="theory-time" data-i18n="card.polybius.time">3 мин</span><span class="theory-level" data-i18n="card.polybius.level">~200 до н.э.</span>
+              <span class="theory-time" data-i18n="card.polybius.time">3 min</span><span class="theory-level" data-i18n="card.polybius.level">~200 BCE</span>
             </div>
             <div class="theory-actions">
-              <a href="/theory/polybius.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
-              <a href="games/polybius/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+              <a href="/theory/polybius.html" class="btn-learn" data-i18n="btn.learn">Theory</a>
+              <a href="games/polybius/" class="btn-play" data-i18n="btn.play">Play</a>
             </div>
           </article>
 
           <!-- 2. Caesar Cipher (~58 BCE) -->
           <article class="theory-card">
-            <h3 data-i18n="card.caesar.title">Шифр Цезаря</h3>
-            <p class="theory-excerpt" data-i18n="card.caesar.excerpt">Как сдвиг букв в Древнем Риме заложил основы криптографии?</p>
+            <h3 data-i18n="card.caesar.title">Caesar Cipher</h3>
+            <p class="theory-excerpt" data-i18n="card.caesar.excerpt">How a letter shift in Ancient Rome laid the foundations of cryptography</p>
             <div class="theory-meta">
-              <span class="theory-time" data-i18n="card.caesar.time">2 мин</span><span class="theory-level" data-i18n="card.caesar.level">~58 до н.э.</span>
+              <span class="theory-time" data-i18n="card.caesar.time">2 min</span><span class="theory-level" data-i18n="card.caesar.level">~58 BCE</span>
             </div>
             <div class="theory-actions">
-              <a href="/theory/caesarcipher.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
-              <a href="games/caesarcipher/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+              <a href="/theory/caesarcipher.html" class="btn-learn" data-i18n="btn.learn">Theory</a>
+              <a href="games/caesarcipher/" class="btn-play" data-i18n="btn.play">Play</a>
             </div>
           </article>
 
           <!-- 3. Vigenère Cipher (1553 CE) -->
           <article class="theory-card">
-            <h3 data-i18n="card.vigenere.title">Шифр Виженера</h3>
-            <p class="theory-excerpt" data-i18n="card.vigenere.excerpt">Шифр Виженера: le chiffre indéchiffrable </br>эпохи Ренессанса</p>
+            <h3 data-i18n="card.vigenere.title">Vigenère Cipher</h3>
+            <p class="theory-excerpt" data-i18n="card.vigenere.excerpt">The Vigenère cipher: le chiffre indéchiffrable </br>of the Renaissance</p>
             <div class="theory-meta">
-              <span class="theory-time" data-i18n="card.vigenere.time">3 мин</span><span class="theory-level" data-i18n="card.vigenere.level">1553 г.</span>
+              <span class="theory-time" data-i18n="card.vigenere.time">3 min</span><span class="theory-level" data-i18n="card.vigenere.level">1553 CE</span>
             </div>
             <div class="theory-actions">
-              <a href="/theory/vigenerecipher.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
-              <a href="games/vigenerecipher/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+              <a href="/theory/vigenerecipher.html" class="btn-learn" data-i18n="btn.learn">Theory</a>
+              <a href="games/vigenerecipher/" class="btn-play" data-i18n="btn.play">Play</a>
             </div>
           </article>
 
           <!-- 4. Vernam Cipher (1917 CE) - NOW AVAILABLE! -->
           <article class="theory-card">
-            <h3 data-i18n="card.vernam.title">Шифр Вернама</h3>
-            <p class="theory-excerpt" data-i18n="card.vernam.excerpt">Шифр Вернама: победил криптоанализ </br>и проиграл реальности</p>
+            <h3 data-i18n="card.vernam.title">Vernam Cipher</h3>
+            <p class="theory-excerpt" data-i18n="card.vernam.excerpt">The Vernam cipher: it beat cryptanalysis </br>but lost to reality</p>
             <div class="theory-meta">
-              <span class="theory-time" data-i18n="card.vernam.time">4 мин</span><span class="theory-level" data-i18n="card.vernam.level">1917 г.</span>
+              <span class="theory-time" data-i18n="card.vernam.time">4 min</span><span class="theory-level" data-i18n="card.vernam.level">1917 CE</span>
             </div>
             <div class="theory-actions">
-              <a href="/theory/vernamcipher.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
-              <a href="games/vernamcipher/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+              <a href="/theory/vernamcipher.html" class="btn-learn" data-i18n="btn.learn">Theory</a>
+              <a href="games/vernamcipher/" class="btn-play" data-i18n="btn.play">Play</a>
             </div>
           </article>
 
         </div>
-        <div class="disclaimer info" data-i18n="basics.tip">
-          💡 <strong>Совет:</strong> Проходите шифры по порядку — от Полибия к Вернаму, чтобы увидеть эволюцию криптографии!
-        </div>
+        <div class="disclaimer info" data-i18n="basics.tip">💡 <strong>Tip:</strong> Go through the ciphers in order — from Polybius to Vernam — to see cryptography evolve!</div>
       </div>
     </section>
 
     <!-- ===== TAB 2: СОВРЕМЕННАЯ КРИПТОГРАФИЯ ===== -->
     <section id="tab-modern" class="section" role="tabpanel">
-      <h2 data-i18n="modern.heading">⚙️ Симметричная криптография</h2>
-      <p data-i18n="modern.desc">Алгоритмы, которые защищают нас сегодня</p>
+      <h2 data-i18n="modern.heading">⚙️ Symmetric Cryptography</h2>
+      <p data-i18n="modern.desc">The algorithms that protect us today</p>
       <div class="section-content">
         <div class="theory-grid">
           <!-- Key Generation Center -->
           <article class="theory-card">
-            <h3 data-i18n="card.keygen.title">Энтропия и ключи</h3>
-            <p class="theory-excerpt" data-i18n="card.keygen.excerpt">Откуда берётся настоящая случайность и почему её нельзя подделать?</p>
+            <h3 data-i18n="card.keygen.title">Entropy and Keys</h3>
+            <p class="theory-excerpt" data-i18n="card.keygen.excerpt">Where does true randomness come from, and why can't it be faked?</p>
             <div class="theory-meta">
-              <span class="theory-time" data-i18n="card.keygen.time">4 мин</span><span class="theory-level" data-i18n="card.keygen.level">Криптография</span>
+              <span class="theory-time" data-i18n="card.keygen.time">4 min</span><span class="theory-level" data-i18n="card.keygen.level">Cryptography</span>
             </div>
             <div class="theory-actions">
-              <a href="/theory/keygen.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
-              <a href="games/cvk/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+              <a href="/theory/keygen.html" class="btn-learn" data-i18n="btn.learn">Theory</a>
+              <a href="games/cvk/" class="btn-play" data-i18n="btn.play">Play</a>
             </div>
           </article>
           <!-- Feistel Network -->
           <article class="theory-card">
-            <h3 data-i18n="card.feistel.title">Сеть Фейстеля</h3>
-            <p class="theory-excerpt" data-i18n="card.feistel.excerpt">Как из одной идеи родился DES и почти вся симметричная криптография?</p>
+            <h3 data-i18n="card.feistel.title">Feistel Network</h3>
+            <p class="theory-excerpt" data-i18n="card.feistel.excerpt">How did one idea give birth to DES and most of symmetric cryptography?</p>
             <div class="theory-meta">
-              <span class="theory-time" data-i18n="card.feistel.time">5 мин</span><span class="theory-level" data-i18n="card.feistel.level">1971 г.</span>
+              <span class="theory-time" data-i18n="card.feistel.time">5 min</span><span class="theory-level" data-i18n="card.feistel.level">1971</span>
             </div>
             <div class="theory-actions">
-              <a href="/theory/feistel.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
-              <a href="games/feistel/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+              <a href="/theory/feistel.html" class="btn-learn" data-i18n="btn.learn">Theory</a>
+              <a href="games/feistel/" class="btn-play" data-i18n="btn.play">Play</a>
             </div>
           </article>
         </div>
-        <div class="disclaimer" data-i18n="modern.disclaimer">
-          ⚠️ Наши игры упрощают реальные алгоритмы. Мы фокусируемся на <span class="highlight">принципах работы</span>, а не на математических деталях.
-        </div>
+        <div class="disclaimer" data-i18n="modern.disclaimer">⚠️ Our games simplify the real algorithms. We focus on <span class="highlight">how things work</span>, not the mathematical details.</div>
       </div>
     </section>
 
     <!-- ===== TAB 3: КВАНТОВЫЕ КОММУНИКАЦИИ ===== -->
     <section id="tab-quantum" class="section" role="tabpanel">
-      <h2 data-i18n="quantum.heading">⚛️ Квантовые коммуникации</h2>
-      <p data-i18n="quantum.desc">Будущее защиты данных: законы физики вместо математики</p>
+      <h2 data-i18n="quantum.heading">⚛️ Quantum Communications</h2>
+      <p data-i18n="quantum.desc">The future of data protection: the laws of physics instead of math</p>
       <div class="section-content">
         <div class="theory-grid">
           <!-- BB84 -->
           <article class="theory-card">
-            <h3 data-i18n="card.bb84.title">Протокол BB84</h3>
-            <p class="theory-excerpt" data-i18n="card.bb84.excerpt">Как создать ключ, который невозможно подслушать, не изменив его?</p>
+            <h3 data-i18n="card.bb84.title">BB84 Protocol</h3>
+            <p class="theory-excerpt" data-i18n="card.bb84.excerpt">How do you create a key that can't be eavesdropped on without changing it?</p>
             <div class="theory-meta">
-              <span class="theory-time" data-i18n="card.bb84.time">3 мин</span><span class="theory-level" data-i18n="card.bb84.level">Квантовая криптография</span>
+              <span class="theory-time" data-i18n="card.bb84.time">3 min</span><span class="theory-level" data-i18n="card.bb84.level">Quantum cryptography</span>
             </div>
             <div class="theory-actions">
-              <a href="/theory/bb84.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
-              <a href="games/bb84/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+              <a href="/theory/bb84.html" class="btn-learn" data-i18n="btn.learn">Theory</a>
+              <a href="games/bb84/" class="btn-play" data-i18n="btn.play">Play</a>
             </div>
           </article>
           <!-- E91 -->
           <article class="theory-card">
-            <h3 data-i18n="card.e91.title">Протокол E91</h3>
-            <p class="theory-excerpt" data-i18n="card.e91.excerpt">Как запутанные фотоны выдают подслушивание?</p>
+            <h3 data-i18n="card.e91.title">E91 Protocol</h3>
+            <p class="theory-excerpt" data-i18n="card.e91.excerpt">How do entangled photons give eavesdropping away?</p>
             <div class="theory-meta">
-              <span class="theory-time" data-i18n="card.e91.time">5 мин</span><span class="theory-level" data-i18n="card.e91.level">Квантовая криптография</span>
+              <span class="theory-time" data-i18n="card.e91.time">5 min</span><span class="theory-level" data-i18n="card.e91.level">Quantum cryptography</span>
             </div>
             <div class="theory-actions">
-              <a href="/theory/e91.html" class="btn-learn" data-i18n="btn.learn">Теория</a>
-              <a href="games/e91/index.html" class="btn-play" data-i18n="btn.play">Играть</a>
+              <a href="/theory/e91.html" class="btn-learn" data-i18n="btn.learn">Theory</a>
+              <a href="games/e91/" class="btn-play" data-i18n="btn.play">Play</a>
             </div>
           </article>
         </div>
-        <div class="disclaimer info" data-i18n="quantum.fact">
-          🌌 <strong>Факт:</strong> В квантовой криптографии попытка подслушать <em>физически изменяет</em> данные — это не баг, это фича!
-        </div>
+        <div class="disclaimer info" data-i18n="quantum.fact">🌌 <strong>Fact:</strong> In quantum cryptography, trying to eavesdrop <em>physically changes</em> the data — that's not a bug, it's a feature!</div>
       </div>
     </section>
 
     <!-- ===== INFO SECTIONS (Hidden by default) ===== -->
     <section id="project-section" class="section">
-      <h2 data-i18n="project.heading">ℹ️ О проекте</h2>
+      <h2 data-i18n="project.heading">ℹ️ About the Project</h2>
       <div class="section-content">
-        <p data-i18n="project.p1">Приветствую вас в <span class="highlight">Ludus Lab</span> — лаборатории, где абстрактные концепции становятся осязаемыми.</p>
-        <div class="disclaimer" data-i18n="project.disclaimer">
-          ⚠️ Наши игры — упрощённые модели. Мы жертвуем точностью ради понятности, чтобы помочь сформировать <span class="highlight nowrap">интуитивное понимание</span>.
-        </div>
-        <p data-i18n="project.p2">Мы живём в мире сложных технологий: квантовая криптография, блокчейн, машинное обучение. Что если бы можно было "пощупать" квантовую запутанность?</p>
-        <p data-i18n="project.p3"><span class="highlight">Ludus Lab — это не курс лекций.</span> Это лаборатория экспериментов, где ошибки — часть процесса обучения, а понимание приходит через действие.</p>
+        <p data-i18n="project.p1">Welcome to <span class="highlight">Ludus Lab</span> — a laboratory where abstract concepts become tangible.</p>
+        <div class="disclaimer" data-i18n="project.disclaimer">⚠️ Our games are simplified models. We trade precision for clarity to help build <span class="highlight nowrap">intuitive understanding</span>.</div>
+        <p data-i18n="project.p2">We live in a world of complex technologies: quantum cryptography, blockchain, machine learning. What if you could actually "touch" quantum entanglement?</p>
+        <p data-i18n="project.p3"><span class="highlight">Ludus Lab isn't a lecture course.</span> It's a lab for experiments, where mistakes are part of learning and understanding comes through action.</p>
 
         <div class="concept-grid">
-          <div class="concept-item"><h4 data-i18n="project.concept1.title">Визуализирует невидимое</h4><p data-i18n="project.concept1.desc">Превращает абстрактные модели в наглядные взаимодействия</p></div>
-          <div class="concept-item"><h4 data-i18n="project.concept2.title">Даёт опыт через действие</h4><p data-i18n="project.concept2.desc">Вы не читаете о квантовых состояниях — вы управляете ими</p></div>
-          <div class="concept-item"><h4 data-i18n="project.concept3.title">Снимает барьеры</h4><p data-i18n="project.concept3.desc">Сложные концепции разбиваются на простые механики</p></div>
+          <div class="concept-item"><h4 data-i18n="project.concept1.title">Visualizes the invisible</h4><p data-i18n="project.concept1.desc">Turns abstract models into hands-on interactions</p></div>
+          <div class="concept-item"><h4 data-i18n="project.concept2.title">Teaches through action</h4><p data-i18n="project.concept2.desc">You don't read about quantum states — you control them</p></div>
+          <div class="concept-item"><h4 data-i18n="project.concept3.title">Removes barriers</h4><p data-i18n="project.concept3.desc">Complex concepts are broken down into simple mechanics</p></div>
         </div>
 
-        <div class="disclaimer info" style="margin-top:25px;" data-i18n="project.mission">
-          🎯 <strong>Миссия:</strong> Сделать передовые технологии доступными для понимания через интерактивный опыт, а не через сухие формулы.
-        </div>
+        <div class="disclaimer info" style="margin-top:25px;" data-i18n="project.mission">🎯 <strong>Mission:</strong> Make cutting-edge technology understandable through interactive experience, not dry formulas.</div>
       </div>
     </section>
 
     <section id="me-section" class="section">
-      <h2 data-i18n="me.heading">👤 Обо мне</h2>
+      <h2 data-i18n="me.heading">👤 About Me</h2>
       <div class="section-content">
         <div class="team-member">
           <h3>JSSemeone</h3>
-          <p data-i18n="me.p1">Привет! Меня зовут <span class="highlight">JSSemeone</span>, и я создаю Ludus Lab. Моя профессиональная жизнь проходит в телекоммуникационной индустрии — мире оптоволокна, протоколов и сетевой инфраструктуры.</p>
-          <p data-i18n="me.p2">В 2021 году я начал работать в сфере квантовых коммуникаций. Это был переход к технологиям, которые больше похожи на научную фантастику: запутанные фотоны, квантовые состояния, законы физики как основа безопасности.</p>
-          <div class="disclaimer" data-i18n="me.disclaimer">
-            ⚠️ Наши игры сознательно упрощают реальные протоколы.<br>Мы сосредоточены на передаче <span class="highlight">сути процесса</span>, а не на точном воспроизведении каждой детали.
-          </div>
-          <p data-i18n="me.p3">Именно здесь я столкнулся с парадоксом: технологии, которые мы создаём, настолько сложны, что их почти невозможно объяснить словами. Я понял: <span class="highlight nowrap">некоторые вещи нужно не рассказывать, а показывать.</span></p>
-          <p data-i18n="me.p4">Так родилась идея Ludus Lab. Не из желания учить, а из потребности разобраться самому и помочь другим. Здесь нет позёрства — есть искреннее желание разобраться в сложных вещах через простые игры.</p>
-          <p data-i18n="me.p5">В этом мне помогают мои "коллеги" — инструменты для вайб-кодинга:</p>
+          <p data-i18n="me.p1">Hi! My name is <span class="highlight">JSSemeone</span>, and I'm building Ludus Lab. My professional life is in the telecom industry — a world of fiber optics, protocols, and network infrastructure.</p>
+          <p data-i18n="me.p2">In 2021, I started working in quantum communications. It was a shift toward technology that feels more like science fiction: entangled photons, quantum states, the laws of physics as the foundation of security.</p>
+          <div class="disclaimer" data-i18n="me.disclaimer">⚠️ Our games deliberately simplify the real protocols.<br>We focus on capturing <span class="highlight">the essence of the process</span>, not reproducing every detail exactly.</div>
+          <p data-i18n="me.p3">That's where I ran into a paradox: the technology we build is so complex it's almost impossible to explain in words. I realized: <span class="highlight nowrap">some things shouldn't be told, but shown.</span></p>
+          <p data-i18n="me.p4">That's how the idea for Ludus Lab was born. Not out of a desire to teach, but out of a need to understand it myself and help others do the same. There's no posturing here — just a genuine wish to make sense of complex things through simple games.</p>
+          <p data-i18n="me.p5">Helping me along the way are my "colleagues" — my vibe-coding tools:</p>
           <div class="tools-list">
             <span class="tool-tag">HTML/CSS/JavaScript</span><span class="tool-tag">Canvas API</span>
-            <span class="tool-tag" data-i18n="me.tools.patience">Терпение</span><span class="tool-tag" data-i18n="me.tools.curiosity">Любопытство</span><span class="tool-tag" data-i18n="me.tools.coffee">Кофе ☕</span>
+            <span class="tool-tag" data-i18n="me.tools.patience">Patience</span><span class="tool-tag" data-i18n="me.tools.curiosity">Curiosity</span><span class="tool-tag" data-i18n="me.tools.coffee">Coffee ☕</span>
           </div>
         </div>
 
         <!-- TIMELINE -->
         <div class="project-timeline">
-          <h3 data-i18n="me.timeline.heading">Мой путь</h3>
+          <h3 data-i18n="me.timeline.heading">My Journey</h3>
           <div class="timeline-items">
-            <div class="timeline-item"><span class="timeline-year">2021</span><h4 data-i18n="me.timeline.2021.title">Знакомство с квантовыми технологиями</h4><p data-i18n="me.timeline.2021.desc">Переход в область квантовых коммуникаций. Осознание, что некоторые вещи нужно визуализировать.</p></div>
-            <div class="timeline-item"><span class="timeline-year">2023</span><h4 data-i18n="me.timeline.2023.title">Коммерциализация квантовых технологий</h4><p data-i18n="me.timeline.2023.desc">Работа над практическим внедрением квантовых решений.</p></div>
-            <div class="timeline-item"><span class="timeline-year">2024</span><h4 data-i18n="me.timeline.2024.title">Первые прототипы игр</h4><p data-i18n="me.timeline.2024.desc">Понимание, что игровая механика может быть мощным образовательным инструментом.</p></div>
-            <div class="timeline-item"><span class="timeline-year">2025</span><h4 data-i18n="me.timeline.2025.title">Рождение Ludus Lab</h4><p data-i18n="me.timeline.2025.desc">Формирование концепции платформы. Первые игры публикуются онлайн.</p></div>
-            <div class="timeline-item"><span class="timeline-year" data-i18n="me.timeline.now.year">Сейчас</span><h4 data-i18n="me.timeline.now.title">Развитие и расширение</h4><p data-i18n="me.timeline.now.desc">Постепенное добавление новых игр и тем.</p></div>
+            <div class="timeline-item"><span class="timeline-year">2021</span><h4 data-i18n="me.timeline.2021.title">Discovering quantum technology</h4><p data-i18n="me.timeline.2021.desc">Moving into quantum communications. Realizing that some things need to be visualized.</p></div>
+            <div class="timeline-item"><span class="timeline-year">2023</span><h4 data-i18n="me.timeline.2023.title">Commercializing quantum technology</h4><p data-i18n="me.timeline.2023.desc">Working on the practical deployment of quantum solutions.</p></div>
+            <div class="timeline-item"><span class="timeline-year">2024</span><h4 data-i18n="me.timeline.2024.title">First game prototypes</h4><p data-i18n="me.timeline.2024.desc">Realizing that game mechanics can be a powerful teaching tool.</p></div>
+            <div class="timeline-item"><span class="timeline-year">2025</span><h4 data-i18n="me.timeline.2025.title">Ludus Lab is born</h4><p data-i18n="me.timeline.2025.desc">Shaping the concept of the platform. The first games go live.</p></div>
+            <div class="timeline-item"><span class="timeline-year" data-i18n="me.timeline.now.year">Now</span><h4 data-i18n="me.timeline.now.title">Growing and expanding</h4><p data-i18n="me.timeline.now.desc">Gradually adding new games and topics.</p></div>
           </div>
         </div>
       </div>
     </section>
 
     <footer>
-      <p data-i18n="footer.line1">© 2025 Ludus Lab · Сделано с любопытством и желанием разобраться</p>
-      <p style="font-size:0.8rem;margin-top:8px;" data-i18n="footer.line2">Присоединяйтесь к исследованию сложного через простое</p>
+      <p data-i18n="footer.line1">© 2025 Ludus Lab · Made with curiosity and a desire to understand</p>
+      <p style="font-size:0.8rem;margin-top:8px;" data-i18n="footer.line2">Join the exploration of the complex through the simple</p>
     </footer>
   </div>
 
@@ -850,7 +846,7 @@
 
     (function initLanguage() {
       let saved = null;
-      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      saved = 'en';
       if (!saved) {
         const browserLang = (navigator.language || 'ru').slice(0, 2);
         saved = I18N[browserLang] ? browserLang : 'ru';

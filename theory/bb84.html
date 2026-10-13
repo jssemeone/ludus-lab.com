@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title id="pageTitle">Протокол BB84: теория | Ludus Lab</title>
-  <meta id="pageDescription" name="description" content="Объяснение первого квантового протокола распределения ключей. Как работает BB84 и почему его невозможно подслушать.">
+  <title id="pageTitle">The BB84 Protocol: Theory | Ludus Lab</title>
+  <meta id="pageDescription" name="description" content="An explanation of the first quantum key distribution protocol. How BB84 works and why it cannot be eavesdropped on undetected.">
   
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -589,22 +589,30 @@
       .nav-link { width: 100%; margin-bottom: 5px; }
     }
   </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/theory/bb84.html">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/theory/bb84.html">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/theory/bb84.html">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/theory/bb84.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/theory/bb84.html">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/theory/bb84.html">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
   <div class="lang-switch" role="group" aria-label="Language">
-    <button class="lang-btn" data-lang-btn="ru">RU</button>
-    <button class="lang-btn" data-lang-btn="en">EN</button>
-    <button class="lang-btn" data-lang-btn="es">ES</button>
-    <button class="lang-btn" data-lang-btn="zh">中文</button>
+    <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/theory/bb84.html" hreflang="ru" lang="ru">RU</a>
+    <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/theory/bb84.html" hreflang="en" lang="en">EN</a>
+    <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/theory/bb84.html" hreflang="es" lang="es">ES</a>
+    <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/theory/bb84.html" hreflang="zh-Hans" lang="zh-CN">中文</a>
   </div>
 
   <!-- Навигация -->
   <nav class="theory-nav">
     <a href="/" class="nav-logo">LUDUS LAB</a>
     <div class="nav-links">
-      <a href="/" class="nav-link" data-i18n="nav.home">Главная</a>
+      <a href="/" class="nav-link" data-i18n="nav.home">Home</a>
       <!-- ИЗМЕНЕНО: убрана кнопка "Теория" -->
-      <a href="https://ludus-lab.ru/games/bb84/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+      <a href="/games/bb84/" class="nav-link" data-i18n="nav.play">Play</a>
     </div>
   </nav>
 
@@ -612,41 +620,39 @@
   <div class="theory-container">
     <!-- Заголовок статьи -->
     <header class="article-header">
-      <div class="article-category" data-i18n="article.category">Квантовая криптография</div>
-      <h1 class="article-title" data-i18n="article.title">Протокол BB84</h1>
-      <p class="article-subtitle" data-i18n="article.subtitle">
-        Первый в мире протокол, позволяющий создать абсолютно случайный ключ, защищённый законами квантовой физики
-      </p>
+      <div class="article-category" data-i18n="article.category">Quantum cryptography</div>
+      <h1 class="article-title" data-i18n="article.title">The BB84 Protocol</h1>
+      <p class="article-subtitle" data-i18n="article.subtitle">The world's first protocol that lets you create a perfectly random key, protected by the laws of quantum physics</p>
       <div class="article-meta">
-        <div class="meta-item" data-i18n="meta.readtime">⏱️ 3 мин чтения</div>
-        <div class="meta-item" data-i18n="meta.level">📊 Средний уровень</div>
-        <div class="meta-item" data-i18n="meta.era">🔬 1984 год</div>
+        <div class="meta-item" data-i18n="meta.readtime">⏱️ 3 min read</div>
+        <div class="meta-item" data-i18n="meta.level">📊 Intermediate level</div>
+        <div class="meta-item" data-i18n="meta.era">🔬 1984</div>
       </div>
     </header>
 
     <!-- Блок "Зачем это нужно?" -->
     <section class="content-block">
-      <h2 data-i18n="block1.heading">Зачем это нужно?</h2>
-      <p data-i18n="block1.p1">Представьте, что вы — <span class="highlight">Алиса</span> и хотите отправить секретное сообщение <span class="highlight">Бобу</span>. У вас есть злоумышленник — <span class="highlight">Ева</span>, — которая пытается подслушать ваш разговор.</p>
+      <h2 data-i18n="block1.heading">Why do we need this?</h2>
+      <p data-i18n="block1.p1">Imagine you are <span class="highlight">Alice</span> and you want to send a secret message to <span class="highlight">Bob</span>. There's an eavesdropper — <span class="highlight">Eve</span> — trying to listen in on your conversation.</p>
 
-      <p data-i18n="block1.p2">В классической криптографии <span class="highlight">Ева</span> может просто скопировать все ваши сообщения незаметно. Но что если бы существовал способ создать ключ так, что любая попытка подслушивания <span class="highlight">немедленно обнаруживалась</span>?</p>
+      <p data-i18n="block1.p2">In classical cryptography, <span class="highlight">Eve</span> can simply copy all your messages without being noticed. But what if there were a way to build a key such that any eavesdropping attempt would be <span class="highlight">detected immediately</span>?</p>
 
-      <p data-i18n="block1.p3">Именно это и делает BB84. Это защита на уровне <span class="highlight">законов физики</span>. <span class="highlight">Попытка Евы подслушать не просто рискует быть обнаруженной — она неизбежно оставляет следы.</span> Почему? Чтобы перехватить квантовый сигнал, Ева должна его измерить, а измерение в квантовом мире <span class="highlight">всегда меняет состояние частицы</span>. Эти изменения проявятся как ошибки, которые Алиса и Боб легко увидят.</p>
+      <p data-i18n="block1.p3">That's exactly what BB84 does. It's security guaranteed at the level of <span class="highlight">the laws of physics</span>. <span class="highlight">Eve's attempt to listen in doesn't just risk getting caught — it inevitably leaves traces.</span> Why? To intercept a quantum signal, Eve has to measure it, and measurement in the quantum world <span class="highlight">always changes the particle's state</span>. These changes show up as errors, which Alice and Bob can easily spot.</p>
     </section>
 
     <!-- Блок "Как это работает?" -->
     <section class="content-block">
-      <h2 data-i18n="block2.heading">Как это работает?</h2>
+      <h2 data-i18n="block2.heading">How does it work?</h2>
 
-      <p data-i18n="block2.intro">BB84 использует фундаментальное свойство квантовой механики: <span class="highlight">невозможно незаметно «подсмотреть» за квантовой частицой</span>. Давайте разберём по шагам:</p>
+      <p data-i18n="block2.intro">BB84 relies on a fundamental property of quantum mechanics: <span class="highlight">you cannot secretly "peek" at a quantum particle</span>. Let's walk through it step by step:</p>
 
       <div class="explanation-steps">
         <!-- Шаг 1 -->
         <div class="step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h3 data-i18n="step1.title">Квантовая пересылка</h3>
-            <p data-i18n="step1.text"><span class="highlight">Алиса</span> готовит фотоны (частицы света), кодируя в каждом бит (0 или 1). Для каждого бита она случайно выбирает один из двух способов кодирования — <span class="highlight">«базис»</span> (условно «+» или «×»). Это как выбор алфавита для записи одной и той же буквы.</p>
+            <h3 data-i18n="step1.title">Quantum transmission</h3>
+            <p data-i18n="step1.text"><span class="highlight">Alice</span> prepares photons (particles of light), encoding a bit (0 or 1) in each one. For every bit, she randomly picks one of two encoding methods — a <span class="highlight">"basis"</span> (think of it as "+" or "×"). It's like choosing an alphabet to write the same letter.</p>
           </div>
         </div>
 
@@ -654,10 +660,10 @@
         <div class="step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h3 data-i18n="step2.title">Измерение вслепую</h3>
-            <p data-i18n="step2.text1"><span class="highlight">Боб</span> получает фотоны. Для каждого он тоже <span class="highlight">случайно выбирает</span> базис для измерения.</p>
-            <p data-i18n="step2.text2"><span class="highlight">Если его базис совпал с базисом Алисы</span> — он гарантированно получит правильный бит (0 или 1).</p>
-            <p data-i18n="step2.text3"><span class="highlight">Если базисы не совпали</span> — результат измерения будет случайным (0 или 1 с вероятностью 50/50), даже если фотон был идеальным.</p>
+            <h3 data-i18n="step2.title">Measuring blind</h3>
+            <p data-i18n="step2.text1"><span class="highlight">Bob</span> receives the photons. For each one, he also <span class="highlight">randomly picks</span> a basis to measure it with.</p>
+            <p data-i18n="step2.text2"><span class="highlight">If his basis matches Alice's</span> — he's guaranteed to get the correct bit (0 or 1).</p>
+            <p data-i18n="step2.text3"><span class="highlight">If the bases don't match</span> — the measurement result is random (0 or 1 with 50/50 odds), even if the photon was perfect.</p>
           </div>
         </div>
 
@@ -665,10 +671,10 @@
         <div class="step">
           <div class="step-number">3</div>
           <div class="step-content">
-            <h3 data-i18n="step3.title">Отсев по открытому каналу</h3>
-            <p data-i18n="step3.text1"><span class="highlight">Алиса</span> и <span class="highlight">Боб</span> открыто (по обычному, незащищённому каналу!) объявляют, какие базисы они использовали для каждого фотона, <span class="highlight">но не сами биты</span>.</p>
-            <p data-i18n="step3.text2"><span class="highlight">Биты, переданные и измеренные в одинаковых базисах</span>, сохраняются. Они и станут основой для секретного ключа.</p>
-            <p data-i18n="step3.text3"><span class="highlight">Биты с разными базисами</span> — отбрасываются.</p>
+            <h3 data-i18n="step3.title">Sifting over the public channel</h3>
+            <p data-i18n="step3.text1"><span class="highlight">Alice</span> and <span class="highlight">Bob</span> openly (over an ordinary, unprotected channel!) announce which basis they used for each photon — <span class="highlight">but not the bits themselves</span>.</p>
+            <p data-i18n="step3.text2"><span class="highlight">Bits sent and measured with matching bases</span> are kept. These become the foundation of the secret key.</p>
+            <p data-i18n="step3.text3"><span class="highlight">Bits with mismatched bases</span> are discarded.</p>
           </div>
         </div>
 
@@ -676,10 +682,10 @@
         <div class="step">
           <div class="step-number">4</div>
           <div class="step-content">
-            <h3 data-i18n="step4.title">Обнаружение шпиона (вот где проявляется QBER!)</h3>
-            <p data-i18n="step4.text1">Теперь у <span class="highlight">Алисы</span> и <span class="highlight">Боба</span> есть предварительный ключ из совпавших битов. Чтобы проверить его чистоту, они открыто сравнивают небольшую случайную часть этих битов.</p>
-            <p data-i18n="step4.text2"><span class="highlight">Если Евы не было:</span> проверочные биты у Алисы и Боба почти все совпадут. Несколько процентов расхождений даёт естественный шум оборудования (в игре — около 2%).</p>
-            <p data-i18n="step4.text3"><span class="highlight">Если Ева подслушивала:</span> чтобы перехватить фотон, ей пришлось его измерить. Базис она, как и Боб, угадывала вслепую. В половине случаев она ошибалась, <span class="highlight">необратимо меняла состояние фотона</span> и пересылала Бобу испорченный фотон. Если Ева перехватывает каждый фотон, примерно <span class="highlight">25% проверочных битов</span> разойдутся; если только часть — ошибок будет пропорционально меньше.</p>
+            <h3 data-i18n="step4.title">Catching the spy (this is where QBER comes in!)</h3>
+            <p data-i18n="step4.text1">Now <span class="highlight">Alice</span> and <span class="highlight">Bob</span> have a preliminary key made of matching bits. To check it's clean, they openly compare a small random sample of those bits.</p>
+            <p data-i18n="step4.text2"><span class="highlight">If there was no Eve:</span> almost all of Alice's and Bob's test bits will match. A few percent of mismatches come from natural equipment noise (about 2% in the game).</p>
+            <p data-i18n="step4.text3"><span class="highlight">If Eve was listening:</span> to intercept a photon she had to measure it. Like Bob, she guessed the basis blindly. Half the time she guessed wrong, <span class="highlight">irreversibly changed the photon's state</span> and sent Bob a spoiled photon. If Eve intercepts every photon, about <span class="highlight">25% of the test bits</span> will disagree; if she intercepts only some, there will be proportionally fewer errors.</p>
           </div>
         </div>
 
@@ -687,16 +693,16 @@
         <div class="step">
           <div class="step-number">5</div>
           <div class="step-content">
-            <h3 data-i18n="step5.title">Дочистка ключа</h3>
-            <p data-i18n="step5.text1">Проверочные биты раскрыты публично, поэтому в ключ они уже не идут. Оставшиеся биты проходят <span class="highlight">коррекцию ошибок</span>: Алиса и Боб сравнивают чётности небольших блоков и исправляют редкие расхождения, не раскрывая самих битов.</p>
-            <p data-i18n="step5.text2">Затем — <span class="highlight">усиление секретности</span>: ключ сжимают, например заменяя группы битов их XOR. Если Ева знала часть битов, после сжатия её знания превращаются в случайный шум.</p>
+            <h3 data-i18n="step5.title">Cleaning up the key</h3>
+            <p data-i18n="step5.text1">The test bits were revealed publicly, so they no longer go into the key. The remaining bits go through <span class="highlight">error correction</span>: Alice and Bob compare parities of small blocks and fix the rare mismatches without revealing the bits themselves.</p>
+            <p data-i18n="step5.text2">Then comes <span class="highlight">privacy amplification</span>: the key is compressed, for example by replacing groups of bits with their XOR. If Eve knew some of the bits, after compression her knowledge turns into random noise.</p>
           </div>
         </div>
       </div>
       
       <!-- ОБНОВЛЁННАЯ ДИАГРАММА BB84 -->
       <div class="bb84-diagram">
-        <div class="diagram-title" data-i18n="diagram.title">Этапы работы протокола BB84</div>
+        <div class="diagram-title" data-i18n="diagram.title">How the BB84 protocol unfolds</div>
 
         <div class="diagram-timeline">
           <div class="timeline-line"></div>
@@ -707,12 +713,12 @@
             <div class="timeline-content">
               <div class="timeline-title">
                 <span class="timeline-icon">🔧</span>
-                <span data-i18n="diagram.stage1.title">Подготовка квантовых состояний</span>
+                <span data-i18n="diagram.stage1.title">Preparing quantum states</span>
               </div>
               <ul class="timeline-points">
-                <li data-i18n="diagram.stage1.p1">Алиса генерирует случайные биты (0/1)</li>
-                <li data-i18n="diagram.stage1.p2">Для каждого бита случайно выбирает базис (+ или ×)</li>
-                <li data-i18n="diagram.stage1.p3">Отправляет фотоны по квантовому каналу</li>
+                <li data-i18n="diagram.stage1.p1">Alice generates random bits (0/1)</li>
+                <li data-i18n="diagram.stage1.p2">For each bit, she randomly picks a basis (+ or ×)</li>
+                <li data-i18n="diagram.stage1.p3">She sends the photons over the quantum channel</li>
               </ul>
             </div>
           </div>
@@ -723,12 +729,12 @@
             <div class="timeline-content">
               <div class="timeline-title">
                 <span class="timeline-icon">📊</span>
-                <span data-i18n="diagram.stage2.title">Измерение состояний</span>
+                <span data-i18n="diagram.stage2.title">Measuring the states</span>
               </div>
               <ul class="timeline-points">
-                <li data-i18n="diagram.stage2.p1">Боб получает фотоны</li>
-                <li data-i18n="diagram.stage2.p2">Для каждого фотона случайно выбирает базис</li>
-                <li data-i18n="diagram.stage2.p3">Измеряет фотоны в выбранных базисах</li>
+                <li data-i18n="diagram.stage2.p1">Bob receives the photons</li>
+                <li data-i18n="diagram.stage2.p2">For each photon, he randomly picks a basis</li>
+                <li data-i18n="diagram.stage2.p3">He measures the photons in the chosen bases</li>
               </ul>
             </div>
           </div>
@@ -739,12 +745,12 @@
             <div class="timeline-content">
               <div class="timeline-title">
                 <span class="timeline-icon">⏳</span>
-                <span data-i18n="diagram.stage3.title">Просеивание ключа</span>
+                <span data-i18n="diagram.stage3.title">Sifting the key</span>
               </div>
               <ul class="timeline-points">
-                <li data-i18n="diagram.stage3.p1">Алиса и Боб обсуждают базисы по открытому каналу</li>
-                <li data-i18n="diagram.stage3.p2">Сохраняют биты с совпавшими базисами (~50%)</li>
-                <li data-i18n="diagram.stage3.p3"><strong>Формируется "сырой" ключ</strong></li>
+                <li data-i18n="diagram.stage3.p1">Alice and Bob discuss bases over the public channel</li>
+                <li data-i18n="diagram.stage3.p2">They keep the bits with matching bases (~50%)</li>
+                <li data-i18n="diagram.stage3.p3"><strong>This forms the "raw" key</strong></li>
               </ul>
             </div>
           </div>
@@ -755,12 +761,12 @@
             <div class="timeline-content">
               <div class="timeline-title">
                 <span class="timeline-icon">🔍</span>
-                <span data-i18n="diagram.stage4.title">Проверка на подслушивание</span>
+                <span data-i18n="diagram.stage4.title">Checking for eavesdropping</span>
               </div>
               <ul class="timeline-points">
-                <li data-i18n="diagram.stage4.p1">Сравнивают часть битов из сырого ключа</li>
-                <li data-i18n="diagram.stage4.p2">Вычисляют QBER (уровень ошибок)</li>
-                <li data-i18n="diagram.stage4.p3"><strong>QBER ≥ 11%? Ключ отбрасывается!</strong></li>
+                <li data-i18n="diagram.stage4.p1">They compare a portion of the bits from the raw key</li>
+                <li data-i18n="diagram.stage4.p2">They calculate the QBER (error rate)</li>
+                <li data-i18n="diagram.stage4.p3"><strong>QBER ≥ 11%? The key is discarded!</strong></li>
               </ul>
             </div>
           </div>
@@ -768,133 +774,125 @@
 
         <!-- Финальный ключ -->
         <div class="final-key">
-          <div class="final-key-title" data-i18n="diagram.final.title">Секретный ключ</div>
-          <div class="final-key-description" data-i18n="diagram.final.desc">Если QBER ниже 11%, оставшиеся биты проходят исправление ошибок и усиление секретности и становятся секретным ключом для симметричного шифрования</div>
-          <div class="key-parameter" data-i18n="diagram.final.param">QBER < 11% → ключ можно использовать</div>
+          <div class="final-key-title" data-i18n="diagram.final.title">The secret key</div>
+          <div class="final-key-description" data-i18n="diagram.final.desc">If QBER is below 11%, the remaining bits go through error correction and privacy amplification and become a secret key for symmetric encryption</div>
+          <div class="key-parameter" data-i18n="diagram.final.param">QBER < 11% → the key can be used</div>
         </div>
 
-        <div class="diagram-note" data-i18n="diagram.note">* QBER (Quantum Bit Error Rate) — доля ошибок в проверочных битах. Порог 11% — доказанная граница безопасности BB84 (Шор и Прескилл, 2000): при большей доле ошибок Ева может знать о ключе больше, чем удастся стереть сжатием.</div>
+        <div class="diagram-note" data-i18n="diagram.note">* QBER (Quantum Bit Error Rate) is the share of errors in the test bits. The 11% threshold is the proven BB84 security bound (Shor and Preskill, 2000): above it, Eve may know more about the key than compression can erase.</div>
       </div>
       <!-- КОНЕЦ ОБНОВЛЁННОЙ ДИАГРАММЫ -->
       
       <div class="key-insight">
-        <strong data-i18n="insight.label">Ключевая мысль:</strong> <span class="highlight" data-i18n="insight.text">Высокий процент ошибок (QBER) — это сигнал тревоги!</span> <span data-i18n="insight.rest">Он прямо указывает на вмешательство. В этом случае ключ отбрасывается, и передача начинается заново. Если ошибок в пределах шума — оставшиеся биты после коррекции ошибок и сжатия становятся секретным ключом. Это не математическая сложность, а <span class="highlight">физическая невозможность</span> подслушать без следов.</span>
+        <strong data-i18n="insight.label">Key takeaway:</strong> <span class="highlight" data-i18n="insight.text">A high error rate (QBER) is an alarm bell!</span> <span data-i18n="insight.rest">It points directly to interference. In that case the key is discarded and the transmission starts over. If errors stay within the noise, the remaining bits become a secret key after error correction and compression. It's not mathematical complexity but a <span class="highlight">physical impossibility</span> of eavesdropping without leaving traces.</span>
       </div>
     </section>
 
     <!-- Блок "А теперь — главная магия" -->
     <section class="content-block">
-      <h2 data-i18n="block3.heading">А теперь — главная магия</h2>
-      <p data-i18n="block3.intro">Что вы <span class="highlight">сделаете</span> в симуляции?</p>
+      <h2 data-i18n="block3.heading">Now for the real magic</h2>
+      <p data-i18n="block3.intro">What will you <span class="highlight">actually do</span> in the simulation?</p>
 
       <ul class="action-list">
         <li>
           <span class="action-icon">🎮</span>
-          <div class="action-text" data-i18n="action1">
-            <span>Вы будете <strong>формировать фотоны от лица Алисы</strong> — выбирать биты и базисы, создавая квантовые состояния</span>
-          </div>
+          <div class="action-text" data-i18n="action1">You'll <strong>generate photons as Alice</strong> — choosing bits and bases, creating quantum states</div>
         </li>
         <li>
           <span class="action-icon">👁️</span>
-          <div class="action-text" data-i18n="action2">
-            <span>Вы <strong>увидите весь протокол со всех сторон</strong> — в реальном времени будете наблюдать, какой базис выбрал Боб для каждого фотона</span>
-          </div>
+          <div class="action-text" data-i18n="action2">You'll <strong>see the whole protocol from every side</strong> — watching in real time which basis Bob picked for each photon</div>
         </li>
         <li>
           <span class="action-icon">🕵️</span>
-          <div class="action-text" data-i18n="action3">Вы <strong>сами решите, будет ли в канале Ева</strong>: её нет, она перехватывает каждый фотон или включён случайный режим — тогда, есть ли Ева и сколько она перехватывает, придётся понять по QBER</div>
+          <div class="action-text" data-i18n="action3">You'll <strong>decide whether Eve is on the channel</strong>: no Eve, Eve intercepting every photon, or a random mode — where you have to tell from the QBER whether Eve is there and how much she intercepts</div>
         </li>
         <li>
           <span class="action-icon">📖</span>
-          <div class="action-text" data-i18n="action4">Вы <strong>изучите историю каждого фотона</strong> — увидите, совпали ли базисы, исказила ли его Ева или шум канала, пошёл ли он на проверку или в итоговый ключ</div>
+          <div class="action-text" data-i18n="action4">You'll <strong>explore the history of every photon</strong> — whether the bases matched, whether Eve or channel noise corrupted it, and whether it went to the check or into the final key</div>
         </li>
         <li>
           <span class="action-icon">📊</span>
-          <div class="action-text" data-i18n="action5">Вы <strong>проверите ключ на прослушивание</strong> — Алиса и Боб публично сравнят 30 случайных бит, и вы увидите QBER по выборке рядом с настоящим (режим Бога)</div>
+          <div class="action-text" data-i18n="action5">You'll <strong>check the key for eavesdropping</strong> — Alice and Bob publicly compare 30 random bits, and you'll see the sample QBER next to the true one (God mode)</div>
         </li>
       </ul>
 
-      <p data-i18n="block3.outro">В игре вы не просто читаете о BB84 — вы <span class="highlight">проживаете его</span> со всех ролей. Вы увидите, как случайность в выборе базисов превращается в ключ, подслушивание которого нельзя скрыть, и поймёте, почему квантовая криптография — это не магия, а физика.</p>
+      <p data-i18n="block3.outro">In the game you don't just read about BB84 — you <span class="highlight">live through it</span> from every role. You'll see how randomness in choosing bases turns into a key whose eavesdropping cannot be hidden, and understand why quantum cryptography is not magic but physics.</p>
     </section>
 
     <!-- Дополнительный материал -->
     <details class="advanced-section">
-      <summary data-i18n="advanced.summary">Для любознательных</summary>
+      <summary data-i18n="advanced.summary">For the curious</summary>
       <div class="advanced-content">
-        <h3 data-i18n="advanced.history.heading">Историческая справка</h3>
-        <p data-i18n="advanced.history.text">Протокол BB84 был предложен <strong>Чарльзом Беннетом и Жилем Брассаром в 1984 году</strong> (отсюда и название). Это был первый практически реализуемый протокол квантового распределения ключей, который открыл новую эру в криптографии.</p>
+        <h3 data-i18n="advanced.history.heading">Historical background</h3>
+        <p data-i18n="advanced.history.text">The BB84 protocol was proposed by <strong>Charles Bennett and Gilles Brassard in 1984</strong> (hence the name). It was the first practically realizable quantum key distribution protocol, opening a new era in cryptography.</p>
 
-        <h3 data-i18n="advanced.why25.heading">Почему именно 25% ошибок?</h3>
-        <p data-i18n="advanced.why25.text1">В идеальном протоколе BB84, если Ева подслушивает каждый фотон и пересылает дальше, она угадывает базис с вероятностью 50%. Когда она угадывает правильно — не оставляет следов. Когда ошибается — создаёт ошибку с вероятностью 50%. Итого: 50% (шанс выбрать неверный базис) × 50% (шанс создать ошибку) = <strong>25% ошибок в ключе</strong>.</p>
-        <p data-i18n="advanced.why25.text2">В игре можно выбрать, как действует Ева. При перехвате каждого фотона QBER около 25% плюс шум — Еву видно сразу. В случайном режиме её с вероятностью 30% нет вовсе, а иначе она перехватывает от 5% до 35% фотонов: QBER растёт примерно на четверть доли перехватов, и слабую Еву бывает трудно отличить от шума — как и в реальности.</p>
+        <h3 data-i18n="advanced.why25.heading">Why exactly 25% errors?</h3>
+        <p data-i18n="advanced.why25.text1">In the ideal BB84 protocol, if Eve intercepts every photon and forwards it onward, she guesses the basis with 50% probability. When she guesses right, she leaves no trace. When she guesses wrong, she introduces an error with 50% probability. In total: 50% (chance of picking the wrong basis) × 50% (chance that creates an error) = <strong>25% errors in the key</strong>.</p>
+        <p data-i18n="advanced.why25.text2">In the game you choose how Eve behaves. If she intercepts every photon, the QBER is about 25% plus noise — Eve is obvious. In random mode she is absent 30% of the time, and otherwise intercepts 5% to 35% of photons: the QBER grows by about a quarter of the intercepted share, and a weak Eve can be hard to tell from noise — just like in reality.</p>
 
-        <h3 data-i18n="advanced.topics.heading">Темы для углублённого изучения</h3>
-        <p data-i18n="advanced.topics.intro">Если вы хотите погрузиться глубже в теорию, вот ключевые темы для изучения:</p>
+        <h3 data-i18n="advanced.topics.heading">Topics for further study</h3>
+        <p data-i18n="advanced.topics.intro">If you want to dive deeper into the theory, here are the key topics worth studying:</p>
 
         <div class="topics-grid">
           <div class="topic-card">
-            <h4 data-i18n="topic1.title">Квантовые базисы и состояния</h4>
-            <p data-i18n="topic1.desc">Поляризация фотонов, диагональная и круговая поляризация, представление состояний на сфере Блоха</p>
+            <h4 data-i18n="topic1.title">Quantum bases and states</h4>
+            <p data-i18n="topic1.desc">Photon polarization, diagonal and circular polarization, representing states on the Bloch sphere</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic2.title">Теорема о запрете клонирования</h4>
-            <p data-i18n="topic2.desc">Почему нельзя создать точную копию неизвестного квантового состояния и как это защищает протокол</p>
+            <h4 data-i18n="topic2.title">The no-cloning theorem</h4>
+            <p data-i18n="topic2.desc">Why you can't make an exact copy of an unknown quantum state, and how this protects the protocol</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic3.title">Согласование ключа</h4>
-            <p data-i18n="topic3.desc">Как Алиса и Боб находят и исправляют расхождения в ключе (протоколы Cascade, LDPC), раскрывая о нём как можно меньше</p>
+            <h4 data-i18n="topic3.title">Key reconciliation</h4>
+            <p data-i18n="topic3.desc">How Alice and Bob find and fix mismatches in the key (Cascade, LDPC protocols) while revealing as little as possible about it</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic4.title">Атаки на реализацию BB84</h4>
-            <p data-i18n="topic4.desc">Атаки по сторонним каналам, атаки на детекторы, ослепляющие атаки и защита от них</p>
+            <h4 data-i18n="topic4.title">Attacks on BB84 implementations</h4>
+            <p data-i18n="topic4.desc">Side-channel attacks, detector attacks, blinding attacks, and how to defend against them</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic5.title">Практические реализации</h4>
-            <p data-i18n="topic5.desc">Спутниковые квантовые сети, волоконно-оптические системы, коммерческие решения QKD</p>
+            <h4 data-i18n="topic5.title">Practical implementations</h4>
+            <p data-i18n="topic5.desc">Satellite quantum networks, fiber-optic systems, commercial QKD solutions</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic6.title">Пост-обработка ключа</h4>
-            <p data-i18n="topic6.desc">Выравнивание, усиление секретности, аутентификация классического канала</p>
+            <h4 data-i18n="topic6.title">Key post-processing</h4>
+            <p data-i18n="topic6.desc">Reconciliation, privacy amplification, authentication of the classical channel</p>
           </div>
         </div>
 
-        <h3 data-i18n="advanced.modern.heading">Современное состояние</h3>
-        <p data-i18n="advanced.modern.intro">Сегодня BB84 и его модификации имеют потенциал для внедрения в:</p>
+        <h3 data-i18n="advanced.modern.heading">Current state of the art</h3>
+        <p data-i18n="advanced.modern.intro">Today, BB84 and its variants have potential applications in:</p>
         <ul style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="practical1">Защищённые банковские транзакциии</li>
-          <li data-i18n="practical2">Правительственную и дипломатическую связь</li>
-          <li data-i18n="practical3">Квантовые сети между научными центрами</li>
-          <li data-i18n="practical4">Спутниковые системы квантовой связи</li>
+          <li data-i18n="practical1">Secure banking transactions</li>
+          <li data-i18n="practical2">Government and diplomatic communications</li>
+          <li data-i18n="practical3">Quantum networks between research centers</li>
+          <li data-i18n="practical4">Satellite-based quantum communication systems</li>
         </ul>
       </div>
     </details>
 
     <!-- Кнопки действий -->
     <div class="article-actions" id="article-actions">
-      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">
-        Теперь, когда вы понимаете основы, самое время попробовать на практике и увидеть протокол в действии!
-      </p>
+      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Now that you understand the basics, it's the perfect time to try it in practice and see the protocol in action!</p>
 
       <div class="action-buttons">
-        <a href="https://ludus-lab.ru/games/bb84/index.html" class="btn-primary" data-i18n="actions.play">▶ Перейти к эксперименту</a>
-        <a href="/#theory-section" class="btn-secondary" data-i18n="actions.back">← Вернуться к списку тем</a>
+        <a href="/games/bb84/" class="btn-primary" data-i18n="actions.play">▶ Try the experiment</a>
+        <a href="/#theory-section" class="btn-secondary" data-i18n="actions.back">← Back to the topic list</a>
       </div>
 
-      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">
-        В игре вы сможете применить все полученные знания и увидеть BB84 в интерактивной симуляции
-      </p>
+      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">In the game you can put everything you've learned into practice and watch BB84 unfold in an interactive simulation</p>
     </div>
   </div>
 
   <!-- Футер -->
   <footer class="theory-footer">
-    <p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
-    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Эта статья — упрощённое объяснение для понимания принципов. Реальные реализации протокола могут иметь дополнительные детали.</p>
+    <p data-i18n="footer.line1">© 2025 Ludus Lab · Complex things through simple games</p>
+    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">This article is a simplified explanation meant to convey the principles. Real-world implementations of the protocol may include additional details.</p>
   </footer>
 
   <script>
@@ -1290,7 +1288,7 @@
 
     (function initLanguage() {
       let saved = null;
-      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      saved = 'en';
       if (!saved) {
         const browserLang = (navigator.language || 'ru').slice(0, 2);
         saved = I18N[browserLang] ? browserLang : 'ru';

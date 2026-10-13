@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title id="pageTitle">Шифр Вернама: теория | Ludus Lab</title>
-  <meta id="pageDescription" name="description" content="Шифр Вернама (XOR-шифр, одноразовый блокнот) — единственный теоретически невзламываемый шифр. Как работает побитовое сложение, условия абсолютной стойкости и почему он прорыв в криптографии.">
+  <title id="pageTitle">Vernam Cipher: Theory | Ludus Lab</title>
+  <meta id="pageDescription" name="description" content="The Vernam cipher (XOR cipher, one-time pad) — the only theoretically unbreakable cipher. How bitwise addition works, the conditions for perfect secrecy, and why it was a breakthrough in cryptography.">
   
   <!-- Favicon (как в оригинале) -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -555,22 +555,30 @@
       .lang-btn { font-size: 0.65rem; padding: 3px 7px; }
     }
   </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/theory/vernamcipher.html">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/theory/vernamcipher.html">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/theory/vernamcipher.html">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/theory/vernamcipher.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/theory/vernamcipher.html">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/theory/vernamcipher.html">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
   <div class="lang-switch" role="group" aria-label="Language">
-    <button class="lang-btn" data-lang-btn="ru">RU</button>
-    <button class="lang-btn" data-lang-btn="en">EN</button>
-    <button class="lang-btn" data-lang-btn="es">ES</button>
-    <button class="lang-btn" data-lang-btn="zh">中文</button>
+    <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/theory/vernamcipher.html" hreflang="ru" lang="ru">RU</a>
+    <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/theory/vernamcipher.html" hreflang="en" lang="en">EN</a>
+    <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/theory/vernamcipher.html" hreflang="es" lang="es">ES</a>
+    <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/theory/vernamcipher.html" hreflang="zh-Hans" lang="zh-CN">中文</a>
   </div>
 
   <!-- Навигация (аналог первой страницы) -->
   <nav class="theory-nav">
-    <a href="https://ludus-lab.ru/" class="nav-logo">LUDUS LAB</a>
+    <a href="/" class="nav-logo">LUDUS LAB</a>
     <div class="nav-links">
-      <a href="https://ludus-lab.ru/" class="nav-link" data-i18n="nav.home">Главная</a>
+      <a href="/" class="nav-link" data-i18n="nav.home">Home</a>
       <!-- Ссылка на игру (новая игра Вернама) -->
-      <a href="https://ludus-lab.ru/games/vernamcipher/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+      <a href="/games/vernamcipher/" class="nav-link" data-i18n="nav.play">Play</a>
     </div>
   </nav>
 
@@ -578,37 +586,35 @@
   <div class="theory-container">
     <!-- Заголовок статьи -->
     <header class="article-header">
-      <div class="article-category" data-i18n="article.category">Основы криптографии · Абсолютная стойкость</div>
-      <h1 class="article-title" data-i18n="article.title">Шифр Вернама</h1>
-      <p class="article-subtitle" data-i18n="article.subtitle">
-        Единственный теоретически невзламываемый шифр. </br>Побитовое XOR-шифрование, одноразовый блокнот </br>и почему он остаётся эталоном секретности.
-      </p>
+      <div class="article-category" data-i18n="article.category">Cryptography fundamentals · Perfect secrecy</div>
+      <h1 class="article-title" data-i18n="article.title">Vernam Cipher</h1>
+      <p class="article-subtitle" data-i18n="article.subtitle">The only theoretically unbreakable cipher. </br>Bitwise XOR encryption, the one-time pad, </br>and why it remains the gold standard of secrecy.</p>
       <div class="article-meta">
-        <div class="meta-item" data-i18n="meta.readtime">⏱️ 5 мин чтения</div>
-        <div class="meta-item" data-i18n="meta.level">📊 Продвинутый уровень</div>
-        <div class="meta-item" data-i18n="meta.era">🗝️ 1917 год (Gilbert Vernam)</div>
+        <div class="meta-item" data-i18n="meta.readtime">⏱️ 5 min read</div>
+        <div class="meta-item" data-i18n="meta.level">📊 Advanced level</div>
+        <div class="meta-item" data-i18n="meta.era">🗝️ 1917 (Gilbert Vernam)</div>
       </div>
     </header>
 
     <!-- Блок "Зачем это нужно?" -->
     <section class="content-block">
-      <h2 data-i18n="block1.heading">Зачем это нужно?</h2>
-      <p data-i18n="block1.p1">Все классические шифры (до появления современных криптографических систем) имеют слабость: они основаны на <span class="highlight">детерминированных алгоритмах</span> и повторяющихся ключах. Рано или поздно статистический анализ (метод Касиски, индекс совпадения) раскрывает сообщение.</p>
+      <h2 data-i18n="block1.heading">Why do we need this?</h2>
+      <p data-i18n="block1.p1">Every classical cipher (before the rise of modern cryptographic systems) has a weakness: it relies on <span class="highlight">deterministic algorithms</span> and repeating keys. Sooner or later, statistical analysis (the Kasiski method, the index of coincidence) reveals the message.</p>
 
-      <p data-i18n="block1.p2">Попыткой принципиально преодолеть эту слабость стал <span class="highlight">шифр Вернама</span>, в котором шифрование строится на побитовом сочетании сообщения с ключевой последовательностью. Однако решающее значение имеет не сам механизм преобразования, а свойства ключа. Абсолютная, или совершенная, секретность достигается только в частном случае этой схемы — <span class="highlight">одноразовом блокноте</span>, где ключ является истинно случайным, имеет длину не меньше длины сообщения, состоит из независимых элементов, хранится в секрете и используется только один раз. Если все эти условия выполнены, то из зашифрованного текста невозможно точно определить исходное сообщение: для злоумышленника любое возможное исходное сообщение будет казаться одинаково вероятным.</p>
+      <p data-i18n="block1.p2">An attempt to fundamentally overcome this weakness was the <span class="highlight">Vernam cipher</span>, where encryption is built on a bitwise combination of the message with a key sequence. But what really matters isn't the transformation itself — it's the properties of the key. Perfect, or absolute, secrecy is achieved only in a special case of this scheme — the <span class="highlight">one-time pad</span>, where the key is truly random, at least as long as the message, made of independent elements, kept secret, and used only once. If all these conditions hold, it becomes impossible to determine the original message from the ciphertext: to an attacker, every possible plaintext looks equally likely.</p>
 
-      <p data-i18n="block1.p3">В 1949 году Клод Шеннон математически доказал абсолютную стойкость </br><span class="highlight">одноразового блокнота</span> (One-Time Pad) — реализации шифра Вернама с идеальным ключом. Вероятно такой подход применяется в критически важных военных или дипломатических коммуникациях, где необходима абсолютная, теоретически доказуемая стойкость </br>(в том числе устойчивость к квантовым компьютерам).</p>
+      <p data-i18n="block1.p3">In 1949, Claude Shannon mathematically proved the absolute security </br>of the <span class="highlight">one-time pad</span> — an implementation of the Vernam cipher with an ideal key. This approach is presumably used in critical military or diplomatic communications, where absolute, provable security is required </br>(including resistance to quantum computers).</p>
     </section>
 
     <!-- Блок "Как это работает?" -->
     <section class="content-block">
-      <h2 data-i18n="block2.heading">Как это работает?</h2>
+      <h2 data-i18n="block2.heading">How does it work?</h2>
 
-      <p data-i18n="block2.intro">В основе шифра — простая, но гениальная операция: <span class="highlight">исключающее ИЛИ (XOR)</span>. Сообщение и ключ представляются в виде битовых строк, затем каждый бит сообщения складывается с соответствующим битом ключа по правилам XOR.</p>
+      <p data-i18n="block2.intro">At the heart of the cipher is a simple yet brilliant operation: <span class="highlight">exclusive OR (XOR)</span>. The message and the key are represented as bit strings, and each bit of the message is combined with the corresponding bit of the key according to the XOR rule.</p>
 
       <div class="truth-table">
         <table>
-          <thead><tr><th data-i18n="truth.col1">Бит сообщения (P)</th><th data-i18n="truth.col2">Бит ключа (K)</th><th data-i18n="truth.col3">Шифротекст (C = P ⊕ K)</th></tr></thead>
+          <thead><tr><th data-i18n="truth.col1">Message bit (P)</th><th data-i18n="truth.col2">Key bit (K)</th><th data-i18n="truth.col3">Ciphertext (C = P ⊕ K)</th></tr></thead>
           <tbody>
             <tr><td>0</td><td>0</td><td>0</td></tr>
             <tr><td>0</td><td>1</td><td>1</td></tr>
@@ -622,211 +628,180 @@
         <div class="step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h3 data-i18n="step1.title">Преобразование в биты</h3>
-            <p data-i18n="step1.text">Сообщение (текст) переводится в двоичную последовательность с помощью кодировки: <span class="highlight">код Бодо</span> (5 бит на символ) - является стандартом на момент появления шифра Вернама.</p>
+            <h3 data-i18n="step1.title">Converting to bits</h3>
+            <p data-i18n="step1.text">The message (text) is converted into a binary sequence using an encoding: the <span class="highlight">Baudot code</span> (5 bits per character) was the standard at the time the Vernam cipher was created.</p>
           </div>
         </div>
 
         <div class="step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h3 data-i18n="step2.title">Генерация идеального ключа</h3>
-            <p data-i18n="step2.text">Генерируется случайная битовая строка <span class="highlight">той же длины</span>, что и сообщение. Каждый бит — истинно случайный (0 или 1 с вероятностью ½). Ключ известен только отправителю и получателю и используется <strong>один раз</strong>.</p>
+            <h3 data-i18n="step2.title">Generating the ideal key</h3>
+            <p data-i18n="step2.text">A random bit string is generated, <span class="highlight">the same length</span> as the message. Each bit is truly random (0 or 1 with probability ½). The key is known only to the sender and the receiver and is used <strong>only once</strong>.</p>
           </div>
         </div>
 
         <div class="step">
           <div class="step-number">3</div>
           <div class="step-content">
-            <h3 data-i18n="step3.title">Шифрование (XOR)</h3>
-            <p data-i18n="step3.text"><code>C = P ⊕ K</code> — побитовое сложение по модулю 2. Полученный шифротекст можно передавать по открытому каналу: без ключа он представляет собой случайный шум.</p>
-            <p data-i18n="step3.example"><strong>Пример:</strong> сообщение <code>101</code> ⊕ ключ <code>011</code> = шифротекст <code>110</code>.</p>
+            <h3 data-i18n="step3.title">Encryption (XOR)</h3>
+            <p data-i18n="step3.text"><code>C = P ⊕ K</code> — bitwise addition modulo 2. The resulting ciphertext can be sent over an open channel: without the key, it looks like random noise.</p>
+            <p data-i18n="step3.example"><strong>Example:</strong> message <code>101</code> ⊕ key <code>011</code> = ciphertext <code>110</code>.</p>
           </div>
         </div>
 
         <div class="step">
           <div class="step-number">4</div>
           <div class="step-content">
-            <h3 data-i18n="step4.title">Расшифровка</h3>
-            <p data-i18n="step4.text">Боб, имея тот же ключ, выполняет XOR шифротекста с ключом: <code>P = C ⊕ K</code>. Благодаря свойству <code>(P ⊕ K) ⊕ K = P</code>, исходное сообщение восстанавливается без потерь.</p>
+            <h3 data-i18n="step4.title">Decryption</h3>
+            <p data-i18n="step4.text">Bob, holding the same key, XORs the ciphertext with the key: <code>P = C ⊕ K</code>. Thanks to the property <code>(P ⊕ K) ⊕ K = P</code>, the original message is recovered without any loss.</p>
           </div>
         </div>
       </div>
       
       <!-- ДИАГРАММА ВЕРНАМА (XOR-математика) -->
       <div class="vernam-diagram">
-        <div class="diagram-title" data-i18n="diagram.title">Математика шифра Вернама</div>
+        <div class="diagram-title" data-i18n="diagram.title">The mathematics of the Vernam cipher</div>
 
         <div class="diagram-grid">
           <div class="diagram-card">
-            <div class="diagram-card-title" data-i18n="diagram.encrypt.title">🔐 Шифрование</div>
+            <div class="diagram-card-title" data-i18n="diagram.encrypt.title">🔐 Encryption</div>
             <div class="diagram-formula">C = P ⊕ K</div>
-            <div class="diagram-example" data-i18n="diagram.encrypt.example">
-              <strong>Пример (ASCII):</strong><br>
-              Сообщение <code>H</code> = 72 = <code>01001000</code><br>
-              Ключ (первые 8 бит) = <code>10110101</code><br>
-              C = <code>11111101</code> = 253 (непечатный символ)
-            </div>
+            <div class="diagram-example" data-i18n="diagram.encrypt.example"><strong>Example (ASCII):</strong><br>Message <code>H</code> = 72 = <code>01001000</code><br>Key (first 8 bits) = <code>10110101</code><br>C = <code>11111101</code> = 253 (non-printable character)</div>
           </div>
 
           <div class="diagram-card">
-            <div class="diagram-card-title" data-i18n="diagram.decrypt.title">🔓 Расшифровка</div>
+            <div class="diagram-card-title" data-i18n="diagram.decrypt.title">🔓 Decryption</div>
             <div class="diagram-formula">P = C ⊕ K</div>
-            <div class="diagram-example" data-i18n="diagram.decrypt.example">
-              <strong>Пример:</strong><br>
-              C = <code>11111101</code> ⊕ K = <code>10110101</code><br>
-              = <code>01001000</code> → <code>H</code>
-            </div>
+            <div class="diagram-example" data-i18n="diagram.decrypt.example"><strong>Example:</strong><br>C = <code>11111101</code> ⊕ K = <code>10110101</code><br>= <code>01001000</code> → <code>H</code></div>
           </div>
         </div>
 
         <div class="final-key">
-          <div class="final-key-title" data-i18n="diagram.final.title">Почему это невзламываемо?</div>
-          <div class="final-key-description" data-i18n="diagram.final.desc">
-            Для криптоаналитика шифротекст <strong>не содержит никакой информации</strong> об исходном сообщении. Любой возможный открытый текст может быть получен подбором подходящего ключа. Поскольку все ключи равновероятны, противник не может отличить истинное сообщение от ложного.
-          </div>
-          <div class="key-parameter" data-i18n="diagram.final.param">Ключ = Длина сообщения · Случайность · Однократность</div>
+          <div class="final-key-title" data-i18n="diagram.final.title">Why is this unbreakable?</div>
+          <div class="final-key-description" data-i18n="diagram.final.desc">For a cryptanalyst, the ciphertext <strong>contains no information at all</strong> about the original message. Any possible plaintext can be obtained by picking a suitable key. Since every key is equally likely, an attacker cannot tell the real message from a false one.</div>
+          <div class="key-parameter" data-i18n="diagram.final.param">Key = Message length · Randomness · Single use</div>
         </div>
 
-        <div class="diagram-note" data-i18n="diagram.note">
-          * В интерактивной игре вы сможете выбрать кодировку, сгенерировать случайный ключ и увидеть XOR-операцию в пошаговом или мгновенном режиме.
-        </div>
+        <div class="diagram-note" data-i18n="diagram.note">* In the interactive game you can choose an encoding, generate a random key, and watch the XOR operation step by step or instantly.</div>
       </div>
 
       <div class="key-insight">
-        <strong data-i18n="insight.label">Ключевая мысль:</strong> <span class="highlight" data-i18n="insight.text">Абсолютная стойкость достигается ценой идеальной секретности ключа</span>. <span data-i18n="insight.rest">На практике проблема заключается в генерации истинно случайных ключей и их безопасной передаче. Именно поэтому одноразовый блокнот применяется только в особо важных коммуникациях, а в повседневной криптографии используют компромиссные алгоритмы (Кузнечик, Магма, AES, ChaCha20).</span>
+        <strong data-i18n="insight.label">Key takeaway:</strong> <span class="highlight" data-i18n="insight.text">Perfect secrecy comes at the cost of perfectly secret keys</span>. <span data-i18n="insight.rest">In practice, the challenge lies in generating truly random keys and delivering them securely. That's why the one-time pad is reserved for especially critical communications, while everyday cryptography relies on practical compromise algorithms (Kuznyechik, Magma, AES, ChaCha20).</span>
       </div>
     </section>
 
     <!-- Блок "А теперь — главная магия" (описание игрового процесса) -->
     <section class="content-block">
-      <h2 data-i18n="block3.heading">А теперь — главная магия</h2>
-      <p data-i18n="block3.intro">Что вы <span class="highlight">сделаете</span> в интерактивной симуляции?</p>
+      <h2 data-i18n="block3.heading">And now — the real magic</h2>
+      <p data-i18n="block3.intro">What will you <span class="highlight">actually do</span> in the interactive simulation?</p>
 
       <ul class="action-list">
         <li>
           <span class="action-icon">⌨️</span>
-          <div class="action-text" data-i18n="action1">
-            <span>Вы <strong>выберете кодировку</strong> (Бодо, ASCII 7/8, UTF-8) — игра динамически обновит таблицу символов и битовое представление</span>
-          </div>
+          <div class="action-text" data-i18n="action1">You'll <strong>choose an encoding</strong> (Baudot, ASCII 7/8, UTF-8) — the game dynamically updates the character table and bit representation</div>
         </li>
         <li>
           <span class="action-icon">📝</span>
-          <div class="action-text" data-i18n="action2">
-            <span>Вы <strong>введёте сообщение</strong> и увидите его побитовую развёртку. Неподдерживаемые символы подсветятся предупреждением</span>
-          </div>
+          <div class="action-text" data-i18n="action2">You'll <strong>type a message</strong> and see its bit-by-bit breakdown. Unsupported characters get flagged with a warning</div>
         </li>
         <li>
           <span class="action-icon">🔑</span>
-          <div class="action-text" data-i18n="action3">
-            <span>Вы <strong>сгенерируете случайный ключ</strong> (ну как случайный, псевдослучайный, конечно же) </br>нужной длины (или равной длине сообщения — идеальный одноразовый блокнот)</span>
-          </div>
+          <div class="action-text" data-i18n="action3">You'll <strong>generate a random key</strong> (well, pseudo-random, of course) </br>of the needed length (or equal to the message length — a true one-time pad)</div>
         </li>
         <li>
           <span class="action-icon">⚡</span>
-          <div class="action-text" data-i18n="action4">
-            <span>Вы <strong>зашифруете сообщение</strong> — либо пошагово, видя каждый XOR-бит, либо мгновенно, с полной визуализацией</span>
-          </div>
+          <div class="action-text" data-i18n="action4">You'll <strong>encrypt the message</strong> — either step by step, watching every XOR bit, or instantly, with full visualization</div>
         </li>
         <li>
           <span class="action-icon">📡</span>
-          <div class="action-text" data-i18n="action5">
-            <span>Вы <strong>отправите ключ и шифротекст</strong> через анимированные каналы: ключ по защищённой линии (золотой пакет), шифротекст по открытой (синий пакет)</span>
-          </div>
+          <div class="action-text" data-i18n="action5">You'll <strong>send the key and ciphertext</strong> over animated channels: the key over a secure line (gold packet), the ciphertext over an open one (blue packet)</div>
         </li>
         <li>
           <span class="action-icon">🔓</span>
-          <div class="action-text" data-i18n="action6">
-            <span>Вы <strong>расшифруете сообщение</strong> на стороне Боба, снова применяя XOR, и выберете кодировку для обратного преобразования</span>
-          </div>
+          <div class="action-text" data-i18n="action6">You'll <strong>decrypt the message</strong> on Bob's side, applying XOR again, and choose an encoding for the reverse conversion</div>
         </li>
         <li>
           <span class="action-icon">✅</span>
-          <div class="action-text" data-i18n="action7">
-            <span>Вы <strong>увидите итоговое сравнение</strong> — исходное сообщение, ключ (HEX), шифротекст и расшифрованный текст. При совпадении получите подтверждение успешной передачи</span>
-          </div>
+          <div class="action-text" data-i18n="action7">You'll <strong>see the final comparison</strong> — the original message, the key (HEX), the ciphertext, and the decrypted text. A match confirms a successful transfer</div>
         </li>
       </ul>
 
-      <p data-i18n="block3.outro">Игра полностью визуализирует <span class="highlight">принцип абсолютной стойкости</span>: вы сами убедитесь, что без ключа шифротекст выглядит как случайный шум, а с ключом — мгновенно превращается в исходное сообщение.</p>
+      <p data-i18n="block3.outro">The game fully visualizes the <span class="highlight">principle of perfect secrecy</span>: you'll see for yourself that without the key the ciphertext looks like random noise, while with the key it instantly turns back into the original message.</p>
     </section>
 
     <!-- Дополнительный материал (для любознательных) -->
     <details class="advanced-section">
-      <summary data-i18n="advanced.summary">Для любознательных</summary>
+      <summary data-i18n="advanced.summary">For the curious</summary>
       <div class="advanced-content">
-        <h3 data-i18n="advanced.history.heading">Историческая справка</h3>
-        <p data-i18n="advanced.history.text">В 1917 году <strong>Гилберт Вернам</strong>, инженер AT&amp;T, запатентовал шифр, который использовал XOR телеграфной ленты (5-битный код Бодо) и перфоленту с ключом. Позже <strong>Джозеф Моборн</strong> предложил использовать случайные ключи, а в 1949 году <strong>Клод Шеннон</strong> опубликовал работу «Теория связи в секретных системах», где строго доказал, что одноразовый блокнот является абсолютно стойким шифром.</p>
+        <h3 data-i18n="advanced.history.heading">Historical background</h3>
+        <p data-i18n="advanced.history.text">In 1917, <strong>Gilbert Vernam</strong>, an AT&amp;T engineer, patented a cipher that XORed a telegraph tape (the 5-bit Baudot code) with a punched key tape. Later, <strong>Joseph Mauborgne</strong> proposed using random keys, and in 1949 <strong>Claude Shannon</strong> published "Communication Theory of Secrecy Systems," in which he rigorously proved that the one-time pad is a perfectly secure cipher.</p>
 
-        <h3 data-i18n="advanced.why.heading">Почему он не используется повсеместно?</h3>
-        <p data-i18n="advanced.why.intro">Три практические проблемы:</p>
+        <h3 data-i18n="advanced.why.heading">Why isn't it used everywhere?</h3>
+        <p data-i18n="advanced.why.intro">Three practical problems:</p>
         <ul style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="why1"><strong>Длина ключа:</strong> ключ должен быть не короче сообщения. Для передачи больших объёмов данных нужны ключи-гиганты.</li>
-          <li data-i18n="why2"><strong>Распределение ключей:</strong> ключ нужно доставить получателю по защищённому каналу.</li>
-          <li data-i18n="why3"><strong>Одноразовость:</strong> повторное использование ключа разрушает стойкость — два шифротекста можно проанализировать (C1⊕C2 = P1⊕P2).</li>
+          <li data-i18n="why1"><strong>Key length:</strong> the key must be at least as long as the message. Transmitting large volumes of data requires enormous keys.</li>
+          <li data-i18n="why2"><strong>Key distribution:</strong> the key has to reach the recipient over a secure channel.</li>
+          <li data-i18n="why3"><strong>Single use:</strong> reusing a key destroys security — two ciphertexts can be analyzed together (C1⊕C2 = P1⊕P2).</li>
         </ul>
 
-        <h3 data-i18n="advanced.topics.heading">Темы для углублённого изучения</h3>
+        <h3 data-i18n="advanced.topics.heading">Topics for further study</h3>
         <div class="topics-grid">
           <div class="topic-card">
-            <h4 data-i18n="topic1.title">Квантовое распределение ключей (QKD)</h4>
-            <p data-i18n="topic1.desc">Как квантовая физика решает проблему безопасной передачи ключей для одноразового блокнота.</p>
+            <h4 data-i18n="topic1.title">Quantum key distribution (QKD)</h4>
+            <p data-i18n="topic1.desc">How quantum physics solves the problem of securely transmitting keys for the one-time pad.</p>
           </div>
           <div class="topic-card">
-            <h4 data-i18n="topic2.title">Генераторы истинно случайных чисел</h4>
-            <p data-i18n="topic2.desc">Аппаратные RNG на основе теплового шума, радиоактивного распада или квантовых эффектов.</p>
+            <h4 data-i18n="topic2.title">True random number generators</h4>
+            <p data-i18n="topic2.desc">Hardware RNGs based on thermal noise, radioactive decay, or quantum effects.</p>
           </div>
           <div class="topic-card">
-            <h4 data-i18n="topic3.title">Атака на повтор ключа</h4>
-            <p data-i18n="topic3.desc">Как криптоаналитик восстанавливает сообщения только из шифротекста, если ключ был использован дважды (C1⊕C2 = P1⊕P2).</p>
+            <h4 data-i18n="topic3.title">Key-reuse attacks</h4>
+            <p data-i18n="topic3.desc">How a cryptanalyst recovers messages from ciphertext alone if a key was used twice (C1⊕C2 = P1⊕P2).</p>
           </div>
           <div class="topic-card">
-            <h4 data-i18n="topic4.title">Современные поточные шифры</h4>
-            <p data-i18n="topic4.desc">Как принципы Вернама воплощены в Salsa20, ChaCha20 и AES-CTR (генерация псевдослучайного ключевого потока).</p>
+            <h4 data-i18n="topic4.title">Modern stream ciphers</h4>
+            <p data-i18n="topic4.desc">How Vernam's principles live on in Salsa20, ChaCha20, and AES-CTR (generating a pseudo-random keystream).</p>
           </div>
           <div class="topic-card">
-            <h4 data-i18n="topic5.title">Теорема Шеннона</h4>
-            <p data-i18n="topic5.desc">Строгое математическое доказательство абсолютной стойкости, показывающее, что для обеспечения совершенной секретности энтропия ключа обязана быть не меньше энтропии сообщения: H(K) ≥ H(M).</p>
+            <h4 data-i18n="topic5.title">Shannon's theorem</h4>
+            <p data-i18n="topic5.desc">A rigorous mathematical proof of perfect secrecy, showing that the key's entropy must be at least as large as the message's entropy: H(K) ≥ H(M).</p>
           </div>
           <div class="topic-card">
-            <h4 data-i18n="topic6.title">Проблема распространения ключей</h4>
-            <p data-i18n="topic6.desc">Почему безопасная передача длинных случайных ключей остаётся главным практическим ограничением одноразового блокнота.</p>
+            <h4 data-i18n="topic6.title">The key-distribution problem</h4>
+            <p data-i18n="topic6.desc">Why securely delivering long random keys remains the main practical limitation of the one-time pad.</p>
           </div>
         </div>
 
-        <h3 data-i18n="advanced.refs.heading">Практические приминения и упоминания</h3>
-        <p data-i18n="advanced.refs.intro">Шифр Вернама упоминается:</p>
+        <h3 data-i18n="advanced.refs.heading">Practical uses and mentions</h3>
+        <p data-i18n="advanced.refs.intro">The Vernam cipher is mentioned in:</p>
         <ul style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="ref1">Применение одноразовых шифровальных материалов в советской разведке.</br>Источник: Кристофер Эндрю, Василий Митрохин. Архив Митрохина</li>
-          <li data-i18n="ref2">История шифров и развитие одноразовых схем.</br>Источник: А. А. Бабаш, Г. П. Шанкин. История криптографии</li>
-          <li data-i18n="ref3">Практическое применение одноразовых блокнотов в разведке и дипломатии.</br>Источник: Д. Кан. Взломщики кодов</li>
-          <li data-i18n="ref4">Компрометация советских одноразовых ключей из-за их повторного использования.</br>Источник: NSA. VENONA</li>
+          <li data-i18n="ref1">The use of one-time cipher materials in Soviet intelligence.</br>Source: Christopher Andrew, Vasili Mitrokhin. The Mitrokhin Archive</li>
+          <li data-i18n="ref2">The history of ciphers and the development of one-time schemes.</br>Source: A. A. Babash, G. P. Shankin. History of Cryptography</li>
+          <li data-i18n="ref3">The practical use of one-time pads in intelligence and diplomacy.</br>Source: D. Kahn. The Codebreakers</li>
+          <li data-i18n="ref4">The compromise of Soviet one-time keys due to their reuse.</br>Source: NSA. VENONA</li>
         </ul>
       </div>
     </details>
 
     <!-- Кнопки действий (переход к игре) -->
     <div class="article-actions" id="article-actions">
-      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">
-        Теперь, когда вы понимаете математическую основу, самое время увидеть шифр Вернама в действии — побитово, наглядно и интерактивно!
-      </p>
+      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Now that you understand the mathematical foundation, it's the perfect time to see the Vernam cipher in action — bit by bit, visually, and interactively!</p>
 
       <div class="action-buttons">
         <!-- Ссылка на новую игру (Вернам) -->
-        <a href="https://ludus-lab.ru/games/vernamcipher/index.html" class="btn-primary" data-i18n="actions.play">▶ Перейти к игре</a>
-        <a href="https://ludus-lab.ru/" class="btn-secondary" data-i18n="actions.back">← Вернуться в лабораторию</a>
+        <a href="/games/vernamcipher/" class="btn-primary" data-i18n="actions.play">▶ Go to the game</a>
+        <a href="/" class="btn-secondary" data-i18n="actions.back">← Back to the lab</a>
       </div>
 
-      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">
-        В симуляции вы сможете выбрать кодировку, сгенерировать случайный ключ, пошагово зашифровать сообщение и наблюдать за анимированной передачей данных.
-      </p>
+      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">In the simulation you can choose an encoding, generate a random key, encrypt a message step by step, and watch the animated data transfer.</p>
     </div>
   </div>
 
   <!-- Футер -->
   <footer class="theory-footer">
-    <p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
-    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Шифр Вернама — теоретический идеал. Реальные системы используют компромисс между стойкостью и удобством.</p>
+    <p data-i18n="footer.line1">© 2025 Ludus Lab · Complex things through simple games</p>
+    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">The Vernam cipher is a theoretical ideal. Real systems use a compromise between security and practicality.</p>
   </footer>
 
   <script>
@@ -1160,7 +1135,7 @@
 
     (function initLanguage() {
       let saved = null;
-      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      saved = 'en';
       if (!saved) {
         const browserLang = (navigator.language || 'ru').slice(0, 2);
         saved = I18N[browserLang] ? browserLang : 'ru';

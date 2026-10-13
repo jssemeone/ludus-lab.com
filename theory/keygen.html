@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title id="pageTitle">Энтропия и генерация ключей | Ludus Lab</title>
-  <meta id="pageDescription" name="description" content="Что такое настоящая случайность и почему она важна для криптографии. Как создаются криптографические ключи, которые невозможно предсказать.">
+  <title id="pageTitle">Entropy and Key Generation | Ludus Lab</title>
+  <meta id="pageDescription" name="description" content="What true randomness is and why it matters for cryptography. How cryptographic keys are created so they can't be predicted.">
   
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -492,22 +492,30 @@
       .xor-table th, .xor-table td { padding: 6px 3px; font-size: 0.78rem; }
     }
   </style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/theory/keygen.html">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/theory/keygen.html">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/theory/keygen.html">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/theory/keygen.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/theory/keygen.html">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/theory/keygen.html">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
 </head>
 <body>
   <div class="lang-switch" role="group" aria-label="Language">
-    <button class="lang-btn" data-lang-btn="ru">RU</button>
-    <button class="lang-btn" data-lang-btn="en">EN</button>
-    <button class="lang-btn" data-lang-btn="es">ES</button>
-    <button class="lang-btn" data-lang-btn="zh">中文</button>
+    <a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/theory/keygen.html" hreflang="ru" lang="ru">RU</a>
+    <a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/theory/keygen.html" hreflang="en" lang="en">EN</a>
+    <a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/theory/keygen.html" hreflang="es" lang="es">ES</a>
+    <a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/theory/keygen.html" hreflang="zh-Hans" lang="zh-CN">中文</a>
   </div>
 
   <!-- Навигация -->
   <nav class="theory-nav">
     <a href="/" class="nav-logo">LUDUS LAB</a>
     <div class="nav-links">
-      <a href="/" class="nav-link" data-i18n="nav.home">Главная</a>
+      <a href="/" class="nav-link" data-i18n="nav.home">Home</a>
       <!-- ИЗМЕНЕНО: убрана кнопка "Теория" -->
-      <a href="https://ludus-lab.ru/games/cvk/index.html" class="nav-link" data-i18n="nav.play">Играть</a>
+      <a href="/games/cvk/" class="nav-link" data-i18n="nav.play">Play</a>
     </div>
   </nav>
 
@@ -515,41 +523,39 @@
   <div class="theory-container">
     <!-- Заголовок статьи -->
     <header class="article-header">
-      <div class="article-category" data-i18n="article.category">Криптография</div>
-      <h1 class="article-title" data-i18n="article.title">Энтропия и генерация ключей</h1>
-      <p class="article-subtitle" data-i18n="article.subtitle">
-        Что такое настоящая случайность и почему она — основа всей современной криптографии
-      </p>
+      <div class="article-category" data-i18n="article.category">Cryptography</div>
+      <h1 class="article-title" data-i18n="article.title">Entropy and Key Generation</h1>
+      <p class="article-subtitle" data-i18n="article.subtitle">What true randomness is, and why it underpins all of modern cryptography</p>
       <div class="article-meta">
-        <div class="meta-item" data-i18n="meta.readtime">⏱️ 4 мин чтения</div>
-        <div class="meta-item" data-i18n="meta.level">📊 Средний уровень</div>
-        <div class="meta-item" data-i18n="meta.security">🔐 Основа безопасности</div>
+        <div class="meta-item" data-i18n="meta.readtime">⏱️ 4 min read</div>
+        <div class="meta-item" data-i18n="meta.level">📊 Intermediate level</div>
+        <div class="meta-item" data-i18n="meta.security">🔐 Foundation of security</div>
       </div>
     </header>
 
     <!-- Блок "Зачем это нужно?" -->
     <section class="content-block">
-      <h2 data-i18n="block1.heading">Зачем это нужно?</h2>
-      <p data-i18n="block1.p1">Представьте, что вы создаёте шифр для защиты государственных тайн. Вы придумали гениальный алгоритм, который превращает сообщения в нечитаемую кашу. Но есть проблема: <span class="highlight">ключ</span> — та самая цифровая "отмычка", которая шифрует и расшифровывает.</p>
+      <h2 data-i18n="block1.heading">Why do we need this?</h2>
+      <p data-i18n="block1.p1">Imagine you're building a cipher to protect state secrets. You've invented a brilliant algorithm that turns messages into unreadable noise. But there's a problem: the <span class="highlight">key</span> — the digital "lockpick" that both encrypts and decrypts.</p>
 
-      <p data-i18n="block1.p2">Если злоумышленник может <span class="highlight">предсказать</span> или <span class="highlight">угадать</span> ваш ключ — все ваши сложные алгоритмы становятся бесполезными. Это как установить бронированную дверь с кодовым замком, а пароль сделать "1234".</p>
+      <p data-i18n="block1.p2">If an attacker can <span class="highlight">predict</span> or <span class="highlight">guess</span> your key, all your elaborate algorithms become worthless. It's like installing an armored door with a keypad lock — and setting the code to "1234".</p>
 
-      <p data-i18n="block1.p3">Вот здесь и появляется <span class="highlight">энтропия</span> — мера настоящей случайности. Чем выше энтропия при генерации ключа, тем <span class="highlight">невозможнее</span> его предсказать. Ваша безопасность зависит не от сложности алгоритма, а от непредсказуемости ключа.</p>
+      <p data-i18n="block1.p3">This is where <span class="highlight">entropy</span> comes in — a measure of true randomness. The higher the entropy when generating a key, the more <span class="highlight">impossible</span> it is to predict. Your security depends not on the algorithm's complexity, but on the key's unpredictability.</p>
     </section>
 
     <!-- Блок "Что такое настоящая случайность?" -->
     <section class="content-block">
-      <h2 data-i18n="block2.heading">Что такое настоящая случайность?</h2>
+      <h2 data-i18n="block2.heading">What is true randomness?</h2>
 
-      <p data-i18n="block2.intro">Компьютеры по своей природе <span class="highlight">детерминированы</span> — они делают именно то, что им сказали. Если вы попросите компьютер "придумать случайное число", он выполнит математическую формулу, которая <span class="highlight">только выглядит</span> случайной.</p>
+      <p data-i18n="block2.intro">Computers are inherently <span class="highlight">deterministic</span> — they do exactly what they're told. If you ask a computer to "come up with a random number," it runs a mathematical formula that <span class="highlight">only looks</span> random.</p>
 
       <div class="explanation-steps">
         <!-- Шаг 1 -->
         <div class="step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h3 data-i18n="step1.title">Псевдослучайность</h3>
-            <p data-i18n="step1.text">Большинство "случайных" чисел в программах — это <span class="highlight">псевдослучайные последовательности</span>. Они начинаются с "зерна" (seed) и следуют математической формуле. Если вы знаете зерно и формулу — вы можете воспроизвести всю последовательность.</p>
+            <h3 data-i18n="step1.title">Pseudorandomness</h3>
+            <p data-i18n="step1.text">Most "random" numbers in software are <span class="highlight">pseudorandom sequences</span>. They start from a "seed" and follow a mathematical formula. If you know the seed and the formula, you can reproduce the entire sequence.</p>
           </div>
         </div>
 
@@ -557,8 +563,8 @@
         <div class="step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h3 data-i18n="step2.title">Истинная случайность</h3>
-            <p data-i18n="step2.text">Настоящая случайность рождается из <span class="highlight">физических процессов</span>: шум транзистора, движение мыши, время между нажатиями клавиш, радиоактивный распад. Эти процессы <span class="highlight">принципиально непредсказуемы</span>.</p>
+            <h3 data-i18n="step2.title">True randomness</h3>
+            <p data-i18n="step2.text">Genuine randomness comes from <span class="highlight">physical processes</span>: transistor noise, mouse movement, the timing between keystrokes, radioactive decay. These processes are <span class="highlight">fundamentally unpredictable</span>.</p>
           </div>
         </div>
 
@@ -566,25 +572,25 @@
         <div class="step">
           <div class="step-number">3</div>
           <div class="step-content">
-            <h3 data-i18n="step3.title">Энтропия</h3>
-            <p data-i18n="step3.text">Энтропия — это <span class="highlight">мера неопределённости</span>. В контексте криптографии: чем выше энтропия источника случайности, тем меньше информации у злоумышленника о будущих значениях.</p>
+            <h3 data-i18n="step3.title">Entropy</h3>
+            <p data-i18n="step3.text">Entropy is a <span class="highlight">measure of uncertainty</span>. In cryptography: the higher the entropy of a randomness source, the less an attacker knows about future values.</p>
           </div>
         </div>
       </div>
 
       <div class="key-insight">
-        <strong data-i18n="insight.label">Ключевая мысль:</strong> <span data-i18n="insight.text">Для криптографии недостаточно "похоже на случайное". Нужна <span class="highlight-gold">истинная непредсказуемость</span>. Псевдослучайные генераторы хороши для игр, но для защиты банковских транзакций нужна энтропия из физического мира.</span>
+        <strong data-i18n="insight.label">Key takeaway:</strong> <span data-i18n="insight.text">For cryptography, "looks random" isn't enough. You need <span class="highlight-gold">true unpredictability</span>. Pseudorandom generators are fine for games, but protecting bank transactions requires entropy from the physical world.</span>
       </div>
     </section>
 
     <!-- Блок "Как работает XOR в генерации ключей" -->
     <section class="content-block">
-      <h2 data-i18n="block3.heading">Волшебная операция XOR</h2>
+      <h2 data-i18n="block3.heading">The magic of XOR</h2>
 
-      <p data-i18n="block3.intro">В игре "Центр выработки ключей" используется операция <span class="highlight">XOR</span> (исключающее ИЛИ). Это одна из самых полезных операций в криптографии, и её суть проста:</p>
+      <p data-i18n="block3.intro">The "Key Generation Center" game uses the <span class="highlight">XOR</span> operation (exclusive OR). It's one of the most useful operations in cryptography, and its idea is simple:</p>
 
       <div class="xor-visualization">
-        <div class="xor-title" data-i18n="xor.title">Как работает XOR</div>
+        <div class="xor-title" data-i18n="xor.title">How XOR works</div>
 
         <div class="xor-row">
           <div class="xor-value">0 XOR 0 = 0</div>
@@ -593,18 +599,18 @@
           <div class="xor-value">1 XOR 1 = 0</div>
         </div>
 
-        <p style="margin-top: 15px; color: #8ab0c5;" data-i18n="xor.explain">Проще говоря: результат равен 1, если значения <strong>разные</strong>, и 0, если значения <strong>одинаковые</strong>.</p>
+        <p style="margin-top: 15px; color: #8ab0c5;" data-i18n="xor.explain">In short: the result is 1 if the values are <strong>different</strong>, and 0 if the values are <strong>the same</strong>.</p>
       </div>
 
-      <p data-i18n="block3.property">В криптографии XOR обладает уникальным свойством: если вы XORите данные с ключом, а потом снова XORите результат с тем же ключом — вы получаете обратно исходные данные!</p>
+      <p data-i18n="block3.property">In cryptography, XOR has a unique property: if you XOR data with a key, and then XOR the result with the same key again, you get the original data back!</p>
 
       <table class="xor-table">
         <tr>
-          <th data-i18n="xor.table.message">Сообщение</th>
+          <th data-i18n="xor.table.message">Message</th>
           <th>XOR</th>
-          <th data-i18n="xor.table.key">Ключ</th>
+          <th data-i18n="xor.table.key">Key</th>
           <th>=</th>
-          <th data-i18n="xor.table.cipher">Шифр</th>
+          <th data-i18n="xor.table.cipher">Cipher</th>
         </tr>
         <tr>
           <td>0101</td>
@@ -622,141 +628,127 @@
         </tr>
       </table>
 
-      <p data-i18n="block3.outro">В нашей игре мы используем XOR для <span class="highlight">комбинирования</span> нескольких источников энтропии: координат мыши X и Y, и текущего времени. Каждый из этих источников по отдельности может быть не идеально случайным, но вместе они создают настоящую непредсказуемость.</p>
+      <p data-i18n="block3.outro">In our game, we use XOR to <span class="highlight">combine</span> several entropy sources: the mouse's X and Y coordinates and the current time. Each source alone may not be perfectly random, but together they create true unpredictability.</p>
     </section>
 
     <!-- Блок "Что вы сделаете в игре" -->
     <section class="content-block">
-      <h2 data-i18n="block4.heading">А теперь — главная магия</h2>
-      <p data-i18n="block4.intro">В симуляции "Центр выработки ключей" вы:</p>
+      <h2 data-i18n="block4.heading">Now for the real magic</h2>
+      <p data-i18n="block4.intro">In the "Key Generation Center" simulation, you:</p>
 
       <ul class="action-list">
         <li>
           <span class="action-icon">🎮</span>
-          <div class="action-text" data-i18n="action1">
-            <span><strong>Генерируете энтропию движением мыши</strong> — чем хаотичнее движение, тем более случайным получается ключ</span>
-          </div>
+          <div class="action-text" data-i18n="action1"><strong>Generate entropy by moving the mouse</strong> — the more chaotic the movement, the more random the resulting key</div>
         </li>
         <li>
           <span class="action-icon">🔢</span>
-          <div class="action-text" data-i18n="action2">
-            <span><strong>Видите работу XOR в реальном времени</strong> — как координаты X, Y и время превращаются в биты ключа</span>
-          </div>
+          <div class="action-text" data-i18n="action2"><strong>Watch XOR work in real time</strong> — see how the X, Y coordinates and the timestamp turn into key bits</div>
         </li>
         <li>
           <span class="action-icon">⚡</span>
-          <div class="action-text" data-i18n="action3">
-            <span><strong>Наблюдаете "сборку" ключа</strong> — отдельные биты-искры летят к своим ячейкам, формируя криптографический ключ</span>
-          </div>
+          <div class="action-text" data-i18n="action3"><strong>Watch the key get "assembled"</strong> — individual bit-sparks fly to their cells, forming the cryptographic key</div>
         </li>
         <li>
           <span class="action-icon">📊</span>
-          <div class="action-text" data-i18n="action4">
-            <span><strong>Следите за логикой каждого бита</strong> — видите, четное или нечетное значение у каждой координаты, и как это влияет на результат</span>
-          </div>
+          <div class="action-text" data-i18n="action4"><strong>Follow the logic of every bit</strong> — see whether each coordinate's value is even or odd, and how that affects the result</div>
         </li>
         <li>
           <span class="action-icon">🔑</span>
-          <div class="action-text" data-i18n="action5">
-            <span><strong>Получаете настоящий ключ</strong> — 16-битное число, которое можно скопировать и использовать</span>
-          </div>
+          <div class="action-text" data-i18n="action5"><strong>Receive a real key</strong> — a 16-bit number you can copy and use</div>
         </li>
       </ul>
 
-      <p data-i18n="block4.outro">Вы не просто читаете о случайности — вы <span class="highlight">создаёте её своими руками</span>. Вы увидите, как физическое движение в реальном мире превращается в цифровую защиту, и поймёте, почему <span class="highlight-gold">энтропия — это самый ценный ресурс в криптографии</span>.</p>
+      <p data-i18n="block4.outro">You don't just read about randomness — you <span class="highlight">create it with your own hands</span>. You'll see how physical movement in the real world turns into digital protection, and understand why <span class="highlight-gold">entropy is the most valuable resource in cryptography</span>.</p>
     </section>
 
     <!-- Дополнительный материал -->
     <details class="advanced-section">
-      <summary data-i18n="advanced.summary">Для любознательных</summary>
+      <summary data-i18n="advanced.summary">For the curious</summary>
       <div class="advanced-content">
-        <h3 data-i18n="advanced.sources.heading">Источники энтропии в реальных системах</h3>
-        <p data-i18n="advanced.sources.intro">В промышленных системах генерации ключей используют различные источники энтропии:</p>
+        <h3 data-i18n="advanced.sources.heading">Entropy sources in real-world systems</h3>
+        <p data-i18n="advanced.sources.intro">Industrial key-generation systems draw on a variety of entropy sources:</p>
 
         <div class="topics-grid">
           <div class="topic-card">
-            <h4 data-i18n="topic1.title">Аппаратные генераторы</h4>
-            <p data-i18n="topic1.desc">Шум в полупроводниках, тепловой шум резисторов, джонсоновский шум — физические процессы, которые невозможно предсказать</p>
+            <h4 data-i18n="topic1.title">Hardware generators</h4>
+            <p data-i18n="topic1.desc">Semiconductor noise, resistor thermal noise, Johnson noise — physical processes that cannot be predicted</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic2.title">Квантовая случайность</h4>
-            <p data-i18n="topic2.desc">Современные системы используют квантовые эффекты, например, спонтанное излучение фотонов или туннелирование электронов</p>
+            <h4 data-i18n="topic2.title">Quantum randomness</h4>
+            <p data-i18n="topic2.desc">Modern systems use quantum effects, such as spontaneous photon emission or electron tunneling</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic3.title">Человеческий фактор</h4>
-            <p data-i18n="topic3.desc">Время между нажатиями клавиш, движения мыши, сетчатки глаза — всё это добавляет непредсказуемости</p>
+            <h4 data-i18n="topic3.title">The human factor</h4>
+            <p data-i18n="topic3.desc">Time between keystrokes, mouse movements, retina patterns — all of this adds unpredictability</p>
           </div>
 
           <div class="topic-card">
-            <h4 data-i18n="topic4.title">Системные события</h4>
-            <p data-i18n="topic4.desc">Время получения сетевых пакетов, прерывания оборудования, активность жёсткого диска</p>
+            <h4 data-i18n="topic4.title">System events</h4>
+            <p data-i18n="topic4.desc">Network packet arrival times, hardware interrupts, hard-drive activity</p>
           </div>
         </div>
 
-        <h3 data-i18n="advanced.csprng.heading">Криптографически стойкие генераторы</h3>
-        <p data-i18n="advanced.csprng.intro">В реальных системах обычно комбинируют несколько подходов:</p>
+        <h3 data-i18n="advanced.csprng.heading">Cryptographically secure generators</h3>
+        <p data-i18n="advanced.csprng.intro">Real-world systems usually combine several approaches:</p>
         <ol style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="csprng1"><strong>Сбор энтропии</strong> из нескольких физических источников</li>
-          <li data-i18n="csprng2"><strong>Усиление энтропии</strong> с помощью криптографических хеш-функций</li>
-          <li data-i18n="csprng3"><strong>Создание "пула энтропии"</strong> — буфера, который постоянно пополняется</li>
-          <li data-i18n="csprng4"><strong>Выдача случайных данных</strong> из пула по запросу</li>
+          <li data-i18n="csprng1"><strong>Collecting entropy</strong> from several physical sources</li>
+          <li data-i18n="csprng2"><strong>Strengthening entropy</strong> using cryptographic hash functions</li>
+          <li data-i18n="csprng3"><strong>Building an "entropy pool"</strong> — a buffer that's constantly replenished</li>
+          <li data-i18n="csprng4"><strong>Dispensing random data</strong> from the pool on request</li>
         </ol>
 
-        <h3 data-i18n="advanced.xorwhy.heading">Почему именно XOR?</h3>
-        <p data-i18n="advanced.xorwhy.intro">Операция XOR идеально подходит для криптографии благодаря своим свойствам:</p>
+        <h3 data-i18n="advanced.xorwhy.heading">Why XOR specifically?</h3>
+        <p data-i18n="advanced.xorwhy.intro">The XOR operation is ideal for cryptography thanks to its properties:</p>
         <ul style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="xorwhy1"><strong>Обратимость</strong>: A XOR B XOR B = A</li>
-          <li data-i18n="xorwhy2"><strong>Равномерность</strong>: Если B случайно, то A XOR B тоже случайно</li>
-          <li data-i18n="xorwhy3"><strong>Быстрота</strong>: Одна из самых быстрых операций для процессора</li>
-          <li data-i18n="xorwhy4"><strong>Простота</strong>: Легко реализовать на любом оборудовании</li>
+          <li data-i18n="xorwhy1"><strong>Reversibility</strong>: A XOR B XOR B = A</li>
+          <li data-i18n="xorwhy2"><strong>Uniformity</strong>: if B is random, then A XOR B is random too</li>
+          <li data-i18n="xorwhy3"><strong>Speed</strong>: one of the fastest operations a processor can perform</li>
+          <li data-i18n="xorwhy4"><strong>Simplicity</strong>: easy to implement on any hardware</li>
         </ul>
 
-        <h3 data-i18n="advanced.standards.heading">Стандарты и протоколы</h3>
-        <p data-i18n="advanced.standards.intro">Промышленные стандарты генерации ключей:</p>
+        <h3 data-i18n="advanced.standards.heading">Standards and protocols</h3>
+        <p data-i18n="advanced.standards.intro">Industrial standards for key generation:</p>
         <ul style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="standard1"><strong>FIPS 140-2</strong> — стандарт безопасности криптографических модулей</li>
-          <li data-i18n="standard2"><strong>NIST SP 800-90</strong> — рекомендации по генерации случайных чисел</li>
-          <li data-i18n="standard3"><strong>RFC 4086</strong> — требования к случайности для безопасности</li>
-          <li data-i18n="standard4"><strong>ANSI X9.17</strong> — стандарт для финансовых институтов</li>
+          <li data-i18n="standard1"><strong>FIPS 140-2</strong> — a security standard for cryptographic modules</li>
+          <li data-i18n="standard2"><strong>NIST SP 800-90</strong> — recommendations for random number generation</li>
+          <li data-i18n="standard3"><strong>RFC 4086</strong> — randomness requirements for security</li>
+          <li data-i18n="standard4"><strong>ANSI X9.17</strong> — a standard for financial institutions</li>
         </ul>
 
-        <h3 data-i18n="advanced.vulns.heading">Известные уязвимости</h3>
-        <p data-i18n="advanced.vulns.intro">История знает несколько случаев, когда слабая энтропия приводила к взлому:</p>
+        <h3 data-i18n="advanced.vulns.heading">Known vulnerabilities</h3>
+        <p data-i18n="advanced.vulns.intro">History has seen several cases where weak entropy led to a breach:</p>
         <ul style="margin-left: 20px; color: #a0c0d0;">
-          <li data-i18n="vuln1"><strong>Debian OpenSSL (2008)</strong> — ошибка в генераторе случайных чисел сделала возможным предсказание SSH и SSL ключей</li>
-          <li data-i18n="vuln2"><strong>Netscape SSL (1995)</strong> — использование предсказуемых значений времени и PID для генерации ключей</li>
-          <li data-i18n="vuln3"><strong>Android Bitcoin-кошельки (2013)</strong> — недостаток энтропии приводил к повторной генерации одинаковых ключей</li>
+          <li data-i18n="vuln1"><strong>Debian OpenSSL (2008)</strong> — a bug in the random number generator made SSH and SSL keys predictable</li>
+          <li data-i18n="vuln2"><strong>Netscape SSL (1995)</strong> — using predictable time values and PIDs to generate keys</li>
+          <li data-i18n="vuln3"><strong>Android Bitcoin wallets (2013)</strong> — insufficient entropy led to the same keys being generated repeatedly</li>
         </ul>
 
         <div class="key-insight" style="margin-top: 20px;">
-          <strong data-i18n="advanced.important.label">Важное:</strong> <span data-i18n="advanced.important.text">Наша игра сознательно упрощает реальные процессы. В промышленных системах используются гораздо более сложные алгоритмы накопления и усиления энтропии, но основной принцип остаётся тем же: <span class="highlight-gold">настоящая безопасность начинается с настоящей случайности</span>.</span>
+          <strong data-i18n="advanced.important.label">Important:</strong> <span data-i18n="advanced.important.text">Our game deliberately simplifies real-world processes. Industrial systems use far more sophisticated algorithms for gathering and strengthening entropy, but the core principle stays the same: <span class="highlight-gold">real security starts with real randomness</span>.</span>
         </div>
       </div>
     </details>
 
     <!-- Кнопки действий -->
     <div class="article-actions" id="article-actions">
-      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">
-        Теперь, когда вы понимаете, что такое энтропия и как создаются криптографические ключи, самое время создать свой собственный ключ!
-      </p>
+      <p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Now that you understand what entropy is and how cryptographic keys are created, it's the perfect time to generate one yourself!</p>
 
       <div class="action-buttons">
-        <a href="https://ludus-lab.ru/games/cvk/index.html" class="btn-primary" data-i18n="actions.play">▶ Создать свой ключ</a>
-        <a href="/#theory-section" class="btn-secondary" data-i18n="actions.back">← Вернуться к списку тем</a>
+        <a href="/games/cvk/" class="btn-primary" data-i18n="actions.play">▶ Generate your key</a>
+        <a href="/#theory-section" class="btn-secondary" data-i18n="actions.back">← Back to the topic list</a>
       </div>
 
-      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">
-        В игре вы сможете на практике увидеть, как движение мыши превращается в криптографическую защиту
-      </p>
+      <p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">In the game you'll see firsthand how mouse movement turns into cryptographic protection</p>
     </div>
   </div>
 
   <!-- Футер -->
   <footer class="theory-footer">
-    <p data-i18n="footer.line1">© 2025 Ludus Lab · Сложные вещи простыми играми</p>
-    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Эта статья — упрощённое объяснение принципов. Реальные системы генерации ключей используют более сложные алгоритмы.</p>
+    <p data-i18n="footer.line1">© 2025 Ludus Lab · Complex things through simple games</p>
+    <p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">This article is a simplified explanation of the principles. Real key-generation systems use far more complex algorithms.</p>
   </footer>
 
   <script>
@@ -1096,7 +1088,7 @@
 
     (function initLanguage() {
       let saved = null;
-      try { saved = localStorage.getItem('ludusLang'); } catch (e) {}
+      saved = 'en';
       if (!saved) {
         const browserLang = (navigator.language || 'ru').slice(0, 2);
         saved = I18N[browserLang] ? browserLang : 'ru';

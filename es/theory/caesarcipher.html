@@ -536,6 +536,11 @@
       .nav-link { width: 100%; margin-bottom: 5px; }
       .btn-primary, .btn-secondary { padding: 10px 12px; font-size: 0.85rem; }
     }
+      /* Cards in one row share title and text rows, so a title that wraps to two lines
+       doesn't push its text below the neighbours'. Older browsers keep the plain layout. */
+    @supports (grid-template-rows: subgrid) {
+      .topic-card { display: grid; grid-row: span 2; grid-template-rows: subgrid; row-gap: 0; }
+    }
   </style>
 <!-- build-sites: language links -->
 <link rel="canonical" href="https://ludus-lab.com/es/theory/caesarcipher.html">

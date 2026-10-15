@@ -239,6 +239,9 @@ h1 { font-size: 1.6rem; color: var(--color-blue); margin-bottom: var(--space-xs)
 .encoding-card-bits { background: var(--color-gold-25); color: var(--color-gold); padding: var(--space-xxs) var(--space-sm); border-radius: var(--radius-sm); font-size: 0.75rem; font-family: monospace; }
 .encoding-card-desc { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: var(--space-xs); }
 .encoding-card-example { font-size: 0.7rem; color: var(--text-muted); font-family: monospace; background: rgba(0, 0, 0, 0.3); padding: var(--space-xxs) var(--space-xs); border-radius: var(--radius-sm); }
+/* Cards in a row share a height; keep the example strip on the bottom edge so it lines up even when descriptions wrap differently. */
+.encoding-card, .decoding-card { display: flex; flex-direction: column; }
+.encoding-card-example { margin-top: auto; }
 
 /* Bit Visualizer & Tables */
 .bit-visualizer { background: var(--bg-input); border: 1px solid var(--color-blue-30); border-radius: var(--radius-lg); padding: var(--space-xl); width: 100%; flex-shrink: 0; display: flex; flex-direction: column; flex: 1; min-height: 0; }

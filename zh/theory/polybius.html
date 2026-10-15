@@ -544,6 +544,11 @@
     /* a step's text column may shrink below its content; wide alphabet tables scroll inside the step instead of widening the page */
     .step-content { min-width: 0; max-width: 100%; }
     .step-content > div { max-width: 100%; overflow-x: auto; }
+      /* Cards in one row share title and text rows, so a title that wraps to two lines
+       doesn't push its text below the neighbours'. Older browsers keep the plain layout. */
+    @supports (grid-template-rows: subgrid) {
+      .topic-card { display: grid; grid-row: span 2; grid-template-rows: subgrid; row-gap: 0; }
+    }
   </style>
 <!-- build-sites: language links -->
 <link rel="canonical" href="https://ludus-lab.com/zh/theory/polybius.html">

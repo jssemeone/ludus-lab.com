@@ -3271,7 +3271,7 @@ function showBitHistory(index) {
     lastKeyHistoryIndex = null;
     const bit = rawKey[index];
 
-    let historyHTML = `<div class="history-title">${t('history.title', { index })}</div>`;
+    let historyHTML = `<div class="history-title">${t('history.title', { index: index + 1 })}</div>`;
 
     // Базис Алисы
     let aliceBasisSymbol = '';

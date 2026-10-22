@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title id="pageTitle">AES: A Cipher With No Secrets? | Ludus Lab</title>
+<meta id="pageDescription" name="description" content="AES is open and unbroken after 20 years — so why did Russia build Kuznyechik, China build SM4, and great powers keep designing their own ciphers? Where the math ends and the question of trust begins.">
+<!-- Favicon -->
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function(m,e,t,r,i,k,a){
+m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+m[i].l=1*new Date();
+for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { height: 100%; }
+body {
+background: #0a1a2a;
+color: #c5d5e0;
+font-family: 'Roboto', sans-serif;
+line-height: 1.8;
+padding: 0;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
+
+/* Language switch */
+.lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+.lang-btn {
+background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3);
+font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.5px;
+padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease;
+}
+.lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+.lang-btn.active {
+background: rgba(212, 175, 55, 0.18); border-color: #d4af37; color: #d4af37;
+box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+/* Навигация */
+.theory-nav {
+max-width: 900px;
+margin: 0 auto;
+padding: 20px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 1px solid rgba(0, 162, 255, 0.3);
+flex-shrink: 0;
+}
+.nav-logo {
+font-family: 'Oswald', sans-serif;
+font-size: 1.8rem;
+color: #d4af37;
+text-decoration: none;
+text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+}
+.nav-links { display: flex; gap: 20px; }
+.nav-link {
+color: #8ab0c5;
+text-decoration: none;
+font-family: 'Oswald', sans-serif;
+text-transform: uppercase;
+font-size: 0.9rem;
+letter-spacing: 1px;
+transition: all 0.3s;
+padding: 8px 15px;
+border-radius: 4px;
+border: 1px solid transparent;
+white-space: nowrap;
+}
+.nav-link:hover {
+color: #00a2ff;
+border-color: rgba(0, 162, 255, 0.3);
+background: rgba(0, 162, 255, 0.1);
+}
+/* Основной контент */
+.theory-container {
+max-width: 900px;
+margin: 0 auto;
+padding: 40px 20px;
+flex: 1 0 auto;
+}
+/* body is a flex column and the auto margins make the container shrink-to-fit its content: pin it to the viewport width */
+.theory-container { width: 100%; box-sizing: border-box; }
+/* Заголовок статьи */
+.article-header {
+margin-bottom: 40px;
+text-align: center;
+}
+.article-category {
+display: inline-block;
+background: rgba(0, 162, 255, 0.2);
+color: #00a2ff;
+padding: 5px 15px;
+border-radius: 20px;
+font-size: 0.9rem;
+margin-bottom: 15px;
+border: 1px solid rgba(0, 162, 255, 0.3);
+}
+.article-title {
+font-family: 'Oswald', sans-serif;
+font-size: 3rem;
+color: #d4af37;
+text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+margin-bottom: 20px;
+text-transform: uppercase;
+letter-spacing: 2px;
+}
+.article-subtitle {
+font-size: 1.3rem;
+color: #8ab0c5;
+max-width: 700px;
+margin: 0 auto;
+line-height: 1.6;
+}
+/* Мета-информация */
+.article-meta {
+display: flex;
+justify-content: center;
+gap: 30px;
+margin-top: 20px;
+font-size: 0.9rem;
+color: #557585;
+}
+.meta-item { display: flex; align-items: center; gap: 8px; }
+/* Контентные блоки */
+.content-block {
+margin: 60px 0;
+padding: 30px;
+background: rgba(10, 30, 45, 0.6);
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 8px;
+box-shadow: 0 0 20px rgba(0, 162, 255, 0.1);
+}
+.content-block h2 {
+font-family: 'Oswald', sans-serif;
+font-size: 2rem;
+color: #00a2ff;
+margin-bottom: 25px;
+padding-bottom: 10px;
+border-bottom: 2px solid rgba(0, 162, 255, 0.3);
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+.content-block p {
+font-size: 1.1rem;
+line-height: 1.8;
+margin-bottom: 20px;
+color: #a0c0d0;
+}
+.highlight { color: #00a2ff; font-weight: 500; text-shadow: 0 0 5px rgba(0, 162, 255, 0.3); }
+.highlight-gold { color: #d4af37; font-weight: 500; text-shadow: 0 0 5px rgba(212, 175, 55, 0.3); }
+.highlight-symmetric { color: #9b59b6; font-weight: 500; text-shadow: 0 0 5px rgba(155, 89, 182, 0.3); }
+.highlight-neon {
+color: #e6f0ff;
+font-weight: 500;
+text-shadow: 0 0 3px rgba(255, 255, 255, 0.7), 0 0 6px rgba(100, 200, 255, 0.4), 0 0 9px rgba(100, 200, 255, 0.2);
+position: relative;
+padding: 0 2px;
+}
+.highlight-neon::after {
+content: '';
+position: absolute;
+bottom: -1px;
+left: 0;
+width: 100%;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(100, 200, 255, 0.5), transparent);
+}
+/* Шаги объяснения */
+.explanation-steps { margin: 30px 0; }
+.step {
+display: flex;
+align-items: flex-start;
+gap: 20px;
+margin: 25px 0;
+padding: 20px;
+background: rgba(5, 20, 30, 0.8);
+border-left: 4px solid #00a2ff;
+border-radius: 0 8px 8px 0;
+}
+.step-number {
+flex-shrink: 0;
+width: 40px;
+height: 40px;
+background: #00a2ff;
+color: #fff;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: 'Oswald', sans-serif;
+font-size: 1.2rem;
+font-weight: bold;
+box-shadow: 0 0 10px rgba(0, 162, 255, 0.5);
+}
+.step-content h3 { color: #d4af37; margin-bottom: 10px; font-family: 'Oswald', sans-serif; font-size: 1.3rem; }
+/* Ключевая идея */
+.key-insight {
+background: rgba(212, 175, 55, 0.1);
+border-left: 4px solid #d4af37;
+padding: 20px;
+margin: 30px 0;
+border-radius: 0 8px 8px 0;
+}
+.key-insight strong { color: #d4af37; font-family: 'Oswald', sans-serif; display: block; margin-bottom: 10px; font-size: 1.1rem; }
+/* Список действий */
+.action-list { list-style: none; margin: 30px 0; }
+.action-list li {
+display: flex;
+align-items: flex-start;
+gap: 15px;
+margin: 15px 0;
+padding: 15px;
+background: rgba(0, 162, 255, 0.05);
+border-radius: 6px;
+border-left: 3px solid #00a2ff;
+}
+.action-icon { font-size: 1.5rem; width: 40px; text-align: center; flex-shrink: 0; margin-top: 2px; }
+.action-text { flex: 1; }
+.action-text strong { color: #00a2ff; font-family: 'Oswald', sans-serif; }
+/* УПРОЩЕННАЯ СХЕМА ШИФРОВАНИЯ */
+.simple-encryption-scheme {
+margin: 40px auto;
+padding: 25px;
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(155, 89, 182, 0.3);
+border-radius: 12px;
+text-align: center;
+max-width: 700px;
+position: relative;
+}
+.simple-encryption-scheme::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 1px;
+background: linear-gradient(90deg, transparent, #9b59b6, transparent);
+}
+.scheme-title { color: #9b59b6; font-family: 'Oswald', sans-serif; margin-bottom: 25px; font-size: 1.2rem; letter-spacing: 1px; }
+.scheme-flow { display: flex; align-items: flex-start; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+.scheme-item { display: flex; flex-direction: column; align-items: center; min-width: 120px; }
+.scheme-box {
+width: 110px; height: 70px; border-radius: 8px;
+display: flex; align-items: center; justify-content: center;
+font-family: 'Courier New', monospace; font-size: 1rem; font-weight: bold;
+padding: 8px; text-align: center; margin-bottom: 8px;
+}
+.scheme-original { background: rgba(0, 162, 255, 0.1); border: 1px solid #00a2ff; color: #00a2ff; }
+.scheme-key { background: rgba(212, 175, 55, 0.1); border: 1px solid #d4af37; color: #d4af37; font-size: 0.9rem; }
+.scheme-cipher { background: rgba(155, 89, 182, 0.1); border: 1px solid #9b59b6; color: #9b59b6; font-size: 0.95em; }
+.scheme-label { font-size: 0.75rem; color: #8ab0c5; text-align: center; line-height: 1.3; max-width: 100px; }
+.scheme-arrow { font-size: 1.2rem; color: #9b59b6; margin: 0 5px; height: 70px; display: flex; align-items: center; }
+.scheme-note { color: #8ab0c5; margin-top: 20px; font-size: 0.9rem; padding-top: 15px; border-top: 1px solid rgba(155, 89, 182, 0.2); font-style: italic; }
+@media (max-width: 768px) {
+.scheme-flow { gap: 8px; }
+.scheme-item { min-width: 100px; }
+.scheme-box { width: 90px; height: 60px; font-size: 0.9rem; }
+.scheme-arrow { font-size: 1rem; margin: 0 3px; height: 60px; }
+.scheme-label { font-size: 0.7rem; max-width: 80px; }
+}
+@media (max-width: 520px) {
+.scheme-flow { flex-wrap: nowrap; gap: 2px; }
+.scheme-item { min-width: 0; flex: 0 1 68px; }
+.scheme-box { width: 100%; max-width: 68px; height: 50px; padding: 2px; font-size: 0.66rem; white-space: nowrap; letter-spacing: -0.3px; }
+.scheme-arrow { height: 50px; font-size: 0.85rem; margin: 0; }
+.scheme-label { font-size: 0.62rem; max-width: 68px; }
+}
+/* Исторические шифры */
+.historical-ciphers { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0; }
+.cipher-card {
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(155, 89, 182, 0.3);
+border-radius: 8px;
+padding: 20px;
+text-align: center;
+}
+.cipher-card h4 { color: #9b59b6; margin-bottom: 15px; font-family: 'Oswald', sans-serif; }
+.cipher-example {
+font-family: monospace; font-size: 1.1rem; margin: 15px 0;
+padding: 10px; background: rgba(10, 30, 45, 0.6);
+border-radius: 4px; border-left: 3px solid #d4af37;
+}
+/* Современные алгоритмы */
+.modern-algorithms { display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0; justify-content: center; }
+.algorithm-tag {
+background: rgba(155, 89, 182, 0.1);
+border: 1px solid rgba(155, 89, 182, 0.3);
+padding: 8px 15px; border-radius: 20px;
+font-size: 0.9rem; color: #9b59b6;
+transition: all 0.3s;
+}
+.algorithm-tag:hover {
+background: rgba(155, 89, 182, 0.2);
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(155, 89, 182, 0.2);
+}
+.algorithm-tag.important {
+background: rgba(212, 175, 55, 0.1);
+border-color: rgba(212, 175, 55, 0.3);
+color: #d4af37;
+}
+.algorithm-tag.russian {
+background: rgba(255, 255, 255, 0.05);
+border-color: rgba(255, 255, 255, 0.2);
+color: #e6f0ff;
+position: relative; overflow: hidden;
+}
+.algorithm-tag.russian::before {
+content: ''; position: absolute; top: -50%; left: -60%;
+width: 20px; height: 200%; background: rgba(255, 255, 255, 0.1);
+transform: rotate(30deg); transition: all 0.6s; opacity: 0;
+}
+.algorithm-tag.russian:hover::before { left: 120%; opacity: 1; }
+/* Кнопки действий */
+.article-actions {
+text-align: center; margin: 60px 0; padding: 30px;
+background: rgba(10, 30, 45, 0.4);
+border-radius: 8px; border: 1px solid rgba(0, 162, 255, 0.2);
+}
+.action-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 30px; flex-wrap: wrap; }
+.btn-primary, .btn-secondary, .btn-disabled {
+padding: 15px 30px; font-family: 'Oswald', sans-serif;
+text-transform: uppercase; letter-spacing: 1px;
+text-decoration: none; border-radius: 6px; font-size: 1rem;
+transition: all 0.3s; border: 1px solid; text-align: center; min-width: 180px;
+}
+.btn-primary {
+background: linear-gradient(to bottom, #006ba6, #004d7a);
+color: #e6f0ff; border-color: #00a2ff;
+}
+.btn-primary:hover {
+background: linear-gradient(to bottom, #0088cc, #006ba6);
+box-shadow: 0 0 20px rgba(0, 162, 255, 0.4);
+transform: translateY(-3px);
+}
+.btn-secondary {
+background: transparent; color: #8ab0c5;
+border-color: rgba(138, 176, 197, 0.4);
+}
+.btn-secondary:hover { border-color: #8ab0c5; color: #a0c0d0; }
+.btn-disabled {
+background: rgba(100, 100, 100, 0.3); color: #666;
+border-color: rgba(100, 100, 100, 0.5); cursor: not-allowed; opacity: 0.7;
+}
+/* Блок предупреждения */
+.warning-box {
+background: rgba(255, 165, 0, 0.1);
+border-left: 4px solid #ffa500;
+padding: 20px; margin: 30px 0;
+border-radius: 0 8px 8px 0;
+}
+.warning-box strong { color: #ffa500; font-family: 'Oswald', sans-serif; display: block; margin-bottom: 10px; font-size: 1.1rem; }
+/* Дополнительный материал */
+.advanced-section {
+margin: 40px 0; padding: 20px;
+border: 1px solid rgba(212, 175, 55, 0.3);
+border-radius: 8px; background: rgba(212, 175, 55, 0.05);
+}
+.advanced-section summary {
+cursor: pointer; color: #d4af37;
+font-family: 'Oswald', sans-serif; font-size: 1.1rem;
+list-style: none; padding: 10px;
+}
+.advanced-section summary::before {
+content: '▶'; margin-right: 10px;
+display: inline-block; transition: transform 0.3s;
+}
+.advanced-section[open] summary::before { transform: rotate(90deg); }
+.advanced-content {
+margin-top: 20px; padding-top: 20px;
+border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+.advanced-content h3 { color: #d4af37; margin: 15px 0 10px; font-family: 'Oswald', sans-serif; }
+/* Темы для углубления */
+.topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0; }
+.topic-card {
+background: rgba(5, 20, 30, 0.6);
+border: 1px solid rgba(212, 175, 55, 0.2);
+border-radius: 6px; padding: 15px; text-align: left;
+}
+.topic-card h4 { color: #d4af37; margin-bottom: 8px; font-family: 'Oswald', sans-serif; font-size: 1.1rem; }
+.topic-card p { font-size: 0.9rem; color: #8ab0c5; margin: 0; line-height: 1.5; }
+/* Футер */
+.theory-footer {
+text-align: center; margin-top: auto;
+padding: 30px 20px; border-top: 1px solid rgba(0, 162, 255, 0.2);
+color: #557585; font-size: 0.9rem; flex-shrink: 0; background: #0a1a2a;
+}
+/* Таблицы сравнения */
+.comparison-table { width: 100%; border-collapse: collapse; margin: 20px 0; color: #a0c0d0; }
+.comparison-table th {
+padding: 12px; border: 1px solid rgba(0,162,255,0.3);
+text-align: left; background: rgba(0, 30, 60, 0.3);
+color: #00a2ff; font-family: 'Oswald', sans-serif; font-weight: normal;
+}
+.comparison-table td { padding: 10px; border: 1px solid rgba(0,162,255,0.2); vertical-align: top; }
+.comparison-table tr:nth-child(even) { background: rgba(0, 30, 60, 0.2); }
+.comparison-table .russian-cell { border-left: 2px solid rgba(255, 255, 255, 0.3); }
+.comparison-table .western-cell { border-left: 3px solid #00a2ff; }
+/* ЭЛЕГАНТНЫЙ ЗАГОЛОВОК ДЛЯ РОССИЙСКИХ СТАНДАРТОВ */
+.russian-header {
+display: flex; align-items: center; gap: 15px;
+margin-bottom: 30px; padding-bottom: 15px;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+position: relative;
+}
+.russian-header::after {
+content: ''; position: absolute; bottom: -1px; left: 0;
+width: 100px; height: 2px;
+background: linear-gradient(90deg, rgba(100, 200, 255, 0.8), transparent);
+}
+.ru-badge {
+display: flex; align-items: center; justify-content: center;
+width: 45px; height: 45px;
+background: rgba(255, 255, 255, 0.05);
+color: #e6f0ff; font-family: 'Oswald', sans-serif;
+font-size: 1.1rem; font-weight: bold; border-radius: 50%;
+border: 1px solid rgba(255, 255, 255, 0.2);
+box-shadow: 0 0 8px rgba(255, 255, 255, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.05);
+position: relative; overflow: hidden;
+}
+.ru-badge::before {
+content: ''; position: absolute; top: -50%; left: -50%;
+width: 200%; height: 200%;
+background: radial-gradient(circle, rgba(100, 200, 255, 0.1) 0%, transparent 70%);
+}
+.russian-title {
+font-family: 'Oswald', sans-serif; font-size: 1.8rem;
+color: #e6f0ff; text-transform: uppercase; letter-spacing: 1px; position: relative;
+}
+.russian-subtitle { font-size: 1rem; color: #8ab0c5; margin-top: 5px; font-style: italic; }
+/* Схема эволюции российских стандартов */
+.evolution-flow { display: flex; align-items: center; justify-content: space-between; margin: 40px 0; position: relative; }
+.evolution-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+.evolution-box {
+width: 140px; height: 140px; border-radius: 12px;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+padding: 20px; text-align: center; margin-bottom: 15px;
+position: relative; overflow: hidden; transition: transform 0.3s ease;
+}
+.evolution-box:hover { transform: translateY(-3px); }
+.evolution-box.magma {
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+.evolution-box.transition {
+background: rgba(212, 175, 55, 0.05);
+border: 1px solid rgba(212, 175, 55, 0.2);
+box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+width: 100px; height: 100px;
+}
+.evolution-box.kuznyechik {
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+.evolution-title { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: bold; margin-bottom: 8px; color: #ffffff; }
+.evolution-subtitle { font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 5px; font-style: italic; }
+.evolution-details { font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); line-height: 1.4; }
+.evolution-arrow { font-size: 1.8rem; color: #8ab0c5; margin: 0 15px; position: relative; z-index: 2; opacity: 0.7; }
+.evolution-label { font-size: 0.85rem; color: #8ab0c5; margin-top: 10px; text-align: center; max-width: 140px; line-height: 1.4; }
+/* Адаптивность */
+@media (max-width: 768px) {
+.theory-container { padding: 20px 15px; margin-bottom: 40px; }
+.article-title { font-size: 2.2rem; }
+.content-block { padding: 20px; margin: 40px 0; }
+.step { flex-direction: column; gap: 15px; }
+.action-buttons { flex-direction: column; align-items: center; gap: 15px; }
+.btn-primary, .btn-secondary, .btn-disabled { width: 100%; max-width: 300px; padding: 12px 20px; }
+.evolution-flow { flex-direction: column; gap: 30px; }
+.evolution-arrow { transform: rotate(90deg); margin: 15px 0; }
+.historical-ciphers { grid-template-columns: 1fr; }
+.nav-links { flex-direction: row; gap: 15px; flex-wrap: wrap; justify-content: center; }
+.article-actions { margin: 40px 0 20px; padding: 20px 15px; }
+.article-meta { flex-direction: column; gap: 10px; }
+.topics-grid { grid-template-columns: 1fr; }
+.theory-nav { flex-direction: column; gap: 15px; padding: 15px; }
+.comparison-table { font-size: 0.9rem; }
+.comparison-table th, .comparison-table td { padding: 8px; }
+.russian-header { flex-direction: column; gap: 10px; text-align: center; align-items: center; }
+.ru-badge { width: 40px; height: 40px; font-size: 1rem; }
+.evolution-step { width: 100%; }
+.evolution-box { width: 180px; }
+}
+@media (max-width: 480px) {
+.article-title { font-size: 1.8rem; }
+.article-subtitle { font-size: 1.1rem; }
+.content-block h2 { font-size: 1.5rem; }
+.nav-logo { font-size: 1.5rem; }
+.nav-links { width: 100%; justify-content: space-between; }
+.nav-link { padding: 6px 10px; font-size: 0.8rem; flex: 1; text-align: center; }
+.btn-primary, .btn-secondary, .btn-disabled { min-width: auto; padding: 12px 15px; font-size: 0.9rem; }
+.theory-footer { padding: 20px 15px; font-size: 0.8rem; }
+.nav-links { justify-content: center; gap: 10px; }
+.nav-link { padding: 8px 12px; }
+.comparison-table { font-size: 0.8rem; }
+.evolution-box { width: 140px; height: 120px; }
+.evolution-box.transition { width: 90px; height: 90px; }
+.lang-switch { top: 8px; right: 8px; }
+.lang-btn { font-size: 0.65rem; padding: 3px 7px; }
+}
+@media (max-width: 320px) {
+.article-title { font-size: 1.5rem; }
+.article-subtitle { font-size: 1rem; }
+.content-block h2 { font-size: 1.3rem; }
+.btn-primary, .btn-secondary, .btn-disabled { padding: 10px 12px; font-size: 0.85rem; }
+.nav-links { flex-direction: column; width: 100%; }
+.nav-link { width: 100%; margin-bottom: 5px; }
+.evolution-box { width: 120px; height: 110px; }
+}
+    /* Cards in one row share title and text rows, so a title that wraps to two lines
+       doesn't push its text below the neighbours'. Older browsers keep the plain layout. */
+    @supports (grid-template-rows: subgrid) {
+      .topic-card { display: grid; grid-row: span 2; grid-template-rows: subgrid; row-gap: 0; }
+      .cipher-card { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 0; }
+    }
+  </style>
+
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/theory/aes.html">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/theory/aes.html">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/theory/aes.html">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/theory/aes.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/theory/aes.html">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/theory/aes.html">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
+<script>var _tmr=window._tmr||(window._tmr=[]);_tmr.push({id:"3804233",type:"pageView",start:(new Date()).getTime()});
+(function(d,w,id){if(d.getElementById(id))return;var ts=d.createElement("script");ts.async=true;ts.id=id;ts.src="https://mytopf.com/js/code.js";var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(ts,s);})(document,window,"tmr-code");</script>
+<noscript><div><img src="https://mytopf.com/counter?id=3804233;js=na" style="position:absolute;left:-9999px;" alt=""></div></noscript>
+</head>
+<body>
+<div class="lang-switch" role="group" aria-label="Language">
+<a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/theory/aes.html" hreflang="ru" lang="ru">RU</a>
+<a class="lang-btn active" data-lang-btn="en" href="https://ludus-lab.com/theory/aes.html" hreflang="en" lang="en">EN</a>
+<a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/theory/aes.html" hreflang="es" lang="es">ES</a>
+<a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/theory/aes.html" hreflang="zh-Hans" lang="zh-CN">中文</a>
+</div>
+
+<!-- Навигация -->
+<nav class="theory-nav">
+<a href="/" class="nav-logo">LUDUS LAB</a>
+<div class="nav-links">
+<a href="/" class="nav-link" data-i18n="nav.home">Home</a>
+<a href="/games/aes/" class="nav-link" data-i18n="nav.play">Play</a>
+</div>
+</nav>
+
+<!-- Основной контент -->
+<div class="theory-container">
+<!-- Заголовок статьи -->
+<header class="article-header">
+<div class="article-category" data-i18n="article.category">Modern cryptography</div>
+<h1 class="article-title" data-i18n="article.title">AES: A Cipher With No Secrets?</h1>
+<p class="article-subtitle" data-i18n="article.subtitle">AES is open and, after twenty years, unbroken. So why do Russia, China and other powers build their own ciphers instead of just adopting it?</p>
+<div class="article-meta">
+<div class="meta-item" data-i18n="meta.readtime">⏱️ 6 min read</div>
+<div class="meta-item" data-i18n="meta.level">📊 Intermediate level</div>
+<div class="meta-item" data-i18n="meta.security">🔒 The standard behind HTTPS, Wi-Fi and disks</div>
+</div>
+</header>
+
+<!-- Блок 1: парадокс -->
+<section class="content-block">
+<h2 data-i18n="block1.heading">If AES is so open, why doesn’t everyone use it?</h2>
+<p data-i18n="block1.p1">The full specification of <span class="highlight-gold">AES</span> is published and available to anyone: it’s written down in an open standard, built into every browser and phone, and explained in textbooks. People have been trying to break it in public for more than twenty years — without success. You’d think it would be the one shared standard for everyone. But no: Russia adopted its own cipher — <span class="highlight">Kuznyechik</span>, China adopted <span class="highlight">SM4</span>, and other countries have their own standards too.</p>
+<p data-i18n="block1.p2">If the algorithm is open and in twenty years no one has found a single practical flaw in it, what drives entire states to spend years building their own cipher instead of using the ready-made one? Maybe the "transparency" of AES isn’t so complete after all?</p>
+<div class="key-insight">
+<strong data-i18n="insight1.label">Key takeaway:</strong>
+<span data-i18n="insight1.text">Mathematically AES really is open — and that’s its strength. But a state’s trust in a cipher is about more than math. The question is less "is there a secret in the algorithm itself" and more "who wrote the standard and who controls it." That’s exactly where the line runs that gives rise to national ciphers.</span>
+</div>
+</section>
+
+<!-- Блок 2: как устроен -->
+<section class="content-block">
+<h2 data-i18n="block2.heading">How AES is built</h2>
+<p data-i18n="block2.intro">First let’s see why there’s almost nothing to criticize in the math of AES — and then come back to why that doesn’t convince everyone. AES is a <span class="highlight">substitution-permutation network</span> (SP-network): instead of splitting the block in half like a Feistel network, it keeps the block in a matrix of bytes and transforms the whole thing each round with four layers of operations. So every operation has to be reversible.</p>
+<div class="explanation-steps">
+<div class="step">
+<div class="step-number">1</div>
+<div class="step-content">
+<h3 data-i18n="step1.title">The block is a matrix</h3>
+<p data-i18n="step1.text">The data block is laid out across the cells of a square matrix. In real AES that’s a <span class="highlight-symmetric">4×4 matrix of 16 bytes</span> (128 bits); in the Ludus Lab game it’s a 2×2 matrix of four nibbles (16 bits). Every later step works on the rows and columns of this matrix.</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">2</div>
+<div class="step-content">
+<h3 data-i18n="step2.title">SubBytes — the S-box substitution</h3>
+<p data-i18n="step2.text">Each byte is replaced by another according to a fixed table — the <span class="highlight">S-box</span>. This is "confusion": the single <span class="highlight-gold">non-linear</span> operation in AES. Without it, the whole cipher would collapse into a system of linear equations and could be solved directly.</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">3</div>
+<div class="step-content">
+<h3 data-i18n="step3.title">ShiftRows and MixColumns — mixing</h3>
+<p data-i18n="step3.text">The rows of the matrix are cyclically shifted, and the columns are mixed together. This is "diffusion": within a couple of rounds, one changed input bit spreads across the whole block. Both operations are linear and reversible.</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">4</div>
+<div class="step-content">
+<h3 data-i18n="step4.title">AddRoundKey — adding the key</h3>
+<p data-i18n="step4.text">The state is XORed with this round’s key. The round keys are derived in advance from the shared key by a separate procedure — the <span class="highlight">key schedule</span>. This is exactly the step you can’t undo without knowing the key.</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">5</div>
+<div class="step-content">
+<h3 data-i18n="step5.title">Repeating rounds and decryption</h3>
+<p data-i18n="step5.text">The layers repeat many times: <span class="highlight">10, 12 or 14 rounds</span> depending on the key length. The last round has no MixColumns — it would add nothing to the strength. To decrypt, Bob runs the inverse operations in reverse order — but only if he knows the key.</p>
+</div>
+</div>
+</div>
+<div class="simple-encryption-scheme">
+<div class="scheme-title" data-i18n="scheme1.title">One round of AES</div>
+<div class="scheme-flow">
+<div class="scheme-item"><div class="scheme-box scheme-cipher">SubBytes</div><div class="scheme-label" data-i18n="scheme1.label.sub">S-box substitution (confusion)</div></div>
+<div class="scheme-arrow">→</div>
+<div class="scheme-item"><div class="scheme-box scheme-cipher">ShiftRows</div><div class="scheme-label" data-i18n="scheme1.label.shift">Shift the rows</div></div>
+<div class="scheme-arrow">→</div>
+<div class="scheme-item"><div class="scheme-box scheme-cipher">MixColumns</div><div class="scheme-label" data-i18n="scheme1.label.mix">Mix the columns (diffusion)</div></div>
+<div class="scheme-arrow">→</div>
+<div class="scheme-item"><div class="scheme-box scheme-key">AddRoundKey</div><div class="scheme-label" data-i18n="scheme1.label.ark">Add the round key</div></div>
+</div>
+<p class="scheme-note" data-i18n="scheme1.note">Every step is reversible — but together they entangle the block with the key so thoroughly that you can’t run it backwards without the key.</p>
+</div>
+<div class="key-insight">
+<strong data-i18n="insightDiff.label">Why you can’t run it backwards:</strong>
+<span data-i18n="insightDiff.text">You can’t undo the key addition without knowing the key. And the non-linear S-box plus a dozen rounds mean that any attempt to "untangle" the cipher without the key runs into a monstrously complex system of equations. <span class="highlight">Confusion</span> hides the relationship between key and ciphertext; <span class="highlight">diffusion</span> smears each bit across the whole block — and repeating both layers leaves no shortcut other than trying every key.</span>
+</div>
+</section>
+
+<!-- Блок 3: открытость и доверие -->
+<section class="content-block">
+<h2 data-i18n="block3.heading">Open — but whose?</h2>
+<p data-i18n="block3.intro">AES was chosen with unprecedented openness: from 1997 to 2000 the US standards institute (NIST) ran an international competition — 15 ciphers from around the world and three years of public analysis, with anyone free to hunt for weaknesses. The winner was Rijndael, by the Belgians Joan Daemen and Vincent Rijmen, and in 2001 it became the standard. That’s an honest process and a genuine strength of AES. And yet the openness of the algorithm is not the same as trusting whoever chose it and whoever holds the standard in their hands.</p>
+<p data-i18n="block3.distrust">The distrust has roots in history. The NSA once secretly altered the S-boxes of the DES cipher — it later turned out to be for defense against an attack, but twenty years of secrecy bred suspicion. And in 2013 the <span class="highlight">Dual_EC_DRBG</span> affair surfaced — a NIST-standard random number generator into which the NSA had, it appears, built a backdoor. Nothing of the kind has been found in AES itself — and in fact its S-box is built from an open algebraic rule, not from "magic" numbers. But for a state, "probably clean" is not a strong enough basis on which to entrust a cipher with its secrets.</p>
+<p data-i18n="block3.sovereignty">Hence <span class="highlight-gold">cryptographic sovereignty</span>: your own cipher, your own regulator, audits by your own experts, and independence from a foreign standard. This doesn’t necessarily mean AES has a backdoor — it means national security isn’t built on trust in a foreign agency.</p>
+<div class="historical-ciphers">
+<div class="cipher-card">
+<h4 data-i18n="cipher1.title">AES (USA, NIST)</h4>
+<p data-i18n="cipher1.text">The de facto world standard of the civilian internet: it encrypts almost all web traffic, Wi-Fi and disks. The regulator is the American NIST.</p>
+<p data-i18n="cipher1.key">Open, but under foreign control</p>
+</div>
+<div class="cipher-card">
+<h4 data-i18n="cipher2.title">Kuznyechik (Russia)</h4>
+<p data-i18n="cipher2.text">The Russian standard GOST R 34.12-2015 — also an SP-network like AES: a 128-bit block, a 256-bit key, 10 rounds. The regulator is the FSB (TC 26).</p>
+<p data-i18n="cipher2.key">Own cipher, own regulator</p>
+</div>
+<div class="cipher-card">
+<h4 data-i18n="cipher3.title">SM4 (China)</h4>
+<p data-i18n="cipher3.text">China’s national cipher (standard GB/T 32907): a 128-bit block and key, 32 rounds. It’s mandatory for many uses inside the country, such as Chinese Wi-Fi (WAPI).</p>
+<p data-i18n="cipher3.key">China’s cryptographic sovereignty</p>
+</div>
+</div>
+<p data-i18n="block3.mid">And that’s not all: almost every major power has its own block cipher, and what they share is the SP-network scheme itself, on which most modern algorithms are built:</p>
+<div class="modern-algorithms">
+<span class="algorithm-tag important">AES-128</span>
+<span class="algorithm-tag important">AES-192</span>
+<span class="algorithm-tag important">AES-256</span>
+<span class="algorithm-tag russian" data-i18n="tag.kuz">KUZNYECHIK (GOST)</span>
+<span class="algorithm-tag">SM4</span>
+<span class="algorithm-tag">Serpent</span>
+<span class="algorithm-tag">Twofish</span>
+<span class="algorithm-tag">Camellia</span>
+</div>
+<div class="warning-box">
+<strong data-i18n="warning1.label">And what about Russia?</strong>
+<span data-i18n="warning1.text">Russia has two modern ciphers. <span class="highlight-gold">"Kuznyechik"</span> is an SP-network, a direct relative of AES. <span class="highlight">"Magma"</span> (the former GOST 28147-89), on the other hand, is built differently — it’s a Feistel network. Both are fixed by current GOST standards; their modes of operation are defined in GOST R 34.13-2015.</span>
+</div>
+</section>
+
+<!-- Блок 4: практика -->
+<section class="content-block">
+<h2 data-i18n="block4.heading">Build AES with your own hands</h2>
+<p data-i18n="block4.intro">The Ludus Lab interactive demo runs the same operations as the real AES, but on a tiny 16-bit block (a 2×2 matrix, 2 rounds) — so that every step is visible in full. You can:</p>
+<ul class="action-list">
+<li><span class="action-icon">🔤</span><div class="action-text" data-i18n="action1"><span><strong>Turn text into bits</strong> and lay the block into a 2×2 matrix — exactly the way AES fills its bytes column by column</span></div></li>
+<li><span class="action-icon">🔑</span><div class="action-text" data-i18n="action2"><span><strong>Build the key schedule</strong> — see how one key produces K0, K1 and K2 through a chain of XOR and the S-box, with the Rcon constants</span></div></li>
+<li><span class="action-icon">🔀</span><div class="action-text" data-i18n="action3"><span><strong>Step through the S-box</strong> — confirm it’s the only non-linear operation, and that it’s what provides the "confusion"</span></div></li>
+<li><span class="action-icon">🌊</span><div class="action-text" data-i18n="action4"><span><strong>Check the avalanche effect</strong> — flip one input bit and watch how, after mixing, about half of the ciphertext bits change</span></div></li>
+<li><span class="action-icon">🔄</span><div class="action-text" data-i18n="action5"><span><strong>Run both rounds and decrypt</strong> the result with the inverse operations — and confirm the message comes back intact</span></div></li>
+<li><span class="action-icon">📡</span><div class="action-text" data-i18n="action6"><span><strong>Send the ciphertext to Bob</strong> over the open channel — and see why Eve, even after intercepting it, gets nothing without the key</span></div></li>
+</ul>
+<div class="key-insight">
+<strong data-i18n="insight2.label">The game’s main lesson:</strong>
+<span data-i18n="insight2.text">In AES every step is reversible, and mixing the columns is even linear — and yet without the key the cipher stays a blank wall. Its strength is assembled from <span class="highlight-gold">openness, repetition, a single non-linear S-box, and the key</span>. Work through it on 16 bits and the principle behind AES, Kuznyechik, and dozens of other ciphers becomes clear.</span>
+</div>
+</section>
+
+<!-- Дополнительный материал -->
+<details class="advanced-section">
+<summary data-i18n="advanced.summary">For the curious</summary>
+<div class="advanced-content">
+<h3 data-i18n="advanced.compare.heading">AES and Kuznyechik side by side</h3>
+<p data-i18n="advanced.compare.text">Both ciphers are substitution-permutation networks, but with different histories and different parameters:</p>
+<table class="comparison-table">
+<tr><th style="width: 25%;" data-i18n="table.param">Parameter</th><th class="western-cell">AES</th><th class="russian-cell" data-i18n="table.head.ru">Kuznyechik (GOST R 34.12-2015)</th></tr>
+<tr><td data-i18n="table.row1.label">Country of origin</td><td class="western-cell" data-i18n="table.row1.west">Belgium / USA (standard)</td><td class="russian-cell" data-i18n="table.row1.ru">Russia</td></tr>
+<tr><td data-i18n="table.row2.label">Year adopted</td><td class="western-cell">2001</td><td class="russian-cell">2015</td></tr>
+<tr><td data-i18n="table.row3.label">Architecture</td><td class="western-cell" data-i18n="table.row3.spn">SP-network</td><td class="russian-cell" data-i18n="table.row3.spn">SP-network</td></tr>
+<tr><td data-i18n="table.row4.label">Block size</td><td class="western-cell" data-i18n="table.bits128">128 bits</td><td class="russian-cell" data-i18n="table.bits128">128 bits</td></tr>
+<tr><td data-i18n="table.row5.label">Key length</td><td class="western-cell" data-i18n="table.row5.west">128 / 192 / 256 bits</td><td class="russian-cell" data-i18n="table.bits256">256 bits</td></tr>
+<tr><td data-i18n="table.row6.label">Number of rounds</td><td class="western-cell" data-i18n="table.row6.west">10 / 12 / 14</td><td class="russian-cell">10</td></tr>
+<tr><td data-i18n="table.row7.label">How it was chosen</td><td class="western-cell" data-i18n="table.row7.west">Open international competition</td><td class="russian-cell" data-i18n="table.row7.ru">Developed under the regulator</td></tr>
+<tr><td data-i18n="table.row8.label">Regulator</td><td class="western-cell" data-i18n="table.row8.west">NIST (USA)</td><td class="russian-cell"><span class="highlight-neon" data-i18n="table.row8.ru">FSB of Russia (TC 26)</span></td></tr>
+</table>
+<h3 data-i18n="advanced.secure.heading">Why AES still hasn’t been broken</h3>
+<p data-i18n="advanced.secure.p1">After twenty years of public analysis, the best attacks on AES-128 (such as "biclique") cut the search only to about 2<sup>126</sup> instead of 2<sup>128</sup> — barely any gain at all. In practice that means there’s no shortcut: all that’s left is trying every key, and that’s impossible.</p>
+<p data-i18n="advanced.secure.p2">Even a quantum computer doesn’t save the attacker: Grover’s algorithm only "halves" the strength, turning a 256-bit key into the equivalent of a 128-bit one. That’s why <span class="highlight">AES-256</span> is considered resistant even to the quantum threat — and why it’s recommended for long-term protection.</p>
+<h3 data-i18n="advanced.daily.heading">Where you use AES every day</h3>
+<div class="topics-grid">
+<div class="topic-card"><h4 data-i18n="topic1.title">HTTPS and the internet</h4><p data-i18n="topic1.desc">The padlock in the address bar is most often AES-GCM: it encrypts almost all web traffic in TLS</p></div>
+<div class="topic-card"><h4 data-i18n="topic2.title">Wi-Fi and messengers</h4><p data-i18n="topic2.desc">WPA2/WPA3 protect your network with AES-CCM; encryption in popular messengers is built on AES too</p></div>
+<div class="topic-card"><h4 data-i18n="topic3.title">Disks and phones</h4><p data-i18n="topic3.desc">BitLocker, FileVault and smartphone storage encryption all use AES; processors speed it up with AES-NI instructions</p></div>
+</div>
+<h3 data-i18n="advanced.facts.heading">Interesting facts</h3>
+<ul style="margin-left: 20px; color: #a0c0d0;">
+<li data-i18n="facts.li1">The name "Rijndael" is made from the authors’ surnames — Rijmen and Daemen; it’s pronounced roughly like "rain-dahl"</li>
+<li data-i18n="facts.li2">AES’s last round has no MixColumns: it’s linear and key-independent, so it could simply be stripped off the ciphertext — it adds no strength there</li>
+<li data-i18n="facts.li3">The S-box is the only non-linear part of AES, and its values aren’t "magic": they come from an open rule (the multiplicative inverse in the field GF(2⁸) plus an affine transformation). That’s exactly why the transparency of AES itself is hard to doubt.</li>
+<li data-i18n="facts.li4">The Rcon constants in the key schedule differ for each round — so the rounds don’t become identical and open the door to "slide attacks"</li>
+<li data-i18n="facts.li5">"Magma" (GOST) is a Feistel network, while "Kuznyechik" is an SP-network; curiously, Kuznyechik’s round keys are produced by a Feistel network</li>
+</ul>
+<div class="key-insight" style="margin-top: 20px;">
+<strong data-i18n="insight3.label">An unexpected conclusion:</strong>
+<span data-i18n="insight3.text">Being open and unbroken is a necessary condition, but not a sufficient one. A state entrusting a cipher with its secrets won’t rely on a standard written and controlled by another power. Trust in cryptography is not only mathematics but also power. That’s why Kuznyechik, SM4 and others appeared: the real question isn’t "is there a secret in AES" but "whose hand holds the pen that writes the standard."</span>
+</div>
+</div>
+</details>
+
+<!-- Кнопки действий -->
+<div class="article-actions" id="article-actions">
+<p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Now you understand both how AES works and why its openness doesn’t make it the single cipher for everyone: where the math ends, the question of trust and control begins</p>
+<div class="action-buttons">
+<a href="/games/aes/" class="btn-primary" data-i18n="actions.play">🚀 Launch the interactive demo</a>
+<a href="/#theory-section" class="btn-secondary" data-i18n="actions.back">← Back to the topic list</a>
+</div>
+<p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">In the demo you’ll walk 16 bits all the way from plaintext to ciphertext and back — and see why this wall can’t be crossed without the key</p>
+</div>
+</div>
+
+<!-- Футер -->
+<footer class="theory-footer">
+<p data-i18n="footer.line1">© 2025 Ludus Lab · Complex things through simple games</p>
+<p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">This article is a simplified explanation of the principles. Real AES and Kuznyechik work on 128-bit blocks and use more elaborate operations in a Galois field than the interactive demo shows.</p>
+</footer>
+
+<script>
+    const I18N = {
+      ru: {
+        'meta.title': 'AES: шифр без секретов? | Ludus Lab',
+        'meta.description': 'AES открыт и за 20 лет не взломан — почему же Россия сделала «Кузнечик», Китай — SM4, а крупные державы вообще разрабатывают свои шифры? Где кончается математика и начинается вопрос доверия.',
+        'nav.home': 'Главная',
+        'nav.play': 'Играть',
+        'article.category': 'Современная криптография',
+        'article.title': 'AES: шифр без секретов?',
+        'article.subtitle': 'AES открыт и за двадцать лет не взломан. Почему же Россия, Китай и другие державы делают собственные шифры вместо того, чтобы взять готовый?',
+        'meta.readtime': '⏱️ 6 мин чтения',
+        'meta.level': '📊 Средний уровень',
+        'meta.security': '🔒 Стандарт HTTPS, Wi-Fi и дисков',
+        'block1.heading': 'Если AES так открыт, почему не все им пользуются?',
+        'block1.p1': 'Полное описание <span class="highlight-gold">AES</span> опубликовано и доступно любому: оно записано в открытом стандарте, встроено в каждый браузер и телефон, разобрано в учебниках. Его публично пытаются сломать больше двадцати лет — и не могут. Казалось бы, идеальный общий стандарт для всех. Но нет: Россия приняла свой шифр — <span class="highlight">«Кузнечик»</span>, Китай — <span class="highlight">SM4</span>, собственные стандарты есть и у других стран.',
+        'block1.p2': 'Если алгоритм открыт и за двадцать лет в нём не нашли ни одной практической дыры, что заставляет целые государства годами разрабатывать свой шифр вместо готового? Может, «прозрачность» AES не такая уж и полная?',
+        'insight1.label': 'Ключевая мысль:',
+        'insight1.text': 'Математически AES действительно открыт — и это его сила. Но доверие государства к шифру — это не только про математику. Вопрос не столько «есть ли тайна в самом алгоритме», сколько «кто написал стандарт и кто его контролирует». Именно здесь и проходит граница, из-за которой появляются национальные шифры.',
+        'block2.heading': 'Как устроен AES',
+        'block2.intro': 'Сначала разберёмся, почему к математике AES почти нет претензий, — а потом вернёмся к тому, почему это убеждает не всех. AES — это <span class="highlight">подстановочно-перестановочная сеть</span> (SP-сеть): он не делит блок пополам, как сеть Фейстеля, а держит его в матрице байт и каждый раунд меняет её целиком четырьмя слоями операций. Поэтому каждая операция обязана быть обратимой.',
+        'step1.title': 'Блок — это матрица',
+        'step1.text': 'Блок данных раскладывается по ячейкам квадратной матрицы. В настоящем AES это <span class="highlight-symmetric">матрица 4×4 из 16 байт</span> (128 бит); в игре Ludus Lab — матрица 2×2 из четырёх полубайтов (16 бит). Все дальнейшие шаги работают со строками и столбцами этой матрицы.',
+        'step2.title': 'SubBytes — замена по S-блоку',
+        'step2.text': 'Каждый байт заменяется другим по фиксированной таблице — <span class="highlight">S-блоку</span>. Это «запутывание» (confusion): единственная <span class="highlight-gold">нелинейная</span> операция AES. Без неё весь шифр свёлся бы к системе линейных уравнений и решался бы напрямую.',
+        'step3.title': 'ShiftRows и MixColumns — перемешивание',
+        'step3.text': 'Строки матрицы циклически сдвигаются, а столбцы перемешиваются между собой. Это «рассеивание» (diffusion): один изменённый бит входа за пару раундов расходится по всему блоку. Обе операции линейны и обратимы.',
+        'step4.title': 'AddRoundKey — сложение с ключом',
+        'step4.text': 'Состояние складывается по модулю 2 (XOR) с ключом этого раунда. Ключи раундов заранее выводятся из общего ключа отдельной процедурой — <span class="highlight">расписанием ключей</span>. Именно этот шаг и нельзя отменить, не зная ключа.',
+        'step5.title': 'Повтор раундов и расшифровка',
+        'step5.text': 'Слои повторяются много раз: <span class="highlight">10, 12 или 14 раундов</span> в зависимости от длины ключа. В последнем раунде MixColumns нет — он ничего не добавил бы к стойкости. Чтобы расшифровать, Боб выполняет обратные операции в обратном порядке — но только зная ключ.',
+        'scheme1.title': 'Один раунд AES',
+        'scheme1.label.sub': 'Замена по S-блоку (confusion)',
+        'scheme1.label.shift': 'Сдвиг строк',
+        'scheme1.label.mix': 'Перемешивание столбцов (diffusion)',
+        'scheme1.label.ark': 'Сложение с ключом раунда',
+        'scheme1.note': 'Каждый шаг обратим — но все вместе они переплетают блок с ключом так, что прокрутить назад без ключа невозможно.',
+        'insightDiff.label': 'Почему нельзя прокрутить назад:',
+        'insightDiff.text': 'Отменить сложение с ключом нельзя, не зная ключа. А нелинейный S-блок и десяток раундов делают так, что любая попытка «распутать» шифр без ключа упирается в чудовищно сложную систему уравнений. <span class="highlight">Confusion</span> прячет связь между ключом и шифротекстом, <span class="highlight">diffusion</span> размазывает каждый бит по всему блоку — а повторение обоих слоёв не оставляет короткого пути, кроме перебора ключей.',
+        'block3.heading': 'Открытый — но чей?',
+        'block3.intro': 'Выбирали AES невиданно открыто: в 1997–2000 годах институт стандартов США (NIST) провёл международный конкурс — 15 шифров со всего мира и три года публичного анализа, где слабости искал кто угодно. Победил Rijndael бельгийцев Йоана Дамена и Винсента Рэймена, и в 2001 году он стал стандартом. Это честный процесс и реальная сила AES. И всё же открытость алгоритма — не то же самое, что доверие к тому, кто его выбрал и кто держит стандарт в руках.',
+        'block3.distrust': 'У недоверия есть причины в истории. Когда-то АНБ тайно переправило S-блоки шифра DES — позже выяснилось, что ради защиты от атаки, но секретность на двадцать лет породила подозрения. А в 2013 году всплыла история <span class="highlight">Dual_EC_DRBG</span> — стандартного генератора случайных чисел NIST, в который, судя по всему, АНБ заложило лазейку. В самом AES ничего подобного не нашли — больше того, его S-блок построен по открытому алгебраическому правилу, а не на «магических» числах. Но для государства «скорее всего, чисто» — недостаточное основание, чтобы доверить шифру свои тайны.',
+        'block3.sovereignty': 'Отсюда — <span class="highlight-gold">криптографический суверенитет</span>: свой шифр, свой регулятор, аудит силами своих экспертов и независимость от чужого стандарта. Это не обязательно значит, что в AES есть закладка, — это значит, что национальную безопасность не строят на доверии к чужому ведомству.',
+        'cipher1.title': 'AES (США, NIST)',
+        'cipher1.text': 'Де-факто мировой стандарт гражданского интернета: им зашифрован почти весь веб-трафик, Wi-Fi и диски. Регулятор — американский NIST.',
+        'cipher1.key': 'Открытый, но под чужим контролем',
+        'cipher2.title': '«Кузнечик» (Россия)',
+        'cipher2.text': 'Российский стандарт ГОСТ Р 34.12-2015 — тоже SP-сеть, как AES: блок 128 бит, ключ 256 бит, 10 раундов. Регулятор — ФСБ (ТК 26).',
+        'cipher2.key': 'Свой шифр, свой регулятор',
+        'cipher3.title': 'SM4 (Китай)',
+        'cipher3.text': 'Национальный шифр КНР (стандарт GB/T 32907): блок и ключ по 128 бит, 32 раунда. Обязателен во многих применениях внутри страны, например в китайском Wi-Fi (WAPI).',
+        'cipher3.key': 'Криптографический суверенитет Китая',
+        'block3.mid': 'И это не всё: почти у каждой крупной державы есть свой блочный шифр, а общая у них — сама схема SP-сети, на которой построено большинство современных алгоритмов:',
+        'warning1.label': 'А что в России?',
+        'warning1.text': 'У России два современных шифра. <span class="highlight-gold">«Кузнечик»</span> — это SP-сеть, прямой родственник AES. А вот <span class="highlight">«Магма»</span> (бывший ГОСТ 28147-89) устроена иначе — это сеть Фейстеля. Оба закреплены действующими ГОСТами; режимы их работы описаны в ГОСТ Р 34.13-2015.',
+        'block4.heading': 'Соберите AES своими руками',
+        'block4.intro': 'В интерактивной демонстрации Ludus Lab работают те же операции, что и в настоящем AES, но на крошечном блоке 16 бит (матрица 2×2, 2 раунда) — чтобы каждый шаг был виден целиком. Вы сможете:',
+        'action1': '<span><strong>Превратить текст в биты</strong> и уложить блок в матрицу 2×2 — ровно так, как AES раскладывает байты по столбцам</span>',
+        'action2': '<span><strong>Построить расписание ключей</strong> — увидеть, как из одного ключа по цепочке XOR и S-блока получаются K0, K1 и K2 с константами Rcon</span>',
+        'action3': '<span><strong>Пройти S-блок</strong> — убедиться, что это единственная нелинейная операция, и именно она даёт «запутывание»</span>',
+        'action4': '<span><strong>Проверить лавинный эффект</strong> — перевернуть один бит входа и увидеть, как после перемешивания меняется около половины бит шифротекста</span>',
+        'action5': '<span><strong>Пройти оба раунда и расшифровать</strong> результат обратными операциями — и убедиться, что сообщение восстановилось</span>',
+        'action6': '<span><strong>Передать шифротекст Бобу</strong> по открытому каналу — и увидеть, почему Ева, перехватив его, без ключа ничего не получает</span>',
+        'insight2.label': 'Главный урок игры:',
+        'insight2.text': 'В AES каждый шаг обратим, а перемешивание столбцов и вовсе линейно — и всё же без ключа шифр остаётся глухой стеной. Стойкость собирается из <span class="highlight-gold">открытости, повторения, одного нелинейного S-блока и ключа</span>. Разберите это на 16 битах — и принцип AES, «Кузнечика» и десятков других шифров станет понятен.',
+        'advanced.summary': 'Для любознательных',
+        'advanced.compare.heading': 'AES и «Кузнечик» рядом',
+        'advanced.compare.text': 'Оба шифра — подстановочно-перестановочные сети, но с разной историей и разными параметрами:',
+        'table.param': 'Параметр',
+        'table.row1.label': 'Страна разработки',
+        'table.row1.west': 'Бельгия / США (стандарт)',
+        'table.row1.ru': 'Россия',
+        'table.row2.label': 'Год принятия',
+        'table.row3.label': 'Архитектура',
+        'table.row3.spn': 'SP-сеть',
+        'table.row4.label': 'Размер блока',
+        'table.row5.label': 'Длина ключа',
+        'table.row5.west': '128 / 192 / 256 бит',
+        'table.row6.label': 'Число раундов',
+        'table.row6.west': '10 / 12 / 14',
+        'table.row7.label': 'Как выбирали',
+        'table.row7.west': 'Открытый международный конкурс',
+        'table.row7.ru': 'Разработка под эгидой регулятора',
+        'table.row8.label': 'Регулятор',
+        'table.row8.west': 'NIST (США)',
+        'advanced.secure.heading': 'Почему AES до сих пор не взломан',
+        'advanced.secure.p1': 'За двадцать лет публичного анализа лучшие атаки на AES-128 (например, «biclique») сокращают перебор лишь примерно до 2<sup>126</sup> вместо 2<sup>128</sup> — то есть почти не дают выигрыша. На практике это означает: короткого пути нет, остаётся только перебор ключей, а он невозможен.',
+        'advanced.secure.p2': 'Даже квантовый компьютер не спасает атакующего: алгоритм Гровера лишь «ополовинивает» стойкость, превращая 256-битный ключ в эквивалент 128-битного. Поэтому <span class="highlight">AES-256</span> считается устойчивым и к квантовой угрозе — и именно его рекомендуют для долгосрочной защиты.',
+        'advanced.daily.heading': 'Где вы пользуетесь AES каждый день',
+        'topic1.title': 'HTTPS и интернет',
+        'topic1.desc': 'Замочек в адресной строке — это чаще всего AES-GCM: он шифрует почти весь веб-трафик в TLS',
+        'topic2.title': 'Wi-Fi и мессенджеры',
+        'topic2.desc': 'WPA2/WPA3 защищают сеть режимом AES-CCM; на AES построено и шифрование в популярных мессенджерах',
+        'topic3.title': 'Диски и телефоны',
+        'topic3.desc': 'BitLocker, FileVault и шифрование памяти смартфонов используют AES; процессоры ускоряют его командами AES-NI',
+        'advanced.facts.heading': 'Интересные факты',
+        'facts.li1': 'Название «Rijndael» составлено из фамилий авторов — Rijmen и Daemen; произносят его примерно как «рейндал»',
+        'facts.li2': 'В последнем раунде AES нет MixColumns: он линеен и не зависит от ключа, поэтому его можно было бы просто снять с шифротекста — стойкости он там не добавляет',
+        'facts.li3': 'S-блок — единственная нелинейная часть AES, и его значения не «магические»: они получены по открытому правилу (обратный элемент в поле GF(2⁸) плюс аффинное преобразование). Именно поэтому в прозрачности самого AES сомневаться трудно.',
+        'facts.li4': 'Константы Rcon в расписании ключей разные для каждого раунда — чтобы раунды не стали одинаковыми и не открыли дорогу «слайд-атакам»',
+        'facts.li5': '«Магма» (ГОСТ) — сеть Фейстеля, а «Кузнечик» — SP-сеть; любопытно, что ключи раундов «Кузнечика» вырабатываются как раз сетью Фейстеля',
+        'insight3.label': 'Неожиданный вывод:',
+        'insight3.text': 'Открытость и несломанность — условие необходимое, но не достаточное. Государство, доверяющее шифру свои тайны, не станет опираться на стандарт, который написан и контролируется другой державой. Доверие в криптографии — это не только математика, но и власть. Поэтому и появились «Кузнечик», SM4 и другие: главный вопрос не «есть ли в AES секрет», а «в чьих руках перо, которым пишется стандарт».',
+        'actions.intro': 'Теперь вы понимаете, и как устроен AES, и почему его открытость не делает его единым шифром для всех: там, где кончается математика, начинается вопрос доверия и контроля',
+        'actions.play': '🚀 Запустить интерактивную демонстрацию',
+        'actions.back': '← Вернуться к списку тем',
+        'actions.outro': 'В демонстрации вы на 16 битах пройдёте весь путь от открытого текста до шифротекста и обратно — и увидите, почему эту стену невозможно пройти без ключа',
+        'footer.line1': '© 2025 Ludus Lab · Сложные вещи простыми играми',
+        'footer.line2': 'Эта статья — упрощённое объяснение принципов. Настоящие AES и «Кузнечик» работают со 128-битными блоками и используют более сложные операции в поле Галуа, чем показано в интерактивной демонстрации.',
+        'tag.kuz': 'КУЗНЕЧИК (ГОСТ)',
+        'table.head.ru': 'Кузнечик (ГОСТ Р 34.12-2015)',
+        'table.bits128': '128 бит',
+        'table.bits256': '256 бит',
+        'table.row8.ru': 'ФСБ России (ТК 26)',
+      },
+      en: {
+        'meta.title': 'AES: A Cipher With No Secrets? | Ludus Lab',
+        'meta.description': 'AES is open and unbroken after 20 years — so why did Russia build Kuznyechik, China build SM4, and great powers keep designing their own ciphers? Where the math ends and the question of trust begins.',
+        'nav.home': 'Home',
+        'nav.play': 'Play',
+        'article.category': 'Modern cryptography',
+        'article.title': 'AES: A Cipher With No Secrets?',
+        'article.subtitle': 'AES is open and, after twenty years, unbroken. So why do Russia, China and other powers build their own ciphers instead of just adopting it?',
+        'meta.readtime': '⏱️ 6 min read',
+        'meta.level': '📊 Intermediate level',
+        'meta.security': '🔒 The standard behind HTTPS, Wi-Fi and disks',
+        'block1.heading': 'If AES is so open, why doesn’t everyone use it?',
+        'block1.p1': 'The full specification of <span class="highlight-gold">AES</span> is published and available to anyone: it’s written down in an open standard, built into every browser and phone, and explained in textbooks. People have been trying to break it in public for more than twenty years — without success. You’d think it would be the one shared standard for everyone. But no: Russia adopted its own cipher — <span class="highlight">Kuznyechik</span>, China adopted <span class="highlight">SM4</span>, and other countries have their own standards too.',
+        'block1.p2': 'If the algorithm is open and in twenty years no one has found a single practical flaw in it, what drives entire states to spend years building their own cipher instead of using the ready-made one? Maybe the "transparency" of AES isn’t so complete after all?',
+        'insight1.label': 'Key takeaway:',
+        'insight1.text': 'Mathematically AES really is open — and that’s its strength. But a state’s trust in a cipher is about more than math. The question is less "is there a secret in the algorithm itself" and more "who wrote the standard and who controls it." That’s exactly where the line runs that gives rise to national ciphers.',
+        'block2.heading': 'How AES is built',
+        'block2.intro': 'First let’s see why there’s almost nothing to criticize in the math of AES — and then come back to why that doesn’t convince everyone. AES is a <span class="highlight">substitution-permutation network</span> (SP-network): instead of splitting the block in half like a Feistel network, it keeps the block in a matrix of bytes and transforms the whole thing each round with four layers of operations. So every operation has to be reversible.',
+        'step1.title': 'The block is a matrix',
+        'step1.text': 'The data block is laid out across the cells of a square matrix. In real AES that’s a <span class="highlight-symmetric">4×4 matrix of 16 bytes</span> (128 bits); in the Ludus Lab game it’s a 2×2 matrix of four nibbles (16 bits). Every later step works on the rows and columns of this matrix.',
+        'step2.title': 'SubBytes — the S-box substitution',
+        'step2.text': 'Each byte is replaced by another according to a fixed table — the <span class="highlight">S-box</span>. This is "confusion": the single <span class="highlight-gold">non-linear</span> operation in AES. Without it, the whole cipher would collapse into a system of linear equations and could be solved directly.',
+        'step3.title': 'ShiftRows and MixColumns — mixing',
+        'step3.text': 'The rows of the matrix are cyclically shifted, and the columns are mixed together. This is "diffusion": within a couple of rounds, one changed input bit spreads across the whole block. Both operations are linear and reversible.',
+        'step4.title': 'AddRoundKey — adding the key',
+        'step4.text': 'The state is XORed with this round’s key. The round keys are derived in advance from the shared key by a separate procedure — the <span class="highlight">key schedule</span>. This is exactly the step you can’t undo without knowing the key.',
+        'step5.title': 'Repeating rounds and decryption',
+        'step5.text': 'The layers repeat many times: <span class="highlight">10, 12 or 14 rounds</span> depending on the key length. The last round has no MixColumns — it would add nothing to the strength. To decrypt, Bob runs the inverse operations in reverse order — but only if he knows the key.',
+        'scheme1.title': 'One round of AES',
+        'scheme1.label.sub': 'S-box substitution (confusion)',
+        'scheme1.label.shift': 'Shift the rows',
+        'scheme1.label.mix': 'Mix the columns (diffusion)',
+        'scheme1.label.ark': 'Add the round key',
+        'scheme1.note': 'Every step is reversible — but together they entangle the block with the key so thoroughly that you can’t run it backwards without the key.',
+        'insightDiff.label': 'Why you can’t run it backwards:',
+        'insightDiff.text': 'You can’t undo the key addition without knowing the key. And the non-linear S-box plus a dozen rounds mean that any attempt to "untangle" the cipher without the key runs into a monstrously complex system of equations. <span class="highlight">Confusion</span> hides the relationship between key and ciphertext; <span class="highlight">diffusion</span> smears each bit across the whole block — and repeating both layers leaves no shortcut other than trying every key.',
+        'block3.heading': 'Open — but whose?',
+        'block3.intro': 'AES was chosen with unprecedented openness: from 1997 to 2000 the US standards institute (NIST) ran an international competition — 15 ciphers from around the world and three years of public analysis, with anyone free to hunt for weaknesses. The winner was Rijndael, by the Belgians Joan Daemen and Vincent Rijmen, and in 2001 it became the standard. That’s an honest process and a genuine strength of AES. And yet the openness of the algorithm is not the same as trusting whoever chose it and whoever holds the standard in their hands.',
+        'block3.distrust': 'The distrust has roots in history. The NSA once secretly altered the S-boxes of the DES cipher — it later turned out to be for defense against an attack, but twenty years of secrecy bred suspicion. And in 2013 the <span class="highlight">Dual_EC_DRBG</span> affair surfaced — a NIST-standard random number generator into which the NSA had, it appears, built a backdoor. Nothing of the kind has been found in AES itself — and in fact its S-box is built from an open algebraic rule, not from "magic" numbers. But for a state, "probably clean" is not a strong enough basis on which to entrust a cipher with its secrets.',
+        'block3.sovereignty': 'Hence <span class="highlight-gold">cryptographic sovereignty</span>: your own cipher, your own regulator, audits by your own experts, and independence from a foreign standard. This doesn’t necessarily mean AES has a backdoor — it means national security isn’t built on trust in a foreign agency.',
+        'cipher1.title': 'AES (USA, NIST)',
+        'cipher1.text': 'The de facto world standard of the civilian internet: it encrypts almost all web traffic, Wi-Fi and disks. The regulator is the American NIST.',
+        'cipher1.key': 'Open, but under foreign control',
+        'cipher2.title': 'Kuznyechik (Russia)',
+        'cipher2.text': 'The Russian standard GOST R 34.12-2015 — also an SP-network like AES: a 128-bit block, a 256-bit key, 10 rounds. The regulator is the FSB (TC 26).',
+        'cipher2.key': 'Own cipher, own regulator',
+        'cipher3.title': 'SM4 (China)',
+        'cipher3.text': 'China’s national cipher (standard GB/T 32907): a 128-bit block and key, 32 rounds. It’s mandatory for many uses inside the country, such as Chinese Wi-Fi (WAPI).',
+        'cipher3.key': 'China’s cryptographic sovereignty',
+        'block3.mid': 'And that’s not all: almost every major power has its own block cipher, and what they share is the SP-network scheme itself, on which most modern algorithms are built:',
+        'warning1.label': 'And what about Russia?',
+        'warning1.text': 'Russia has two modern ciphers. <span class="highlight-gold">"Kuznyechik"</span> is an SP-network, a direct relative of AES. <span class="highlight">"Magma"</span> (the former GOST 28147-89), on the other hand, is built differently — it’s a Feistel network. Both are fixed by current GOST standards; their modes of operation are defined in GOST R 34.13-2015.',
+        'block4.heading': 'Build AES with your own hands',
+        'block4.intro': 'The Ludus Lab interactive demo runs the same operations as the real AES, but on a tiny 16-bit block (a 2×2 matrix, 2 rounds) — so that every step is visible in full. You can:',
+        'action1': '<span><strong>Turn text into bits</strong> and lay the block into a 2×2 matrix — exactly the way AES fills its bytes column by column</span>',
+        'action2': '<span><strong>Build the key schedule</strong> — see how one key produces K0, K1 and K2 through a chain of XOR and the S-box, with the Rcon constants</span>',
+        'action3': '<span><strong>Step through the S-box</strong> — confirm it’s the only non-linear operation, and that it’s what provides the "confusion"</span>',
+        'action4': '<span><strong>Check the avalanche effect</strong> — flip one input bit and watch how, after mixing, about half of the ciphertext bits change</span>',
+        'action5': '<span><strong>Run both rounds and decrypt</strong> the result with the inverse operations — and confirm the message comes back intact</span>',
+        'action6': '<span><strong>Send the ciphertext to Bob</strong> over the open channel — and see why Eve, even after intercepting it, gets nothing without the key</span>',
+        'insight2.label': 'The game’s main lesson:',
+        'insight2.text': 'In AES every step is reversible, and mixing the columns is even linear — and yet without the key the cipher stays a blank wall. Its strength is assembled from <span class="highlight-gold">openness, repetition, a single non-linear S-box, and the key</span>. Work through it on 16 bits and the principle behind AES, Kuznyechik, and dozens of other ciphers becomes clear.',
+        'advanced.summary': 'For the curious',
+        'advanced.compare.heading': 'AES and Kuznyechik side by side',
+        'advanced.compare.text': 'Both ciphers are substitution-permutation networks, but with different histories and different parameters:',
+        'table.param': 'Parameter',
+        'table.row1.label': 'Country of origin',
+        'table.row1.west': 'Belgium / USA (standard)',
+        'table.row1.ru': 'Russia',
+        'table.row2.label': 'Year adopted',
+        'table.row3.label': 'Architecture',
+        'table.row3.spn': 'SP-network',
+        'table.row4.label': 'Block size',
+        'table.row5.label': 'Key length',
+        'table.row5.west': '128 / 192 / 256 bits',
+        'table.row6.label': 'Number of rounds',
+        'table.row6.west': '10 / 12 / 14',
+        'table.row7.label': 'How it was chosen',
+        'table.row7.west': 'Open international competition',
+        'table.row7.ru': 'Developed under the regulator',
+        'table.row8.label': 'Regulator',
+        'table.row8.west': 'NIST (USA)',
+        'advanced.secure.heading': 'Why AES still hasn’t been broken',
+        'advanced.secure.p1': 'After twenty years of public analysis, the best attacks on AES-128 (such as "biclique") cut the search only to about 2<sup>126</sup> instead of 2<sup>128</sup> — barely any gain at all. In practice that means there’s no shortcut: all that’s left is trying every key, and that’s impossible.',
+        'advanced.secure.p2': 'Even a quantum computer doesn’t save the attacker: Grover’s algorithm only "halves" the strength, turning a 256-bit key into the equivalent of a 128-bit one. That’s why <span class="highlight">AES-256</span> is considered resistant even to the quantum threat — and why it’s recommended for long-term protection.',
+        'advanced.daily.heading': 'Where you use AES every day',
+        'topic1.title': 'HTTPS and the internet',
+        'topic1.desc': 'The padlock in the address bar is most often AES-GCM: it encrypts almost all web traffic in TLS',
+        'topic2.title': 'Wi-Fi and messengers',
+        'topic2.desc': 'WPA2/WPA3 protect your network with AES-CCM; encryption in popular messengers is built on AES too',
+        'topic3.title': 'Disks and phones',
+        'topic3.desc': 'BitLocker, FileVault and smartphone storage encryption all use AES; processors speed it up with AES-NI instructions',
+        'advanced.facts.heading': 'Interesting facts',
+        'facts.li1': 'The name "Rijndael" is made from the authors’ surnames — Rijmen and Daemen; it’s pronounced roughly like "rain-dahl"',
+        'facts.li2': 'AES’s last round has no MixColumns: it’s linear and key-independent, so it could simply be stripped off the ciphertext — it adds no strength there',
+        'facts.li3': 'The S-box is the only non-linear part of AES, and its values aren’t "magic": they come from an open rule (the multiplicative inverse in the field GF(2⁸) plus an affine transformation). That’s exactly why the transparency of AES itself is hard to doubt.',
+        'facts.li4': 'The Rcon constants in the key schedule differ for each round — so the rounds don’t become identical and open the door to "slide attacks"',
+        'facts.li5': '"Magma" (GOST) is a Feistel network, while "Kuznyechik" is an SP-network; curiously, Kuznyechik’s round keys are produced by a Feistel network',
+        'insight3.label': 'An unexpected conclusion:',
+        'insight3.text': 'Being open and unbroken is a necessary condition, but not a sufficient one. A state entrusting a cipher with its secrets won’t rely on a standard written and controlled by another power. Trust in cryptography is not only mathematics but also power. That’s why Kuznyechik, SM4 and others appeared: the real question isn’t "is there a secret in AES" but "whose hand holds the pen that writes the standard."',
+        'actions.intro': 'Now you understand both how AES works and why its openness doesn’t make it the single cipher for everyone: where the math ends, the question of trust and control begins',
+        'actions.play': '🚀 Launch the interactive demo',
+        'actions.back': '← Back to the topic list',
+        'actions.outro': 'In the demo you’ll walk 16 bits all the way from plaintext to ciphertext and back — and see why this wall can’t be crossed without the key',
+        'footer.line1': '© 2025 Ludus Lab · Complex things through simple games',
+        'footer.line2': 'This article is a simplified explanation of the principles. Real AES and Kuznyechik work on 128-bit blocks and use more elaborate operations in a Galois field than the interactive demo shows.',
+        'tag.kuz': 'KUZNYECHIK (GOST)',
+        'table.head.ru': 'Kuznyechik (GOST R 34.12-2015)',
+        'table.bits128': '128 bits',
+        'table.bits256': '256 bits',
+        'table.row8.ru': 'FSB of Russia (TC 26)',
+      },
+      es: {
+        'meta.title': 'AES: ¿un cifrado sin secretos? | Ludus Lab',
+        'meta.description': 'El AES es abierto y lleva 20 años sin romperse — entonces, ¿por qué Rusia creó el Kuznyechik, China el SM4, y las grandes potencias siguen diseñando sus propios cifrados? Donde acaba la matemática y empieza la cuestión de la confianza.',
+        'nav.home': 'Inicio',
+        'nav.play': 'Jugar',
+        'article.category': 'Criptografía moderna',
+        'article.title': 'AES: ¿un cifrado sin secretos?',
+        'article.subtitle': 'El AES es abierto y, tras veinte años, sigue sin romperse. ¿Por qué entonces Rusia, China y otras potencias construyen sus propios cifrados en vez de adoptarlo?',
+        'meta.readtime': '⏱️ 6 min de lectura',
+        'meta.level': '📊 Nivel intermedio',
+        'meta.security': '🔒 El estándar de HTTPS, Wi-Fi y discos',
+        'block1.heading': 'Si el AES es tan abierto, ¿por qué no lo usan todos?',
+        'block1.p1': 'La especificación completa del <span class="highlight-gold">AES</span> está publicada y al alcance de cualquiera: está escrita en un estándar abierto, integrada en cada navegador y teléfono, y explicada en los libros de texto. Llevan más de veinte años intentando romperlo en público — sin éxito. Parecería el estándar común ideal para todos. Pero no: Rusia adoptó su propio cifrado — el <span class="highlight">Kuznyechik</span>, China el <span class="highlight">SM4</span>, y otros países también tienen sus estándares.',
+        'block1.p2': 'Si el algoritmo es abierto y en veinte años nadie le ha encontrado una sola grieta práctica, ¿qué empuja a estados enteros a pasar años construyendo su propio cifrado en vez de usar el que ya existe? ¿Será que la "transparencia" del AES no es tan completa?',
+        'insight1.label': 'Idea clave:',
+        'insight1.text': 'Matemáticamente el AES es realmente abierto — y esa es su fuerza. Pero la confianza de un estado en un cifrado va más allá de la matemática. La pregunta no es tanto "¿hay un secreto en el algoritmo?" como "¿quién escribió el estándar y quién lo controla?". Ahí pasa justamente la línea que da origen a los cifrados nacionales.',
+        'block2.heading': 'Cómo se construye el AES',
+        'block2.intro': 'Primero veamos por qué a la matemática del AES casi no hay nada que reprocharle — y luego volvamos a por qué eso no convence a todos. El AES es una <span class="highlight">red de sustitución-permutación</span> (red SP): en lugar de dividir el bloque por la mitad como una red de Feistel, mantiene el bloque en una matriz de bytes y transforma la matriz entera en cada ronda con cuatro capas de operaciones. Por eso cada operación debe ser reversible.',
+        'step1.title': 'El bloque es una matriz',
+        'step1.text': 'El bloque de datos se coloca en las celdas de una matriz cuadrada. En el AES real es una <span class="highlight-symmetric">matriz 4×4 de 16 bytes</span> (128 bits); en el juego de Ludus Lab es una matriz 2×2 de cuatro nibbles (16 bits). Todos los pasos posteriores operan sobre las filas y columnas de esta matriz.',
+        'step2.title': 'SubBytes — la sustitución de la S-box',
+        'step2.text': 'Cada byte se reemplaza por otro según una tabla fija — la <span class="highlight">S-box</span>. Esto es la "confusión": la única operación <span class="highlight-gold">no lineal</span> del AES. Sin ella, todo el cifrado se reduciría a un sistema de ecuaciones lineales y podría resolverse directamente.',
+        'step3.title': 'ShiftRows y MixColumns — la mezcla',
+        'step3.text': 'Las filas de la matriz se desplazan cíclicamente y las columnas se mezclan entre sí. Esto es la "difusión": en un par de rondas, un bit de entrada cambiado se reparte por todo el bloque. Ambas operaciones son lineales y reversibles.',
+        'step4.title': 'AddRoundKey — la suma de la clave',
+        'step4.text': 'El estado se suma con XOR a la clave de esta ronda. Las claves de ronda se derivan de antemano de la clave compartida mediante un procedimiento aparte — el <span class="highlight">calendario de claves</span>. Este es justamente el paso que no se puede deshacer sin conocer la clave.',
+        'step5.title': 'Repetición de rondas y descifrado',
+        'step5.text': 'Las capas se repiten muchas veces: <span class="highlight">10, 12 o 14 rondas</span> según la longitud de la clave. La última ronda no tiene MixColumns — no añadiría nada a la robustez. Para descifrar, Bob ejecuta las operaciones inversas en orden inverso — pero solo si conoce la clave.',
+        'scheme1.title': 'Una ronda de AES',
+        'scheme1.label.sub': 'Sustitución de la S-box (confusión)',
+        'scheme1.label.shift': 'Desplazar las filas',
+        'scheme1.label.mix': 'Mezclar las columnas (difusión)',
+        'scheme1.label.ark': 'Sumar la clave de ronda',
+        'scheme1.note': 'Cada paso es reversible — pero juntos entrelazan el bloque con la clave de tal modo que no se puede ejecutar hacia atrás sin la clave.',
+        'insightDiff.label': 'Por qué no se puede ejecutar hacia atrás:',
+        'insightDiff.text': 'No se puede deshacer la suma de la clave sin conocerla. Y la S-box no lineal más una decena de rondas hacen que cualquier intento de "desenredar" el cifrado sin la clave choque contra un sistema de ecuaciones monstruosamente complejo. La <span class="highlight">confusión</span> oculta la relación entre la clave y el texto cifrado; la <span class="highlight">difusión</span> reparte cada bit por todo el bloque — y repetir ambas capas no deja ningún atajo salvo probar todas las claves.',
+        'block3.heading': 'Abierto — ¿pero de quién?',
+        'block3.intro': 'El AES se eligió con una apertura sin precedentes: entre 1997 y 2000, el instituto de estándares de EE. UU. (NIST) organizó un concurso internacional — 15 cifrados de todo el mundo y tres años de análisis público, en el que cualquiera podía buscar debilidades. Ganó Rijndael, de los belgas Joan Daemen y Vincent Rijmen, y en 2001 se convirtió en el estándar. Es un proceso honesto y una fortaleza real del AES. Y aun así, la apertura del algoritmo no es lo mismo que confiar en quien lo eligió y en quien tiene el estándar en sus manos.',
+        'block3.distrust': 'La desconfianza tiene raíces históricas. En su día la NSA alteró en secreto las S-boxes del cifrado DES — después se supo que era para defenderlo de un ataque, pero veinte años de secretismo sembraron sospechas. Y en 2013 salió a la luz el caso <span class="highlight">Dual_EC_DRBG</span> — un generador de números aleatorios estándar del NIST en el que, al parecer, la NSA había introducido una puerta trasera. En el propio AES no se ha encontrado nada parecido — es más, su S-box se construye con una regla algebraica abierta, no con números "mágicos". Pero para un estado, "probablemente limpio" no es base suficiente para confiarle sus secretos a un cifrado.',
+        'block3.sovereignty': 'De ahí la <span class="highlight-gold">soberanía criptográfica</span>: cifrado propio, regulador propio, auditorías por expertos propios e independencia de un estándar ajeno. Esto no significa necesariamente que el AES tenga una puerta trasera — significa que la seguridad nacional no se construye sobre la confianza en una agencia extranjera.',
+        'cipher1.title': 'AES (EE. UU., NIST)',
+        'cipher1.text': 'El estándar mundial de facto del internet civil: cifra casi todo el tráfico web, el Wi-Fi y los discos. El regulador es el NIST estadounidense.',
+        'cipher1.key': 'Abierto, pero bajo control ajeno',
+        'cipher2.title': 'Kuznyechik (Rusia)',
+        'cipher2.text': 'El estándar ruso GOST R 34.12-2015 — también una red SP, como el AES: bloque de 128 bits, clave de 256 bits, 10 rondas. El regulador es el FSB (TC 26).',
+        'cipher2.key': 'Cifrado propio, regulador propio',
+        'cipher3.title': 'SM4 (China)',
+        'cipher3.text': 'El cifrado nacional de China (estándar GB/T 32907): bloque y clave de 128 bits, 32 rondas. Es obligatorio en muchos usos dentro del país, como el Wi-Fi chino (WAPI).',
+        'cipher3.key': 'La soberanía criptográfica de China',
+        'block3.mid': 'Y eso no es todo: casi cada gran potencia tiene su propio cifrado de bloque, y lo que comparten es el propio esquema de red SP, sobre el que se construye la mayoría de los algoritmos modernos:',
+        'warning1.label': '¿Y en Rusia?',
+        'warning1.text': 'Rusia tiene dos cifrados modernos. <span class="highlight-gold">«Kuznyechik»</span> es una red SP, pariente directo del AES. En cambio <span class="highlight">«Magma»</span> (el antiguo GOST 28147-89) está construido de otra forma — es una red de Feistel. Ambos están fijados por normas GOST vigentes; sus modos de operación se definen en el GOST R 34.13-2015.',
+        'block4.heading': 'Construye el AES con tus propias manos',
+        'block4.intro': 'La demostración interactiva de Ludus Lab ejecuta las mismas operaciones que el AES real, pero sobre un bloque diminuto de 16 bits (una matriz 2×2, 2 rondas) — para que cada paso se vea por completo. Podrás:',
+        'action1': '<span><strong>Convertir texto en bits</strong> y colocar el bloque en una matriz 2×2 — justo como el AES distribuye sus bytes por columnas</span>',
+        'action2': '<span><strong>Construir el calendario de claves</strong> — ver cómo de una sola clave salen K0, K1 y K2 mediante una cadena de XOR y la S-box, con las constantes Rcon</span>',
+        'action3': '<span><strong>Recorrer la S-box</strong> — comprobar que es la única operación no lineal, y que es ella la que aporta la "confusión"</span>',
+        'action4': '<span><strong>Comprobar el efecto avalancha</strong> — cambiar un bit de entrada y ver cómo, tras la mezcla, cambia alrededor de la mitad de los bits del texto cifrado</span>',
+        'action5': '<span><strong>Recorrer ambas rondas y descifrar</strong> el resultado con las operaciones inversas — y comprobar que el mensaje se recupera intacto</span>',
+        'action6': '<span><strong>Enviar el texto cifrado a Bob</strong> por el canal abierto — y ver por qué Eva, aunque lo intercepte, no obtiene nada sin la clave</span>',
+        'insight2.label': 'La lección principal del juego:',
+        'insight2.text': 'En el AES cada paso es reversible, y mezclar las columnas es incluso lineal — y aun así, sin la clave, el cifrado sigue siendo un muro ciego. Su robustez se ensambla a partir de <span class="highlight-gold">la apertura, la repetición, una única S-box no lineal y la clave</span>. Entiéndelo con 16 bits, y el principio del AES, el Kuznyechik y decenas de otros cifrados quedará claro.',
+        'advanced.summary': 'Para los curiosos',
+        'advanced.compare.heading': 'El AES y el Kuznyechik, lado a lado',
+        'advanced.compare.text': 'Ambos cifrados son redes de sustitución-permutación, pero con historias y parámetros distintos:',
+        'table.param': 'Parámetro',
+        'table.row1.label': 'País de origen',
+        'table.row1.west': 'Bélgica / EE. UU. (estándar)',
+        'table.row1.ru': 'Rusia',
+        'table.row2.label': 'Año de adopción',
+        'table.row3.label': 'Arquitectura',
+        'table.row3.spn': 'Red SP',
+        'table.row4.label': 'Tamaño del bloque',
+        'table.row5.label': 'Longitud de la clave',
+        'table.row5.west': '128 / 192 / 256 bits',
+        'table.row6.label': 'Número de rondas',
+        'table.row6.west': '10 / 12 / 14',
+        'table.row7.label': 'Cómo se eligió',
+        'table.row7.west': 'Concurso internacional abierto',
+        'table.row7.ru': 'Desarrollo bajo la égida del regulador',
+        'table.row8.label': 'Regulador',
+        'table.row8.west': 'NIST (EE. UU.)',
+        'advanced.secure.heading': 'Por qué el AES aún no se ha roto',
+        'advanced.secure.p1': 'Tras veinte años de análisis público, los mejores ataques contra el AES-128 (como el "biclique") reducen la búsqueda solo a unos 2<sup>126</sup> en lugar de 2<sup>128</sup> — apenas una ventaja. En la práctica significa que no hay atajo: solo queda probar todas las claves, y eso es imposible.',
+        'advanced.secure.p2': 'Ni siquiera un ordenador cuántico salva al atacante: el algoritmo de Grover solo "reduce a la mitad" la robustez, convirtiendo una clave de 256 bits en el equivalente a una de 128. Por eso el <span class="highlight">AES-256</span> se considera resistente incluso a la amenaza cuántica — y es el que se recomienda para la protección a largo plazo.',
+        'advanced.daily.heading': 'Dónde usas AES cada día',
+        'topic1.title': 'HTTPS e internet',
+        'topic1.desc': 'El candado en la barra de direcciones suele ser AES-GCM: cifra casi todo el tráfico web en TLS',
+        'topic2.title': 'Wi-Fi y mensajería',
+        'topic2.desc': 'WPA2/WPA3 protegen tu red con AES-CCM; el cifrado de las apps de mensajería populares también se basa en AES',
+        'topic3.title': 'Discos y teléfonos',
+        'topic3.desc': 'BitLocker, FileVault y el cifrado del almacenamiento de los móviles usan AES; los procesadores lo aceleran con instrucciones AES-NI',
+        'advanced.facts.heading': 'Datos curiosos',
+        'facts.li1': 'El nombre "Rijndael" se forma con los apellidos de los autores — Rijmen y Daemen; se pronuncia aproximadamente como "réindal"',
+        'facts.li2': 'La última ronda del AES no tiene MixColumns: es lineal e independiente de la clave, así que podría simplemente quitarse del texto cifrado — ahí no añade robustez',
+        'facts.li3': 'La S-box es la única parte no lineal del AES, y sus valores no son "mágicos": se obtienen con una regla abierta (el inverso multiplicativo en el cuerpo GF(2⁸) más una transformación afín). Por eso es difícil dudar de la transparencia del propio AES.',
+        'facts.li4': 'Las constantes Rcon del calendario de claves son distintas en cada ronda — para que las rondas no sean idénticas y no abran la puerta a los "ataques de deslizamiento"',
+        'facts.li5': '«Magma» (GOST) es una red de Feistel, mientras que «Kuznyechik» es una red SP; curiosamente, las claves de ronda del Kuznyechik se generan precisamente con una red de Feistel',
+        'insight3.label': 'Una conclusión inesperada:',
+        'insight3.text': 'Ser abierto y no estar roto es una condición necesaria, pero no suficiente. Un estado que confía sus secretos a un cifrado no se apoyará en un estándar escrito y controlado por otra potencia. La confianza en criptografía no es solo matemática, sino también poder. Por eso aparecieron el Kuznyechik, el SM4 y otros: la verdadera pregunta no es "¿hay un secreto en el AES?", sino "¿en qué manos está la pluma que escribe el estándar?".',
+        'actions.intro': 'Ahora entiendes tanto cómo funciona el AES como por qué su apertura no lo convierte en el cifrado único para todos: donde acaba la matemática, empieza la cuestión de la confianza y el control',
+        'actions.play': '🚀 Iniciar la demostración interactiva',
+        'actions.back': '← Volver a la lista de temas',
+        'actions.outro': 'En la demostración recorrerás 16 bits desde el texto claro hasta el cifrado y de vuelta — y verás por qué este muro no se puede cruzar sin la clave',
+        'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
+        'footer.line2': 'Este artículo es una explicación simplificada de los principios. El AES y el Kuznyechik reales trabajan con bloques de 128 bits y usan operaciones en un cuerpo de Galois más elaboradas que las que muestra la demostración interactiva.',
+        'tag.kuz': 'KUZNYECHIK (GOST)',
+        'table.head.ru': 'Kuznyechik (GOST R 34.12-2015)',
+        'table.bits128': '128 bits',
+        'table.bits256': '256 bits',
+        'table.row8.ru': 'FSB de Rusia (TC 26)',
+      },
+      zh: {
+        'meta.title': 'AES：没有秘密的密码？ | Ludus Lab',
+        'meta.description': 'AES 公开且二十年未被攻破——那为什么俄罗斯造了 Kuznyechik，中国造了 SM4，各大国还在不断设计自己的密码？数学到此为止，信任的问题从这里开始。',
+        'nav.home': '首页',
+        'nav.play': '开始游戏',
+        'article.category': '现代密码学',
+        'article.title': 'AES：没有秘密的密码？',
+        'article.subtitle': 'AES 是公开的，二十年来也没有被攻破。那为什么俄罗斯、中国和其他大国要造自己的密码，而不是直接采用它？',
+        'meta.readtime': '⏱️ 阅读约 6 分钟',
+        'meta.level': '📊 中级',
+        'meta.security': '🔒 HTTPS、Wi-Fi 和磁盘的标准',
+        'block1.heading': 'AES 既然这么公开，为什么不是所有人都用它？',
+        'block1.p1': '<span class="highlight-gold">AES</span> 的完整规范是公开的，任何人都能拿到：它写在一份公开标准里，内置于每个浏览器和手机中，并被教科书详细讲解。人们在公开场合尝试攻破它已经二十多年——始终没有成功。按说它该是适合所有人的统一标准。可事实并非如此：俄罗斯采用了自己的密码——<span class="highlight">Kuznyechik</span>，中国采用了 <span class="highlight">SM4</span>，其他国家也都有自己的标准。',
+        'block1.p2': '如果算法是公开的，二十年里又没人在其中找到一个实际的漏洞，是什么促使一个个国家花上数年去造自己的密码，而不用现成的？难道 AES 的“透明”并不那么彻底？',
+        'insight1.label': '关键结论：',
+        'insight1.text': '在数学上，AES 确实是公开的——这正是它的长处。但一个国家对密码的信任，不只关乎数学。问题与其说是“算法本身里有没有秘密”，不如说是“标准是谁写的、由谁控制”。正是在这里划出了那条分界线，催生了各国自己的密码。',
+        'block2.heading': 'AES 是如何构造的',
+        'block2.intro': '先看看为什么 AES 在数学上几乎无可挑剔——然后再回到：为什么这还不能说服所有人。AES 是一种<span class="highlight">代换–置换网络</span>（SP 网络）：它不像费斯妥网络那样把分组切成两半，而是把分组放在一个字节矩阵里，每一轮用四层运算改变整个矩阵。因此每个运算都必须可逆。',
+        'step1.title': '分组是一个矩阵',
+        'step1.text': '数据块被铺进一个方阵的各个格子里。在真正的 AES 中，这是一个 <span class="highlight-symmetric">4×4 的 16 字节矩阵</span>（128 位）；在 Ludus Lab 的游戏里，是一个 2×2 的四个半字节矩阵（16 位）。后面所有步骤都在这个矩阵的行和列上进行。',
+        'step2.title': 'SubBytes——S 盒代换',
+        'step2.text': '每个字节按一张固定的表——<span class="highlight">S 盒</span>——替换成另一个字节。这就是“混淆”（confusion）：AES 中唯一的<span class="highlight-gold">非线性</span>运算。没有它，整个密码就会退化成一个线性方程组，可以直接求解。',
+        'step3.title': 'ShiftRows 与 MixColumns——混合',
+        'step3.text': '矩阵的行被循环移位，列之间相互混合。这就是“扩散”（diffusion）：只需几轮，一个被改变的输入比特就会散布到整个分组。这两个运算都是线性且可逆的。',
+        'step4.title': 'AddRoundKey——加入密钥',
+        'step4.text': '状态与本轮的密钥做异或。轮密钥是事先由共享密钥通过一个单独的过程——<span class="highlight">密钥编排</span>——推导出来的。正是这一步，不知道密钥就无法撤销。',
+        'step5.title': '多轮重复与解密',
+        'step5.text': '这些层会重复很多次：根据密钥长度分别是 <span class="highlight">10、12 或 14 轮</span>。最后一轮没有 MixColumns——它对强度毫无增益。要解密，鲍勃就按相反顺序执行逆运算——但前提是他知道密钥。',
+        'scheme1.title': 'AES 的一轮',
+        'scheme1.label.sub': 'S 盒代换（混淆）',
+        'scheme1.label.shift': '移位各行',
+        'scheme1.label.mix': '混合各列（扩散）',
+        'scheme1.label.ark': '加入轮密钥',
+        'scheme1.note': '每一步都可逆——但它们合在一起，把分组和密钥缠绕得如此之深，以至于没有密钥就无法倒着跑。',
+        'insightDiff.label': '为什么不能倒着跑：',
+        'insightDiff.text': '不知道密钥就无法撤销密钥加法。而非线性的 S 盒加上十来轮，使得任何在没有密钥的情况下“解开”密码的尝试，都会撞上一个极其复杂的方程组。<span class="highlight">混淆</span>隐藏了密钥与密文之间的关系；<span class="highlight">扩散</span>把每个比特抹遍整个分组——两层反复叠加，就没有留下任何捷径，只剩下穷举密钥。',
+        'block3.heading': '公开——但是谁的？',
+        'block3.intro': 'AES 的选定过程空前公开：1997 至 2000 年，美国标准机构（NIST）举办了一场国际竞赛——来自世界各地的 15 个密码，三年的公开分析，任何人都可以寻找弱点。获胜的是比利时人琼·达门和文森特·雷门的 Rijndael，2001 年它成为标准。这是一个诚实的过程，也是 AES 真正的长处。然而，算法的公开，并不等于信任选定它的人、以及把标准握在手里的人。',
+        'block3.distrust': '这种不信任有其历史根源。美国国家安全局（NSA）当年曾秘密改动过 DES 密码的 S 盒——后来才知道是为了抵御一种攻击，但二十年的保密埋下了猜疑。2013 年又爆出 <span class="highlight">Dual_EC_DRBG</span> 事件——一个 NIST 标准的随机数生成器，NSA 似乎在其中留了后门。AES 本身并没有发现类似的东西——而且它的 S 盒是用一条公开的代数规则构造的，而不是“魔法”数字。但对一个国家来说，“大概是干净的”并不足以成为把自己的秘密托付给某个密码的理由。',
+        'block3.sovereignty': '由此便有了<span class="highlight-gold">密码主权</span>：自己的密码、自己的监管机构、由本国专家审计，以及不依赖他国标准。这并不一定意味着 AES 里有后门——而是说，国家安全不会建立在对他国机构的信任之上。',
+        'cipher1.title': 'AES（美国，NIST）',
+        'cipher1.text': '民用互联网事实上的世界标准：几乎所有网页流量、Wi-Fi 和磁盘都用它加密。监管机构是美国的 NIST。',
+        'cipher1.key': '公开，却在他国掌控之下',
+        'cipher2.title': 'Kuznyechik（俄罗斯）',
+        'cipher2.text': '俄罗斯标准 GOST R 34.12-2015——也和 AES 一样是 SP 网络：128 位分组，256 位密钥，10 轮。监管机构是俄罗斯联邦安全局（FSB，TC 26）。',
+        'cipher2.key': '自己的密码，自己的监管机构',
+        'cipher3.title': 'SM4（中国）',
+        'cipher3.text': '中国的国家密码（标准 GB/T 32907）：分组和密钥均为 128 位，32 轮。在国内许多场景中是强制的，例如中国的 Wi-Fi（WAPI）。',
+        'cipher3.key': '中国的密码主权',
+        'block3.mid': '而且不止如此：几乎每个大国都有自己的分组密码，而它们共有的，正是大多数现代算法所依赖的 SP 网络结构本身：',
+        'warning1.label': '那俄罗斯呢？',
+        'warning1.text': '俄罗斯有两种现代密码。<span class="highlight-gold">“Kuznyechik”</span>是一种 SP 网络，是 AES 的直系亲属。而<span class="highlight">“Magma”</span>（前身是 GOST 28147-89）构造不同——它是一种费斯妥网络。两者都由现行 GOST 标准确定；它们的工作模式定义在 GOST R 34.13-2015 中。',
+        'block4.heading': '亲手搭一个 AES',
+        'block4.intro': 'Ludus Lab 的交互式演示运行的是与真正的 AES 相同的运算，但作用在一个很小的 16 位分组上（2×2 矩阵，2 轮）——好让每一步都完整可见。你可以：',
+        'action1': '<span><strong>把文本变成比特</strong>，并把分组铺进一个 2×2 矩阵——正如 AES 按列填入字节那样</span>',
+        'action2': '<span><strong>构建密钥编排</strong>——看看一个密钥如何通过异或与 S 盒的链条，连同 Rcon 常数，生成 K0、K1 和 K2</span>',
+        'action3': '<span><strong>走一遍 S 盒</strong>——确认它是唯一的非线性运算，也正是它带来了“混淆”</span>',
+        'action4': '<span><strong>检验雪崩效应</strong>——翻转一个输入比特，看看经过混合后，大约一半的密文比特随之改变</span>',
+        'action5': '<span>用逆运算<strong>走完两轮并解密</strong>结果——确认消息完好无损地回来了</span>',
+        'action6': '<span><strong>把密文发给鲍勃</strong>，经由公开信道——看看为什么夏娃即使截获了它，没有密钥也一无所获</span>',
+        'insight2.label': '游戏的主要收获：',
+        'insight2.text': '在 AES 中每一步都可逆，混合各列甚至是线性的——可是没有密钥，这个密码仍然是一堵看不穿的墙。它的强度，是由<span class="highlight-gold">公开、重复、唯一的一个非线性 S 盒，以及密钥</span>组装起来的。在 16 位上亲手走一遍，AES、Kuznyechik 以及几十种其他密码背后的原理就清楚了。',
+        'advanced.summary': '给好奇的人',
+        'advanced.compare.heading': 'AES 与 Kuznyechik 对比',
+        'advanced.compare.text': '这两种密码都是代换–置换网络，但历史和参数各不相同：',
+        'table.param': '参数',
+        'table.row1.label': '起源国家',
+        'table.row1.west': '比利时 / 美国（标准）',
+        'table.row1.ru': '俄罗斯',
+        'table.row2.label': '采用年份',
+        'table.row3.label': '结构',
+        'table.row3.spn': 'SP 网络',
+        'table.row4.label': '分组大小',
+        'table.row5.label': '密钥长度',
+        'table.row5.west': '128 / 192 / 256 位',
+        'table.row6.label': '轮数',
+        'table.row6.west': '10 / 12 / 14',
+        'table.row7.label': '如何选出',
+        'table.row7.west': '公开的国际竞赛',
+        'table.row7.ru': '在监管机构主持下开发',
+        'table.row8.label': '监管机构',
+        'table.row8.west': 'NIST（美国）',
+        'advanced.secure.heading': '为什么 AES 至今没被攻破',
+        'advanced.secure.p1': '经过二十年公开分析，针对 AES-128 的最佳攻击（如“biclique”）只把搜索量降到约 2<sup>126</sup> 而非 2<sup>128</sup>——几乎没有收益。实际上这意味着：没有捷径，只剩穷举所有密钥，而那是不可能的。',
+        'advanced.secure.p2': '即便是量子计算机也救不了攻击者：Grover 算法只能把强度“减半”，把 256 位密钥变成相当于 128 位。因此 <span class="highlight">AES-256</span> 被认为连量子威胁也能抵御——它也正是长期保护所推荐的。',
+        'advanced.daily.heading': '你每天都在哪里用到 AES',
+        'topic1.title': 'HTTPS 与互联网',
+        'topic1.desc': '地址栏里的小锁多半就是 AES-GCM：它在 TLS 中加密了几乎所有网页流量',
+        'topic2.title': 'Wi-Fi 与即时通讯',
+        'topic2.desc': 'WPA2/WPA3 用 AES-CCM 保护你的网络；热门即时通讯应用的加密也建立在 AES 之上',
+        'topic3.title': '磁盘与手机',
+        'topic3.desc': 'BitLocker、FileVault 以及智能手机存储加密都使用 AES；处理器用 AES-NI 指令为它加速',
+        'advanced.facts.heading': '有趣的事实',
+        'facts.li1': '“Rijndael”这个名字由两位作者的姓氏拼成——Rijmen 和 Daemen；读音大致像“rain-dahl”',
+        'facts.li2': 'AES 的最后一轮没有 MixColumns：它是线性的、与密钥无关，所以完全可以从密文上剥掉——放在那里并不增加强度',
+        'facts.li3': 'S 盒是 AES 唯一的非线性部分，而且它的取值并非“魔法”：它们由一条公开规则得出（伽罗瓦域 GF(2⁸) 中的乘法逆元，再加一个仿射变换）。正因如此，AES 本身的透明度很难被质疑。',
+        'facts.li4': '密钥编排中的 Rcon 常数每一轮都不同——这样各轮就不会变得一模一样，也就不会给“滑动攻击”可乘之机',
+        'facts.li5': '“Magma”（GOST）是费斯妥网络，而“Kuznyechik”是 SP 网络；有趣的是，Kuznyechik 的轮密钥恰恰是用费斯妥网络生成的',
+        'insight3.label': '一个出人意料的结论：',
+        'insight3.text': '公开且未被攻破，是必要条件，却不是充分条件。一个把秘密托付给密码的国家，不会依赖一份由另一个大国撰写并控制的标准。密码学中的信任，不只是数学，也是权力。Kuznyechik、SM4 以及其他密码之所以出现，正因如此：真正的问题不是“AES 里有没有秘密”，而是“写标准的那支笔握在谁手里”。',
+        'actions.intro': '现在你既明白了 AES 如何工作，也明白了为什么它的公开并不能让它成为适合所有人的唯一密码：数学到此为止，信任与控制的问题从这里开始',
+        'actions.play': '🚀 启动交互式演示',
+        'actions.back': '← 返回主题列表',
+        'actions.outro': '在演示中，你将带着 16 个比特，从明文一路走到密文再回来——亲眼看看为什么没有密钥就跨不过这堵墙',
+        'footer.line1': '© 2025 Ludus Lab · 用简单的游戏理解复杂的事物',
+        'footer.line2': '本文是对基本原理的简化讲解。真正的 AES 和 Kuznyechik 作用在 128 位分组上，并使用比交互式演示中更复杂的伽罗瓦域运算。',
+        'tag.kuz': 'KUZNYECHIK（GOST）',
+        'table.head.ru': 'Kuznyechik（GOST R 34.12-2015）',
+        'table.bits128': '128 位',
+        'table.bits256': '256 位',
+        'table.row8.ru': '俄罗斯联邦安全局（FSB，TC 26）',
+      },
+    };
+
+    function applyLanguage(lang) {
+      if (!I18N[lang]) lang = 'ru';
+      const dict = I18N[lang];
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+      document.title = dict['meta.title'];
+      const descTag = document.getElementById('pageDescription');
+      if (descTag) descTag.setAttribute('content', dict['meta.description']);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.langBtn === lang);
+      });
+      try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn));
+    });
+
+    (function initLanguage() {
+      let saved = null;
+      saved = 'en';
+      if (!saved) {
+        const browserLang = (navigator.language || 'ru').slice(0, 2);
+        saved = I18N[browserLang] ? browserLang : 'ru';
+      }
+      applyLanguage(saved);
+    })();
+  </script>
+  <script>
+// Плавная прокрутка для якорных ссылок
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+anchor.addEventListener('click', function(e) {
+e.preventDefault();
+const targetId = this.getAttribute('href');
+if (targetId === '#') return;
+const targetElement = document.querySelector(targetId);
+if (targetElement) {
+window.scrollTo({ top: targetElement.offsetTop - 20, behavior: 'smooth' });
+}
+});
+});
+// Исправление проблемы с кнопками при раскрытии details
+const detailsElement = document.querySelector('.advanced-section');
+const articleActions = document.getElementById('article-actions');
+if (detailsElement) {
+detailsElement.addEventListener('toggle', function() {
+setTimeout(() => { if (articleActions) { articleActions.style.marginTop = '40px'; } }, 10);
+});
+}
+// Анимация для визуализации шифрования
+document.addEventListener('DOMContentLoaded', function() {
+const schemeBoxes = document.querySelectorAll('.scheme-box');
+schemeBoxes.forEach((box, index) => {
+setTimeout(() => {
+box.style.opacity = '0.8'; box.style.transform = 'scale(0.95)';
+setTimeout(() => { box.style.opacity = '1'; box.style.transform = 'scale(1)'; }, 300);
+}, index * 200);
+});
+const arrows = document.querySelectorAll('.scheme-arrow');
+arrows.forEach((arrow, index) => {
+setTimeout(() => {
+arrow.style.opacity = '0.6'; arrow.style.transform = 'translateX(-3px)';
+setTimeout(() => { arrow.style.opacity = '1'; arrow.style.transform = 'translateX(0)'; }, 300);
+}, index * 200 + 100);
+});
+});
+</script>
+
+</body>
+</html>

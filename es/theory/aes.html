@@ -645,6 +645,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <strong data-i18n="insightDiff.label">Por qué no se puede ejecutar hacia atrás:</strong>
 <span data-i18n="insightDiff.text">No se puede deshacer la suma de la clave sin conocerla. Y la S-box no lineal más una decena de rondas hacen que cualquier intento de "desenredar" el cifrado sin la clave choque contra un sistema de ecuaciones monstruosamente complejo. La <span class="highlight">confusión</span> oculta la relación entre la clave y el texto cifrado; la <span class="highlight">difusión</span> reparte cada bit por todo el bloque — y repetir ambas capas no deja ningún atajo salvo probar todas las claves.</span>
 </div>
+<p data-i18n="block2.shannon">Los propios conceptos de confusión y difusión los introdujo <span class="highlight-gold">Claude Shannon</span> ya en 1949: propuso construir un cifrado robusto a partir de sustituciones y permutaciones simples repetidas muchas veces. Con esta receta se construyó a principios de los años 70 una versión temprana del cifrado Lucifer de IBM; el Lucifer posterior se convirtió en una red de Feistel y dio lugar al DES, mientras que el AES volvió a la idea original.</p>
 </section>
 
 <!-- Блок 3: открытость и доверие -->
@@ -661,7 +662,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 </div>
 <div class="cipher-card">
 <h4 data-i18n="cipher2.title">Kuznyechik (Rusia)</h4>
-<p data-i18n="cipher2.text">El estándar ruso GOST R 34.12-2015 — también una red SP, como el AES: bloque de 128 bits, clave de 256 bits, 10 rondas. El regulador es el FSB (TC 26).</p>
+<p data-i18n="cipher2.text">El estándar ruso GOST R 34.12-2015 — también una red SP, como el AES: bloque de 128 bits, clave de 256 bits, 9 rondas y una suma final de la clave. El regulador es el FSB (TC 26).</p>
 <p data-i18n="cipher2.key">Cifrado propio, regulador propio</p>
 </div>
 <div class="cipher-card">
@@ -718,7 +719,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
 <tr><td data-i18n="table.row3.label">Arquitectura</td><td class="western-cell" data-i18n="table.row3.spn">Red SP</td><td class="russian-cell" data-i18n="table.row3.spn">Red SP</td></tr>
 <tr><td data-i18n="table.row4.label">Tamaño del bloque</td><td class="western-cell" data-i18n="table.bits128">128 bits</td><td class="russian-cell" data-i18n="table.bits128">128 bits</td></tr>
 <tr><td data-i18n="table.row5.label">Longitud de la clave</td><td class="western-cell" data-i18n="table.row5.west">128 / 192 / 256 bits</td><td class="russian-cell" data-i18n="table.bits256">256 bits</td></tr>
-<tr><td data-i18n="table.row6.label">Número de rondas</td><td class="western-cell" data-i18n="table.row6.west">10 / 12 / 14</td><td class="russian-cell">10</td></tr>
+<tr><td data-i18n="table.row6.label">Número de rondas</td><td class="western-cell" data-i18n="table.row6.west">10 / 12 / 14</td><td class="russian-cell" data-i18n="table.row6.ru">9 + suma final de la clave</td></tr>
 <tr><td data-i18n="table.row7.label">Cómo se eligió</td><td class="western-cell" data-i18n="table.row7.west">Concurso internacional abierto</td><td class="russian-cell" data-i18n="table.row7.ru">Desarrollo bajo la égida del regulador</td></tr>
 <tr><td data-i18n="table.row8.label">Regulador</td><td class="western-cell" data-i18n="table.row8.west">NIST (EE. UU.)</td><td class="russian-cell"><span class="highlight-neon" data-i18n="table.row8.ru">FSB de Rusia (TC 26)</span></td></tr>
 </table>
@@ -801,6 +802,8 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'scheme1.note': 'Каждый шаг обратим — но все вместе они переплетают блок с ключом так, что прокрутить назад без ключа невозможно.',
         'insightDiff.label': 'Почему нельзя прокрутить назад:',
         'insightDiff.text': 'Отменить сложение с ключом нельзя, не зная ключа. А нелинейный S-блок и десяток раундов делают так, что любая попытка «распутать» шифр без ключа упирается в чудовищно сложную систему уравнений. <span class="highlight">Confusion</span> прячет связь между ключом и шифротекстом, <span class="highlight">diffusion</span> размазывает каждый бит по всему блоку — а повторение обоих слоёв не оставляет короткого пути, кроме перебора ключей.',
+        'block2.shannon': 'Сами понятия confusion и diffusion ввёл <span class="highlight-gold">Клод Шеннон</span> ещё в 1949 году: он предложил собирать стойкий шифр из многократно повторённых простых замен и перестановок. По этому рецепту в начале 1970-х был устроен и ранний вариант шифра Lucifer в IBM; поздний Lucifer стал сетью Фейстеля и превратился в DES, а AES вернулся к исходной идее.',
+        'table.row6.ru': '9 + финальное сложение с ключом',
         'block3.heading': 'Открытый — но чей?',
         'block3.intro': 'Выбирали AES невиданно открыто: в 1997–2000 годах институт стандартов США (NIST) провёл международный конкурс — 15 шифров со всего мира и три года публичного анализа, где слабости искал кто угодно. Победил Rijndael бельгийцев Йоана Дамена и Винсента Рэймена, и в 2001 году он стал стандартом. Это честный процесс и реальная сила AES. И всё же открытость алгоритма — не то же самое, что доверие к тому, кто его выбрал и кто держит стандарт в руках.',
         'block3.distrust': 'У недоверия есть причины в истории. Когда-то АНБ тайно переправило S-блоки шифра DES — позже выяснилось, что ради защиты от атаки, но секретность на двадцать лет породила подозрения. А в 2013 году всплыла история <span class="highlight">Dual_EC_DRBG</span> — стандартного генератора случайных чисел NIST, в который, судя по всему, АНБ заложило лазейку. В самом AES ничего подобного не нашли — больше того, его S-блок построен по открытому алгебраическому правилу, а не на «магических» числах. Но для государства «скорее всего, чисто» — недостаточное основание, чтобы доверить шифру свои тайны.',
@@ -809,7 +812,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'cipher1.text': 'Де-факто мировой стандарт гражданского интернета: им зашифрован почти весь веб-трафик, Wi-Fi и диски. Регулятор — американский NIST.',
         'cipher1.key': 'Открытый, но под чужим контролем',
         'cipher2.title': '«Кузнечик» (Россия)',
-        'cipher2.text': 'Российский стандарт ГОСТ Р 34.12-2015 — тоже SP-сеть, как AES: блок 128 бит, ключ 256 бит, 10 раундов. Регулятор — ФСБ (ТК 26).',
+        'cipher2.text': 'Российский стандарт ГОСТ Р 34.12-2015 — тоже SP-сеть, как AES: блок 128 бит, ключ 256 бит, 9 раундов и финальное сложение с ключом. Регулятор — ФСБ (ТК 26).',
         'cipher2.key': 'Свой шифр, свой регулятор',
         'cipher3.title': 'SM4 (Китай)',
         'cipher3.text': 'Национальный шифр КНР (стандарт GB/T 32907): блок и ключ по 128 бит, 32 раунда. Обязателен во многих применениях внутри страны, например в китайском Wi-Fi (WAPI).',
@@ -913,6 +916,8 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'scheme1.note': 'Every step is reversible — but together they entangle the block with the key so thoroughly that you can’t run it backwards without the key.',
         'insightDiff.label': 'Why you can’t run it backwards:',
         'insightDiff.text': 'You can’t undo the key addition without knowing the key. And the non-linear S-box plus a dozen rounds mean that any attempt to "untangle" the cipher without the key runs into a monstrously complex system of equations. <span class="highlight">Confusion</span> hides the relationship between key and ciphertext; <span class="highlight">diffusion</span> smears each bit across the whole block — and repeating both layers leaves no shortcut other than trying every key.',
+        'block2.shannon': 'The very notions of confusion and diffusion were introduced by <span class="highlight-gold">Claude Shannon</span> back in 1949: he proposed building a strong cipher from simple substitutions and permutations repeated many times. An early version of IBM’s Lucifer cipher in the early 1970s followed this recipe; the later Lucifer became a Feistel network and turned into DES, while AES went back to the original idea.',
+        'table.row6.ru': '9 + final key addition',
         'block3.heading': 'Open — but whose?',
         'block3.intro': 'AES was chosen with unprecedented openness: from 1997 to 2000 the US standards institute (NIST) ran an international competition — 15 ciphers from around the world and three years of public analysis, with anyone free to hunt for weaknesses. The winner was Rijndael, by the Belgians Joan Daemen and Vincent Rijmen, and in 2001 it became the standard. That’s an honest process and a genuine strength of AES. And yet the openness of the algorithm is not the same as trusting whoever chose it and whoever holds the standard in their hands.',
         'block3.distrust': 'The distrust has roots in history. The NSA once secretly altered the S-boxes of the DES cipher — it later turned out to be for defense against an attack, but twenty years of secrecy bred suspicion. And in 2013 the <span class="highlight">Dual_EC_DRBG</span> affair surfaced — a NIST-standard random number generator into which the NSA had, it appears, built a backdoor. Nothing of the kind has been found in AES itself — and in fact its S-box is built from an open algebraic rule, not from "magic" numbers. But for a state, "probably clean" is not a strong enough basis on which to entrust a cipher with its secrets.',
@@ -921,7 +926,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'cipher1.text': 'The de facto world standard of the civilian internet: it encrypts almost all web traffic, Wi-Fi and disks. The regulator is the American NIST.',
         'cipher1.key': 'Open, but under foreign control',
         'cipher2.title': 'Kuznyechik (Russia)',
-        'cipher2.text': 'The Russian standard GOST R 34.12-2015 — also an SP-network like AES: a 128-bit block, a 256-bit key, 10 rounds. The regulator is the FSB (TC 26).',
+        'cipher2.text': 'The Russian standard GOST R 34.12-2015 — also an SP-network like AES: a 128-bit block, a 256-bit key, 9 rounds plus a final key addition. The regulator is the FSB (TC 26).',
         'cipher2.key': 'Own cipher, own regulator',
         'cipher3.title': 'SM4 (China)',
         'cipher3.text': 'China’s national cipher (standard GB/T 32907): a 128-bit block and key, 32 rounds. It’s mandatory for many uses inside the country, such as Chinese Wi-Fi (WAPI).',
@@ -1025,6 +1030,8 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'scheme1.note': 'Cada paso es reversible — pero juntos entrelazan el bloque con la clave de tal modo que no se puede ejecutar hacia atrás sin la clave.',
         'insightDiff.label': 'Por qué no se puede ejecutar hacia atrás:',
         'insightDiff.text': 'No se puede deshacer la suma de la clave sin conocerla. Y la S-box no lineal más una decena de rondas hacen que cualquier intento de "desenredar" el cifrado sin la clave choque contra un sistema de ecuaciones monstruosamente complejo. La <span class="highlight">confusión</span> oculta la relación entre la clave y el texto cifrado; la <span class="highlight">difusión</span> reparte cada bit por todo el bloque — y repetir ambas capas no deja ningún atajo salvo probar todas las claves.',
+        'block2.shannon': 'Los propios conceptos de confusión y difusión los introdujo <span class="highlight-gold">Claude Shannon</span> ya en 1949: propuso construir un cifrado robusto a partir de sustituciones y permutaciones simples repetidas muchas veces. Con esta receta se construyó a principios de los años 70 una versión temprana del cifrado Lucifer de IBM; el Lucifer posterior se convirtió en una red de Feistel y dio lugar al DES, mientras que el AES volvió a la idea original.',
+        'table.row6.ru': '9 + suma final de la clave',
         'block3.heading': 'Abierto — ¿pero de quién?',
         'block3.intro': 'El AES se eligió con una apertura sin precedentes: entre 1997 y 2000, el instituto de estándares de EE. UU. (NIST) organizó un concurso internacional — 15 cifrados de todo el mundo y tres años de análisis público, en el que cualquiera podía buscar debilidades. Ganó Rijndael, de los belgas Joan Daemen y Vincent Rijmen, y en 2001 se convirtió en el estándar. Es un proceso honesto y una fortaleza real del AES. Y aun así, la apertura del algoritmo no es lo mismo que confiar en quien lo eligió y en quien tiene el estándar en sus manos.',
         'block3.distrust': 'La desconfianza tiene raíces históricas. En su día la NSA alteró en secreto las S-boxes del cifrado DES — después se supo que era para defenderlo de un ataque, pero veinte años de secretismo sembraron sospechas. Y en 2013 salió a la luz el caso <span class="highlight">Dual_EC_DRBG</span> — un generador de números aleatorios estándar del NIST en el que, al parecer, la NSA había introducido una puerta trasera. En el propio AES no se ha encontrado nada parecido — es más, su S-box se construye con una regla algebraica abierta, no con números "mágicos". Pero para un estado, "probablemente limpio" no es base suficiente para confiarle sus secretos a un cifrado.',
@@ -1033,7 +1040,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'cipher1.text': 'El estándar mundial de facto del internet civil: cifra casi todo el tráfico web, el Wi-Fi y los discos. El regulador es el NIST estadounidense.',
         'cipher1.key': 'Abierto, pero bajo control ajeno',
         'cipher2.title': 'Kuznyechik (Rusia)',
-        'cipher2.text': 'El estándar ruso GOST R 34.12-2015 — también una red SP, como el AES: bloque de 128 bits, clave de 256 bits, 10 rondas. El regulador es el FSB (TC 26).',
+        'cipher2.text': 'El estándar ruso GOST R 34.12-2015 — también una red SP, como el AES: bloque de 128 bits, clave de 256 bits, 9 rondas y una suma final de la clave. El regulador es el FSB (TC 26).',
         'cipher2.key': 'Cifrado propio, regulador propio',
         'cipher3.title': 'SM4 (China)',
         'cipher3.text': 'El cifrado nacional de China (estándar GB/T 32907): bloque y clave de 128 bits, 32 rondas. Es obligatorio en muchos usos dentro del país, como el Wi-Fi chino (WAPI).',
@@ -1137,6 +1144,8 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'scheme1.note': '每一步都可逆——但它们合在一起，把分组和密钥缠绕得如此之深，以至于没有密钥就无法倒着跑。',
         'insightDiff.label': '为什么不能倒着跑：',
         'insightDiff.text': '不知道密钥就无法撤销密钥加法。而非线性的 S 盒加上十来轮，使得任何在没有密钥的情况下“解开”密码的尝试，都会撞上一个极其复杂的方程组。<span class="highlight">混淆</span>隐藏了密钥与密文之间的关系；<span class="highlight">扩散</span>把每个比特抹遍整个分组——两层反复叠加，就没有留下任何捷径，只剩下穷举密钥。',
+        'block2.shannon': '混淆与扩散这两个概念，早在 1949 年就由<span class="highlight-gold">克劳德·香农</span>提出：他建议用多次重复的简单代换和置换来构造强密码。1970 年代初 IBM 的 Lucifer 密码的早期版本就是按这个思路设计的；后来的 Lucifer 变成了费斯妥网络并演变为 DES，而 AES 又回到了最初的思想。',
+        'table.row6.ru': '9 轮 + 最后一次密钥加法',
         'block3.heading': '公开——但是谁的？',
         'block3.intro': 'AES 的选定过程空前公开：1997 至 2000 年，美国标准机构（NIST）举办了一场国际竞赛——来自世界各地的 15 个密码，三年的公开分析，任何人都可以寻找弱点。获胜的是比利时人琼·达门和文森特·雷门的 Rijndael，2001 年它成为标准。这是一个诚实的过程，也是 AES 真正的长处。然而，算法的公开，并不等于信任选定它的人、以及把标准握在手里的人。',
         'block3.distrust': '这种不信任有其历史根源。美国国家安全局（NSA）当年曾秘密改动过 DES 密码的 S 盒——后来才知道是为了抵御一种攻击，但二十年的保密埋下了猜疑。2013 年又爆出 <span class="highlight">Dual_EC_DRBG</span> 事件——一个 NIST 标准的随机数生成器，NSA 似乎在其中留了后门。AES 本身并没有发现类似的东西——而且它的 S 盒是用一条公开的代数规则构造的，而不是“魔法”数字。但对一个国家来说，“大概是干净的”并不足以成为把自己的秘密托付给某个密码的理由。',
@@ -1145,7 +1154,7 @@ box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
         'cipher1.text': '民用互联网事实上的世界标准：几乎所有网页流量、Wi-Fi 和磁盘都用它加密。监管机构是美国的 NIST。',
         'cipher1.key': '公开，却在他国掌控之下',
         'cipher2.title': 'Kuznyechik（俄罗斯）',
-        'cipher2.text': '俄罗斯标准 GOST R 34.12-2015——也和 AES 一样是 SP 网络：128 位分组，256 位密钥，10 轮。监管机构是俄罗斯联邦安全局（FSB，TC 26）。',
+        'cipher2.text': '俄罗斯标准 GOST R 34.12-2015——也和 AES 一样是 SP 网络：128 位分组，256 位密钥，9 轮外加最后一次密钥加法。监管机构是俄罗斯联邦安全局（FSB，TC 26）。',
         'cipher2.key': '自己的密码，自己的监管机构',
         'cipher3.title': 'SM4（中国）',
         'cipher3.text': '中国的国家密码（标准 GB/T 32907）：分组和密钥均为 128 位，32 轮。在国内许多场景中是强制的，例如中国的 Wi-Fi（WAPI）。',

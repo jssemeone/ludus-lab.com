@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title id="pageTitle">迪菲-赫尔曼：如何当众约定一个秘密 | Ludus Lab</title>
+<meta id="pageDescription" name="description" content="所有人都听得见，两个人怎样约定一个秘密密钥？用颜料和数字讲解迪菲-赫尔曼协议、“中间人”攻击以及俄罗斯的 VKO 算法。">
+<!-- Favicon -->
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function(m,e,t,r,i,k,a){
+m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+m[i].l=1*new Date();
+for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { height: 100%; }
+body {
+background: #0a1a2a;
+color: #c5d5e0;
+font-family: 'Roboto', sans-serif;
+line-height: 1.8;
+padding: 0;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
+
+/* Language switch */
+.lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+.lang-btn {
+background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3);
+font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.5px;
+padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease;
+}
+.lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+.lang-btn.active {
+background: rgba(212, 175, 55, 0.18); border-color: #d4af37; color: #d4af37;
+box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+/* Навигация */
+.theory-nav {
+max-width: 900px;
+margin: 0 auto;
+padding: 20px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 1px solid rgba(0, 162, 255, 0.3);
+flex-shrink: 0;
+}
+.nav-logo {
+font-family: 'Oswald', sans-serif;
+font-size: 1.8rem;
+color: #d4af37;
+text-decoration: none;
+text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+}
+.nav-links { display: flex; gap: 20px; }
+.nav-link {
+color: #8ab0c5;
+text-decoration: none;
+font-family: 'Oswald', sans-serif;
+text-transform: uppercase;
+font-size: 0.9rem;
+letter-spacing: 1px;
+transition: all 0.3s;
+padding: 8px 15px;
+border-radius: 4px;
+border: 1px solid transparent;
+white-space: nowrap;
+}
+.nav-link:hover {
+color: #00a2ff;
+border-color: rgba(0, 162, 255, 0.3);
+background: rgba(0, 162, 255, 0.1);
+}
+/* Основной контент */
+.theory-container {
+max-width: 900px;
+margin: 0 auto;
+padding: 40px 20px;
+flex: 1 0 auto;
+}
+/* body is a flex column and the auto margins make the container shrink-to-fit its content: pin it to the viewport width */
+.theory-container { width: 100%; box-sizing: border-box; }
+/* Заголовок статьи */
+.article-header {
+margin-bottom: 40px;
+text-align: center;
+}
+.article-category {
+display: inline-block;
+background: rgba(0, 162, 255, 0.2);
+color: #00a2ff;
+padding: 5px 15px;
+border-radius: 20px;
+font-size: 0.9rem;
+margin-bottom: 15px;
+border: 1px solid rgba(0, 162, 255, 0.3);
+}
+.article-title {
+font-family: 'Oswald', sans-serif;
+font-size: 3rem;
+color: #d4af37;
+text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+margin-bottom: 20px;
+text-transform: uppercase;
+letter-spacing: 2px;
+}
+.article-subtitle {
+font-size: 1.3rem;
+color: #8ab0c5;
+max-width: 700px;
+margin: 0 auto;
+line-height: 1.6;
+}
+/* Мета-информация */
+.article-meta {
+display: flex;
+justify-content: center;
+gap: 30px;
+margin-top: 20px;
+font-size: 0.9rem;
+color: #557585;
+}
+.meta-item { display: flex; align-items: center; gap: 8px; }
+/* Контентные блоки */
+.content-block {
+margin: 60px 0;
+padding: 30px;
+background: rgba(10, 30, 45, 0.6);
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 8px;
+box-shadow: 0 0 20px rgba(0, 162, 255, 0.1);
+}
+.content-block h2 {
+font-family: 'Oswald', sans-serif;
+font-size: 2rem;
+color: #00a2ff;
+margin-bottom: 25px;
+padding-bottom: 10px;
+border-bottom: 2px solid rgba(0, 162, 255, 0.3);
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+.content-block p {
+font-size: 1.1rem;
+line-height: 1.8;
+margin-bottom: 20px;
+color: #a0c0d0;
+}
+.highlight { color: #00a2ff; font-weight: 500; text-shadow: 0 0 5px rgba(0, 162, 255, 0.3); }
+.highlight-gold { color: #d4af37; font-weight: 500; text-shadow: 0 0 5px rgba(212, 175, 55, 0.3); }
+.highlight-symmetric { color: #9b59b6; font-weight: 500; text-shadow: 0 0 5px rgba(155, 89, 182, 0.3); }
+.highlight-neon {
+color: #e6f0ff;
+font-weight: 500;
+text-shadow: 0 0 3px rgba(255, 255, 255, 0.7), 0 0 6px rgba(100, 200, 255, 0.4), 0 0 9px rgba(100, 200, 255, 0.2);
+position: relative;
+padding: 0 2px;
+}
+.highlight-neon::after {
+content: '';
+position: absolute;
+bottom: -1px;
+left: 0;
+width: 100%;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(100, 200, 255, 0.5), transparent);
+}
+/* Шаги объяснения */
+.explanation-steps { margin: 30px 0; }
+.step {
+display: flex;
+align-items: flex-start;
+gap: 20px;
+margin: 25px 0;
+padding: 20px;
+background: rgba(5, 20, 30, 0.8);
+border-left: 4px solid #00a2ff;
+border-radius: 0 8px 8px 0;
+}
+.step-number {
+flex-shrink: 0;
+width: 40px;
+height: 40px;
+background: #00a2ff;
+color: #fff;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: 'Oswald', sans-serif;
+font-size: 1.2rem;
+font-weight: bold;
+box-shadow: 0 0 10px rgba(0, 162, 255, 0.5);
+}
+.step-content h3 { color: #d4af37; margin-bottom: 10px; font-family: 'Oswald', sans-serif; font-size: 1.3rem; }
+/* Ключевая идея */
+.key-insight {
+background: rgba(212, 175, 55, 0.1);
+border-left: 4px solid #d4af37;
+padding: 20px;
+margin: 30px 0;
+border-radius: 0 8px 8px 0;
+}
+.key-insight strong { color: #d4af37; font-family: 'Oswald', sans-serif; display: block; margin-bottom: 10px; font-size: 1.1rem; }
+/* Список действий */
+.action-list { list-style: none; margin: 30px 0; }
+.action-list li {
+display: flex;
+align-items: flex-start;
+gap: 15px;
+margin: 15px 0;
+padding: 15px;
+background: rgba(0, 162, 255, 0.05);
+border-radius: 6px;
+border-left: 3px solid #00a2ff;
+}
+.action-icon { font-size: 1.5rem; width: 40px; text-align: center; flex-shrink: 0; margin-top: 2px; }
+.action-text { flex: 1; }
+.action-text strong { color: #00a2ff; font-family: 'Oswald', sans-serif; }
+/* УПРОЩЕННАЯ СХЕМА ШИФРОВАНИЯ */
+.simple-encryption-scheme {
+margin: 40px auto;
+padding: 25px;
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(155, 89, 182, 0.3);
+border-radius: 12px;
+text-align: center;
+max-width: 700px;
+position: relative;
+}
+.simple-encryption-scheme::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 1px;
+background: linear-gradient(90deg, transparent, #9b59b6, transparent);
+}
+.scheme-title { color: #9b59b6; font-family: 'Oswald', sans-serif; margin-bottom: 25px; font-size: 1.2rem; letter-spacing: 1px; }
+.scheme-flow { display: flex; align-items: flex-start; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+.scheme-item { display: flex; flex-direction: column; align-items: center; min-width: 120px; }
+.scheme-box {
+width: 110px; height: 70px; border-radius: 8px;
+display: flex; align-items: center; justify-content: center;
+font-family: 'Courier New', monospace; font-size: 1rem; font-weight: bold;
+padding: 8px; text-align: center; margin-bottom: 8px;
+}
+.scheme-original { background: rgba(0, 162, 255, 0.1); border: 1px solid #00a2ff; color: #00a2ff; }
+.scheme-key { background: rgba(212, 175, 55, 0.1); border: 1px solid #d4af37; color: #d4af37; font-size: 0.9rem; }
+.scheme-cipher { background: rgba(155, 89, 182, 0.1); border: 1px solid #9b59b6; color: #9b59b6; font-size: 0.95em; }
+.scheme-label { font-size: 0.75rem; color: #8ab0c5; text-align: center; line-height: 1.3; max-width: 100px; }
+.scheme-arrow { font-size: 1.2rem; color: #9b59b6; margin: 0 5px; height: 70px; display: flex; align-items: center; }
+.scheme-note { color: #8ab0c5; margin-top: 20px; font-size: 0.9rem; padding-top: 15px; border-top: 1px solid rgba(155, 89, 182, 0.2); font-style: italic; }
+@media (max-width: 768px) {
+.scheme-flow { gap: 8px; }
+.scheme-item { min-width: 100px; }
+.scheme-box { width: 90px; height: 60px; font-size: 0.9rem; }
+.scheme-arrow { font-size: 1rem; margin: 0 3px; height: 60px; }
+.scheme-label { font-size: 0.7rem; max-width: 80px; }
+}
+@media (max-width: 520px) {
+.scheme-flow { flex-wrap: nowrap; gap: 2px; }
+.scheme-item { min-width: 0; flex: 0 1 68px; }
+.scheme-box { width: 100%; max-width: 68px; height: 50px; padding: 2px; font-size: 0.66rem; white-space: nowrap; letter-spacing: -0.3px; }
+.scheme-arrow { height: 50px; font-size: 0.85rem; margin: 0; }
+.scheme-label { font-size: 0.62rem; max-width: 68px; }
+}
+/* Исторические шифры */
+.historical-ciphers { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0; }
+.cipher-card {
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(155, 89, 182, 0.3);
+border-radius: 8px;
+padding: 20px;
+text-align: center;
+}
+.cipher-card h4 { color: #9b59b6; margin-bottom: 15px; font-family: 'Oswald', sans-serif; }
+.cipher-example {
+font-family: monospace; font-size: 1.1rem; margin: 15px 0;
+padding: 10px; background: rgba(10, 30, 45, 0.6);
+border-radius: 4px; border-left: 3px solid #d4af37;
+}
+/* Современные алгоритмы */
+.modern-algorithms { display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0; justify-content: center; }
+.algorithm-tag {
+background: rgba(155, 89, 182, 0.1);
+border: 1px solid rgba(155, 89, 182, 0.3);
+padding: 8px 15px; border-radius: 20px;
+font-size: 0.9rem; color: #9b59b6;
+transition: all 0.3s;
+}
+.algorithm-tag:hover {
+background: rgba(155, 89, 182, 0.2);
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(155, 89, 182, 0.2);
+}
+.algorithm-tag.important {
+background: rgba(212, 175, 55, 0.1);
+border-color: rgba(212, 175, 55, 0.3);
+color: #d4af37;
+}
+.algorithm-tag.russian {
+background: rgba(255, 255, 255, 0.05);
+border-color: rgba(255, 255, 255, 0.2);
+color: #e6f0ff;
+position: relative; overflow: hidden;
+}
+.algorithm-tag.russian::before {
+content: ''; position: absolute; top: -50%; left: -60%;
+width: 20px; height: 200%; background: rgba(255, 255, 255, 0.1);
+transform: rotate(30deg); transition: all 0.6s; opacity: 0;
+}
+.algorithm-tag.russian:hover::before { left: 120%; opacity: 1; }
+/* Кнопки действий */
+.article-actions {
+text-align: center; margin: 60px 0; padding: 30px;
+background: rgba(10, 30, 45, 0.4);
+border-radius: 8px; border: 1px solid rgba(0, 162, 255, 0.2);
+}
+.action-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 30px; flex-wrap: wrap; }
+.btn-primary, .btn-secondary, .btn-disabled {
+padding: 15px 30px; font-family: 'Oswald', sans-serif;
+text-transform: uppercase; letter-spacing: 1px;
+text-decoration: none; border-radius: 6px; font-size: 1rem;
+transition: all 0.3s; border: 1px solid; text-align: center; min-width: 180px;
+}
+.btn-primary {
+background: linear-gradient(to bottom, #006ba6, #004d7a);
+color: #e6f0ff; border-color: #00a2ff;
+}
+.btn-primary:hover {
+background: linear-gradient(to bottom, #0088cc, #006ba6);
+box-shadow: 0 0 20px rgba(0, 162, 255, 0.4);
+transform: translateY(-3px);
+}
+.btn-secondary {
+background: transparent; color: #8ab0c5;
+border-color: rgba(138, 176, 197, 0.4);
+}
+.btn-secondary:hover { border-color: #8ab0c5; color: #a0c0d0; }
+.btn-disabled {
+background: rgba(100, 100, 100, 0.3); color: #666;
+border-color: rgba(100, 100, 100, 0.5); cursor: not-allowed; opacity: 0.7;
+}
+/* Блок предупреждения */
+.warning-box {
+background: rgba(255, 165, 0, 0.1);
+border-left: 4px solid #ffa500;
+padding: 20px; margin: 30px 0;
+border-radius: 0 8px 8px 0;
+}
+.warning-box strong { color: #ffa500; font-family: 'Oswald', sans-serif; display: block; margin-bottom: 10px; font-size: 1.1rem; }
+/* Дополнительный материал */
+.advanced-section {
+margin: 40px 0; padding: 20px;
+border: 1px solid rgba(212, 175, 55, 0.3);
+border-radius: 8px; background: rgba(212, 175, 55, 0.05);
+}
+.advanced-section summary {
+cursor: pointer; color: #d4af37;
+font-family: 'Oswald', sans-serif; font-size: 1.1rem;
+list-style: none; padding: 10px;
+}
+.advanced-section summary::before {
+content: '▶'; margin-right: 10px;
+display: inline-block; transition: transform 0.3s;
+}
+.advanced-section[open] summary::before { transform: rotate(90deg); }
+.advanced-content {
+margin-top: 20px; padding-top: 20px;
+border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+.advanced-content h3 { color: #d4af37; margin: 15px 0 10px; font-family: 'Oswald', sans-serif; }
+/* Темы для углубления */
+.topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0; }
+.topic-card {
+background: rgba(5, 20, 30, 0.6);
+border: 1px solid rgba(212, 175, 55, 0.2);
+border-radius: 6px; padding: 15px; text-align: left;
+}
+.topic-card h4 { color: #d4af37; margin-bottom: 8px; font-family: 'Oswald', sans-serif; font-size: 1.1rem; }
+.topic-card p { font-size: 0.9rem; color: #8ab0c5; margin: 0; line-height: 1.5; }
+/* Футер */
+.theory-footer {
+text-align: center; margin-top: auto;
+padding: 30px 20px; border-top: 1px solid rgba(0, 162, 255, 0.2);
+color: #557585; font-size: 0.9rem; flex-shrink: 0; background: #0a1a2a;
+}
+/* Таблицы сравнения */
+.comparison-table { width: 100%; border-collapse: collapse; margin: 20px 0; color: #a0c0d0; }
+.comparison-table th {
+padding: 12px; border: 1px solid rgba(0,162,255,0.3);
+text-align: left; background: rgba(0, 30, 60, 0.3);
+color: #00a2ff; font-family: 'Oswald', sans-serif; font-weight: normal;
+}
+.comparison-table td { padding: 10px; border: 1px solid rgba(0,162,255,0.2); vertical-align: top; }
+.comparison-table tr:nth-child(even) { background: rgba(0, 30, 60, 0.2); }
+.comparison-table .russian-cell { border-left: 2px solid rgba(255, 255, 255, 0.3); }
+.comparison-table .western-cell { border-left: 3px solid #00a2ff; }
+/* ЭЛЕГАНТНЫЙ ЗАГОЛОВОК ДЛЯ РОССИЙСКИХ СТАНДАРТОВ */
+.russian-header {
+display: flex; align-items: center; gap: 15px;
+margin-bottom: 30px; padding-bottom: 15px;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+position: relative;
+}
+.russian-header::after {
+content: ''; position: absolute; bottom: -1px; left: 0;
+width: 100px; height: 2px;
+background: linear-gradient(90deg, rgba(100, 200, 255, 0.8), transparent);
+}
+.ru-badge {
+display: flex; align-items: center; justify-content: center;
+width: 45px; height: 45px;
+background: rgba(255, 255, 255, 0.05);
+color: #e6f0ff; font-family: 'Oswald', sans-serif;
+font-size: 1.1rem; font-weight: bold; border-radius: 50%;
+border: 1px solid rgba(255, 255, 255, 0.2);
+box-shadow: 0 0 8px rgba(255, 255, 255, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.05);
+position: relative; overflow: hidden;
+}
+.ru-badge::before {
+content: ''; position: absolute; top: -50%; left: -50%;
+width: 200%; height: 200%;
+background: radial-gradient(circle, rgba(100, 200, 255, 0.1) 0%, transparent 70%);
+}
+.russian-title {
+font-family: 'Oswald', sans-serif; font-size: 1.8rem;
+color: #e6f0ff; text-transform: uppercase; letter-spacing: 1px; position: relative;
+}
+.russian-subtitle { font-size: 1rem; color: #8ab0c5; margin-top: 5px; font-style: italic; }
+/* Схема эволюции российских стандартов */
+.evolution-flow { display: flex; align-items: center; justify-content: space-between; margin: 40px 0; position: relative; }
+.evolution-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+.evolution-box {
+width: 140px; height: 140px; border-radius: 12px;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+padding: 20px; text-align: center; margin-bottom: 15px;
+position: relative; overflow: hidden; transition: transform 0.3s ease;
+}
+.evolution-box:hover { transform: translateY(-3px); }
+.evolution-box.magma {
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+.evolution-box.transition {
+background: rgba(212, 175, 55, 0.05);
+border: 1px solid rgba(212, 175, 55, 0.2);
+box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+width: 100px; height: 100px;
+}
+.evolution-box.kuznyechik {
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+.evolution-title { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: bold; margin-bottom: 8px; color: #ffffff; }
+.evolution-subtitle { font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 5px; font-style: italic; }
+.evolution-details { font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); line-height: 1.4; }
+.evolution-arrow { font-size: 1.8rem; color: #8ab0c5; margin: 0 15px; position: relative; z-index: 2; opacity: 0.7; }
+.evolution-label { font-size: 0.85rem; color: #8ab0c5; margin-top: 10px; text-align: center; max-width: 140px; line-height: 1.4; }
+/* Адаптивность */
+@media (max-width: 768px) {
+.theory-container { padding: 20px 15px; margin-bottom: 40px; }
+.article-title { font-size: 2.2rem; }
+.content-block { padding: 20px; margin: 40px 0; }
+.step { flex-direction: column; gap: 15px; }
+.action-buttons { flex-direction: column; align-items: center; gap: 15px; }
+.btn-primary, .btn-secondary, .btn-disabled { width: 100%; max-width: 300px; padding: 12px 20px; }
+.evolution-flow { flex-direction: column; gap: 30px; }
+.evolution-arrow { transform: rotate(90deg); margin: 15px 0; }
+.historical-ciphers { grid-template-columns: 1fr; }
+.nav-links { flex-direction: row; gap: 15px; flex-wrap: wrap; justify-content: center; }
+.article-actions { margin: 40px 0 20px; padding: 20px 15px; }
+.article-meta { flex-direction: column; gap: 10px; }
+.topics-grid { grid-template-columns: 1fr; }
+.theory-nav { flex-direction: column; gap: 15px; padding: 15px; }
+.comparison-table { font-size: 0.9rem; }
+.comparison-table th, .comparison-table td { padding: 8px; }
+.russian-header { flex-direction: column; gap: 10px; text-align: center; align-items: center; }
+.ru-badge { width: 40px; height: 40px; font-size: 1rem; }
+.evolution-step { width: 100%; }
+.evolution-box { width: 180px; }
+}
+@media (max-width: 480px) {
+.article-title { font-size: 1.8rem; }
+.article-subtitle { font-size: 1.1rem; }
+.content-block h2 { font-size: 1.5rem; }
+.nav-logo { font-size: 1.5rem; }
+.nav-links { width: 100%; justify-content: space-between; }
+.nav-link { padding: 6px 10px; font-size: 0.8rem; flex: 1; text-align: center; }
+.btn-primary, .btn-secondary, .btn-disabled { min-width: auto; padding: 12px 15px; font-size: 0.9rem; }
+.theory-footer { padding: 20px 15px; font-size: 0.8rem; }
+.nav-links { justify-content: center; gap: 10px; }
+.nav-link { padding: 8px 12px; }
+.comparison-table { font-size: 0.8rem; }
+.evolution-box { width: 140px; height: 120px; }
+.evolution-box.transition { width: 90px; height: 90px; }
+.lang-switch { top: 8px; right: 8px; }
+.lang-btn { font-size: 0.65rem; padding: 3px 7px; }
+}
+@media (max-width: 320px) {
+.article-title { font-size: 1.5rem; }
+.article-subtitle { font-size: 1rem; }
+.content-block h2 { font-size: 1.3rem; }
+.btn-primary, .btn-secondary, .btn-disabled { padding: 10px 12px; font-size: 0.85rem; }
+.nav-links { flex-direction: column; width: 100%; }
+.nav-link { width: 100%; margin-bottom: 5px; }
+.evolution-box { width: 120px; height: 110px; }
+}
+    /* Cards in one row share title and text rows, so a title that wraps to two lines
+       doesn't push its text below the neighbours'. Older browsers keep the plain layout. */
+    @supports (grid-template-rows: subgrid) {
+      .topic-card { display: grid; grid-row: span 2; grid-template-rows: subgrid; row-gap: 0; }
+      .cipher-card { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 0; }
+    }
+/* Идея на красках: три тезиса, у каждого «уравнение» из кружков */
+.paint-scheme { max-width: 760px; }
+.pt-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 89, 182, 0.15); text-align: left; }
+.pt-row:last-of-type { border-bottom: none; }
+.pt-text { flex: 1; font-size: 0.95rem; color: #a0c0d0; line-height: 1.5; }
+.pt-text strong { display: block; color: #d4af37; font-family: 'Oswald', sans-serif; font-size: 1.1rem; letter-spacing: 0.5px; margin-bottom: 2px; }
+.pt-eq { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.ps-swatch { width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: inset 0 -5px 8px rgba(0, 0, 0, 0.25); flex-shrink: 0; }
+.ps-swatch.ps-final { border: 2px solid #d4af37; box-shadow: 0 0 10px rgba(212, 175, 55, 0.45), inset 0 -5px 8px rgba(0, 0, 0, 0.25); }
+.ps-unknown { display: flex; align-items: center; justify-content: center; border: 2px dashed #ffa500; color: #ffa500; font-family: 'Oswald', sans-serif; font-size: 1.1rem; }
+.ps-op { color: #9b59b6; font-size: 1.1rem; }
+.step-example { margin: 10px 0 0 !important; padding-top: 10px; border-top: 1px dashed rgba(212, 175, 55, 0.3); font-size: 1rem !important; }
+@media (max-width: 600px) {
+.pt-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+.pt-eq { gap: 4px; }
+.ps-swatch { width: 28px; height: 28px; }
+}
+  @media (max-width: 420px) { .comparison-table th, .comparison-table td { padding: 8px 5px; font-size: 0.8rem; overflow-wrap: anywhere; hyphens: auto; } }
+</style>
+
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/zh/theory/diffiehellman.html">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/theory/diffiehellman.html">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/theory/diffiehellman.html">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/theory/diffiehellman.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/theory/diffiehellman.html">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/theory/diffiehellman.html">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
+<script>var _tmr=window._tmr||(window._tmr=[]);_tmr.push({id:"3804233",type:"pageView",start:(new Date()).getTime()});
+(function(d,w,id){if(d.getElementById(id))return;var ts=d.createElement("script");ts.async=true;ts.id=id;ts.src="https://mytopf.com/js/code.js";var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(ts,s);})(document,window,"tmr-code");</script>
+<noscript><div><img src="https://mytopf.com/counter?id=3804233;js=na" style="position:absolute;left:-9999px;" alt=""></div></noscript>
+</head>
+<body>
+<div class="lang-switch" role="group" aria-label="Language">
+<a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/theory/diffiehellman.html" hreflang="ru" lang="ru">RU</a>
+<a class="lang-btn" data-lang-btn="en" href="https://ludus-lab.com/theory/diffiehellman.html" hreflang="en" lang="en">EN</a>
+<a class="lang-btn" data-lang-btn="es" href="https://ludus-lab.com/es/theory/diffiehellman.html" hreflang="es" lang="es">ES</a>
+<a class="lang-btn active" data-lang-btn="zh" href="https://ludus-lab.com/zh/theory/diffiehellman.html" hreflang="zh-Hans" lang="zh-CN">中文</a>
+</div>
+
+<!-- Навигация -->
+<nav class="theory-nav">
+<a href="/zh/" class="nav-logo">LUDUS LAB</a>
+<div class="nav-links">
+<a href="/zh/" class="nav-link" data-i18n="nav.home">首页</a>
+<a href="/zh/games/diffiehellman/" class="nav-link" data-i18n="nav.play">开始游戏</a>
+</div>
+</nav>
+
+<!-- Основной контент -->
+<div class="theory-container">
+<!-- Заголовок статьи -->
+<header class="article-header">
+<div class="article-category" data-i18n="article.category">公钥密码学</div>
+<h1 class="article-title" data-i18n="article.title">迪菲-赫尔曼：如何当众约定一个秘密</h1>
+<p class="article-subtitle" data-i18n="article.subtitle">两个陌生人约定一个秘密密钥，而他们的每句话谁都听得见。这怎么可能？其中的陷阱又在哪里？</p>
+<div class="article-meta">
+<div class="meta-item" data-i18n="meta.readtime">⏱️ 阅读约 8 分钟</div>
+<div class="meta-item" data-i18n="meta.level">📊 中级</div>
+<div class="meta-item" data-i18n="meta.security">🔒 每一次 HTTPS 连接都从这里开始</div>
+</div>
+</header>
+
+<!-- Блок 1: парадокс -->
+<section class="content-block">
+<h2 data-i18n="block1.heading">能当众约定一个秘密吗？</h2>
+<p data-i18n="block1.p1">爱丽丝和鲍勃从未见过面。他们唯一的交流方式，伊芙都能听到每一句话。他们能不能现在就当着她的面，约定一个伊芙无法得知的密码？</p>
+<p data-i18n="block1.p2">直觉给出的回答是坚决的“不能”。鲍勃知道的一切都是通过公共信道得到的，所以伊芙也都知道。鲍勃从哪里能得到她没有的东西呢？</p>
+<p data-i18n="block1.p3">几千年来情况确实如此。任何密码，从<a class="highlight" href="/zh/theory/caesarcipher.html">凯撒密码</a>到 <a class="highlight" href="/zh/theory/feistel.html">DES</a>，都要求事先通过可靠途径把密钥送到双方手中：信使、外交邮袋、当面交接。就连 1963 年开通的莫斯科—华盛顿热线，用的也是<a class="highlight" href="/zh/theory/vernamcipher.html">一次性密钥纸带</a>，由双方通过大使馆互相传递。需要秘密通信的人越多，这套物流就越沉重。</p>
+<div class="key-insight">
+<strong data-i18n="insight1.label">核心思想：</strong>
+<span data-i18n="insight1.text">1976 年，人们发现直觉错了。秘密不一定要传送：爱丽丝和鲍勃可以<span class="highlight-gold">各自在自己这边把它算出来</span>。每一方都往计算里加入一样自己从不说出口的东西，最后双方得到同一个密码，而它从未在信道中出现过。</span>
+</div>
+</section>
+
+<!-- Блок 2: ответ и подвох -->
+<section class="content-block">
+<h2 data-i18n="block2.heading">混合容易，分开不能</h2>
+<p data-i18n="block2.what">先说清楚它是什么。迪菲-赫尔曼<span class="highlight-gold">不是密码算法，而是一种密钥协商协议</span>。它不加密任何东西，只是让爱丽丝和鲍勃得到同一个秘密密钥。之后再由普通的密码（例如 <a class="highlight" href="/zh/theory/aes.html">AES</a>）用这个密钥加密通信内容。</p>
+<p data-i18n="block2.intro">整个协议依靠的只有一件事：一种<span class="highlight">容易做、却难以撤销</span>的运算。最简单的办法是先用颜料来想象它。</p>
+<p data-i18n="block2.paint">有一种人人都知道的公共颜料。爱丽丝和鲍勃各自往里加入自己的秘密颜料，然后公开交换混合物。接着每人把自己的秘密颜料加进对方的混合物。两人罐子里最终是同一种颜色，而伊芙虽然看到了两份混合物，却无法从中提取出秘密颜料。</p>
+<div class="simple-encryption-scheme paint-scheme">
+<div class="scheme-title" data-i18n="scheme1.title">用颜料理解思路</div>
+<div class="pt-row"><div class="pt-text"><strong data-i18n="pt.t1.title">混合容易</strong><span data-i18n="pt.t1.text">公共颜料和秘密颜料一秒钟就能混成混合物，可以公开发送。</span></div><div class="pt-eq"><span class="ps-swatch" style="background: rgb(239,193,42);"></span><span class="ps-op">+</span><span class="ps-swatch" style="background: rgb(202,33,89);"></span><span class="ps-op">=</span><span class="ps-swatch" style="background: rgb(220,80,61);"></span></div></div>
+<div class="pt-row"><div class="pt-text"><strong data-i18n="pt.t2.title">分开不能</strong><span data-i18n="pt.t2.text">伊芙看得到混合物，却无法从中提取出秘密颜料。</span></div><div class="pt-eq"><span class="ps-swatch" style="background: rgb(220,80,61);"></span><span class="ps-op">→</span><span class="ps-swatch" style="background: rgb(239,193,42);"></span><span class="ps-op">+</span><span class="ps-swatch ps-unknown">?</span></div></div>
+<div class="pt-row"><div class="pt-text"><strong data-i18n="pt.t3.title">顺序无关</strong><span data-i18n="pt.t3.text">爱丽丝把自己的颜料加进鲍勃的混合物，鲍勃加进爱丽丝的。得到的颜色相同。</span></div><div class="pt-eq"><span class="ps-swatch" style="background: rgb(220,80,61);"></span><span class="ps-op">+</span><span class="ps-swatch" style="background: rgb(33,95,202);"></span><span class="ps-op">=</span><span class="ps-swatch" style="background: rgb(89,135,92);"></span><span class="ps-op">+</span><span class="ps-swatch" style="background: rgb(202,33,89);"></span><span class="ps-op">=</span><span class="ps-swatch ps-final" style="background: rgb(117,85,91);"></span></div></div>
+<p class="scheme-note" data-i18n="scheme1.note">这是简化：真实的颜料混合物在实验室里其实是可以分开的。所以协议用的是数字而不是颜料。</p>
+</div>
+<p data-i18n="block2.numbers">在真正的协议里，“混合”指的是<span class="highlight-gold">模幂运算</span>：把一个数乘方，再把结果除以模数 p，只保留余数。例如 30 mod 23 = 7，因为 30 = 1 · 23 + 7。下面每一步先给出一般形式，再给一个能心算的小例子。游戏默认用的也是这些数，而且在游戏里可以更改。</p>
+<div class="explanation-steps">
+<div class="step">
+<div class="step-number">1</div>
+<div class="step-content">
+<h3 data-i18n="step1.title">公开的数 p 和 g</h3>
+<p data-i18n="step1.text">爱丽丝和鲍勃公开约定两个数。<span class="highlight">p</span> 是模数，一个很大的素数：在真实系统中长达 2048 位甚至更长，也就是至少有 617 位十进制数字。<span class="highlight">g</span> 是要被乘方的底数，选取时要让 g 的各次幂给出尽可能多的不同余数（详见“给好奇的你”）。现成的 p 和 g 组合通常取自标准。所有人都知道它们，包括伊芙：这不是泄密，本来就是这样设计的。</p>
+<p class="step-example" data-i18n="step1.example"><span class="highlight-gold">例子：</span>p = 23，g = 5。</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">2</div>
+<div class="step-content">
+<h3 data-i18n="step2.title">秘密的数 a 和 b</h3>
+<p data-i18n="step2.text">每人随机选一个秘密数：爱丽丝选 <span class="highlight-symmetric">a</span>，鲍勃选 <span class="highlight-symmetric">b</span>。在真实协议中，这些数长达数百位，每次新连接都重新选取。秘密数不发给任何人：它们就是“秘密颜料”。</p>
+<p class="step-example" data-i18n="step2.example"><span class="highlight-gold">例子：</span>a = 2，b = 3。</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">3</div>
+<div class="step-content">
+<h3 data-i18n="step3.title">公开的数 A 和 B</h3>
+<p data-i18n="step3.text">爱丽丝计算 <span class="highlight">A = g<sup>a</sup> mod p</span>，鲍勃计算 <span class="highlight">B = g<sup>b</sup> mod p</span>。这就是“把自己的颜料和公共颜料混合”。A 和 B 通过信道公开传送，伊芙看得到。</p>
+<p class="step-example" data-i18n="step3.example"><span class="highlight-gold">例子：</span>A = 5² mod 23：5² = 25 = 1 · 23 + <b>2</b>，所以 A = 2。B = 5³ mod 23：先算出完整的幂 5³ = 125，再做带余除法 125 = 5 · 23 + <b>10</b>，所以 B = 10。</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">4</div>
+<div class="step-content">
+<h3 data-i18n="step4.title">共同密钥</h3>
+<p data-i18n="step4.text">爱丽丝把收到的 B 取自己的秘密次方：<span class="highlight-gold">s = B<sup>a</sup> mod p</span>。鲍勃对 A 做同样的事：<span class="highlight-gold">s = A<sup>b</sup> mod p</span>。两人得到的数相同，尽管密钥本身从未经过信道。在真实系统中，s 和 p 一样长，之后再从它派生出对称密码的密钥。</p>
+<p class="step-example" data-i18n="step4.example"><span class="highlight-gold">例子：</span>爱丽丝得到 10² = 100 = 4 · 23 + <b>8</b>，鲍勃得到 2³ = 8（小于 23，不用再除）。两人都得到 s = 8。</p>
+</div>
+</div>
+<div class="step">
+<div class="step-number">5</div>
+<div class="step-content">
+<h3 data-i18n="step5.title">为什么会相同</h3>
+<p data-i18n="step5.text">B 就是 g<sup>b</sup>，所以爱丽丝得到 B<sup>a</sup> = g<sup>b·a</sup>，鲍勃得到 A<sup>b</sup> = g<sup>a·b</sup>。交换因数的顺序，乘积不变，正如颜料的混合与先后顺序无关。而除以 p 取余可以在任何一步进行，结果都不变。一般公式：<span class="highlight-gold">s = B<sup>a</sup> = A<sup>b</sup> = g<sup>ab</sup> mod p</span>。</p>
+</div>
+</div>
+</div>
+<div class="key-insight">
+<strong data-i18n="insightEve.label">那伊芙能做什么？</strong>
+<span data-i18n="insightEve.text">伊芙有 p、g、A 和 B。她的第一个念头是把 A 和 B 相乘，但这样得到的是 g<sup>a+b</sup>，而密钥是 g<sup>a·b</sup>。这就像把两份混合物倒在一起：公共颜料多了一倍。剩下的办法是由 A 求出 a，依次尝试 g<sup>1</sup>、g<sup>2</sup>、g<sup>3</sup>……直到对上为止。这个问题叫作<span class="highlight">离散对数</span>问题。在我们 p = 23 的例子里最多试 22 次；而 p 长达 2048 位时，穷举永远也完不成。</span>
+</div>
+<div class="warning-box">
+<strong data-i18n="warning1.label">陷阱：伊芙在中间</strong>
+<span data-i18n="warning1.text">协议能防住偷听的人，却防不住调包的人。假设伊芙截获 A，改把自己的数 E = g<sup>e</sup> 发给鲍勃，对爱丽丝也同样用自己的数替换 B。爱丽丝以为和鲍勃约定了密钥，鲍勃以为和爱丽丝约定了密钥，而实际上两人各自和伊芙共享一个密钥。伊芙解密每一封信，读完后用第二个密钥重新加密再转发。协议运行得没有一点差错：这些数字并不说明是谁发来的。这种攻击叫作<span class="highlight">中间人攻击</span>（man-in-the-middle，MITM）。</span>
+</div>
+</section>
+
+<!-- Блок 3: история и где работает -->
+<section class="content-block">
+<h2 data-i18n="block3.heading">是谁发明的，为什么是那时</h2>
+<p data-i18n="block3.p1">1976 年 11 月，斯坦福大学的惠特菲尔德·迪菲和马丁·赫尔曼发表了论文<span class="highlight-gold">《New Directions in Cryptography》（密码学的新方向）</span>。文章开头写道：“今天，我们正站在密码学革命的边缘。”时机恰到好处：计算机开始联网，要为每一对想通信的人派信使送密钥，已经不可能了。这个想法受到了拉尔夫·默克尔工作的影响，他当时独立地寻找公开约定密钥的方法。后来赫尔曼提议把这个协议称为迪菲-赫尔曼-默克尔密钥交换。</p>
+<p data-i18n="block3.p2">这个想法当时已呼之欲出。在英国政府通信总部（GCHQ），詹姆斯·埃利斯早在 1970 年就描述了“非秘密加密”，1974 年马尔科姆·威廉森找到了本质上相同的协议。这些工作一直是机密，直到 1997 年才公开。所以协议以公开发表它的人命名；2015 年，迪菲和赫尔曼因公钥密码学获得了图灵奖。</p>
+<p data-i18n="block3.today">如今，这种交换几乎在每一条安全连接中默默运行：</p>
+<div class="topics-grid">
+<div class="topic-card"><h4 data-i18n="topic1.title">HTTPS</h4><p data-i18n="topic1.desc">每一次 TLS 1.3 连接都从迪菲-赫尔曼交换开始，通常在椭圆曲线 X25519 上进行。秘密数字为每次连接重新选取，用完即删：即使服务器日后被攻破，旧的对话也无法解密。这一性质称为前向保密（forward secrecy）。</p></div>
+<div class="topic-card"><h4 data-i18n="topic2.title">即时通讯</h4><p data-i18n="topic2.desc">Signal 和 WhatsApp 通过多次迪菲-赫尔曼交换来约定聊天密钥。Telegram 的 MTProto 协议也建立在这种交换之上。</p></div>
+<div class="topic-card"><h4 data-i18n="topic3.title">SSH、WireGuard、VPN</h4><p data-i18n="topic3.desc">远程登录服务器和安全隧道也用同样的方式得到会话密钥。之后这个密钥用对称密码（例如 <a class="highlight" href="/zh/theory/aes.html">AES</a>）来加密数据。</p></div>
+</div>
+</section>
+
+<!-- Чем отличается от RSA -->
+<section class="content-block">
+<h2 data-i18n="diff.heading">它和 RSA 有什么不同</h2>
+<p data-i18n="diff.intro">说起迪菲-赫尔曼，总会提到 RSA。两者都诞生于 20 世纪 70 年代，都使用公开数和秘密数，也都在做模幂运算，所以很容易混淆。但它们做的事情不同。迪菲-赫尔曼什么也不加密：它让两个人<span class="highlight-gold">一起得出</span>共同的密钥。RSA 则是一把锁：鲍勃事先把锁发出去，任何人都能用它<span class="highlight-gold">锁上一封信</span>，而只有鲍勃能打开。</p>
+<table class="comparison-table diff-table">
+<tr><th style="width: 24%;" data-i18n="diff.th.q">问题</th><th class="western-cell" data-i18n="diff.th.dh">迪菲-赫尔曼</th><th class="western-cell" data-i18n="diff.th.rsa">RSA</th></tr>
+<tr><td data-i18n="diff.r1.q">做什么</td><td class="western-cell" data-i18n="diff.r1.dh">两个人协商出共同的秘密密钥</td><td class="western-cell" data-i18n="diff.r1.rsa">为某一个收件人锁上信件；签名也用同样的方法</td></tr>
+<tr><td data-i18n="diff.r2.q">谁必须参与</td><td class="western-cell" data-i18n="diff.r2.dh">双方同时参与：各自加入自己的秘密数</td><td class="western-cell" data-i18n="diff.r2.rsa">只有发送者：鲍勃的锁人人都有，鲍勃本人可以不在线</td></tr>
+<tr><td data-i18n="diff.r3.q">信道里传的是什么</td><td class="western-cell" data-i18n="diff.r3.dh">公开数 A 和 B；密钥本身从不出现在信道里</td><td class="western-cell" data-i18n="diff.r3.rsa">锁上的信 c</td></tr>
+<tr><td data-i18n="diff.r4.q">密钥用多久</td><td class="western-cell" data-i18n="diff.r4.dh">每次对话都用新的秘密数</td><td class="western-cell" data-i18n="diff.r4.rsa">一把锁用好几年</td></tr>
+<tr><td data-i18n="diff.r5.q">依靠什么</td><td class="western-cell" data-i18n="diff.r5.dh">很难由公开数求出秘密数（离散对数）</td><td class="western-cell" data-i18n="diff.r5.rsa">很难把 n 分解成两个素数</td></tr>
+<tr><td data-i18n="diff.r6.q">比喻</td><td class="western-cell" data-i18n="diff.r6.dh">两个人一起调的颜料</td><td class="western-cell" data-i18n="diff.r6.rsa">一把打开的挂锁</td></tr>
+</table>
+<div class="key-insight">
+<strong data-i18n="diff.insight.label">一句话：</strong>
+<span data-i18n="diff.insight.text"><span class="highlight-gold">迪菲-赫尔曼负责商定，RSA 负责上锁。</span>在 HTTPS 中它们一起工作：迪菲-赫尔曼交换产生对话密钥，而网站的签名（常常是 RSA）证明另一端确实是这个网站，而不是中间的伊芙。详见 <a class="highlight" href="/zh/theory/rsa.html">RSA</a> 一文。</span>
+</div>
+</section>
+
+<!-- Российский вариант -->
+<section class="content-block">
+<div class="russian-header">
+<div class="ru-badge">RU</div>
+<div>
+<h2 class="russian-title" data-i18n="ru.title">俄罗斯的做法：VKO</h2>
+<div class="russian-subtitle">ГОСТ Р 34.10-2012 · Р 50.1.113-2016</div>
+</div>
+</div>
+<p data-i18n="ru.p1">俄罗斯认证的密码保护工具用 <span class="highlight-neon">VKO</span> 算法生成共同密钥。它记载于标准化建议 R 50.1.113-2016 中，运行在签名标准 GOST R 34.10-2012 规定的 256 位或 512 位椭圆曲线上。思路和游戏里一样：每一方都有一个秘密数和由它算出的公开数；每一方把自己的秘密数和对方的公开数结合起来，双方得到同一个结果。</p>
+<p data-i18n="ru.p2">与教科书方案相比有两点不同。计算中会混入一个公开传送的随机数 UKM，这样同一对长期密钥每次都能产生新的共同密钥。而且结果不直接使用，而是先经过哈希函数 Streebog（GOST R 34.11-2012）。得到的密钥再用 Kuznyechik 或 Magma 加密数据。俄罗斯的 TLS 密码套件中也使用 VKO。</p>
+<div class="warning-box">
+<strong data-i18n="ru.why.label">为什么要有自己的版本？</strong>
+<span data-i18n="ru.why.text">原因和 Kuznyechik 一样：数学是大家共有的，但国家希望自己选择并掌控曲线、参数和验证规则。关于密码主权的更多内容，见 <a class="highlight" href="/zh/theory/aes.html">AES</a> 一文。</span>
+</div>
+</section>
+
+<!-- Блок 4: практика -->
+<section class="content-block">
+<h2 data-i18n="block4.heading">亲手试一试</h2>
+<p data-i18n="block4.intro">在 Ludus Lab 的交互式演示中，你用小数字亲手走完整个协议。伊芙看到的和你一样多，所以你可以检验她在哪里缺少信息、又在哪里获胜。值得一试的有：</p>
+<ul class="action-list">
+<li><span class="action-icon">🎨</span><div class="action-text" data-i18n="action1"><span><strong>混合颜料。</strong>选择公共颜料（黄色、橙色或柠檬黄）以及爱丽丝和鲍勃的秘密颜料。爱丽丝和鲍勃得到相同的颜色，而伊芙的混合物色调不同：里面有双份公共颜料。</span></div></li>
+<li><span class="action-icon">🔢</span><div class="action-text" data-i18n="action2"><span><strong>用 ‹ › 箭头更换 p 和 g。</strong>游戏只提供这样的组合：g 的各次幂能得到从 1 到 p − 1 的所有余数。秘密数 a 和 b 也可以自己选。</span></div></li>
+<li><span class="action-icon">💡</span><div class="action-text" data-i18n="action3"><span><strong>观看灯板。</strong>幂随着增长依次点亮：5、25、125 盏灯。接着除法按 p 一整排一整排地熄灭灯，剩下的灯闪一下飞进结果：这就是余数。</span></div></li>
+<li><span class="action-icon">🕵️</span><div class="action-text" data-i18n="action4"><span><strong>扮演伊芙。</strong>先把 A 和 B 相乘，确认这不是密钥。再依次尝试 x = 1、2、3……直到 g<sup>x</sup> mod p 等于 A。p 很小时伊芙几步就能获胜，旁边的刻度会显示 2048 位时需要试多少次。</span></div></li>
+<li><span class="action-icon">🎭</span><div class="action-text" data-i18n="action5"><span><strong>让伊芙站到中间</strong>——这就是中间人攻击（man-in-the-middle）。伊芙用自己的数替换 A 和 B，信件“七点见”经过她手：伊芙用一个密钥打开，再用另一个密钥锁上。爱丽丝和鲍勃看到的是一个运转完美的密码。</span></div></li>
+</ul>
+<div class="key-insight">
+<strong data-i18n="insight2.label">值得注意：</strong>
+<span data-i18n="insight2.text">伊芙看到了信道中经过的每一个数字，但只要 p 足够大，她仍然得不到密钥。她只在两种情况下获胜：p 很小的时候，以及她不只是旁听、而是被允许<span class="highlight-gold">介入</span>的时候。</span>
+</div>
+<div class="key-insight">
+<strong data-i18n="insight3.label">一个出人意料的结论：</strong>
+<span data-i18n="insight3.text">协议能保护你免受旁听者之害，却对介入者无能为力。要把爱丽丝的数和伪造品区分开，需要数字签名；而要信任签名，又需要一个人人都信任的人：证书颁发机构。结果，可信的中间人并没有被摆脱。但它的角色变了：过去它负责分发密钥、知道所有秘密，而现在它只确认哪个公开数属于谁，却不知道任何一个共同密钥。签名将有一个专门的游戏。</span>
+</div>
+</section>
+
+<!-- Дополнительный материал -->
+<details class="advanced-section">
+<summary data-i18n="advanced.summary">给好奇的你</summary>
+<div class="advanced-content">
+<h3 data-i18n="advanced.compare.heading">经典 DH、ECDH 和 VKO 对照</h3>
+<p data-i18n="advanced.compare.text">三者遵循同一个模式：秘密数、公开数、共同秘密。区别在于计算是在哪个“世界”里进行的：</p>
+<table class="comparison-table">
+<tr><th style="width: 22%;" data-i18n="table.param">参数</th><th class="western-cell" data-i18n="table.head.dh">经典 DH</th><th class="western-cell">ECDH (X25519)</th><th class="russian-cell" data-i18n="table.head.ru">VKO（GOST）</th></tr>
+<tr><td data-i18n="table.row1.label">在哪里计算</td><td class="western-cell" data-i18n="table.row1.dh">模素数 p 的余数</td><td class="western-cell" data-i18n="table.row1.ec">Curve25519 曲线上的点</td><td class="russian-cell" data-i18n="table.row1.ru">GOST R 34.10-2012 曲线上的点</td></tr>
+<tr><td data-i18n="table.row2.label">数的长度</td><td class="western-cell" data-i18n="table.row2.dh">2048–4096 位</td><td class="western-cell" data-i18n="table.row2.ec">255 位</td><td class="russian-cell" data-i18n="table.row2.ru">256 或 512 位</td></tr>
+<tr><td data-i18n="table.row3.label">大致安全强度</td><td class="western-cell" data-i18n="table.row3.dh">2048 位时 ≈ 112 位</td><td class="western-cell" data-i18n="table.row3.ec">≈ 128 位</td><td class="russian-cell" data-i18n="table.row3.ru">≈ 128 或 ≈ 256 位</td></tr>
+<tr><td data-i18n="table.row4.label">共同秘密如何处理</td><td class="western-cell" data-i18n="table.row4.kdf">密钥派生函数（TLS 中为 HKDF）</td><td class="western-cell" data-i18n="table.row4.kdf">密钥派生函数（TLS 中为 HKDF）</td><td class="russian-cell" data-i18n="table.row4.ru">结合公开的 UKM 做 Streebog 哈希</td></tr>
+<tr><td data-i18n="table.row5.label">年份</td><td class="western-cell">1976</td><td class="western-cell" data-i18n="table.row5.ec">2006（D. 伯恩斯坦）</td><td class="russian-cell">2016</td></tr>
+<tr><td data-i18n="table.row6.label">标准</td><td class="western-cell">RFC 3526, RFC 7919</td><td class="western-cell">RFC 7748</td><td class="russian-cell" data-i18n="table.row6.ru">R 50.1.113-2016（RFC 7836）</td></tr>
+<tr><td data-i18n="table.row7.label">发布机构</td><td class="western-cell">IETF</td><td class="western-cell">IETF</td><td class="russian-cell"><span class="highlight-neon" data-i18n="table.row7.ru">TC 26、俄罗斯联邦技术监管与计量局</span></td></tr>
+</table>
+<h3 data-i18n="advanced.size.heading">为什么 p 必须非常大</h3>
+<p data-i18n="advanced.size.p">伊芙比简单穷举聪明。对于模 p 的离散对数，有一种巧妙的方法：<span class="highlight">数域筛法</span>。正因如此，2048 位的 p 提供的安全强度大约只相当于 112 位的对称密钥，远不是 2048 位。在椭圆曲线上还不知道这样的技巧：最好的方法也需要大约完整穷举量的平方根，所以 256 位的曲线就足以提供约 128 位的安全强度。这就是转向椭圆曲线的原因：密钥更短，计算更快。</p>
+<h3 data-i18n="advanced.logjam.heading">Logjam：当所有人共用一个 p</h3>
+<p data-i18n="advanced.logjam.p">2015 年，研究人员展示了 <span class="highlight">Logjam</span> 攻击。许多服务器使用相同的 512 位和 1024 位标准 p，其中一些还因旧的“出口”规定而接受 512 位。对固定的 p，最繁重的那部分计算可以事先一次做完，之后就能很快求出所有使用这个 p 的连接的密钥。对 512 位，这项准备工作用了大约一周；对 1024 位，估计一个国家有能力完成。此后 1024 位的群被淘汰：如今 p 至少取 2048 位，或者改用椭圆曲线。</p>
+<h3 data-i18n="advanced.quantum.heading">量子威胁</h3>
+<p data-i18n="advanced.quantum.p">运行<span class="highlight">肖尔算法</span>的量子计算机能很快解决离散对数问题，无论是模 p 还是在椭圆曲线上。这样的机器目前还不存在，但今天被录下的流量将来可能被解密。因此从 2024 年起，浏览器开始在 X25519 之外加上后量子机制 <span class="highlight-gold">ML-KEM</span>（FIPS 203 标准）：密钥由两部分组成，要得到它，必须把两部分都攻破。</p>
+<h3 data-i18n="advanced.root.heading">为什么 g 应当是原根</h3>
+<p data-i18n="advanced.root.p">g 模 p 的各次幂应当取遍尽可能多的不同余数。在本文的例子（g = 5、p = 23）中，它们恰好给出 1 到 22 的全部 22 个数：这样的 g 叫作<span class="highlight">原根</span>。但如果取 g = 22，幂就会交替出现：22、1、22、1……于是 A 只可能是两个数之一，伊芙试两次就够了。所以游戏只允许选择“好的” p 和 g 组合。</p>
+<p data-i18n="advanced.root.note">这是简化：在真实系统中，g 往往不是原根，而是某个素数阶巨大子群中的元素（例如 p = 2q + 1，其中 q 也是素数）。重要的不是 g 的幂覆盖一切，而是它们的数量多到天文数字，并且不存在能让伊芙钻空子的小子群。</p>
+</div>
+</details>
+
+<!-- Кнопки действий -->
+<div class="article-actions" id="article-actions">
+<p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">现在你知道了两个人怎样当众约定一个秘密，也知道了为什么如果有人能够介入，这还远远不够</p>
+<div class="action-buttons">
+<a href="/zh/games/diffiehellman/" class="btn-primary" data-i18n="actions.play">🚀 启动交互式演示</a>
+<a href="/zh/#theory-section" class="btn-secondary" data-i18n="actions.back">← 返回主题列表</a>
+</div>
+<p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">在演示中，你将混合颜料，在灯板上数清幂，扮演伊芙，看看她的攻击在哪里失败、又在哪里得手</p>
+</div>
+</div>
+
+<!-- Футер -->
+<footer class="theory-footer">
+<p data-i18n="footer.line1">© 2025 Ludus Lab · 用简单的游戏理解复杂的事物</p>
+<p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">本文是对基本原理的简化讲解。在交互式演示中 p 不超过 29，秘密数为 2 或 3；真实系统使用长达数百乃至数千位的数，交换通常在椭圆曲线上进行。</p>
+</footer>
+
+<script>
+    const I18N = {
+      ru: {
+        'meta.title': 'Диффи — Хеллман: как договориться о секрете при всех | Ludus Lab',
+        'meta.description': 'Как двое договариваются о секретном ключе, когда их слышат все? Протокол Диффи — Хеллмана на красках и числах, атака «человек посередине» и российский VKO.',
+        'nav.home': 'Главная',
+        'nav.play': 'Играть',
+        'article.category': 'Асимметричная криптография',
+        'article.title': 'Диффи — Хеллман: как договориться о секрете при всех',
+        'article.subtitle': 'Двое незнакомцев договариваются о тайном ключе, а их разговор слышит каждый. Как это возможно и где здесь подвох?',
+        'meta.readtime': '⏱️ 8 мин чтения',
+        'meta.level': '📊 Средний уровень',
+        'meta.security': '🔒 С этого начинается каждое HTTPS-соединение',
+        'block1.heading': 'Можно ли договориться о секрете вслух?',
+        'block1.p1': 'Алиса и Боб никогда не встречались. Говорить они могут только так, что каждое их слово слышит Ева. Могут ли они прямо сейчас, при ней, договориться о пароле, который Ева не узнает?',
+        'block1.p2': 'Интуиция отвечает твёрдым «нет». Всё, что знает Боб, пришло к нему по общему каналу, а значит, это знает и Ева. Откуда у Боба возьмётся то, чего нет у неё?',
+        'block1.p3': 'Тысячи лет так и было. Любой шифр, от <a class="highlight" href="/zh/theory/caesarcipher.html">Цезаря</a> до <a class="highlight" href="/zh/theory/feistel.html">DES</a>, требовал заранее доставить ключ обеим сторонам надёжным путём: курьером, дипломатической почтой, из рук в руки. Даже горячая линия Москва — Вашингтон, открытая в 1963 году, работала на <a class="highlight" href="/zh/theory/vernamcipher.html">одноразовых лентах с ключами</a>, которые стороны передавали друг другу через посольства. Чем больше людей хотели говорить тайно, тем тяжелее становилась эта логистика.',
+        'insight1.label': 'Ключевая мысль:',
+        'insight1.text': 'В 1976 году выяснилось, что интуиция ошибается. Секрет не обязательно передавать: Алиса и Боб могут <span class="highlight-gold">вычислить его каждый у себя</span>. Каждый добавляет в вычисление то, что никогда не произносит вслух, и в итоге у обоих получается один и тот же пароль, которого в канале не было ни разу.',
+        'block2.heading': 'Смешать легко, разделить нельзя',
+        'block2.intro': 'Весь протокол держится на одной вещи: нужна операция, которую <span class="highlight">легко сделать и трудно отменить</span>. Проще всего сначала представить её на красках.',
+        'block2.paint': 'Есть общая краска, её знают все. Алиса и Боб подмешивают к ней каждый свою тайную краску и открыто обмениваются смесями. Потом каждый добавляет свою тайную краску к чужой смеси. В банках у обоих оказывается одно и то же, а Ева, видя обе смеси, тайные краски из них не вытащит.',
+        'scheme1.title': 'Идея на красках',
+        'scheme1.note': 'Упрощение: настоящую смесь красок в лаборатории разделить всё-таки можно. Поэтому в протоколе вместо красок числа.',
+        'block2.numbers': 'В настоящем протоколе «смешать» значит <span class="highlight-gold">возвести в степень по модулю</span>: возвести число в степень, разделить результат на модуль p и оставить только остаток. Например, 30 mod 23 = 7, потому что 30 = 1 · 23 + 7. Ниже каждый шаг сначала в общем виде, а потом на маленьком примере, который считается в уме. Такие же числа стоят в игре по умолчанию, и там их можно менять.',
+        'step1.title': 'Открытые числа p и g',
+        'step1.text': 'Алиса и Боб открыто договариваются о двух числах. <span class="highlight">p</span> — модуль, большое простое число: в реальных системах его длина 2048 бит и больше, то есть в нём не меньше 617 десятичных цифр. <span class="highlight">g</span> — основание, которое будут возводить в степень. Его выбирают так, чтобы степени g давали как можно больше разных остатков (подробнее — в разделе «Для любознательных»). Готовые пары p и g обычно берут из стандартов. Их знают все, включая Еву: это не утечка, так и задумано.',
+        'step2.title': 'Тайные числа a и b',
+        'step2.text': 'Каждый выбирает случайное тайное число: Алиса — <span class="highlight-symmetric">a</span>, Боб — <span class="highlight-symmetric">b</span>. В реальном протоколе это числа длиной в сотни бит, и для каждого нового соединения их выбирают заново. Тайные числа никуда не отправляются: это и есть «тайные краски».',
+        'step3.title': 'Открытые числа A и B',
+        'step3.text': 'Алиса вычисляет <span class="highlight">A = g<sup>a</sup> mod p</span>, Боб — <span class="highlight">B = g<sup>b</sup> mod p</span>. Это и есть «смешать свою краску с общей». A и B уходят по каналу открыто, и Ева их видит.',
+        'step4.title': 'Общий ключ',
+        'step4.text': 'Алиса возводит полученное B в свою тайную степень: <span class="highlight-gold">s = B<sup>a</sup> mod p</span>. Боб делает то же с A: <span class="highlight-gold">s = A<sup>b</sup> mod p</span>. Числа выходят одинаковые, хотя сам ключ по каналу не проходил ни разу. В реальных системах s такой же длины, как p, и из него потом выводят ключ для симметричного шифра.',
+        'step5.title': 'Почему совпало',
+        'step5.text': 'B — это g<sup>b</sup>, поэтому у Алисы B<sup>a</sup> = g<sup>b·a</sup>, а у Боба A<sup>b</sup> = g<sup>a·b</sup>. От перестановки множителей произведение не меняется, как смесь красок не зависит от порядка смешивания. А остаток от деления на p можно брать на любом этапе, итог от этого не меняется. Общая формула: <span class="highlight-gold">s = B<sup>a</sup> = A<sup>b</sup> = g<sup>ab</sup> mod p</span>.',
+        'insightEve.label': 'А что может Ева?',
+        'insightEve.text': 'У Евы есть p, g, A и B. Первая мысль — перемножить A и B, но так выходит g<sup>a+b</sup>, а ключ равен g<sup>a·b</sup>. Это как слить две смеси: общей краски в них вдвое больше. Остаётся найти a по A, то есть перебирать g<sup>1</sup>, g<sup>2</sup>, g<sup>3</sup>… пока не совпадёт. Эту задачу называют <span class="highlight">дискретным логарифмом</span>. В нашем примере с p = 23 хватает не больше 22 попыток, а при p длиной 2048 бит перебор не закончится никогда.',
+        'warning1.label': 'Подвох: Ева посередине',
+        'warning1.text': 'Протокол защищает от того, кто подслушивает, но не от того, кто подменяет. Пусть Ева перехватит A и отправит Бобу вместо него своё число E = g<sup>e</sup>, а Алисе — своё вместо B. Алиса думает, что договорилась с Бобом, Боб — что с Алисой, а на деле у каждого общий ключ с Евой. Ева расшифровывает каждое письмо, читает, зашифровывает вторым ключом и отправляет дальше. Протокол при этом отрабатывает без единой ошибки: числа ничего не говорят о том, кто их прислал. Такую атаку называют <span class="highlight">«человек посередине»</span> (англ. man-in-the-middle, MITM).',
+        'block3.heading': 'Кто это придумал и почему тогда',
+        'block3.p1': 'В ноябре 1976 года Уитфилд Диффи и Мартин Хеллман из Стэнфорда опубликовали статью <span class="highlight-gold">«New Directions in Cryptography»</span>. Она начиналась словами «Мы стоим на пороге революции в криптографии». Время было подходящее: компьютеры начали соединять в сети, и развозить ключи курьерами каждому, кто хочет поговорить с каждым, стало невозможно. На идею повлияла работа Ральфа Меркла, который независимо искал способ договориться о ключе открыто. Позже Хеллман предлагал называть протокол обменом Диффи — Хеллмана — Меркла.',
+        'block3.p2': 'Идея носилась в воздухе. В британской спецслужбе связи GCHQ Джеймс Эллис ещё в 1970 году описал «несекретное шифрование», а Малкольм Уильямсон в 1974 году нашёл по сути тот же протокол. Эти работы были засекречены и вышли на свет только в 1997 году. Поэтому протокол носит имена тех, кто опубликовал его открыто, а в 2015 году Диффи и Хеллман получили премию Тьюринга за криптографию с открытым ключом.',
+        'block3.today': 'Сегодня этот обмен незаметно работает почти в каждом защищённом соединении:',
+        'topic1.title': 'HTTPS',
+        'topic1.desc': 'Каждое соединение по TLS 1.3 начинается с обмена Диффи — Хеллмана, обычно на эллиптической кривой X25519. Тайные числа выбирают заново для каждого соединения и стирают после него: даже если сервер потом взломают, старые разговоры не расшифровать. Это свойство называют прямой секретностью.',
+        'topic2.title': 'Мессенджеры',
+        'topic2.desc': 'Signal и WhatsApp договариваются о ключах переписки несколькими обменами Диффи — Хеллмана. Протокол MTProto в Telegram тоже построен на этом обмене.',
+        'topic3.title': 'SSH, WireGuard, VPN',
+        'topic3.desc': 'Удалённый вход на сервер и защищённые туннели получают сеансовый ключ тем же способом. Дальше этот ключ шифрует данные симметричным шифром, например <a class="highlight" href="/zh/theory/aes.html">AES</a>.',
+        'ru.title': 'Российский вариант: VKO',
+        'ru.p1': 'В российских средствах криптографической защиты общий ключ вырабатывают по алгоритму <span class="highlight-neon">VKO</span>. Он описан в рекомендациях по стандартизации Р 50.1.113-2016 и работает на эллиптических кривых из стандарта подписи ГОСТ Р 34.10-2012 длиной 256 или 512 бит. Идея та же, что в игре: у каждого есть тайное число и вычисленное из него открытое; каждый соединяет своё тайное с чужим открытым, и у обоих получается одно и то же.',
+        'ru.p2': 'Отличий от учебной схемы два. К вычислению подмешивают случайное число UKM, которое передаётся открыто: так из одних и тех же долговременных ключей каждый раз получается новый общий ключ. А сам результат не используют напрямую, а пропускают через хэш-функцию «Стрибог» (ГОСТ Р 34.11-2012). Готовый ключ дальше шифрует данные «Кузнечиком» или «Магмой». VKO работает и в российских наборах шифров для TLS.',
+        'ru.why.label': 'Зачем свой вариант?',
+        'ru.why.text': 'Причина та же, что у «Кузнечика»: математика у всех общая, а кривые, параметры и правила проверки государство хочет выбирать и контролировать само. Подробнее о криптографическом суверенитете — в статье про <a class="highlight" href="/zh/theory/aes.html">AES</a>.',
+        'block4.heading': 'Проверьте сами',
+        'block4.intro': 'В интерактивной демонстрации Ludus Lab весь протокол проходится руками на маленьких числах. Ева видит всё то же, что и вы, и можно проверить, где ей не хватает данных, а где она побеждает. Вот что стоит попробовать:',
+        'action1': '<span><strong>Смешать краски.</strong> Выберите общую краску (жёлтую, оранжевую или лимонную) и тайные краски Алисы и Боба. Цвет у Алисы и Боба выйдет одинаковым, а смесь Евы получится другого оттенка: в ней двойная порция общей краски.</span>',
+        'action2': '<span><strong>Поменять p и g стрелками ‹ ›.</strong> Игра предлагает только такие пары, где степени g дают все остатки от 1 до p − 1. Тайные a и b тоже можно выбрать.</span>',
+        'action3': '<span><strong>Посмотреть на табло фонарей.</strong> Степень зажигается по нарастающей: 5, 25, 125 фонарей. Затем деление гасит полные ряды по p, а оставшиеся фонари вспыхивают и вылетают в результат: это и есть остаток.</span>',
+        'action4': '<span><strong>Сыграть за Еву.</strong> Сначала перемножьте A и B и убедитесь, что это не ключ. Потом перебирайте x = 1, 2, 3… пока g<sup>x</sup> mod p не совпадёт с A. На маленьком p Ева побеждает за несколько ходов, а шкала рядом покажет, сколько попыток понадобилось бы при 2048 битах.</span>',
+        'action5': '<span><strong>Пустить Еву посередине</strong> — это и есть атака «человек посередине» (man-in-the-middle). Ева подменяет A и B своими числами, и письмо «Встречаемся в 7» идёт через неё: Ева открывает его одним ключом и запирает другим. Алиса и Боб видят исправно работающий шифр.</span>',
+        'insight2.label': 'Что заметить:',
+        'insight2.text': 'Ева видит каждое число, которое проходит по каналу, и всё равно не получает ключ, пока p велико. Побеждает она только в двух случаях: когда p маленькое и когда ей позволено не слушать, а <span class="highlight-gold">вмешиваться</span>.',
+        'insight3.label': 'Неожиданный вывод:',
+        'insight3.text': 'Протокол спасает от того, кто слушает, и бессилен против того, кто вмешивается. Чтобы отличить число Алисы от подделки, нужна цифровая подпись, а чтобы доверять подписи, снова нужен кто-то, кому верят все, — удостоверяющий центр. Выходит, от доверенного посредника избавиться не удалось. Но его роль изменилась: раньше центр развозил ключи и знал все секреты, а теперь он только подтверждает, кому принадлежит открытое число, и не знает ни одного общего ключа. Подписи будет посвящена отдельная игра.',
+        'advanced.summary': 'Для любознательных',
+        'advanced.compare.heading': 'Классический DH, ECDH и VKO рядом',
+        'advanced.compare.text': 'Все три работают по одной схеме: тайное число, открытое число, общий секрет. Различаются они тем, в каком мире ведутся вычисления:',
+        'table.param': 'Параметр',
+        'table.head.dh': 'Классический DH',
+        'table.head.ru': 'VKO (ГОСТ)',
+        'table.row1.label': 'Где считают',
+        'table.row1.dh': 'Остатки по модулю простого p',
+        'table.row1.ec': 'Точки кривой Curve25519',
+        'table.row1.ru': 'Точки кривых ГОСТ Р 34.10-2012',
+        'table.row2.label': 'Размер чисел',
+        'table.row2.dh': '2048–4096 бит',
+        'table.row2.ec': '255 бит',
+        'table.row2.ru': '256 или 512 бит',
+        'table.row3.label': 'Стойкость, примерно',
+        'table.row3.dh': '≈ 112 бит при 2048',
+        'table.row3.ec': '≈ 128 бит',
+        'table.row3.ru': '≈ 128 или ≈ 256 бит',
+        'table.row4.label': 'Что делают с общим секретом',
+        'table.row4.kdf': 'Функция выработки ключей (в TLS — HKDF)',
+        'table.row4.ru': 'Хэш «Стрибог» с открытым числом UKM',
+        'table.row5.label': 'Год',
+        'table.row5.ec': '2006 (Д. Бернштейн)',
+        'table.row6.label': 'Стандарт',
+        'table.row6.ru': 'Р 50.1.113-2016 (RFC 7836)',
+        'table.row7.label': 'Кто выпускает',
+        'table.row7.ru': 'ТК 26, Росстандарт',
+        'advanced.size.heading': 'Почему p должно быть огромным',
+        'advanced.size.p': 'Ева умнее простого перебора. Для дискретного логарифма по модулю p есть хитрый метод — <span class="highlight">решето числового поля</span>. Из-за него 2048-битное p даёт стойкость примерно как 112-битный ключ симметричного шифра, а вовсе не как 2048-битный. На эллиптических кривых таких хитростей не знают: лучшие методы требуют порядка квадратного корня из полного перебора, поэтому кривой в 256 бит хватает для стойкости около 128 бит. Отсюда и переход на кривые: ключи короче, вычисления быстрее.',
+        'advanced.logjam.heading': 'Logjam: когда у всех одно p',
+        'advanced.logjam.p': 'В 2015 году исследователи показали атаку <span class="highlight">Logjam</span>. Многие серверы использовали одни и те же стандартные p длиной 512 и 1024 бита, а часть из них по старым «экспортным» правилам соглашалась на 512 бит. Для фиксированного p самую тяжёлую часть вычислений можно проделать один раз заранее, а потом быстро находить ключи всех соединений с этим p. Для 512 бит такая подготовка заняла около недели, для 1024 бит её оценили как посильную для государства. После этого 1024-битные группы списали: сейчас берут p от 2048 бит или переходят на кривые.',
+        'advanced.quantum.heading': 'Квантовая угроза',
+        'advanced.quantum.p': 'Квантовый компьютер с <span class="highlight">алгоритмом Шора</span> решил бы задачу дискретного логарифма быстро, причём и по модулю p, и на эллиптических кривых. Таких машин пока нет, но записанный сегодня трафик можно будет расшифровать потом. Поэтому с 2024 года браузеры добавляют к X25519 постквантовый механизм <span class="highlight-gold">ML-KEM</span> (стандарт FIPS 203): ключ складывают из двух частей, и чтобы его узнать, придётся взломать обе.',
+        'advanced.root.heading': 'Почему g должно быть первообразным корнем',
+        'advanced.root.p': 'Степени g по модулю p должны пробегать как можно больше разных остатков. В примере из статьи (g = 5, p = 23) они дают все 22 числа от 1 до 22: такое g называют <span class="highlight">первообразным корнем</span>. А если взять g = 22, степени будут чередоваться: 22, 1, 22, 1… Тогда A может быть только одним из двух чисел, и Еве хватит двух попыток. Поэтому игра даёт выбирать только «хорошие» пары p и g.',
+        'advanced.root.note': 'Упрощение: в настоящих системах g часто берут не первообразным корнем, а элементом огромной подгруппы простого порядка (например, при p = 2q + 1, где q тоже простое). Важно не то, чтобы степени g покрыли всё, а то, чтобы их было астрономически много и не нашлось маленьких подгрупп, через которые Ева могла бы зайти.',
+        'actions.intro': 'Теперь вы знаете, как двое договариваются о секрете при всех и почему этого мало, если кто-то может вмешаться',
+        'actions.play': '🚀 Запустить интерактивную демонстрацию',
+        'actions.back': '← Вернуться к списку тем',
+        'actions.outro': 'В демонстрации вы смешаете краски, пересчитаете степени на табло фонарей, сыграете за Еву и увидите, где её атака проваливается, а где удаётся',
+        'footer.line1': '© 2025 Ludus Lab · Сложные вещи простыми играми',
+        'footer.line2': 'Эта статья — упрощённое объяснение принципов. В интерактивной демонстрации p не больше 29, а тайные числа равны 2 или 3; в настоящих системах числа длиной в сотни и тысячи бит, а обмен обычно идёт на эллиптических кривых.',
+        'step1.example': '<span class="highlight-gold">Пример:</span> p = 23, g = 5.',
+        'step2.example': '<span class="highlight-gold">Пример:</span> a = 2, b = 3.',
+        'step3.example': '<span class="highlight-gold">Пример:</span> A = 5² mod 23: 5² = 25 = 1 · 23 + <b>2</b>, значит A = 2. B = 5³ mod 23: сначала степень целиком, 5³ = 125, потом деление с остатком, 125 = 5 · 23 + <b>10</b>, значит B = 10.',
+        'step4.example': '<span class="highlight-gold">Пример:</span> у Алисы 10² = 100 = 4 · 23 + <b>8</b>, у Боба 2³ = 8 (это меньше 23, делить нечего). У обоих s = 8.',
+        'pt.t1.title': 'Смешать легко',
+        'pt.t1.text': 'Общая и тайная краски за секунду дают смесь. Её можно отправить открыто.',
+        'pt.t2.title': 'Разделить нельзя',
+        'pt.t2.text': 'Ева видит смесь, но вытащить из неё тайную краску не может.',
+        'pt.t3.title': 'Порядок не важен',
+        'pt.t3.text': 'Алиса добавляет свою краску к смеси Боба, Боб — к смеси Алисы. Цвет выходит один.',
+        'block2.what': 'Сначала уточним, что это такое. Диффи — Хеллман — <span class="highlight-gold">не шифр, а протокол выработки общего ключа</span>. Он ничего не шифрует, а только даёт Алисе и Бобу одинаковый секретный ключ. Переписку этим ключом потом шифрует обычный шифр, например <a class="highlight" href="/zh/theory/aes.html">AES</a>.',
+        'diff.heading': 'Чем это отличается от RSA',
+        'diff.intro': 'Рядом с Диффи — Хеллманом всегда называют RSA. Оба придуманы в 1970-х, оба работают с открытыми и тайными числами и оба считают степени по модулю, поэтому их легко спутать. Но задачи у них разные. Диффи — Хеллман ничего не шифрует: он нужен, чтобы двое <span class="highlight-gold">вместе получили</span> общий ключ. RSA — это замок: Боб раздаёт его заранее, и любой может <span class="highlight-gold">запереть письмо</span> так, что открыть его сможет только Боб.',
+        'diff.th.q': 'Вопрос',
+        'diff.th.dh': 'Диффи — Хеллман',
+        'diff.th.rsa': 'RSA',
+        'diff.r1.q': 'Что делает',
+        'diff.r1.dh': 'Двое вырабатывают общий секретный ключ',
+        'diff.r1.rsa': 'Запирает письмо для одного адресата; тем же способом подписывают',
+        'diff.r2.q': 'Кто должен участвовать',
+        'diff.r2.dh': 'Оба сразу: каждый вносит своё тайное число',
+        'diff.r2.rsa': 'Только отправитель: замок Боба уже у всех, сам Боб может быть не в сети',
+        'diff.r3.q': 'Что идёт по каналу',
+        'diff.r3.dh': 'Открытые числа A и B; самого ключа в канале нет',
+        'diff.r3.rsa': 'Запертое письмо c',
+        'diff.r4.q': 'Сколько живут ключи',
+        'diff.r4.dh': 'Тайные числа новые в каждом разговоре',
+        'diff.r4.rsa': 'Один замок на годы',
+        'diff.r5.q': 'На чём держится',
+        'diff.r5.dh': 'Трудно найти тайное число по открытому (дискретный логарифм)',
+        'diff.r5.rsa': 'Трудно разложить n на два простых числа',
+        'diff.r6.q': 'Аналогия',
+        'diff.r6.dh': 'Краски, которые смешивают вдвоём',
+        'diff.r6.rsa': 'Открытый навесной замок',
+        'diff.insight.label': 'Коротко:',
+        'diff.insight.text': '<span class="highlight-gold">Диффи — Хеллман — договориться, RSA — запереть.</span> В HTTPS они работают вместе: обмен Диффи — Хеллмана даёт ключ разговора, а подпись сайта, часто по RSA, доказывает, что на том конце именно сайт, а не Ева посередине. Подробнее — в статье про <a class="highlight" href="/zh/theory/rsa.html">RSA</a>.',
+      },
+      en: {
+        'meta.title': 'Diffie–Hellman: How to Agree on a Secret in Public | Ludus Lab',
+        'meta.description': 'How can two people agree on a secret key when everyone can hear them? Diffie–Hellman with paints and numbers, the man-in-the-middle attack and Russia’s VKO.',
+        'nav.home': 'Home',
+        'nav.play': 'Play',
+        'article.category': 'Public-key cryptography',
+        'article.title': 'Diffie–Hellman: How to Agree on a Secret in Public',
+        'article.subtitle': 'Two strangers agree on a secret key while anyone can hear every word. How is that even possible, and what’s the catch?',
+        'meta.readtime': '⏱️ 8 min read',
+        'meta.level': '📊 Intermediate level',
+        'meta.security': '🔒 How every HTTPS connection begins',
+        'block1.heading': 'Can you agree on a secret out loud?',
+        'block1.p1': 'Alice and Bob have never met. The only way they can talk is one where Eve hears every word. Can they, right now and in front of her, agree on a password that Eve won’t learn?',
+        'block1.p2': 'Intuition gives a firm “no.” Everything Bob knows reached him through the shared channel, so Eve knows it too. Where would Bob get anything she doesn’t have?',
+        'block1.p3': 'For thousands of years that was exactly how it worked. Every cipher, from <a class="highlight" href="/zh/theory/caesarcipher.html">Caesar’s</a> to <a class="highlight" href="/zh/theory/feistel.html">DES</a>, needed the key delivered to both sides in advance by a trusted route: a courier, the diplomatic bag, hand to hand. Even the Moscow–Washington hotline, opened in 1963, ran on <a class="highlight" href="/zh/theory/vernamcipher.html">one-time key tapes</a> that the two sides exchanged through their embassies. The more people needed to talk in secret, the heavier this logistics became.',
+        'insight1.label': 'Key takeaway:',
+        'insight1.text': 'In 1976 it turned out that intuition is wrong. A secret doesn’t have to be sent: Alice and Bob can <span class="highlight-gold">each compute it on their own side</span>. Each adds something to the calculation that they never say out loud, and in the end both get the same password, one that never once appeared in the channel.',
+        'block2.heading': 'Easy to mix, impossible to unmix',
+        'block2.intro': 'The whole protocol rests on one thing: an operation that is <span class="highlight">easy to do and hard to undo</span>. It’s easiest to picture it with paints first.',
+        'block2.paint': 'There is a common paint that everyone knows. Alice and Bob each mix their own secret paint into it and swap the mixtures in the open. Then each adds their secret paint to the other’s mixture. Both cans end up holding the same color, and Eve, who sees both mixtures, can’t pull the secret paints back out.',
+        'scheme1.title': 'The idea in paint',
+        'scheme1.note': 'A simplification: a real paint mixture can be separated in a lab. That’s why the protocol uses numbers instead of paints.',
+        'block2.numbers': 'In the real protocol, “mixing” means <span class="highlight-gold">modular exponentiation</span>: raise a number to a power, divide the result by the modulus p and keep only the remainder. For example, 30 mod 23 = 7, because 30 = 1 · 23 + 7. Below, each step is given first in general form and then as a small example you can work out in your head. The game uses the same numbers by default, and there you can change them.',
+        'step1.title': 'Public numbers p and g',
+        'step1.text': 'Alice and Bob openly agree on two numbers. <span class="highlight">p</span> is the modulus, a large prime: in real systems it is 2048 bits or longer, that is, at least 617 decimal digits. <span class="highlight">g</span> is the base that will be raised to powers. It is chosen so that the powers of g give as many different remainders as possible (more on this under “For the curious”). Ready-made pairs of p and g are usually taken from standards. Everyone knows them, Eve included: that’s not a leak; it’s by design.',
+        'step2.title': 'Secret numbers a and b',
+        'step2.text': 'Each picks a random secret number: Alice picks <span class="highlight-symmetric">a</span>, Bob picks <span class="highlight-symmetric">b</span>. In the real protocol these numbers are hundreds of bits long and are chosen afresh for every new connection. The secret numbers are never sent anywhere: they are the “secret paints.”',
+        'step3.title': 'Public numbers A and B',
+        'step3.text': 'Alice computes <span class="highlight">A = g<sup>a</sup> mod p</span>, Bob computes <span class="highlight">B = g<sup>b</sup> mod p</span>. This is “mixing your paint with the common one.” A and B travel through the channel in the open, and Eve sees them.',
+        'step4.title': 'The shared key',
+        'step4.text': 'Alice raises the B she received to her secret power: <span class="highlight-gold">s = B<sup>a</sup> mod p</span>. Bob does the same with A: <span class="highlight-gold">s = A<sup>b</sup> mod p</span>. The numbers come out equal, even though the key itself never went through the channel. In real systems s is as long as p, and a key for a symmetric cipher is then derived from it.',
+        'step5.title': 'Why they match',
+        'step5.text': 'B is g<sup>b</sup>, so Alice gets B<sup>a</sup> = g<sup>b·a</sup>, and Bob gets A<sup>b</sup> = g<sup>a·b</sup>. Swapping the factors doesn’t change the product, just as a paint mixture doesn’t depend on the order of mixing. And the remainder after dividing by p can be taken at any stage without changing the result. The general formula: <span class="highlight-gold">s = B<sup>a</sup> = A<sup>b</sup> = g<sup>ab</sup> mod p</span>.',
+        'insightEve.label': 'So what can Eve do?',
+        'insightEve.text': 'Eve has p, g, A and B. Her first idea is to multiply A and B, but that gives g<sup>a+b</sup>, while the key is g<sup>a·b</sup>. It’s like pouring the two mixtures together: there’s twice as much common paint. What’s left is to find a from A, trying g<sup>1</sup>, g<sup>2</sup>, g<sup>3</sup>… until one matches. This is called the <span class="highlight">discrete logarithm</span> problem. In our example with p = 23 it takes at most 22 tries; with a 2048-bit p the search would never finish.',
+        'warning1.label': 'The catch: Eve in the middle',
+        'warning1.text': 'The protocol protects against someone who listens, not against someone who swaps messages. Suppose Eve intercepts A and sends Bob her own number E = g<sup>e</sup> instead, and does the same to Alice in place of B. Alice thinks she has agreed on a key with Bob, Bob thinks he has one with Alice, but in fact each shares a key with Eve. Eve decrypts every letter, reads it, re-encrypts it with the second key and passes it on. The protocol runs without a single error: the numbers say nothing about who sent them. This is called a <span class="highlight">man-in-the-middle</span> (MITM) attack.',
+        'block3.heading': 'Who came up with it, and why then',
+        'block3.p1': 'In November 1976 Whitfield Diffie and Martin Hellman of Stanford published the paper <span class="highlight-gold">“New Directions in Cryptography.”</span> It opened with the words “We stand today on the brink of a revolution in cryptography.” The timing was right: computers were being linked into networks, and sending couriers with keys to everyone who wanted to talk to everyone else had become impossible. The idea was influenced by the work of Ralph Merkle, who was independently looking for a way to agree on a key in the open. Hellman later suggested calling the protocol Diffie–Hellman–Merkle key exchange.',
+        'block3.p2': 'The idea was in the air. At the British signals agency GCHQ, James Ellis described “non-secret encryption” back in 1970, and in 1974 Malcolm Williamson found essentially the same protocol. That work was classified and came to light only in 1997. So the protocol bears the names of those who published it openly, and in 2015 Diffie and Hellman received the Turing Award for public-key cryptography.',
+        'block3.today': 'Today this exchange quietly runs in almost every secure connection:',
+        'topic1.title': 'HTTPS',
+        'topic1.desc': 'Every TLS 1.3 connection begins with a Diffie–Hellman exchange, usually on the elliptic curve X25519. The secret numbers are chosen afresh for each connection and erased afterwards: even if the server is hacked later, old conversations can’t be decrypted. This property is called forward secrecy.',
+        'topic2.title': 'Messengers',
+        'topic2.desc': 'Signal and WhatsApp agree on chat keys through several Diffie–Hellman exchanges. Telegram’s MTProto protocol is built on this exchange too.',
+        'topic3.title': 'SSH, WireGuard, VPN',
+        'topic3.desc': 'Remote logins and secure tunnels get their session key the same way. That key then encrypts the data with a symmetric cipher such as <a class="highlight" href="/zh/theory/aes.html">AES</a>.',
+        'ru.title': 'The Russian variant: VKO',
+        'ru.p1': 'Russian certified cryptographic tools derive a shared key with the <span class="highlight-neon">VKO</span> algorithm. It is described in the standardization recommendations R 50.1.113-2016 and works on the 256- or 512-bit elliptic curves of the GOST R 34.10-2012 signature standard. The idea is the same as in the game: each side has a secret number and a public one computed from it; each combines its own secret with the other’s public number, and both end up with the same result.',
+        'ru.p2': 'It differs from the textbook scheme in two ways. A random number called UKM, sent in the open, is mixed into the calculation, so the same long-term keys yield a fresh shared key every time. And the result isn’t used directly: it is passed through the Streebog hash function (GOST R 34.11-2012). The finished key then encrypts data with Kuznyechik or Magma. VKO is also used in the Russian cipher suites for TLS.',
+        'ru.why.label': 'Why a variant of its own?',
+        'ru.why.text': 'For the same reason as Kuznyechik: the math is shared by everyone, but a state wants to choose and control the curves, the parameters and the rules of verification itself. More on cryptographic sovereignty in the article on <a class="highlight" href="/zh/theory/aes.html">AES</a>.',
+        'block4.heading': 'Try it yourself',
+        'block4.intro': 'In the Ludus Lab interactive demo you work through the whole protocol by hand on small numbers. Eve sees everything you see, so you can check where she lacks information and where she wins. Here’s what to try:',
+        'action1': '<span><strong>Mix the paints.</strong> Choose the common paint (yellow, orange or lemon) and Alice’s and Bob’s secret paints. Alice and Bob end up with the same color, while Eve’s mixture comes out a different shade: it has a double portion of the common paint.</span>',
+        'action2': '<span><strong>Change p and g with the ‹ › arrows.</strong> The game offers only pairs where the powers of g give every remainder from 1 to p − 1. You can choose the secret a and b too.</span>',
+        'action3': '<span><strong>Watch the lamp board.</strong> The power lights up as it grows: 5, 25, 125 lamps. Then the division puts out whole rows of p, and the lamps that are left flash and fly into the result: that’s the remainder.</span>',
+        'action4': '<span><strong>Play as Eve.</strong> First multiply A and B and see that it isn’t the key. Then try x = 1, 2, 3… until g<sup>x</sup> mod p matches A. With a small p Eve wins in a few moves, and the scale next to it shows how many tries 2048 bits would take.</span>',
+        'action5': '<span><strong>Put Eve in the middle</strong>: this is the man-in-the-middle attack itself. Eve swaps A and B for her own numbers, and the letter “Meet at 7” passes through her: Eve opens it with one key and locks it with the other. Alice and Bob see a cipher that works perfectly.</span>',
+        'insight2.label': 'What to notice:',
+        'insight2.text': 'Eve sees every number that goes through the channel and still doesn’t get the key as long as p is large. She wins in only two cases: when p is small, and when she is allowed not just to listen but to <span class="highlight-gold">interfere</span>.',
+        'insight3.label': 'An unexpected conclusion:',
+        'insight3.text': 'The protocol saves you from whoever listens and is powerless against whoever interferes. To tell Alice’s number from a forgery you need a digital signature, and to trust the signature you again need someone everyone believes: a certificate authority. So the trusted middleman never went away. But its role changed: it used to deliver the keys and know every secret, and now it only confirms whose public number is whose, without knowing a single shared key. Signatures will get a game of their own.',
+        'advanced.summary': 'For the curious',
+        'advanced.compare.heading': 'Classic DH, ECDH and VKO side by side',
+        'advanced.compare.text': 'All three follow the same pattern: a secret number, a public number, a shared secret. What differs is the world in which the calculations happen:',
+        'table.param': 'Parameter',
+        'table.head.dh': 'Classic DH',
+        'table.head.ru': 'VKO (GOST)',
+        'table.row1.label': 'Where it computes',
+        'table.row1.dh': 'Remainders modulo a prime p',
+        'table.row1.ec': 'Points on Curve25519',
+        'table.row1.ru': 'Points on GOST R 34.10-2012 curves',
+        'table.row2.label': 'Number size',
+        'table.row2.dh': '2048–4096 bits',
+        'table.row2.ec': '255 bits',
+        'table.row2.ru': '256 or 512 bits',
+        'table.row3.label': 'Security, roughly',
+        'table.row3.dh': '≈ 112 bits at 2048',
+        'table.row3.ec': '≈ 128 bits',
+        'table.row3.ru': '≈ 128 or ≈ 256 bits',
+        'table.row4.label': 'What happens to the shared secret',
+        'table.row4.kdf': 'A key derivation function (HKDF in TLS)',
+        'table.row4.ru': 'Streebog hash with the public UKM',
+        'table.row5.label': 'Year',
+        'table.row5.ec': '2006 (D. Bernstein)',
+        'table.row6.label': 'Standard',
+        'table.row6.ru': 'R 50.1.113-2016 (RFC 7836)',
+        'table.row7.label': 'Issued by',
+        'table.row7.ru': 'TC 26, Rosstandart',
+        'advanced.size.heading': 'Why p has to be huge',
+        'advanced.size.p': 'Eve is smarter than plain brute force. For the discrete logarithm modulo p there is a clever method, the <span class="highlight">number field sieve</span>. Because of it, a 2048-bit p gives roughly the security of a 112-bit symmetric key, nowhere near 2048 bits. On elliptic curves no such tricks are known: the best methods take on the order of the square root of a full search, so a 256-bit curve is enough for about 128 bits of security. Hence the move to curves: shorter keys, faster calculations.',
+        'advanced.logjam.heading': 'Logjam: when everyone shares one p',
+        'advanced.logjam.p': 'In 2015 researchers demonstrated the <span class="highlight">Logjam</span> attack. Many servers used the same standard 512- and 1024-bit primes, and some of them, under old “export” rules, would accept 512 bits. For a fixed p the heaviest part of the computation can be done once in advance, after which the keys of every connection using that p can be found quickly. For 512 bits that preparation took about a week; for 1024 bits it was estimated to be within reach of a nation state. After that, 1024-bit groups were retired: today p is at least 2048 bits, or curves are used instead.',
+        'advanced.quantum.heading': 'The quantum threat',
+        'advanced.quantum.p': 'A quantum computer running <span class="highlight">Shor’s algorithm</span> would solve the discrete logarithm problem quickly, both modulo p and on elliptic curves. No such machines exist yet, but traffic recorded today could be decrypted later. That’s why, since 2024, browsers have been adding the post-quantum mechanism <span class="highlight-gold">ML-KEM</span> (the FIPS 203 standard) to X25519: the key is assembled from two parts, and to learn it an attacker would have to break both.',
+        'advanced.root.heading': 'Why g should be a primitive root',
+        'advanced.root.p': 'The powers of g modulo p should run through as many different remainders as possible. In the article’s example (g = 5, p = 23) they give all 22 numbers from 1 to 22: such a g is called a <span class="highlight">primitive root</span>. But take g = 22 and the powers alternate: 22, 1, 22, 1… Then A can only be one of two numbers, and two tries are enough for Eve. That’s why the game only lets you choose “good” pairs of p and g.',
+        'advanced.root.note': 'A simplification: in real systems g is often not a primitive root but an element of a huge subgroup of prime order (for example, with p = 2q + 1 where q is also prime). What matters is not that the powers of g cover everything, but that there are astronomically many of them and no small subgroups through which Eve could get in.',
+        'actions.intro': 'Now you know how two people agree on a secret in public, and why that’s not enough if someone can interfere',
+        'actions.play': '🚀 Launch the interactive demo',
+        'actions.back': '← Back to the list of topics',
+        'actions.outro': 'In the demo you’ll mix paints, count powers on the lamp board, play as Eve and see where her attack fails and where it succeeds',
+        'footer.line1': '© 2025 Ludus Lab · Complex things through simple games',
+        'footer.line2': 'This article is a simplified explanation of the principles. In the interactive demo p is at most 29 and the secret numbers are 2 or 3; real systems use numbers hundreds or thousands of bits long, and the exchange usually runs on elliptic curves.',
+        'step1.example': '<span class="highlight-gold">Example:</span> p = 23, g = 5.',
+        'step2.example': '<span class="highlight-gold">Example:</span> a = 2, b = 3.',
+        'step3.example': '<span class="highlight-gold">Example:</span> A = 5² mod 23: 5² = 25 = 1 · 23 + <b>2</b>, so A = 2. B = 5³ mod 23: first the whole power, 5³ = 125, then division with remainder, 125 = 5 · 23 + <b>10</b>, so B = 10.',
+        'step4.example': '<span class="highlight-gold">Example:</span> Alice gets 10² = 100 = 4 · 23 + <b>8</b>, Bob gets 2³ = 8 (less than 23, nothing to divide). Both have s = 8.',
+        'pt.t1.title': 'Easy to mix',
+        'pt.t1.text': 'The common and a secret paint make a mixture in a second. It can be sent in the open.',
+        'pt.t2.title': 'Impossible to unmix',
+        'pt.t2.text': 'Eve sees the mixture but can’t pull the secret paint out of it.',
+        'pt.t3.title': 'Order doesn’t matter',
+        'pt.t3.text': 'Alice adds her paint to Bob’s mixture, Bob adds his to Alice’s. The color comes out the same.',
+        'block2.what': 'First, what it actually is. Diffie–Hellman is <span class="highlight-gold">not a cipher but a key agreement protocol</span>. It encrypts nothing; it only gives Alice and Bob the same secret key. Their messages are then encrypted with that key by an ordinary cipher such as <a class="highlight" href="/zh/theory/aes.html">AES</a>.',
+        'diff.heading': 'How this differs from RSA',
+        'diff.intro': 'RSA is always mentioned alongside Diffie–Hellman. Both were invented in the 1970s, both work with public and secret numbers and both compute powers modulo a number, so they are easy to mix up. But they do different jobs. Diffie–Hellman encrypts nothing: it lets two people <span class="highlight-gold">arrive at a shared key together</span>. RSA is a padlock: Bob hands it out in advance, and anyone can <span class="highlight-gold">lock a letter</span> so that only Bob can open it.',
+        'diff.th.q': 'Question',
+        'diff.th.dh': 'Diffie–Hellman',
+        'diff.th.rsa': 'RSA',
+        'diff.r1.q': 'What it does',
+        'diff.r1.dh': 'Two people derive a shared secret key',
+        'diff.r1.rsa': 'Locks a letter for one recipient; signatures work the same way',
+        'diff.r2.q': 'Who has to take part',
+        'diff.r2.dh': 'Both at once: each adds their own secret number',
+        'diff.r2.rsa': 'Only the sender: everyone already has Bob’s padlock, Bob himself may be offline',
+        'diff.r3.q': 'What travels over the channel',
+        'diff.r3.dh': 'The public numbers A and B; the key itself never does',
+        'diff.r3.rsa': 'The locked letter c',
+        'diff.r4.q': 'How long the keys live',
+        'diff.r4.dh': 'Fresh secret numbers for every conversation',
+        'diff.r4.rsa': 'One padlock for years',
+        'diff.r5.q': 'What it relies on',
+        'diff.r5.dh': 'It is hard to find the secret number from the public one (discrete logarithm)',
+        'diff.r5.rsa': 'It is hard to split n into two primes',
+        'diff.r6.q': 'Analogy',
+        'diff.r6.dh': 'Paints mixed by two people',
+        'diff.r6.rsa': 'An open padlock',
+        'diff.insight.label': 'In short:',
+        'diff.insight.text': '<span class="highlight-gold">Diffie–Hellman agrees, RSA locks.</span> In HTTPS they work together: the Diffie–Hellman exchange produces the conversation key, and the site’s signature, often RSA, proves that the other end really is the site and not Eve in the middle. More in the article on <a class="highlight" href="/zh/theory/rsa.html">RSA</a>.',
+      },
+      es: {
+        'meta.title': 'Diffie–Hellman: cómo acordar un secreto en público | Ludus Lab',
+        'meta.description': '¿Cómo acuerdan dos personas una clave secreta si todos las oyen? Diffie–Hellman con pinturas y números, el ataque de intermediario (man-in-the-middle) y el VKO ruso.',
+        'nav.home': 'Inicio',
+        'nav.play': 'Jugar',
+        'article.category': 'Criptografía de clave pública',
+        'article.title': 'Diffie–Hellman: cómo acordar un secreto en público',
+        'article.subtitle': 'Dos desconocidos acuerdan una clave secreta mientras cualquiera oye cada palabra. ¿Cómo es posible y dónde está la trampa?',
+        'meta.readtime': '⏱️ 8 min de lectura',
+        'meta.level': '📊 Nivel intermedio',
+        'meta.security': '🔒 Así empieza cada conexión HTTPS',
+        'block1.heading': '¿Se puede acordar un secreto en voz alta?',
+        'block1.p1': 'Alicia y Bob nunca se han visto. Solo pueden hablar de una manera en la que Eva oye cada palabra. ¿Pueden ahora mismo, delante de ella, acordar una contraseña que Eva no llegue a conocer?',
+        'block1.p2': 'La intuición responde con un «no» rotundo. Todo lo que sabe Bob le ha llegado por el canal común, así que Eva también lo sabe. ¿De dónde sacaría Bob algo que ella no tenga?',
+        'block1.p3': 'Durante miles de años fue exactamente así. Cualquier cifrado, del de <a class="highlight" href="/zh/theory/caesarcipher.html">César</a> a <a class="highlight" href="/zh/theory/feistel.html">DES</a>, exigía entregar la clave de antemano a ambas partes por una vía segura: un mensajero, la valija diplomática, en mano. Incluso la línea directa Moscú–Washington, abierta en 1963, funcionaba con <a class="highlight" href="/zh/theory/vernamcipher.html">cintas de clave de un solo uso</a> que las dos partes se intercambiaban a través de sus embajadas. Cuanta más gente necesitaba hablar en secreto, más pesada se volvía esa logística.',
+        'insight1.label': 'Idea clave:',
+        'insight1.text': 'En 1976 resultó que la intuición se equivoca. Un secreto no tiene por qué enviarse: Alicia y Bob pueden <span class="highlight-gold">calcularlo cada uno por su cuenta</span>. Cada uno aporta al cálculo algo que nunca dice en voz alta, y al final ambos obtienen la misma contraseña, una que nunca pasó por el canal.',
+        'block2.heading': 'Fácil de mezclar, imposible de separar',
+        'block2.intro': 'Todo el protocolo se apoya en una sola cosa: una operación <span class="highlight">fácil de hacer y difícil de deshacer</span>. Lo más sencillo es imaginarla primero con pinturas.',
+        'block2.paint': 'Hay una pintura común que conocen todos. Alicia y Bob le añaden cada uno su pintura secreta y se intercambian las mezclas a la vista. Después cada uno añade su pintura secreta a la mezcla del otro. En los dos botes acaba el mismo color, y Eva, que ve las dos mezclas, no puede sacar de ellas las pinturas secretas.',
+        'scheme1.title': 'La idea con pinturas',
+        'scheme1.note': 'Una simplificación: una mezcla real de pinturas sí puede separarse en un laboratorio. Por eso el protocolo usa números en lugar de pinturas.',
+        'block2.numbers': 'En el protocolo real, «mezclar» significa <span class="highlight-gold">exponenciación modular</span>: elevar un número a una potencia, dividir el resultado entre el módulo p y quedarse solo con el resto. Por ejemplo, 30 mod 23 = 7, porque 30 = 1 · 23 + 7. A continuación, cada paso aparece primero en forma general y luego con un ejemplo pequeño que se calcula de cabeza. El juego usa los mismos números por defecto, y allí se pueden cambiar.',
+        'step1.title': 'Los números públicos p y g',
+        'step1.text': 'Alicia y Bob acuerdan abiertamente dos números. <span class="highlight">p</span> es el módulo, un número primo grande: en los sistemas reales mide 2048 bits o más, es decir, tiene al menos 617 cifras decimales. <span class="highlight">g</span> es la base que se elevará a potencias. Se elige de modo que las potencias de g den el mayor número posible de restos distintos (más detalles en «Para los curiosos»). Los pares de p y g suelen tomarse ya hechos de las normas. Los conocen todos, Eva incluida: no es una filtración, está pensado así.',
+        'step2.title': 'Los números secretos a y b',
+        'step2.text': 'Cada uno elige un número secreto al azar: Alicia, <span class="highlight-symmetric">a</span>; Bob, <span class="highlight-symmetric">b</span>. En el protocolo real son números de cientos de bits, y se eligen de nuevo para cada conexión. Los números secretos no se envían a ninguna parte: son las «pinturas secretas».',
+        'step3.title': 'Los números públicos A y B',
+        'step3.text': 'Alicia calcula <span class="highlight">A = g<sup>a</sup> mod p</span>, Bob calcula <span class="highlight">B = g<sup>b</sup> mod p</span>. Esto es «mezclar tu pintura con la común». A y B viajan por el canal a la vista, y Eva los ve.',
+        'step4.title': 'La clave común',
+        'step4.text': 'Alicia eleva la B recibida a su potencia secreta: <span class="highlight-gold">s = B<sup>a</sup> mod p</span>. Bob hace lo mismo con A: <span class="highlight-gold">s = A<sup>b</sup> mod p</span>. Los números coinciden, aunque la clave nunca pasó por el canal. En los sistemas reales s es tan largo como p, y de él se deriva luego la clave para un cifrado simétrico.',
+        'step5.title': 'Por qué coinciden',
+        'step5.text': 'B es g<sup>b</sup>, así que Alicia obtiene B<sup>a</sup> = g<sup>b·a</sup>, y Bob obtiene A<sup>b</sup> = g<sup>a·b</sup>. El orden de los factores no altera el producto, igual que una mezcla de pinturas no depende del orden en que se mezcla. Y el resto de dividir entre p se puede tomar en cualquier momento sin cambiar el resultado. La fórmula general: <span class="highlight-gold">s = B<sup>a</sup> = A<sup>b</sup> = g<sup>ab</sup> mod p</span>.',
+        'insightEve.label': '¿Y qué puede hacer Eva?',
+        'insightEve.text': 'Eva tiene p, g, A y B. Su primera idea es multiplicar A por B, pero eso da g<sup>a+b</sup>, mientras que la clave es g<sup>a·b</sup>. Es como juntar las dos mezclas: hay el doble de pintura común. Solo le queda hallar a a partir de A, probando g<sup>1</sup>, g<sup>2</sup>, g<sup>3</sup>… hasta que coincida. Es el problema del <span class="highlight">logaritmo discreto</span>. En nuestro ejemplo con p = 23 bastan como mucho 22 intentos; con una p de 2048 bits la búsqueda no terminaría nunca.',
+        'warning1.label': 'La trampa: Eva en medio',
+        'warning1.text': 'El protocolo protege de quien escucha, no de quien suplanta. Supongamos que Eva intercepta A y le envía a Bob en su lugar su propio número E = g<sup>e</sup>, y hace lo mismo con Alicia en lugar de B. Alicia cree haber acordado una clave con Bob, Bob cree tener una con Alicia, pero en realidad cada uno comparte una clave con Eva. Eva descifra cada carta, la lee, la vuelve a cifrar con la segunda clave y la reenvía. El protocolo funciona sin un solo error: los números no dicen nada de quién los envió. Es el llamado <span class="highlight">ataque de intermediario</span> (en inglés, man-in-the-middle, MITM).',
+        'block3.heading': 'Quién lo inventó y por qué entonces',
+        'block3.p1': 'En noviembre de 1976, Whitfield Diffie y Martin Hellman, de Stanford, publicaron el artículo <span class="highlight-gold">«New Directions in Cryptography»</span>. Empezaba con las palabras «Estamos hoy al borde de una revolución en la criptografía». El momento era el adecuado: los ordenadores empezaban a conectarse en redes, y enviar mensajeros con claves a todo el que quisiera hablar con cualquier otro se había vuelto imposible. En la idea influyó el trabajo de Ralph Merkle, que buscaba por su cuenta una manera de acordar una clave a la vista. Más tarde Hellman propuso llamar al protocolo intercambio Diffie–Hellman–Merkle.',
+        'block3.p2': 'La idea estaba en el aire. En la agencia británica de señales GCHQ, James Ellis describió el «cifrado no secreto» ya en 1970, y en 1974 Malcolm Williamson encontró en esencia el mismo protocolo. Ese trabajo era secreto y no salió a la luz hasta 1997. Por eso el protocolo lleva los nombres de quienes lo publicaron abiertamente, y en 2015 Diffie y Hellman recibieron el Premio Turing por la criptografía de clave pública.',
+        'block3.today': 'Hoy este intercambio funciona discretamente en casi todas las conexiones seguras:',
+        'topic1.title': 'HTTPS',
+        'topic1.desc': 'Cada conexión TLS 1.3 empieza con un intercambio Diffie–Hellman, normalmente sobre la curva elíptica X25519. Los números secretos se eligen de nuevo para cada conexión y se borran después: aunque más tarde se hackee el servidor, las conversaciones antiguas no se pueden descifrar. Esta propiedad se llama secreto perfecto hacia adelante (forward secrecy).',
+        'topic2.title': 'Mensajería',
+        'topic2.desc': 'Signal y WhatsApp acuerdan las claves de los chats mediante varios intercambios Diffie–Hellman. El protocolo MTProto de Telegram también se basa en este intercambio.',
+        'topic3.title': 'SSH, WireGuard, VPN',
+        'topic3.desc': 'Los accesos remotos a servidores y los túneles seguros obtienen su clave de sesión del mismo modo. Después esa clave cifra los datos con un cifrado simétrico, por ejemplo <a class="highlight" href="/zh/theory/aes.html">AES</a>.',
+        'ru.title': 'La variante rusa: VKO',
+        'ru.p1': 'Las herramientas criptográficas certificadas en Rusia obtienen la clave común con el algoritmo <span class="highlight-neon">VKO</span>. Está descrito en las recomendaciones de normalización R 50.1.113-2016 y funciona sobre las curvas elípticas de 256 o 512 bits de la norma de firma GOST R 34.10-2012. La idea es la misma que en el juego: cada parte tiene un número secreto y otro público calculado a partir de él; cada una combina su secreto con el número público de la otra, y ambas llegan al mismo resultado.',
+        'ru.p2': 'Se diferencia del esquema de manual en dos cosas. En el cálculo se mezcla un número aleatorio llamado UKM, que se envía a la vista, de modo que las mismas claves de larga duración dan cada vez una clave común nueva. Y el resultado no se usa directamente: pasa por la función hash Streebog (GOST R 34.11-2012). La clave final cifra luego los datos con Kuznyechik o Magma. VKO se usa también en los conjuntos de cifrado rusos para TLS.',
+        'ru.why.label': '¿Por qué una variante propia?',
+        'ru.why.text': 'Por la misma razón que Kuznyechik: las matemáticas son de todos, pero un Estado quiere elegir y controlar por sí mismo las curvas, los parámetros y las reglas de verificación. Más sobre la soberanía criptográfica en el artículo sobre <a class="highlight" href="/zh/theory/aes.html">AES</a>.',
+        'block4.heading': 'Compruébalo tú mismo',
+        'block4.intro': 'En la demostración interactiva de Ludus Lab recorres todo el protocolo a mano con números pequeños. Eva ve lo mismo que tú, así que puedes comprobar dónde le faltan datos y dónde gana. Esto es lo que conviene probar:',
+        'action1': '<span><strong>Mezclar las pinturas.</strong> Elige la pintura común (amarilla, naranja o limón) y las pinturas secretas de Alicia y Bob. Alicia y Bob obtienen el mismo color, mientras que la mezcla de Eva sale de otro tono: lleva doble ración de pintura común.</span>',
+        'action2': '<span><strong>Cambiar p y g con las flechas ‹ ›.</strong> El juego solo ofrece pares en los que las potencias de g dan todos los restos de 1 a p − 1. También puedes elegir los secretos a y b.</span>',
+        'action3': '<span><strong>Mirar el tablero de luces.</strong> La potencia se enciende a medida que crece: 5, 25, 125 luces. Luego la división apaga filas completas de p, y las luces que quedan destellan y salen volando hacia el resultado: ese es el resto.</span>',
+        'action4': '<span><strong>Jugar como Eva.</strong> Primero multiplica A por B y comprueba que no es la clave. Después prueba x = 1, 2, 3… hasta que g<sup>x</sup> mod p coincida con A. Con una p pequeña Eva gana en pocas jugadas, y la escala de al lado muestra cuántos intentos harían falta con 2048 bits.</span>',
+        'action5': '<span><strong>Poner a Eva en medio</strong>: este es el ataque de intermediario (man-in-the-middle). Eva sustituye A y B por sus propios números, y la carta «Nos vemos a las 7» pasa por ella: Eva la abre con una clave y la cierra con la otra. Alicia y Bob ven un cifrado que funciona a la perfección.</span>',
+        'insight2.label': 'Qué observar:',
+        'insight2.text': 'Eva ve cada número que pasa por el canal y aun así no obtiene la clave mientras p sea grande. Solo gana en dos casos: cuando p es pequeña y cuando se le permite no solo escuchar, sino <span class="highlight-gold">intervenir</span>.',
+        'insight3.label': 'Una conclusión inesperada:',
+        'insight3.text': 'El protocolo te salva de quien escucha y no puede nada contra quien interviene. Para distinguir el número de Alicia de una falsificación hace falta una firma digital, y para confiar en la firma vuelve a hacer falta alguien en quien todos confíen: una autoridad de certificación. Así que del intermediario de confianza no hubo forma de librarse. Pero su papel cambió: antes repartía las claves y conocía todos los secretos, y ahora solo confirma de quién es cada número público, sin conocer ni una sola clave común. La firma tendrá su propio juego.',
+        'advanced.summary': 'Para los curiosos',
+        'advanced.compare.heading': 'DH clásico, ECDH y VKO, uno al lado del otro',
+        'advanced.compare.text': 'Los tres siguen el mismo esquema: un número secreto, un número público, un secreto común. Lo que cambia es el mundo en el que se hacen los cálculos:',
+        'table.param': 'Parámetro',
+        'table.head.dh': 'DH clásico',
+        'table.head.ru': 'VKO (GOST)',
+        'table.row1.label': 'Dónde se calcula',
+        'table.row1.dh': 'Restos módulo un primo p',
+        'table.row1.ec': 'Puntos de la curva Curve25519',
+        'table.row1.ru': 'Puntos de las curvas GOST R 34.10-2012',
+        'table.row2.label': 'Tamaño de los números',
+        'table.row2.dh': '2048–4096 bits',
+        'table.row2.ec': '255 bits',
+        'table.row2.ru': '256 o 512 bits',
+        'table.row3.label': 'Seguridad aproximada',
+        'table.row3.dh': '≈ 112 bits con 2048',
+        'table.row3.ec': '≈ 128 bits',
+        'table.row3.ru': '≈ 128 o ≈ 256 bits',
+        'table.row4.label': 'Qué se hace con el secreto común',
+        'table.row4.kdf': 'Una función de derivación de claves (HKDF en TLS)',
+        'table.row4.ru': 'Hash Streebog con el UKM público',
+        'table.row5.label': 'Año',
+        'table.row5.ec': '2006 (D. Bernstein)',
+        'table.row6.label': 'Norma',
+        'table.row6.ru': 'R 50.1.113-2016 (RFC 7836)',
+        'table.row7.label': 'Quién la emite',
+        'table.row7.ru': 'TC 26, Rosstandart',
+        'advanced.size.heading': 'Por qué p tiene que ser enorme',
+        'advanced.size.p': 'Eva es más lista que la simple fuerza bruta. Para el logaritmo discreto módulo p existe un método ingenioso, la <span class="highlight">criba del cuerpo de números</span>. Por su culpa, una p de 2048 bits da más o menos la seguridad de una clave simétrica de 112 bits, ni de lejos la de 2048. En las curvas elípticas no se conocen trucos así: los mejores métodos cuestan del orden de la raíz cuadrada de una búsqueda completa, de modo que una curva de 256 bits basta para unos 128 bits de seguridad. De ahí el paso a las curvas: claves más cortas y cálculos más rápidos.',
+        'advanced.logjam.heading': 'Logjam: cuando todos comparten la misma p',
+        'advanced.logjam.p': 'En 2015 unos investigadores presentaron el ataque <span class="highlight">Logjam</span>. Muchos servidores usaban las mismas p estándar de 512 y 1024 bits, y algunos, por antiguas normas de «exportación», aceptaban 512 bits. Para una p fija, la parte más pesada del cálculo puede hacerse una sola vez por adelantado, y después se hallan rápidamente las claves de todas las conexiones con esa p. Para 512 bits esa preparación llevó cerca de una semana; para 1024 bits se estimó al alcance de un Estado. Desde entonces los grupos de 1024 bits se retiraron: hoy p tiene al menos 2048 bits, o se usan curvas.',
+        'advanced.quantum.heading': 'La amenaza cuántica',
+        'advanced.quantum.p': 'Un ordenador cuántico con el <span class="highlight">algoritmo de Shor</span> resolvería rápidamente el logaritmo discreto, tanto módulo p como en curvas elípticas. Esas máquinas aún no existen, pero el tráfico grabado hoy podría descifrarse más adelante. Por eso, desde 2024, los navegadores añaden a X25519 el mecanismo poscuántico <span class="highlight-gold">ML-KEM</span> (la norma FIPS 203): la clave se forma con dos partes, y para conocerla habría que romper las dos.',
+        'advanced.root.heading': 'Por qué g debe ser una raíz primitiva',
+        'advanced.root.p': 'Las potencias de g módulo p deben recorrer el mayor número posible de restos distintos. En el ejemplo del artículo (g = 5, p = 23) dan los 22 números del 1 al 22: a una g así se la llama <span class="highlight">raíz primitiva</span>. Pero si tomamos g = 22, las potencias se alternan: 22, 1, 22, 1… Entonces A solo puede ser uno de dos números, y a Eva le bastan dos intentos. Por eso el juego solo deja elegir pares «buenos» de p y g.',
+        'advanced.root.note': 'Una simplificación: en los sistemas reales g a menudo no es una raíz primitiva, sino un elemento de un subgrupo enorme de orden primo (por ejemplo, con p = 2q + 1 donde q también es primo). Lo importante no es que las potencias de g lo cubran todo, sino que sean astronómicamente numerosas y que no haya subgrupos pequeños por los que Eva pueda colarse.',
+        'actions.intro': 'Ahora sabes cómo dos personas acuerdan un secreto en público y por qué eso no basta si alguien puede intervenir',
+        'actions.play': '🚀 Iniciar la demostración interactiva',
+        'actions.back': '← Volver a la lista de temas',
+        'actions.outro': 'En la demostración mezclarás pinturas, contarás potencias en el tablero de luces, jugarás como Eva y verás dónde fracasa su ataque y dónde triunfa',
+        'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
+        'footer.line2': 'Este artículo es una explicación simplificada de los principios. En la demostración interactiva p no pasa de 29 y los números secretos son 2 o 3; los sistemas reales usan números de cientos o miles de bits, y el intercambio suele hacerse sobre curvas elípticas.',
+        'step1.example': '<span class="highlight-gold">Ejemplo:</span> p = 23, g = 5.',
+        'step2.example': '<span class="highlight-gold">Ejemplo:</span> a = 2, b = 3.',
+        'step3.example': '<span class="highlight-gold">Ejemplo:</span> A = 5² mod 23: 5² = 25 = 1 · 23 + <b>2</b>, así que A = 2. B = 5³ mod 23: primero la potencia entera, 5³ = 125, y luego la división con resto, 125 = 5 · 23 + <b>10</b>, así que B = 10.',
+        'step4.example': '<span class="highlight-gold">Ejemplo:</span> Alicia obtiene 10² = 100 = 4 · 23 + <b>8</b>, Bob obtiene 2³ = 8 (menor que 23, no hay nada que dividir). Los dos tienen s = 8.',
+        'pt.t1.title': 'Fácil de mezclar',
+        'pt.t1.text': 'La pintura común y una secreta dan una mezcla en un segundo. Se puede enviar a la vista.',
+        'pt.t2.title': 'Imposible de separar',
+        'pt.t2.text': 'Eva ve la mezcla, pero no puede sacar de ella la pintura secreta.',
+        'pt.t3.title': 'El orden no importa',
+        'pt.t3.text': 'Alicia añade su pintura a la mezcla de Bob, y Bob la suya a la de Alicia. Sale el mismo color.',
+        'block2.what': 'Primero, qué es exactamente. Diffie–Hellman <span class="highlight-gold">no es un cifrado, sino un protocolo de acuerdo de claves</span>. No cifra nada: solo da a Alicia y Bob la misma clave secreta. Después, los mensajes se cifran con esa clave mediante un cifrado normal, por ejemplo <a class="highlight" href="/zh/theory/aes.html">AES</a>.',
+        'diff.heading': 'En qué se diferencia de RSA',
+        'diff.intro': 'Junto a Diffie–Hellman siempre se menciona RSA. Los dos se inventaron en los años setenta, los dos trabajan con números públicos y secretos y los dos calculan potencias módulo un número, así que es fácil confundirlos. Pero hacen cosas distintas. Diffie–Hellman no cifra nada: sirve para que dos personas <span class="highlight-gold">obtengan juntas</span> una clave común. RSA es un candado: Bob lo reparte de antemano y cualquiera puede <span class="highlight-gold">cerrar una carta</span> de modo que solo Bob pueda abrirla.',
+        'diff.th.q': 'Pregunta',
+        'diff.th.dh': 'Diffie–Hellman',
+        'diff.th.rsa': 'RSA',
+        'diff.r1.q': 'Qué hace',
+        'diff.r1.dh': 'Dos personas obtienen una clave secreta común',
+        'diff.r1.rsa': 'Cierra una carta para un solo destinatario; las firmas funcionan igual',
+        'diff.r2.q': 'Quién tiene que participar',
+        'diff.r2.dh': 'Los dos a la vez: cada uno aporta su número secreto',
+        'diff.r2.rsa': 'Solo el remitente: todos tienen ya el candado de Bob, y Bob puede estar desconectado',
+        'diff.r3.q': 'Qué viaja por el canal',
+        'diff.r3.dh': 'Los números públicos A y B; la clave nunca',
+        'diff.r3.rsa': 'La carta cerrada c',
+        'diff.r4.q': 'Cuánto duran las claves',
+        'diff.r4.dh': 'Números secretos nuevos en cada conversación',
+        'diff.r4.rsa': 'Un candado para años',
+        'diff.r5.q': 'En qué se apoya',
+        'diff.r5.dh': 'Es difícil hallar el número secreto a partir del público (logaritmo discreto)',
+        'diff.r5.rsa': 'Es difícil descomponer n en dos primos',
+        'diff.r6.q': 'Analogía',
+        'diff.r6.dh': 'Pinturas que mezclan dos personas',
+        'diff.r6.rsa': 'Un candado abierto',
+        'diff.insight.label': 'En pocas palabras:',
+        'diff.insight.text': '<span class="highlight-gold">Diffie–Hellman acuerda, RSA cierra.</span> En HTTPS trabajan juntos: el intercambio Diffie–Hellman produce la clave de la conversación, y la firma del sitio, a menudo RSA, demuestra que al otro lado está de verdad el sitio y no Eva en medio. Más en el artículo sobre <a class="highlight" href="/zh/theory/rsa.html">RSA</a>.',
+      },
+      zh: {
+        'meta.title': '迪菲-赫尔曼：如何当众约定一个秘密 | Ludus Lab',
+        'meta.description': '所有人都听得见，两个人怎样约定一个秘密密钥？用颜料和数字讲解迪菲-赫尔曼协议、“中间人”攻击以及俄罗斯的 VKO 算法。',
+        'nav.home': '首页',
+        'nav.play': '开始游戏',
+        'article.category': '公钥密码学',
+        'article.title': '迪菲-赫尔曼：如何当众约定一个秘密',
+        'article.subtitle': '两个陌生人约定一个秘密密钥，而他们的每句话谁都听得见。这怎么可能？其中的陷阱又在哪里？',
+        'meta.readtime': '⏱️ 阅读约 8 分钟',
+        'meta.level': '📊 中级',
+        'meta.security': '🔒 每一次 HTTPS 连接都从这里开始',
+        'block1.heading': '能当众约定一个秘密吗？',
+        'block1.p1': '爱丽丝和鲍勃从未见过面。他们唯一的交流方式，伊芙都能听到每一句话。他们能不能现在就当着她的面，约定一个伊芙无法得知的密码？',
+        'block1.p2': '直觉给出的回答是坚决的“不能”。鲍勃知道的一切都是通过公共信道得到的，所以伊芙也都知道。鲍勃从哪里能得到她没有的东西呢？',
+        'block1.p3': '几千年来情况确实如此。任何密码，从<a class="highlight" href="/zh/theory/caesarcipher.html">凯撒密码</a>到 <a class="highlight" href="/zh/theory/feistel.html">DES</a>，都要求事先通过可靠途径把密钥送到双方手中：信使、外交邮袋、当面交接。就连 1963 年开通的莫斯科—华盛顿热线，用的也是<a class="highlight" href="/zh/theory/vernamcipher.html">一次性密钥纸带</a>，由双方通过大使馆互相传递。需要秘密通信的人越多，这套物流就越沉重。',
+        'insight1.label': '核心思想：',
+        'insight1.text': '1976 年，人们发现直觉错了。秘密不一定要传送：爱丽丝和鲍勃可以<span class="highlight-gold">各自在自己这边把它算出来</span>。每一方都往计算里加入一样自己从不说出口的东西，最后双方得到同一个密码，而它从未在信道中出现过。',
+        'block2.heading': '混合容易，分开不能',
+        'block2.intro': '整个协议依靠的只有一件事：一种<span class="highlight">容易做、却难以撤销</span>的运算。最简单的办法是先用颜料来想象它。',
+        'block2.paint': '有一种人人都知道的公共颜料。爱丽丝和鲍勃各自往里加入自己的秘密颜料，然后公开交换混合物。接着每人把自己的秘密颜料加进对方的混合物。两人罐子里最终是同一种颜色，而伊芙虽然看到了两份混合物，却无法从中提取出秘密颜料。',
+        'scheme1.title': '用颜料理解思路',
+        'scheme1.note': '这是简化：真实的颜料混合物在实验室里其实是可以分开的。所以协议用的是数字而不是颜料。',
+        'block2.numbers': '在真正的协议里，“混合”指的是<span class="highlight-gold">模幂运算</span>：把一个数乘方，再把结果除以模数 p，只保留余数。例如 30 mod 23 = 7，因为 30 = 1 · 23 + 7。下面每一步先给出一般形式，再给一个能心算的小例子。游戏默认用的也是这些数，而且在游戏里可以更改。',
+        'step1.title': '公开的数 p 和 g',
+        'step1.text': '爱丽丝和鲍勃公开约定两个数。<span class="highlight">p</span> 是模数，一个很大的素数：在真实系统中长达 2048 位甚至更长，也就是至少有 617 位十进制数字。<span class="highlight">g</span> 是要被乘方的底数，选取时要让 g 的各次幂给出尽可能多的不同余数（详见“给好奇的你”）。现成的 p 和 g 组合通常取自标准。所有人都知道它们，包括伊芙：这不是泄密，本来就是这样设计的。',
+        'step2.title': '秘密的数 a 和 b',
+        'step2.text': '每人随机选一个秘密数：爱丽丝选 <span class="highlight-symmetric">a</span>，鲍勃选 <span class="highlight-symmetric">b</span>。在真实协议中，这些数长达数百位，每次新连接都重新选取。秘密数不发给任何人：它们就是“秘密颜料”。',
+        'step3.title': '公开的数 A 和 B',
+        'step3.text': '爱丽丝计算 <span class="highlight">A = g<sup>a</sup> mod p</span>，鲍勃计算 <span class="highlight">B = g<sup>b</sup> mod p</span>。这就是“把自己的颜料和公共颜料混合”。A 和 B 通过信道公开传送，伊芙看得到。',
+        'step4.title': '共同密钥',
+        'step4.text': '爱丽丝把收到的 B 取自己的秘密次方：<span class="highlight-gold">s = B<sup>a</sup> mod p</span>。鲍勃对 A 做同样的事：<span class="highlight-gold">s = A<sup>b</sup> mod p</span>。两人得到的数相同，尽管密钥本身从未经过信道。在真实系统中，s 和 p 一样长，之后再从它派生出对称密码的密钥。',
+        'step5.title': '为什么会相同',
+        'step5.text': 'B 就是 g<sup>b</sup>，所以爱丽丝得到 B<sup>a</sup> = g<sup>b·a</sup>，鲍勃得到 A<sup>b</sup> = g<sup>a·b</sup>。交换因数的顺序，乘积不变，正如颜料的混合与先后顺序无关。而除以 p 取余可以在任何一步进行，结果都不变。一般公式：<span class="highlight-gold">s = B<sup>a</sup> = A<sup>b</sup> = g<sup>ab</sup> mod p</span>。',
+        'insightEve.label': '那伊芙能做什么？',
+        'insightEve.text': '伊芙有 p、g、A 和 B。她的第一个念头是把 A 和 B 相乘，但这样得到的是 g<sup>a+b</sup>，而密钥是 g<sup>a·b</sup>。这就像把两份混合物倒在一起：公共颜料多了一倍。剩下的办法是由 A 求出 a，依次尝试 g<sup>1</sup>、g<sup>2</sup>、g<sup>3</sup>……直到对上为止。这个问题叫作<span class="highlight">离散对数</span>问题。在我们 p = 23 的例子里最多试 22 次；而 p 长达 2048 位时，穷举永远也完不成。',
+        'warning1.label': '陷阱：伊芙在中间',
+        'warning1.text': '协议能防住偷听的人，却防不住调包的人。假设伊芙截获 A，改把自己的数 E = g<sup>e</sup> 发给鲍勃，对爱丽丝也同样用自己的数替换 B。爱丽丝以为和鲍勃约定了密钥，鲍勃以为和爱丽丝约定了密钥，而实际上两人各自和伊芙共享一个密钥。伊芙解密每一封信，读完后用第二个密钥重新加密再转发。协议运行得没有一点差错：这些数字并不说明是谁发来的。这种攻击叫作<span class="highlight">中间人攻击</span>（man-in-the-middle，MITM）。',
+        'block3.heading': '是谁发明的，为什么是那时',
+        'block3.p1': '1976 年 11 月，斯坦福大学的惠特菲尔德·迪菲和马丁·赫尔曼发表了论文<span class="highlight-gold">《New Directions in Cryptography》（密码学的新方向）</span>。文章开头写道：“今天，我们正站在密码学革命的边缘。”时机恰到好处：计算机开始联网，要为每一对想通信的人派信使送密钥，已经不可能了。这个想法受到了拉尔夫·默克尔工作的影响，他当时独立地寻找公开约定密钥的方法。后来赫尔曼提议把这个协议称为迪菲-赫尔曼-默克尔密钥交换。',
+        'block3.p2': '这个想法当时已呼之欲出。在英国政府通信总部（GCHQ），詹姆斯·埃利斯早在 1970 年就描述了“非秘密加密”，1974 年马尔科姆·威廉森找到了本质上相同的协议。这些工作一直是机密，直到 1997 年才公开。所以协议以公开发表它的人命名；2015 年，迪菲和赫尔曼因公钥密码学获得了图灵奖。',
+        'block3.today': '如今，这种交换几乎在每一条安全连接中默默运行：',
+        'topic1.title': 'HTTPS',
+        'topic1.desc': '每一次 TLS 1.3 连接都从迪菲-赫尔曼交换开始，通常在椭圆曲线 X25519 上进行。秘密数字为每次连接重新选取，用完即删：即使服务器日后被攻破，旧的对话也无法解密。这一性质称为前向保密（forward secrecy）。',
+        'topic2.title': '即时通讯',
+        'topic2.desc': 'Signal 和 WhatsApp 通过多次迪菲-赫尔曼交换来约定聊天密钥。Telegram 的 MTProto 协议也建立在这种交换之上。',
+        'topic3.title': 'SSH、WireGuard、VPN',
+        'topic3.desc': '远程登录服务器和安全隧道也用同样的方式得到会话密钥。之后这个密钥用对称密码（例如 <a class="highlight" href="/zh/theory/aes.html">AES</a>）来加密数据。',
+        'ru.title': '俄罗斯的做法：VKO',
+        'ru.p1': '俄罗斯认证的密码保护工具用 <span class="highlight-neon">VKO</span> 算法生成共同密钥。它记载于标准化建议 R 50.1.113-2016 中，运行在签名标准 GOST R 34.10-2012 规定的 256 位或 512 位椭圆曲线上。思路和游戏里一样：每一方都有一个秘密数和由它算出的公开数；每一方把自己的秘密数和对方的公开数结合起来，双方得到同一个结果。',
+        'ru.p2': '与教科书方案相比有两点不同。计算中会混入一个公开传送的随机数 UKM，这样同一对长期密钥每次都能产生新的共同密钥。而且结果不直接使用，而是先经过哈希函数 Streebog（GOST R 34.11-2012）。得到的密钥再用 Kuznyechik 或 Magma 加密数据。俄罗斯的 TLS 密码套件中也使用 VKO。',
+        'ru.why.label': '为什么要有自己的版本？',
+        'ru.why.text': '原因和 Kuznyechik 一样：数学是大家共有的，但国家希望自己选择并掌控曲线、参数和验证规则。关于密码主权的更多内容，见 <a class="highlight" href="/zh/theory/aes.html">AES</a> 一文。',
+        'block4.heading': '亲手试一试',
+        'block4.intro': '在 Ludus Lab 的交互式演示中，你用小数字亲手走完整个协议。伊芙看到的和你一样多，所以你可以检验她在哪里缺少信息、又在哪里获胜。值得一试的有：',
+        'action1': '<span><strong>混合颜料。</strong>选择公共颜料（黄色、橙色或柠檬黄）以及爱丽丝和鲍勃的秘密颜料。爱丽丝和鲍勃得到相同的颜色，而伊芙的混合物色调不同：里面有双份公共颜料。</span>',
+        'action2': '<span><strong>用 ‹ › 箭头更换 p 和 g。</strong>游戏只提供这样的组合：g 的各次幂能得到从 1 到 p − 1 的所有余数。秘密数 a 和 b 也可以自己选。</span>',
+        'action3': '<span><strong>观看灯板。</strong>幂随着增长依次点亮：5、25、125 盏灯。接着除法按 p 一整排一整排地熄灭灯，剩下的灯闪一下飞进结果：这就是余数。</span>',
+        'action4': '<span><strong>扮演伊芙。</strong>先把 A 和 B 相乘，确认这不是密钥。再依次尝试 x = 1、2、3……直到 g<sup>x</sup> mod p 等于 A。p 很小时伊芙几步就能获胜，旁边的刻度会显示 2048 位时需要试多少次。</span>',
+        'action5': '<span><strong>让伊芙站到中间</strong>——这就是中间人攻击（man-in-the-middle）。伊芙用自己的数替换 A 和 B，信件“七点见”经过她手：伊芙用一个密钥打开，再用另一个密钥锁上。爱丽丝和鲍勃看到的是一个运转完美的密码。</span>',
+        'insight2.label': '值得注意：',
+        'insight2.text': '伊芙看到了信道中经过的每一个数字，但只要 p 足够大，她仍然得不到密钥。她只在两种情况下获胜：p 很小的时候，以及她不只是旁听、而是被允许<span class="highlight-gold">介入</span>的时候。',
+        'insight3.label': '一个出人意料的结论：',
+        'insight3.text': '协议能保护你免受旁听者之害，却对介入者无能为力。要把爱丽丝的数和伪造品区分开，需要数字签名；而要信任签名，又需要一个人人都信任的人：证书颁发机构。结果，可信的中间人并没有被摆脱。但它的角色变了：过去它负责分发密钥、知道所有秘密，而现在它只确认哪个公开数属于谁，却不知道任何一个共同密钥。签名将有一个专门的游戏。',
+        'advanced.summary': '给好奇的你',
+        'advanced.compare.heading': '经典 DH、ECDH 和 VKO 对照',
+        'advanced.compare.text': '三者遵循同一个模式：秘密数、公开数、共同秘密。区别在于计算是在哪个“世界”里进行的：',
+        'table.param': '参数',
+        'table.head.dh': '经典 DH',
+        'table.head.ru': 'VKO（GOST）',
+        'table.row1.label': '在哪里计算',
+        'table.row1.dh': '模素数 p 的余数',
+        'table.row1.ec': 'Curve25519 曲线上的点',
+        'table.row1.ru': 'GOST R 34.10-2012 曲线上的点',
+        'table.row2.label': '数的长度',
+        'table.row2.dh': '2048–4096 位',
+        'table.row2.ec': '255 位',
+        'table.row2.ru': '256 或 512 位',
+        'table.row3.label': '大致安全强度',
+        'table.row3.dh': '2048 位时 ≈ 112 位',
+        'table.row3.ec': '≈ 128 位',
+        'table.row3.ru': '≈ 128 或 ≈ 256 位',
+        'table.row4.label': '共同秘密如何处理',
+        'table.row4.kdf': '密钥派生函数（TLS 中为 HKDF）',
+        'table.row4.ru': '结合公开的 UKM 做 Streebog 哈希',
+        'table.row5.label': '年份',
+        'table.row5.ec': '2006（D. 伯恩斯坦）',
+        'table.row6.label': '标准',
+        'table.row6.ru': 'R 50.1.113-2016（RFC 7836）',
+        'table.row7.label': '发布机构',
+        'table.row7.ru': 'TC 26、俄罗斯联邦技术监管与计量局',
+        'advanced.size.heading': '为什么 p 必须非常大',
+        'advanced.size.p': '伊芙比简单穷举聪明。对于模 p 的离散对数，有一种巧妙的方法：<span class="highlight">数域筛法</span>。正因如此，2048 位的 p 提供的安全强度大约只相当于 112 位的对称密钥，远不是 2048 位。在椭圆曲线上还不知道这样的技巧：最好的方法也需要大约完整穷举量的平方根，所以 256 位的曲线就足以提供约 128 位的安全强度。这就是转向椭圆曲线的原因：密钥更短，计算更快。',
+        'advanced.logjam.heading': 'Logjam：当所有人共用一个 p',
+        'advanced.logjam.p': '2015 年，研究人员展示了 <span class="highlight">Logjam</span> 攻击。许多服务器使用相同的 512 位和 1024 位标准 p，其中一些还因旧的“出口”规定而接受 512 位。对固定的 p，最繁重的那部分计算可以事先一次做完，之后就能很快求出所有使用这个 p 的连接的密钥。对 512 位，这项准备工作用了大约一周；对 1024 位，估计一个国家有能力完成。此后 1024 位的群被淘汰：如今 p 至少取 2048 位，或者改用椭圆曲线。',
+        'advanced.quantum.heading': '量子威胁',
+        'advanced.quantum.p': '运行<span class="highlight">肖尔算法</span>的量子计算机能很快解决离散对数问题，无论是模 p 还是在椭圆曲线上。这样的机器目前还不存在，但今天被录下的流量将来可能被解密。因此从 2024 年起，浏览器开始在 X25519 之外加上后量子机制 <span class="highlight-gold">ML-KEM</span>（FIPS 203 标准）：密钥由两部分组成，要得到它，必须把两部分都攻破。',
+        'advanced.root.heading': '为什么 g 应当是原根',
+        'advanced.root.p': 'g 模 p 的各次幂应当取遍尽可能多的不同余数。在本文的例子（g = 5、p = 23）中，它们恰好给出 1 到 22 的全部 22 个数：这样的 g 叫作<span class="highlight">原根</span>。但如果取 g = 22，幂就会交替出现：22、1、22、1……于是 A 只可能是两个数之一，伊芙试两次就够了。所以游戏只允许选择“好的” p 和 g 组合。',
+        'advanced.root.note': '这是简化：在真实系统中，g 往往不是原根，而是某个素数阶巨大子群中的元素（例如 p = 2q + 1，其中 q 也是素数）。重要的不是 g 的幂覆盖一切，而是它们的数量多到天文数字，并且不存在能让伊芙钻空子的小子群。',
+        'actions.intro': '现在你知道了两个人怎样当众约定一个秘密，也知道了为什么如果有人能够介入，这还远远不够',
+        'actions.play': '🚀 启动交互式演示',
+        'actions.back': '← 返回主题列表',
+        'actions.outro': '在演示中，你将混合颜料，在灯板上数清幂，扮演伊芙，看看她的攻击在哪里失败、又在哪里得手',
+        'footer.line1': '© 2025 Ludus Lab · 用简单的游戏理解复杂的事物',
+        'footer.line2': '本文是对基本原理的简化讲解。在交互式演示中 p 不超过 29，秘密数为 2 或 3；真实系统使用长达数百乃至数千位的数，交换通常在椭圆曲线上进行。',
+        'step1.example': '<span class="highlight-gold">例子：</span>p = 23，g = 5。',
+        'step2.example': '<span class="highlight-gold">例子：</span>a = 2，b = 3。',
+        'step3.example': '<span class="highlight-gold">例子：</span>A = 5² mod 23：5² = 25 = 1 · 23 + <b>2</b>，所以 A = 2。B = 5³ mod 23：先算出完整的幂 5³ = 125，再做带余除法 125 = 5 · 23 + <b>10</b>，所以 B = 10。',
+        'step4.example': '<span class="highlight-gold">例子：</span>爱丽丝得到 10² = 100 = 4 · 23 + <b>8</b>，鲍勃得到 2³ = 8（小于 23，不用再除）。两人都得到 s = 8。',
+        'pt.t1.title': '混合容易',
+        'pt.t1.text': '公共颜料和秘密颜料一秒钟就能混成混合物，可以公开发送。',
+        'pt.t2.title': '分开不能',
+        'pt.t2.text': '伊芙看得到混合物，却无法从中提取出秘密颜料。',
+        'pt.t3.title': '顺序无关',
+        'pt.t3.text': '爱丽丝把自己的颜料加进鲍勃的混合物，鲍勃加进爱丽丝的。得到的颜色相同。',
+        'block2.what': '先说清楚它是什么。迪菲-赫尔曼<span class="highlight-gold">不是密码算法，而是一种密钥协商协议</span>。它不加密任何东西，只是让爱丽丝和鲍勃得到同一个秘密密钥。之后再由普通的密码（例如 <a class="highlight" href="/zh/theory/aes.html">AES</a>）用这个密钥加密通信内容。',
+        'diff.heading': '它和 RSA 有什么不同',
+        'diff.intro': '说起迪菲-赫尔曼，总会提到 RSA。两者都诞生于 20 世纪 70 年代，都使用公开数和秘密数，也都在做模幂运算，所以很容易混淆。但它们做的事情不同。迪菲-赫尔曼什么也不加密：它让两个人<span class="highlight-gold">一起得出</span>共同的密钥。RSA 则是一把锁：鲍勃事先把锁发出去，任何人都能用它<span class="highlight-gold">锁上一封信</span>，而只有鲍勃能打开。',
+        'diff.th.q': '问题',
+        'diff.th.dh': '迪菲-赫尔曼',
+        'diff.th.rsa': 'RSA',
+        'diff.r1.q': '做什么',
+        'diff.r1.dh': '两个人协商出共同的秘密密钥',
+        'diff.r1.rsa': '为某一个收件人锁上信件；签名也用同样的方法',
+        'diff.r2.q': '谁必须参与',
+        'diff.r2.dh': '双方同时参与：各自加入自己的秘密数',
+        'diff.r2.rsa': '只有发送者：鲍勃的锁人人都有，鲍勃本人可以不在线',
+        'diff.r3.q': '信道里传的是什么',
+        'diff.r3.dh': '公开数 A 和 B；密钥本身从不出现在信道里',
+        'diff.r3.rsa': '锁上的信 c',
+        'diff.r4.q': '密钥用多久',
+        'diff.r4.dh': '每次对话都用新的秘密数',
+        'diff.r4.rsa': '一把锁用好几年',
+        'diff.r5.q': '依靠什么',
+        'diff.r5.dh': '很难由公开数求出秘密数（离散对数）',
+        'diff.r5.rsa': '很难把 n 分解成两个素数',
+        'diff.r6.q': '比喻',
+        'diff.r6.dh': '两个人一起调的颜料',
+        'diff.r6.rsa': '一把打开的挂锁',
+        'diff.insight.label': '一句话：',
+        'diff.insight.text': '<span class="highlight-gold">迪菲-赫尔曼负责商定，RSA 负责上锁。</span>在 HTTPS 中它们一起工作：迪菲-赫尔曼交换产生对话密钥，而网站的签名（常常是 RSA）证明另一端确实是这个网站，而不是中间的伊芙。详见 <a class="highlight" href="/zh/theory/rsa.html">RSA</a> 一文。',
+      },
+    };
+
+    function applyLanguage(lang) {
+      if (!I18N[lang]) lang = 'ru';
+      const dict = I18N[lang];
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+      document.title = dict['meta.title'];
+      const descTag = document.getElementById('pageDescription');
+      if (descTag) descTag.setAttribute('content', dict['meta.description']);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.langBtn === lang);
+      });
+      try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn));
+    });
+
+    (function initLanguage() {
+      let saved = null;
+      saved = 'zh';
+      if (!saved) {
+        const browserLang = (navigator.language || 'ru').slice(0, 2);
+        saved = I18N[browserLang] ? browserLang : 'ru';
+      }
+      applyLanguage(saved);
+    })();
+  </script>
+  <script>
+// Плавная прокрутка для якорных ссылок
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+anchor.addEventListener('click', function(e) {
+e.preventDefault();
+const targetId = this.getAttribute('href');
+if (targetId === '#') return;
+const targetElement = document.querySelector(targetId);
+if (targetElement) {
+window.scrollTo({ top: targetElement.offsetTop - 20, behavior: 'smooth' });
+}
+});
+});
+// Исправление проблемы с кнопками при раскрытии details
+const detailsElement = document.querySelector('.advanced-section');
+const articleActions = document.getElementById('article-actions');
+if (detailsElement) {
+detailsElement.addEventListener('toggle', function() {
+setTimeout(() => { if (articleActions) { articleActions.style.marginTop = '40px'; } }, 10);
+});
+}
+// Анимация для визуализации шифрования
+document.addEventListener('DOMContentLoaded', function() {
+const schemeBoxes = document.querySelectorAll('.scheme-box');
+schemeBoxes.forEach((box, index) => {
+setTimeout(() => {
+box.style.opacity = '0.8'; box.style.transform = 'scale(0.95)';
+setTimeout(() => { box.style.opacity = '1'; box.style.transform = 'scale(1)'; }, 300);
+}, index * 200);
+});
+const arrows = document.querySelectorAll('.scheme-arrow');
+arrows.forEach((arrow, index) => {
+setTimeout(() => {
+arrow.style.opacity = '0.6'; arrow.style.transform = 'translateX(-3px)';
+setTimeout(() => { arrow.style.opacity = '1'; arrow.style.transform = 'translateX(0)'; }, 300);
+}, index * 200 + 100);
+});
+});
+</script>
+
+</body>
+</html>

@@ -379,9 +379,10 @@
     <!-- ===== CRYPTOGRAPHY SECTION ===== -->
     <div class="category-label" data-i18n="category.crypto">📚 密码学</div>
 
-    <!-- GAME TABS (3 tabs only) -->
+    <!-- GAME TABS -->
     <nav class="tabs-nav" role="tablist">
       <button class="tab-btn active" data-tab="basics" role="tab" aria-selected="true" data-i18n="tabs.basics">🔐 基础</button>
+      <button class="tab-btn" data-tab="asym" role="tab" aria-selected="false" data-i18n="tabs.asym">🔑 非对称密码</button>
       <button class="tab-btn" data-tab="modern" role="tab" aria-selected="false" data-i18n="tabs.modern">⚙️ 对称密码</button>
       <button class="tab-btn" data-tab="quantum" role="tab" aria-selected="false" data-i18n="tabs.quantum">⚛️ 量子</button>
     </nav>
@@ -451,6 +452,41 @@
     </section>
 
     <!-- ===== TAB 2: СОВРЕМЕННАЯ КРИПТОГРАФИЯ ===== -->
+    <!-- ===== TAB: АСИММЕТРИЧНАЯ ===== -->
+    <section id="tab-asym" class="section" role="tabpanel">
+      <h2 data-i18n="asym.heading">🔑 非对称密码学</h2>
+      <p data-i18n="asym.desc">不见面也能约定密钥、锁上信件</p>
+      <div class="section-content">
+        <div class="theory-grid">
+          <!-- Diffie–Hellman -->
+          <article class="theory-card">
+            <h3 data-i18n="card.dh.title">迪菲-赫尔曼</h3>
+            <p class="theory-excerpt" data-i18n="card.dh.excerpt">所有人都在听的时候，两个人怎样约定一个秘密？</p>
+            <div class="theory-meta">
+              <span class="theory-time" data-i18n="card.dh.time">8 分钟</span><span class="theory-level" data-i18n="card.dh.level">1976 年</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/zh/theory/diffiehellman.html" class="btn-learn" data-i18n="btn.learn">理论</a>
+              <a href="games/diffiehellman/" class="btn-play" data-i18n="btn.play">开始游戏</a>
+            </div>
+          </article>
+          <!-- RSA -->
+          <article class="theory-card">
+            <h3 data-i18n="card.rsa.title">RSA</h3>
+            <p class="theory-excerpt" data-i18n="card.rsa.excerpt">怎样把加密密钥交给所有人，同时守住秘密？</p>
+            <div class="theory-meta">
+              <span class="theory-time" data-i18n="card.rsa.time">9 分钟</span><span class="theory-level" data-i18n="card.rsa.level">1977 年</span>
+            </div>
+            <div class="theory-actions">
+              <a href="/zh/theory/rsa.html" class="btn-learn" data-i18n="btn.learn">理论</a>
+              <a href="games/rsa/" class="btn-play" data-i18n="btn.play">开始游戏</a>
+            </div>
+          </article>
+        </div>
+        <div class="disclaimer" data-i18n="modern.disclaimer">⚠️ 我们的游戏对真实算法做了简化。我们关注的是<span class="highlight">工作原理</span>，而不是数学细节。</div>
+      </div>
+    </section>
+
     <section id="tab-modern" class="section" role="tabpanel">
       <h2 data-i18n="modern.heading">⚙️ 对称密码学</h2>
       <p data-i18n="modern.desc">如今保护着我们的算法</p>
@@ -586,7 +622,7 @@
         'header.tagline': 'Сложные вещи простыми играми',
         'nav.about': 'О проекте', 'nav.aboutme': 'Обо мне',
         'category.crypto': '📚 Криптография',
-        'tabs.basics': '🔐 Основы', 'tabs.modern': '⚙️ Симметричная', 'tabs.quantum': '⚛️ Квантовая',
+        'tabs.basics': '🔐 Основы', 'tabs.asym': '🔑 Асимметричная', 'tabs.modern': '⚙️ Симметричная', 'tabs.quantum': '⚛️ Квантовая',
         'basics.heading': '🔐 Основы криптографии',
         'basics.desc': 'Классические шифры, с которых начиналась наука о защите информации',
         'card.polybius.title': 'Квадрат Полибия',
@@ -602,6 +638,16 @@
         'card.vernam.excerpt': 'Шифр Вернама: победил криптоанализ </br>и проиграл реальности',
         'card.vernam.time': '4 мин', 'card.vernam.level': '1917 г.',
         'basics.tip': '💡 <strong>Совет:</strong> Проходите шифры по порядку — от Полибия к Вернаму, чтобы увидеть эволюцию криптографии!',
+        'asym.heading': '🔑 Асимметричная криптография',
+        'asym.desc': 'Как договориться о ключе и запереть письмо, ни разу не встречаясь',
+        'card.dh.title': 'Диффи — Хеллман',
+        'card.dh.excerpt': 'Как двоим договориться о секрете, если их слышат все?',
+        'card.dh.time': '8 мин',
+        'card.dh.level': '1976 г.',
+        'card.rsa.title': 'RSA',
+        'card.rsa.excerpt': 'Как раздать всем ключ для шифрования и сохранить секрет?',
+        'card.rsa.time': '9 мин',
+        'card.rsa.level': '1977 г.',
         'modern.heading': '⚙️ Симметричная криптография',
         'modern.desc': 'Алгоритмы, которые защищают нас сегодня',
         'card.keygen.title': 'Энтропия и ключи',
@@ -652,7 +698,7 @@
         'header.tagline': 'Complex things through simple games',
         'nav.about': 'About', 'nav.aboutme': 'About me',
         'category.crypto': '📚 Cryptography',
-        'tabs.basics': '🔐 Basics', 'tabs.modern': '⚙️ Symmetric', 'tabs.quantum': '⚛️ Quantum',
+        'tabs.basics': '🔐 Basics', 'tabs.asym': '🔑 Asymmetric', 'tabs.modern': '⚙️ Symmetric', 'tabs.quantum': '⚛️ Quantum',
         'basics.heading': '🔐 Cryptography Basics',
         'basics.desc': 'Classical ciphers that started the science of protecting information',
         'card.polybius.title': 'Polybius Square',
@@ -668,6 +714,16 @@
         'card.vernam.excerpt': 'The Vernam cipher: it beat cryptanalysis </br>but lost to reality',
         'card.vernam.time': '4 min', 'card.vernam.level': '1917 CE',
         'basics.tip': '💡 <strong>Tip:</strong> Go through the ciphers in order — from Polybius to Vernam — to see cryptography evolve!',
+        'asym.heading': '🔑 Asymmetric Cryptography',
+        'asym.desc': 'How to agree on a key and lock a letter without ever meeting',
+        'card.dh.title': 'Diffie–Hellman',
+        'card.dh.excerpt': 'How can two people agree on a secret when everyone is listening?',
+        'card.dh.time': '8 min',
+        'card.dh.level': '1976',
+        'card.rsa.title': 'RSA',
+        'card.rsa.excerpt': 'How do you hand everyone the encryption key and keep the secret?',
+        'card.rsa.time': '9 min',
+        'card.rsa.level': '1977',
         'modern.heading': '⚙️ Symmetric Cryptography',
         'modern.desc': 'The algorithms that protect us today',
         'card.keygen.title': 'Entropy and Keys',
@@ -718,7 +774,7 @@
         'header.tagline': 'Cosas complejas a través de juegos simples',
         'nav.about': 'Sobre el proyecto', 'nav.aboutme': 'Sobre mí',
         'category.crypto': '📚 Criptografía',
-        'tabs.basics': '🔐 Fundamentos', 'tabs.modern': '⚙️ Simétrica', 'tabs.quantum': '⚛️ Cuántica',
+        'tabs.basics': '🔐 Fundamentos', 'tabs.asym': '🔑 Asimétrica', 'tabs.modern': '⚙️ Simétrica', 'tabs.quantum': '⚛️ Cuántica',
         'basics.heading': '🔐 Fundamentos de criptografía',
         'basics.desc': 'Cifrados clásicos con los que comenzó la ciencia de la protección de la información',
         'card.polybius.title': 'Cuadrado de Polibio',
@@ -734,6 +790,16 @@
         'card.vernam.excerpt': 'El cifrado Vernam: venció al criptoanálisis </br>y perdió ante la realidad',
         'card.vernam.time': '4 min', 'card.vernam.level': '1917',
         'basics.tip': '💡 <strong>Consejo:</strong> Recorre los cifrados en orden — de Polibio a Vernam — ¡para ver la evolución de la criptografía!',
+        'asym.heading': '🔑 Criptografía asimétrica',
+        'asym.desc': 'Cómo acordar una clave y cerrar una carta sin verse nunca',
+        'card.dh.title': 'Diffie–Hellman',
+        'card.dh.excerpt': '¿Cómo acuerdan dos personas un secreto si todos los escuchan?',
+        'card.dh.time': '8 min',
+        'card.dh.level': '1976',
+        'card.rsa.title': 'RSA',
+        'card.rsa.excerpt': '¿Cómo dar a todos la clave de cifrado y guardar el secreto?',
+        'card.rsa.time': '9 min',
+        'card.rsa.level': '1977',
         'modern.heading': '⚙️ Criptografía simétrica',
         'modern.desc': 'Los algoritmos que nos protegen hoy',
         'card.keygen.title': 'Entropía y claves',
@@ -784,7 +850,7 @@
         'header.tagline': '用简单的游戏理解复杂的事物',
         'nav.about': '关于项目', 'nav.aboutme': '关于我',
         'category.crypto': '📚 密码学',
-        'tabs.basics': '🔐 基础', 'tabs.modern': '⚙️ 对称密码', 'tabs.quantum': '⚛️ 量子',
+        'tabs.basics': '🔐 基础', 'tabs.asym': '🔑 非对称密码', 'tabs.modern': '⚙️ 对称密码', 'tabs.quantum': '⚛️ 量子',
         'basics.heading': '🔐 密码学基础',
         'basics.desc': '信息保护这门科学最初的起点——古典密码',
         'card.polybius.title': '波利比奥斯方阵',
@@ -800,6 +866,16 @@
         'card.vernam.excerpt': '维尔南密码：战胜了密码分析，</br>却输给了现实',
         'card.vernam.time': '4 分钟', 'card.vernam.level': '1917 年',
         'basics.tip': '💡 <strong>提示：</strong>按顺序体验这些密码——从波利比奥斯到维尔南，看看密码学是如何演进的！',
+        'asym.heading': '🔑 非对称密码学',
+        'asym.desc': '不见面也能约定密钥、锁上信件',
+        'card.dh.title': '迪菲-赫尔曼',
+        'card.dh.excerpt': '所有人都在听的时候，两个人怎样约定一个秘密？',
+        'card.dh.time': '8 分钟',
+        'card.dh.level': '1976 年',
+        'card.rsa.title': 'RSA',
+        'card.rsa.excerpt': '怎样把加密密钥交给所有人，同时守住秘密？',
+        'card.rsa.time': '9 分钟',
+        'card.rsa.level': '1977 年',
         'modern.heading': '⚙️ 对称密码学',
         'modern.desc': '如今保护着我们的算法',
         'card.keygen.title': '熵与密钥',
@@ -918,7 +994,7 @@
         if (!['ArrowLeft','ArrowRight'].includes(e.key)) return;
         const activeBtn = document.querySelector('.tab-btn.active');
         if (!activeBtn) return;
-        const tabs = ['basics','modern','quantum'];
+        const tabs = ['basics','asym','modern','quantum'];
         const idx = tabs.indexOf(activeBtn.dataset.tab);
         if (idx === -1) return;
         const dir = e.key === 'ArrowLeft' ? -1 : 1;

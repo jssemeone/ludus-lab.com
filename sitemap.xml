@@ -49,6 +49,18 @@
     <lastmod>2026-10-12</lastmod>
   </url>
   <url>
+    <loc>https://ludus-lab.com/games/diffiehellman/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://ludus-lab.com/es/games/diffiehellman/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://ludus-lab.com/zh/games/diffiehellman/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
     <loc>https://ludus-lab.com/games/e91/</loc>
     <lastmod>2026-10-12</lastmod>
   </url>
@@ -85,6 +97,18 @@
     <lastmod>2026-10-12</lastmod>
   </url>
   <url>
+    <loc>https://ludus-lab.com/games/rsa/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://ludus-lab.com/es/games/rsa/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://ludus-lab.com/zh/games/rsa/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
     <loc>https://ludus-lab.com/games/vernamcipher/</loc>
     <lastmod>2026-10-15</lastmod>
   </url>
@@ -110,15 +134,15 @@
   </url>
   <url>
     <loc>https://ludus-lab.com/</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://ludus-lab.com/es/</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://ludus-lab.com/zh/</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://ludus-lab.com/theory/aes.html</loc>
@@ -155,6 +179,18 @@
   <url>
     <loc>https://ludus-lab.com/zh/theory/caesarcipher.html</loc>
     <lastmod>2026-10-15</lastmod>
+  </url>
+  <url>
+    <loc>https://ludus-lab.com/theory/diffiehellman.html</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://ludus-lab.com/es/theory/diffiehellman.html</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://ludus-lab.com/zh/theory/diffiehellman.html</loc>
+    <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://ludus-lab.com/theory/e91.html</loc>
@@ -203,6 +239,18 @@
   <url>
     <loc>https://ludus-lab.com/zh/theory/polybius.html</loc>
     <lastmod>2026-10-15</lastmod>
+  </url>
+  <url>
+    <loc>https://ludus-lab.com/theory/rsa.html</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://ludus-lab.com/es/theory/rsa.html</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://ludus-lab.com/zh/theory/rsa.html</loc>
+    <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://ludus-lab.com/theory/vernamcipher.html</loc>

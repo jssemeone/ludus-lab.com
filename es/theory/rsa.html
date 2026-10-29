@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title id="pageTitle">RSA: un candado que cualquiera cierra y solo uno abre | Ludus Lab</title>
+<meta id="pageDescription" name="description" content="¿Cómo dar a todos la clave de cifrado y conservar el secreto? RSA con candados y números pequeños: dos primos, las potencias e y d, el ataque por factorización y por conjeturas, y por qué GOST no tiene RSA.">
+<!-- Favicon -->
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function(m,e,t,r,i,k,a){
+m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+m[i].l=1*new Date();
+for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105707471', 'ym');
+ym(105707471, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/105707471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { height: 100%; }
+body {
+background: #0a1a2a;
+color: #c5d5e0;
+font-family: 'Roboto', sans-serif;
+line-height: 1.8;
+padding: 0;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
+
+/* Language switch */
+.lang-switch { position: fixed; top: 14px; right: 14px; z-index: 100; display: flex; gap: 4px; }
+.lang-btn {
+background: rgba(5, 20, 30, 0.75); color: #8ab0c5; border: 1px solid rgba(0, 162, 255, 0.3);
+font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 0.5px;
+padding: 4px 9px; border-radius: 4px; cursor: pointer; transition: all 0.25s ease;
+}
+.lang-btn:hover { border-color: #00a2ff; color: #00a2ff; }
+.lang-btn.active {
+background: rgba(212, 175, 55, 0.18); border-color: #d4af37; color: #d4af37;
+box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+/* Навигация */
+.theory-nav {
+max-width: 900px;
+margin: 0 auto;
+padding: 20px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 1px solid rgba(0, 162, 255, 0.3);
+flex-shrink: 0;
+}
+.nav-logo {
+font-family: 'Oswald', sans-serif;
+font-size: 1.8rem;
+color: #d4af37;
+text-decoration: none;
+text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+}
+.nav-links { display: flex; gap: 20px; }
+.nav-link {
+color: #8ab0c5;
+text-decoration: none;
+font-family: 'Oswald', sans-serif;
+text-transform: uppercase;
+font-size: 0.9rem;
+letter-spacing: 1px;
+transition: all 0.3s;
+padding: 8px 15px;
+border-radius: 4px;
+border: 1px solid transparent;
+white-space: nowrap;
+}
+.nav-link:hover {
+color: #00a2ff;
+border-color: rgba(0, 162, 255, 0.3);
+background: rgba(0, 162, 255, 0.1);
+}
+/* Основной контент */
+.theory-container {
+max-width: 900px;
+margin: 0 auto;
+padding: 40px 20px;
+flex: 1 0 auto;
+}
+/* body is a flex column and the auto margins make the container shrink-to-fit its content: pin it to the viewport width */
+.theory-container { width: 100%; box-sizing: border-box; }
+/* Заголовок статьи */
+.article-header {
+margin-bottom: 40px;
+text-align: center;
+}
+.article-category {
+display: inline-block;
+background: rgba(0, 162, 255, 0.2);
+color: #00a2ff;
+padding: 5px 15px;
+border-radius: 20px;
+font-size: 0.9rem;
+margin-bottom: 15px;
+border: 1px solid rgba(0, 162, 255, 0.3);
+}
+.article-title {
+font-family: 'Oswald', sans-serif;
+font-size: 3rem;
+color: #d4af37;
+text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+margin-bottom: 20px;
+text-transform: uppercase;
+letter-spacing: 2px;
+}
+.article-subtitle {
+font-size: 1.3rem;
+color: #8ab0c5;
+max-width: 700px;
+margin: 0 auto;
+line-height: 1.6;
+}
+/* Мета-информация */
+.article-meta {
+display: flex;
+justify-content: center;
+gap: 30px;
+margin-top: 20px;
+font-size: 0.9rem;
+color: #557585;
+}
+.meta-item { display: flex; align-items: center; gap: 8px; }
+/* Контентные блоки */
+.content-block {
+margin: 60px 0;
+padding: 30px;
+background: rgba(10, 30, 45, 0.6);
+border: 1px solid rgba(0, 162, 255, 0.3);
+border-radius: 8px;
+box-shadow: 0 0 20px rgba(0, 162, 255, 0.1);
+}
+.content-block h2 {
+font-family: 'Oswald', sans-serif;
+font-size: 2rem;
+color: #00a2ff;
+margin-bottom: 25px;
+padding-bottom: 10px;
+border-bottom: 2px solid rgba(0, 162, 255, 0.3);
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+.content-block p {
+font-size: 1.1rem;
+line-height: 1.8;
+margin-bottom: 20px;
+color: #a0c0d0;
+}
+.highlight { color: #00a2ff; font-weight: 500; text-shadow: 0 0 5px rgba(0, 162, 255, 0.3); }
+.highlight-gold { color: #d4af37; font-weight: 500; text-shadow: 0 0 5px rgba(212, 175, 55, 0.3); }
+.highlight-symmetric { color: #9b59b6; font-weight: 500; text-shadow: 0 0 5px rgba(155, 89, 182, 0.3); }
+.highlight-neon {
+color: #e6f0ff;
+font-weight: 500;
+text-shadow: 0 0 3px rgba(255, 255, 255, 0.7), 0 0 6px rgba(100, 200, 255, 0.4), 0 0 9px rgba(100, 200, 255, 0.2);
+position: relative;
+padding: 0 2px;
+}
+.highlight-neon::after {
+content: '';
+position: absolute;
+bottom: -1px;
+left: 0;
+width: 100%;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(100, 200, 255, 0.5), transparent);
+}
+/* Шаги объяснения */
+.explanation-steps { margin: 30px 0; }
+.step {
+display: flex;
+align-items: flex-start;
+gap: 20px;
+margin: 25px 0;
+padding: 20px;
+background: rgba(5, 20, 30, 0.8);
+border-left: 4px solid #00a2ff;
+border-radius: 0 8px 8px 0;
+}
+.step-number {
+flex-shrink: 0;
+width: 40px;
+height: 40px;
+background: #00a2ff;
+color: #fff;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: 'Oswald', sans-serif;
+font-size: 1.2rem;
+font-weight: bold;
+box-shadow: 0 0 10px rgba(0, 162, 255, 0.5);
+}
+.step-content h3 { color: #d4af37; margin-bottom: 10px; font-family: 'Oswald', sans-serif; font-size: 1.3rem; }
+/* Ключевая идея */
+.key-insight {
+background: rgba(212, 175, 55, 0.1);
+border-left: 4px solid #d4af37;
+padding: 20px;
+margin: 30px 0;
+border-radius: 0 8px 8px 0;
+}
+.key-insight strong { color: #d4af37; font-family: 'Oswald', sans-serif; display: block; margin-bottom: 10px; font-size: 1.1rem; }
+/* Список действий */
+.action-list { list-style: none; margin: 30px 0; }
+.action-list li {
+display: flex;
+align-items: flex-start;
+gap: 15px;
+margin: 15px 0;
+padding: 15px;
+background: rgba(0, 162, 255, 0.05);
+border-radius: 6px;
+border-left: 3px solid #00a2ff;
+}
+.action-icon { font-size: 1.5rem; width: 40px; text-align: center; flex-shrink: 0; margin-top: 2px; }
+.action-text { flex: 1; }
+.action-text strong { color: #00a2ff; font-family: 'Oswald', sans-serif; }
+/* УПРОЩЕННАЯ СХЕМА ШИФРОВАНИЯ */
+.simple-encryption-scheme {
+margin: 40px auto;
+padding: 25px;
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(155, 89, 182, 0.3);
+border-radius: 12px;
+text-align: center;
+max-width: 700px;
+position: relative;
+}
+.simple-encryption-scheme::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 1px;
+background: linear-gradient(90deg, transparent, #9b59b6, transparent);
+}
+.scheme-title { color: #9b59b6; font-family: 'Oswald', sans-serif; margin-bottom: 25px; font-size: 1.2rem; letter-spacing: 1px; }
+.scheme-flow { display: flex; align-items: flex-start; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+.scheme-item { display: flex; flex-direction: column; align-items: center; min-width: 120px; }
+.scheme-box {
+width: 110px; height: 70px; border-radius: 8px;
+display: flex; align-items: center; justify-content: center;
+font-family: 'Courier New', monospace; font-size: 1rem; font-weight: bold;
+padding: 8px; text-align: center; margin-bottom: 8px;
+}
+.scheme-original { background: rgba(0, 162, 255, 0.1); border: 1px solid #00a2ff; color: #00a2ff; }
+.scheme-key { background: rgba(212, 175, 55, 0.1); border: 1px solid #d4af37; color: #d4af37; font-size: 0.9rem; }
+.scheme-cipher { background: rgba(155, 89, 182, 0.1); border: 1px solid #9b59b6; color: #9b59b6; font-size: 0.95em; }
+.scheme-label { font-size: 0.75rem; color: #8ab0c5; text-align: center; line-height: 1.3; max-width: 100px; }
+.scheme-arrow { font-size: 1.2rem; color: #9b59b6; margin: 0 5px; height: 70px; display: flex; align-items: center; }
+.scheme-note { color: #8ab0c5; margin-top: 20px; font-size: 0.9rem; padding-top: 15px; border-top: 1px solid rgba(155, 89, 182, 0.2); font-style: italic; }
+@media (max-width: 768px) {
+.scheme-flow { gap: 8px; }
+.scheme-item { min-width: 100px; }
+.scheme-box { width: 90px; height: 60px; font-size: 0.9rem; }
+.scheme-arrow { font-size: 1rem; margin: 0 3px; height: 60px; }
+.scheme-label { font-size: 0.7rem; max-width: 80px; }
+}
+@media (max-width: 520px) {
+.scheme-flow { flex-wrap: nowrap; gap: 2px; }
+.scheme-item { min-width: 0; flex: 0 1 68px; }
+.scheme-box { width: 100%; max-width: 68px; height: 50px; padding: 2px; font-size: 0.66rem; white-space: nowrap; letter-spacing: -0.3px; }
+.scheme-arrow { height: 50px; font-size: 0.85rem; margin: 0; }
+.scheme-label { font-size: 0.62rem; max-width: 68px; }
+}
+/* Исторические шифры */
+.historical-ciphers { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0; }
+.cipher-card {
+background: rgba(5, 20, 30, 0.8);
+border: 1px solid rgba(155, 89, 182, 0.3);
+border-radius: 8px;
+padding: 20px;
+text-align: center;
+}
+.cipher-card h4 { color: #9b59b6; margin-bottom: 15px; font-family: 'Oswald', sans-serif; }
+.cipher-example {
+font-family: monospace; font-size: 1.1rem; margin: 15px 0;
+padding: 10px; background: rgba(10, 30, 45, 0.6);
+border-radius: 4px; border-left: 3px solid #d4af37;
+}
+/* Современные алгоритмы */
+.modern-algorithms { display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0; justify-content: center; }
+.algorithm-tag {
+background: rgba(155, 89, 182, 0.1);
+border: 1px solid rgba(155, 89, 182, 0.3);
+padding: 8px 15px; border-radius: 20px;
+font-size: 0.9rem; color: #9b59b6;
+transition: all 0.3s;
+}
+.algorithm-tag:hover {
+background: rgba(155, 89, 182, 0.2);
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(155, 89, 182, 0.2);
+}
+.algorithm-tag.important {
+background: rgba(212, 175, 55, 0.1);
+border-color: rgba(212, 175, 55, 0.3);
+color: #d4af37;
+}
+.algorithm-tag.russian {
+background: rgba(255, 255, 255, 0.05);
+border-color: rgba(255, 255, 255, 0.2);
+color: #e6f0ff;
+position: relative; overflow: hidden;
+}
+.algorithm-tag.russian::before {
+content: ''; position: absolute; top: -50%; left: -60%;
+width: 20px; height: 200%; background: rgba(255, 255, 255, 0.1);
+transform: rotate(30deg); transition: all 0.6s; opacity: 0;
+}
+.algorithm-tag.russian:hover::before { left: 120%; opacity: 1; }
+/* Кнопки действий */
+.article-actions {
+text-align: center; margin: 60px 0; padding: 30px;
+background: rgba(10, 30, 45, 0.4);
+border-radius: 8px; border: 1px solid rgba(0, 162, 255, 0.2);
+}
+.action-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 30px; flex-wrap: wrap; }
+.btn-primary, .btn-secondary, .btn-disabled {
+padding: 15px 30px; font-family: 'Oswald', sans-serif;
+text-transform: uppercase; letter-spacing: 1px;
+text-decoration: none; border-radius: 6px; font-size: 1rem;
+transition: all 0.3s; border: 1px solid; text-align: center; min-width: 180px;
+}
+.btn-primary {
+background: linear-gradient(to bottom, #006ba6, #004d7a);
+color: #e6f0ff; border-color: #00a2ff;
+}
+.btn-primary:hover {
+background: linear-gradient(to bottom, #0088cc, #006ba6);
+box-shadow: 0 0 20px rgba(0, 162, 255, 0.4);
+transform: translateY(-3px);
+}
+.btn-secondary {
+background: transparent; color: #8ab0c5;
+border-color: rgba(138, 176, 197, 0.4);
+}
+.btn-secondary:hover { border-color: #8ab0c5; color: #a0c0d0; }
+.btn-disabled {
+background: rgba(100, 100, 100, 0.3); color: #666;
+border-color: rgba(100, 100, 100, 0.5); cursor: not-allowed; opacity: 0.7;
+}
+/* Блок предупреждения */
+.warning-box {
+background: rgba(255, 165, 0, 0.1);
+border-left: 4px solid #ffa500;
+padding: 20px; margin: 30px 0;
+border-radius: 0 8px 8px 0;
+}
+.warning-box strong { color: #ffa500; font-family: 'Oswald', sans-serif; display: block; margin-bottom: 10px; font-size: 1.1rem; }
+/* Дополнительный материал */
+.advanced-section {
+margin: 40px 0; padding: 20px;
+border: 1px solid rgba(212, 175, 55, 0.3);
+border-radius: 8px; background: rgba(212, 175, 55, 0.05);
+}
+.advanced-section summary {
+cursor: pointer; color: #d4af37;
+font-family: 'Oswald', sans-serif; font-size: 1.1rem;
+list-style: none; padding: 10px;
+}
+.advanced-section summary::before {
+content: '▶'; margin-right: 10px;
+display: inline-block; transition: transform 0.3s;
+}
+.advanced-section[open] summary::before { transform: rotate(90deg); }
+.advanced-content {
+margin-top: 20px; padding-top: 20px;
+border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+.advanced-content h3 { color: #d4af37; margin: 15px 0 10px; font-family: 'Oswald', sans-serif; }
+/* Темы для углубления */
+.topics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0; }
+.topic-card {
+background: rgba(5, 20, 30, 0.6);
+border: 1px solid rgba(212, 175, 55, 0.2);
+border-radius: 6px; padding: 15px; text-align: left;
+}
+.topic-card h4 { color: #d4af37; margin-bottom: 8px; font-family: 'Oswald', sans-serif; font-size: 1.1rem; }
+.topic-card p { font-size: 0.9rem; color: #8ab0c5; margin: 0; line-height: 1.5; }
+/* Футер */
+.theory-footer {
+text-align: center; margin-top: auto;
+padding: 30px 20px; border-top: 1px solid rgba(0, 162, 255, 0.2);
+color: #557585; font-size: 0.9rem; flex-shrink: 0; background: #0a1a2a;
+}
+/* Таблицы сравнения */
+.comparison-table { width: 100%; border-collapse: collapse; margin: 20px 0; color: #a0c0d0; }
+.comparison-table th {
+padding: 12px; border: 1px solid rgba(0,162,255,0.3);
+text-align: left; background: rgba(0, 30, 60, 0.3);
+color: #00a2ff; font-family: 'Oswald', sans-serif; font-weight: normal;
+}
+.comparison-table td { padding: 10px; border: 1px solid rgba(0,162,255,0.2); vertical-align: top; }
+.comparison-table tr:nth-child(even) { background: rgba(0, 30, 60, 0.2); }
+.comparison-table .russian-cell { border-left: 2px solid rgba(255, 255, 255, 0.3); }
+.comparison-table .western-cell { border-left: 3px solid #00a2ff; }
+/* ЭЛЕГАНТНЫЙ ЗАГОЛОВОК ДЛЯ РОССИЙСКИХ СТАНДАРТОВ */
+.russian-header {
+display: flex; align-items: center; gap: 15px;
+margin-bottom: 30px; padding-bottom: 15px;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+position: relative;
+}
+.russian-header::after {
+content: ''; position: absolute; bottom: -1px; left: 0;
+width: 100px; height: 2px;
+background: linear-gradient(90deg, rgba(100, 200, 255, 0.8), transparent);
+}
+.ru-badge {
+display: flex; align-items: center; justify-content: center;
+width: 45px; height: 45px;
+background: rgba(255, 255, 255, 0.05);
+color: #e6f0ff; font-family: 'Oswald', sans-serif;
+font-size: 1.1rem; font-weight: bold; border-radius: 50%;
+border: 1px solid rgba(255, 255, 255, 0.2);
+box-shadow: 0 0 8px rgba(255, 255, 255, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.05);
+position: relative; overflow: hidden;
+}
+.ru-badge::before {
+content: ''; position: absolute; top: -50%; left: -50%;
+width: 200%; height: 200%;
+background: radial-gradient(circle, rgba(100, 200, 255, 0.1) 0%, transparent 70%);
+}
+.russian-title {
+font-family: 'Oswald', sans-serif; font-size: 1.8rem;
+color: #e6f0ff; text-transform: uppercase; letter-spacing: 1px; position: relative;
+}
+.russian-subtitle { font-size: 1rem; color: #8ab0c5; margin-top: 5px; font-style: italic; }
+/* Схема эволюции российских стандартов */
+.evolution-flow { display: flex; align-items: center; justify-content: space-between; margin: 40px 0; position: relative; }
+.evolution-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+.evolution-box {
+width: 140px; height: 140px; border-radius: 12px;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+padding: 20px; text-align: center; margin-bottom: 15px;
+position: relative; overflow: hidden; transition: transform 0.3s ease;
+}
+.evolution-box:hover { transform: translateY(-3px); }
+.evolution-box.magma {
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+.evolution-box.transition {
+background: rgba(212, 175, 55, 0.05);
+border: 1px solid rgba(212, 175, 55, 0.2);
+box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+width: 100px; height: 100px;
+}
+.evolution-box.kuznyechik {
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.1);
+box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+.evolution-title { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: bold; margin-bottom: 8px; color: #ffffff; }
+.evolution-subtitle { font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 5px; font-style: italic; }
+.evolution-details { font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); line-height: 1.4; }
+.evolution-arrow { font-size: 1.8rem; color: #8ab0c5; margin: 0 15px; position: relative; z-index: 2; opacity: 0.7; }
+.evolution-label { font-size: 0.85rem; color: #8ab0c5; margin-top: 10px; text-align: center; max-width: 140px; line-height: 1.4; }
+/* Адаптивность */
+@media (max-width: 768px) {
+.theory-container { padding: 20px 15px; margin-bottom: 40px; }
+.article-title { font-size: 2.2rem; }
+.content-block { padding: 20px; margin: 40px 0; }
+.step { flex-direction: column; gap: 15px; }
+.action-buttons { flex-direction: column; align-items: center; gap: 15px; }
+.btn-primary, .btn-secondary, .btn-disabled { width: 100%; max-width: 300px; padding: 12px 20px; }
+.evolution-flow { flex-direction: column; gap: 30px; }
+.evolution-arrow { transform: rotate(90deg); margin: 15px 0; }
+.historical-ciphers { grid-template-columns: 1fr; }
+.nav-links { flex-direction: row; gap: 15px; flex-wrap: wrap; justify-content: center; }
+.article-actions { margin: 40px 0 20px; padding: 20px 15px; }
+.article-meta { flex-direction: column; gap: 10px; }
+.topics-grid { grid-template-columns: 1fr; }
+.theory-nav { flex-direction: column; gap: 15px; padding: 15px; }
+.comparison-table { font-size: 0.9rem; }
+.comparison-table th, .comparison-table td { padding: 8px; }
+.russian-header { flex-direction: column; gap: 10px; text-align: center; align-items: center; }
+.ru-badge { width: 40px; height: 40px; font-size: 1rem; }
+.evolution-step { width: 100%; }
+.evolution-box { width: 180px; }
+}
+@media (max-width: 480px) {
+.article-title { font-size: 1.8rem; }
+.article-subtitle { font-size: 1.1rem; }
+.content-block h2 { font-size: 1.5rem; }
+.nav-logo { font-size: 1.5rem; }
+.nav-links { width: 100%; justify-content: space-between; }
+.nav-link { padding: 6px 10px; font-size: 0.8rem; flex: 1; text-align: center; }
+.btn-primary, .btn-secondary, .btn-disabled { min-width: auto; padding: 12px 15px; font-size: 0.9rem; }
+.theory-footer { padding: 20px 15px; font-size: 0.8rem; }
+.nav-links { justify-content: center; gap: 10px; }
+.nav-link { padding: 8px 12px; }
+.comparison-table { font-size: 0.8rem; }
+.evolution-box { width: 140px; height: 120px; }
+.evolution-box.transition { width: 90px; height: 90px; }
+.lang-switch { top: 8px; right: 8px; }
+.lang-btn { font-size: 0.65rem; padding: 3px 7px; }
+}
+@media (max-width: 320px) {
+.article-title { font-size: 1.5rem; }
+.article-subtitle { font-size: 1rem; }
+.content-block h2 { font-size: 1.3rem; }
+.btn-primary, .btn-secondary, .btn-disabled { padding: 10px 12px; font-size: 0.85rem; }
+.nav-links { flex-direction: column; width: 100%; }
+.nav-link { width: 100%; margin-bottom: 5px; }
+.evolution-box { width: 120px; height: 110px; }
+}
+    /* Cards in one row share title and text rows, so a title that wraps to two lines
+       doesn't push its text below the neighbours'. Older browsers keep the plain layout. */
+    @supports (grid-template-rows: subgrid) {
+      .topic-card { display: grid; grid-row: span 2; grid-template-rows: subgrid; row-gap: 0; }
+      .cipher-card { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 0; }
+    }
+/* Идея на красках: три тезиса, у каждого «уравнение» из кружков */
+.paint-scheme { max-width: 760px; }
+.pt-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 14px 0; border-bottom: 1px solid rgba(155, 89, 182, 0.15); text-align: left; }
+.pt-row:last-of-type { border-bottom: none; }
+.pt-text { flex: 1; font-size: 0.95rem; color: #a0c0d0; line-height: 1.5; }
+.pt-text strong { display: block; color: #d4af37; font-family: 'Oswald', sans-serif; font-size: 1.1rem; letter-spacing: 0.5px; margin-bottom: 2px; }
+.pt-eq { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.ps-swatch { width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: inset 0 -5px 8px rgba(0, 0, 0, 0.25); flex-shrink: 0; }
+.ps-swatch.ps-final { border: 2px solid #d4af37; box-shadow: 0 0 10px rgba(212, 175, 55, 0.45), inset 0 -5px 8px rgba(0, 0, 0, 0.25); }
+.ps-unknown { display: flex; align-items: center; justify-content: center; border: 2px dashed #ffa500; color: #ffa500; font-family: 'Oswald', sans-serif; font-size: 1.1rem; }
+.ps-op { color: #9b59b6; font-size: 1.1rem; }
+.step-example { margin: 10px 0 0 !important; padding-top: 10px; border-top: 1px dashed rgba(212, 175, 55, 0.3); font-size: 1rem !important; }
+@media (max-width: 600px) {
+.pt-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+.pt-eq { gap: 4px; }
+.ps-swatch { width: 28px; height: 28px; }
+}
+  @media (max-width: 420px) { .comparison-table th, .comparison-table td { padding: 8px 5px; font-size: 0.8rem; overflow-wrap: anywhere; hyphens: auto; } }
+.lock-scheme .pt-eq { gap: 8px; }
+.ps-svg { width: 30px; height: 36px; flex-shrink: 0; filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.35)); }
+.ps-svg.key { width: 40px; height: 20px; }
+.ps-svg.letter { width: 34px; height: 25px; filter: none; }
+.ps-svg.ps-bad { opacity: 0.45; }
+.ps-q { color: #e74c3c; font-family: 'Oswald', sans-serif; font-size: 1.3rem; }
+@media (max-width: 420px) { .comparison-table th, .comparison-table td { padding: 8px 5px; font-size: 0.8rem; overflow-wrap: anywhere; hyphens: auto; } }
+@media (max-width: 600px) { .lock-scheme .pt-row { flex-direction: column; align-items: flex-start; gap: 8px; } }
+</style>
+<!-- build-sites: language links -->
+<link rel="canonical" href="https://ludus-lab.com/es/theory/rsa.html">
+<link rel="alternate" hreflang="ru" href="https://ludus-lab.ru/theory/rsa.html">
+<link rel="alternate" hreflang="en" href="https://ludus-lab.com/theory/rsa.html">
+<link rel="alternate" hreflang="es" href="https://ludus-lab.com/es/theory/rsa.html">
+<link rel="alternate" hreflang="zh-Hans" href="https://ludus-lab.com/zh/theory/rsa.html">
+<link rel="alternate" hreflang="x-default" href="https://ludus-lab.com/theory/rsa.html">
+<style>a.lang-btn{text-decoration:none;display:inline-block}</style>
+<script>var _tmr=window._tmr||(window._tmr=[]);_tmr.push({id:"3804233",type:"pageView",start:(new Date()).getTime()});
+(function(d,w,id){if(d.getElementById(id))return;var ts=d.createElement("script");ts.async=true;ts.id=id;ts.src="https://mytopf.com/js/code.js";var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(ts,s);})(document,window,"tmr-code");</script>
+<noscript><div><img src="https://mytopf.com/counter?id=3804233;js=na" style="position:absolute;left:-9999px;" alt=""></div></noscript>
+</head>
+<body>
+<div class="lang-switch" role="group" aria-label="Language">
+<a class="lang-btn" data-lang-btn="ru" href="https://ludus-lab.ru/theory/rsa.html" hreflang="ru" lang="ru">RU</a>
+<a class="lang-btn" data-lang-btn="en" href="https://ludus-lab.com/theory/rsa.html" hreflang="en" lang="en">EN</a>
+<a class="lang-btn active" data-lang-btn="es" href="https://ludus-lab.com/es/theory/rsa.html" hreflang="es" lang="es">ES</a>
+<a class="lang-btn" data-lang-btn="zh" href="https://ludus-lab.com/zh/theory/rsa.html" hreflang="zh-Hans" lang="zh-CN">中文</a>
+</div>
+
+<!-- Навигация -->
+<nav class="theory-nav">
+<a href="/es/" class="nav-logo">LUDUS LAB</a>
+<div class="nav-links">
+<a href="/es/" class="nav-link" data-i18n="nav.home">Inicio</a>
+<a href="/es/games/rsa/" class="nav-link" data-i18n="nav.play">Jugar</a>
+</div>
+</nav>
+
+<!-- Основной контент -->
+<div class="theory-container">
+<header class="article-header">
+<div class="article-category" data-i18n="article.category">Criptografía de clave pública</div>
+<h1 class="article-title" data-i18n="article.title">RSA: un candado que cualquiera cierra y solo uno abre</h1>
+<p class="article-subtitle" data-i18n="article.subtitle">Bob publica en el periódico la clave para escribirle. ¿Cómo lograr que esa clave cierre una carta pero no la abra?</p>
+<div class="article-meta">
+<div class="meta-item" data-i18n="meta.readtime">⏱️ 9 min de lectura</div>
+<div class="meta-item" data-i18n="meta.level">📊 Nivel intermedio</div>
+<div class="meta-item" data-i18n="meta.security">🔒 Con él se firman los certificados de la mayoría de los sitios</div>
+</div>
+</header>
+
+<!-- Блок 1: парадокс -->
+<section class="content-block">
+<h2 data-i18n="block1.heading">¿Se puede dar la clave a todos y guardar el secreto?</h2>
+<p data-i18n="block1.p1">Bob quiere que cualquiera pueda escribirle en secreto, incluso gente a la que nunca ha visto. Publica una clave en el periódico: «cifrad con esto las cartas para mí». Eva también lee el periódico. ¿Puede ser que Eva tenga en sus manos la misma clave y aun así no lea ni una sola carta para Bob?</p>
+<p data-i18n="block1.p2">Suena absurdo. En cualquier cifrado conocido, desde el de <a class="highlight" href="/es/theory/caesarcipher.html">César</a> hasta <a class="highlight" href="/es/theory/aes.html">AES</a>, la misma clave cierra y abre. Quien sabe cifrar sabe descifrar: basta con hacerlo todo al revés. Publicar una clave así es publicar el propio secreto.</p>
+<p data-i18n="block1.p3">En 1976 Diffie y Hellman mostraron cómo dos personas pueden <a class="highlight" href="/es/theory/diffiehellman.html">acordar una clave común en público</a>. Pero hay que acordarla de nuevo con cada interlocutor, y los dos tienen que estar conectados a la vez. En el mismo artículo describieron un sueño mejor: un cifrado con dos claves distintas, una pública para cerrar y otra privada para abrir. No sabían cómo construirlo.</p>
+<div class="key-insight">
+<strong data-i18n="insight1.label">Idea clave:</strong>
+<span data-i18n="insight1.text">Un año después, tres investigadores del MIT encontraron la respuesta. Una operación «de una sola dirección» ya existía en Diffie–Hellman, pero nadie puede deshacerla. Un cifrado necesita una operación <span class="highlight-gold">con puerta secreta</span>: cualquiera la hace en un sentido, pero de vuelta solo quien conoce la pista. En RSA la pista son dos números primos. Cerrar una carta puede cualquiera que conozca su producto, y abrirla solo quien conoce los propios primos.</span>
+</div>
+</section>
+
+<!-- Блок 2: ответ и подвох -->
+<section class="content-block">
+<h2 data-i18n="block2.heading">Un candado, una llave y dos primos</h2>
+<p data-i18n="block2.what">RSA es un <span class="highlight-gold">cifrado de clave pública</span>: Bob tiene dos claves, y son distintas. La pública la reparte a todos, la privada no se la enseña a nadie. La misma idea existe en la vida diaria: el candado.</p>
+<p data-i18n="block2.lock">Bob reparte a todos candados abiertos y guarda su llave. Alicia mete una carta en una caja y cierra en ella el candado de Bob: para eso no hace falta llave. La caja viaja hasta Bob por correo normal. Eva también tiene el candado de Bob, pero un candado solo sabe cerrarse.</p>
+<div class="simple-encryption-scheme paint-scheme lock-scheme">
+<div class="scheme-title" data-i18n="scheme1.title">La idea, con candados</div>
+<div class="pt-row"><div class="pt-text"><strong data-i18n="pt.t1.title">Cerrarlo puede cualquiera</strong><span data-i18n="pt.t1.text">Todos tienen los candados de Bob. Para cerrar la caja no hace falta llave.</span></div><div class="pt-eq"><svg class="ps-svg letter" viewBox="0 0 36 26" aria-hidden="true"><rect x="2" y="2" width="32" height="22" rx="3" fill="none" stroke="#8ab0c5" stroke-width="2.4"/><path d="M3 4 L18 15 L33 4" fill="none" stroke="#8ab0c5" stroke-width="2.4" stroke-linejoin="round"/></svg><span class="ps-op">+</span><svg class="ps-svg" viewBox="0 0 34 40" aria-hidden="true"><path d="M10 18 V8 a7 7 0 0 1 14 0 V11" fill="none" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/><rect x="4" y="18" width="26" height="19" rx="4" fill="#d4af37"/><circle cx="17" cy="26" r="2.6" fill="#0a1a2a"/><rect x="16" y="27" width="2" height="5" rx="1" fill="#0a1a2a"/></svg><span class="ps-op">=</span><svg class="ps-svg" viewBox="0 0 34 40" aria-hidden="true"><path d="M10 19 V12 a7 7 0 0 1 14 0 V19" fill="none" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/><rect x="4" y="18" width="26" height="19" rx="4" fill="#d4af37"/><circle cx="17" cy="26" r="2.6" fill="#0a1a2a"/><rect x="16" y="27" width="2" height="5" rx="1" fill="#0a1a2a"/></svg></div></div>
+<div class="pt-row"><div class="pt-text"><strong data-i18n="pt.t2.title">Solo la llave lo abre</strong><span data-i18n="pt.t2.text">La llave es una y la tiene Bob. Eva ve la caja cerrada y tiene el mismo candado, pero con un candado no se abre la caja.</span></div><div class="pt-eq"><svg class="ps-svg" viewBox="0 0 34 40" aria-hidden="true"><path d="M10 19 V12 a7 7 0 0 1 14 0 V19" fill="none" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/><rect x="4" y="18" width="26" height="19" rx="4" fill="#d4af37"/><circle cx="17" cy="26" r="2.6" fill="#0a1a2a"/><rect x="16" y="27" width="2" height="5" rx="1" fill="#0a1a2a"/></svg><span class="ps-op">+</span><svg class="ps-svg key" viewBox="0 0 40 20" aria-hidden="true"><circle cx="9" cy="10" r="6.5" fill="none" stroke="#d4af37" stroke-width="2.6"/><path d="M15.5 10 H37 M31 10 V15 M35 10 V14" fill="none" stroke="#d4af37" stroke-width="2.6" stroke-linecap="round"/></svg><span class="ps-op">=</span><svg class="ps-svg letter" viewBox="0 0 36 26" aria-hidden="true"><rect x="2" y="2" width="32" height="22" rx="3" fill="none" stroke="#8ab0c5" stroke-width="2.4"/><path d="M3 4 L18 15 L33 4" fill="none" stroke="#8ab0c5" stroke-width="2.4" stroke-linejoin="round"/></svg></div></div>
+<div class="pt-row"><div class="pt-text"><strong data-i18n="pt.t3.title">La llave no se saca del candado</strong><span data-i18n="pt.t3.text">Eva puede estudiar el candado todo lo que quiera, pero no averiguará cómo es la llave. En esto se apoya todo el esquema.</span></div><div class="pt-eq"><svg class="ps-svg" viewBox="0 0 34 40" aria-hidden="true"><path d="M10 18 V8 a7 7 0 0 1 14 0 V11" fill="none" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/><rect x="4" y="18" width="26" height="19" rx="4" fill="#d4af37"/><circle cx="17" cy="26" r="2.6" fill="#0a1a2a"/><rect x="16" y="27" width="2" height="5" rx="1" fill="#0a1a2a"/></svg><span class="ps-op">→</span><svg class="ps-svg key ps-bad" viewBox="0 0 40 20" aria-hidden="true"><circle cx="9" cy="10" r="6.5" fill="none" stroke="#d4af37" stroke-width="2.6"/><path d="M15.5 10 H37 M31 10 V15 M35 10 V14" fill="none" stroke="#d4af37" stroke-width="2.6" stroke-linecap="round"/></svg><span class="ps-q">?</span></div></div>
+<p class="scheme-note" data-i18n="scheme1.note">Simplificación: un candado de verdad se puede forzar con una ganzúa. El candado numérico de RSA también tiene ganzúa —factorizar n—, pero con números enormes no funciona.</p>
+</div>
+<p data-i18n="block2.numbers">RSA cierra con la misma operación que <a class="highlight" href="/es/theory/diffiehellman.html">Diffie–Hellman</a>: eleva un número a una potencia y toma el resto de una división. Lo nuevo está en otra parte: el módulo n lo construye el propio Bob a partir de dos primos secretos, y son ellos los que le permiten calcular la llave. Todos los ejemplos de abajo usan los números del juego, donde n = 33.</p>
+<div class="explanation-steps">
+<div class="step"><div class="step-number">1</div><div class="step-content">
+<h3 data-i18n="step1.title">Dos primos secretos p y q</h3>
+<p data-i18n="step1.text">Bob elige dos <span class="highlight">números primos</span> aleatorios p y q, que solo son divisibles entre 1 y entre sí mismos. En las claves reales cada uno tiene 1024 bits o más, unas 309 cifras decimales. Su producto <span class="highlight">n = p × q</span> lo reparte, y p y q los guarda en secreto. Multiplicar dos números es fácil. Averiguar de qué primos está hecho un producto es difícil si los números son enormes.</p>
+<p class="step-example" data-i18n="step1.example"><span class="highlight-gold">Ejemplo:</span> p = 3, q = 11, n = 3 × 11 = 33.</p>
+</div></div>
+<div class="step"><div class="step-number">2</div><div class="step-content">
+<h3 data-i18n="step2.title">La potencia del candado e y la de la llave d</h3>
+<p data-i18n="step2.text">Bob calcula <span class="highlight">φ = (p − 1)(q − 1)</span> y elige la potencia del candado <span class="highlight">e</span>, un número sin divisores comunes con φ. En las claves reales casi siempre e = 65537. A partir de e y φ halla la potencia de la llave <span class="highlight-symmetric">d</span>: aquella con la que e · d deja resto 1 al dividir entre φ. La clave pública es el par <span class="highlight">(n, e)</span>, la privada es <span class="highlight-symmetric">d</span>. Para hallar d hace falta φ, y para hallar φ hacen falta p y q.</p>
+<p class="step-example" data-i18n="step2.example"><span class="highlight-gold">Ejemplo:</span> φ = 2 × 10 = 20, e = 3, d = 7, porque 3 · 7 = 21 = 1 · 20 + <b>1</b>.</p>
+</div></div>
+<div class="step"><div class="step-number">3</div><div class="step-content">
+<h3 data-i18n="step3.title">Alicia cierra: c = m<sup>e</sup> mod n</h3>
+<p data-i18n="step3.text">La carta es un número m menor que n: primero el texto se convierte en números. Alicia toma la clave pública de Bob y calcula <span class="highlight">c = m<sup>e</sup> mod n</span>. Eso es «cerrar el candado». La potencia se calcula por etapas: multiplicar, tomar el resto, multiplicar, tomar el resto. El resultado es el mismo que elevando a la potencia completa, pero los números no crecen. Si no, ningún ordenador podría con la potencia 65537 y números de cientos de cifras. El número c se envía a la vista: sin d no sirve de nada.</p>
+<p class="step-example" data-i18n="step3.example"><span class="highlight-gold">Ejemplo:</span> m = 4. 4 × 4 = 16; 16 × 4 = 64 = 1 · 33 + <b>31</b>. Así que c = 31.</p>
+</div></div>
+<div class="step"><div class="step-number">4</div><div class="step-content">
+<h3 data-i18n="step4.title">Bob abre: m = c<sup>d</sup> mod n</h3>
+<p data-i18n="step4.text">Bob eleva c a su potencia secreta d con el mismo módulo y obtiene el m original. No hay ninguna operación nueva: el método es el mismo, solo cambia la potencia.</p>
+<p class="step-example" data-i18n="step4.example"><span class="highlight-gold">Ejemplo:</span> 31<sup>7</sup> mod 33 por etapas: 31 · 31 = 961 → 4; 4 · 31 = 124 → 25; 25 · 31 = 775 → 16; 16 · 31 = 496 → 1; 1 · 31 = 31; 31 · 31 = 961 → <b>4</b>. Bob obtiene m = 4.</p>
+</div></div>
+<div class="step"><div class="step-number">5</div><div class="step-content">
+<h3 data-i18n="step5.title">Por qué coincide</h3>
+<p data-i18n="step5.text">Alicia elevó m a la potencia e, y Bob elevó el resultado a la potencia d. En total es m<sup>e·d</sup>. Y Bob eligió e · d de modo que fuera 1 más que un múltiplo de φ. Los restos módulo n tienen una propiedad (el teorema de Euler): una potencia así devuelve cualquier número a su sitio. Por eso <span class="highlight-gold">c<sup>d</sup> = m<sup>e·d</sup> = m mod n</span>. Puede imaginarse así: el candado baraja los números de 0 a n − 1 como cartas, y cada número tiene su propio lugar. La llave vuelve por las mismas líneas.</p>
+<p class="step-example" data-i18n="step5.example"><span class="highlight-gold">Ejemplo:</span> 3 · 7 = 21 = 1 · 20 + 1, y 4<sup>21</sup> mod 33 = 4.</p>
+</div></div>
+</div>
+<div class="key-insight">
+<strong data-i18n="insightEve.label">¿Y qué puede hacer Eva?</strong>
+<span data-i18n="insightEve.text">Eva tiene n, e y c. Para abrir la carta necesita d. Para d necesita φ, para φ necesita p y q, es decir, Eva tiene que <span class="highlight">factorizar n</span>. 33 = 3 × 11 se factoriza de cabeza. Pero nadie ha factorizado un número de 617 cifras: el número de este tipo más largo factorizado, RSA-250 (2020), es dos veces y media más corto y costó unos 2700 años de trabajo de un solo núcleo de procesador.</span>
+</div>
+<div class="warning-box">
+<strong data-i18n="warning1.label">La trampa: Eva no necesita factorizar</strong>
+<span data-i18n="warning1.text">Todos tienen el mismo candado, y en él no hay azar: el mismo m siempre da el mismo c. Si la carta se puede adivinar —«sí» o «no», el código de una caja fuerte, el importe de una transferencia—, Eva simplemente cierra con el candado de Bob todas las opciones una a una y las compara con el c interceptado. Si coincide, la carta está leída y n sigue sin factorizar. Por eso el RSA «de manual», como en el juego, no se usa en ninguna parte. Antes de cifrar se mezclan bytes aleatorios en la carta (el esquema <span class="highlight">OAEP</span>), y la misma carta se convierte cada vez en un texto cifrado nuevo.</span>
+</div>
+</section>
+
+<!-- Блок 3: история и где работает -->
+<section class="content-block">
+<h2 data-i18n="block3.heading">Un año de búsqueda y un reto de 100 dólares</h2>
+<p data-i18n="block3.p1">Ronald Rivest, Adi Shamir y Leonard Adleman, del MIT, pasaron un año buscando la función con la que soñaban Diffie y Hellman. Rivest y Shamir proponían esquemas y Adleman los rompía. Un esquema que funcionaba, con dos primos, apareció en abril de 1977; las letras RSA son sus iniciales. En agosto Martin Gardner habló del cifrado en Scientific American y publicó un reto: un número de 129 cifras y una frase cifrada con él, con un premio de 100 dólares. Se resolvió solo en 1994: unos 600 voluntarios pasaron ocho meses factorizando el número por internet. La frase resultó ser «The Magic Words are Squeamish Ossifrage».</p>
+<p data-i18n="block3.p2">El GCHQ británico también se adelantó aquí. En 1973 el joven matemático Clifford Cocks leyó la nota de su colega James Ellis sobre el «cifrado no secreto» y en una sola tarde encontró el mismo esquema con dos primos, casi cuatro años antes que Rivest, Shamir y Adleman. La patente del MIT sobre RSA estuvo vigente en EE. UU. hasta septiembre de 2000; después el algoritmo quedó libre.</p>
+<p data-i18n="block3.today">RSA sigue funcionando a tu alrededor, aunque hoy firma más a menudo de lo que cifra:</p>
+<div class="topics-grid">
+<div class="topic-card"><h4 data-i18n="topic1.title">HTTPS</h4><p data-i18n="topic1.desc">Los certificados de la mayoría de los sitios están firmados con RSA, y el navegador comprueba con esa firma que la clave pertenece justo a ese sitio. En cambio, enviar la clave de la conexión con RSA quedó prohibido en TLS 1.3: ahora eso es tarea del <a class="highlight" href="/es/theory/diffiehellman.html">intercambio Diffie–Hellman</a>.</p></div>
+<div class="topic-card"><h4 data-i18n="topic2.title">SSH y routers</h4><p data-i18n="topic2.desc">En la primera conexión, un servidor o un router muestra la huella de su clave pública, y a menudo es una clave RSA. Con ella el dispositivo demuestra que hablas con él y no con un impostor.</p></div>
+<div class="topic-card"><h4 data-i18n="topic3.title">Firmas y tarjetas</h4><p data-i18n="topic3.desc">El correo con PGP, las firmas de programas y actualizaciones, las tarjetas bancarias con chip: en cualquier lugar donde hay que comprobar al autor sin haberlo visto nunca.</p></div>
+</div>
+</section>
+
+<!-- Чем отличается от Диффи — Хеллмана -->
+<section class="content-block">
+<h2 data-i18n="diff.heading">En qué se diferencia RSA de Diffie–Hellman</h2>
+<p data-i18n="diff.intro">Los dos algoritmos son de criptografía de clave pública y los dos calculan potencias módulo un número, así que se confunden a menudo. La diferencia está en lo que hacen. En el <a class="highlight" href="/es/theory/diffiehellman.html">intercambio Diffie–Hellman</a> Alicia y Bob se intercambian números públicos y cada uno calcula por su lado la clave común. Ahí no se cifra nada, y los dos tienen que participar a la vez. En RSA Bob ya tiene un candado repartido a todos de antemano: Alicia lo toma y <span class="highlight-gold">cierra la carta ella sola</span>, aunque Bob no esté conectado en ese momento.</p>
+<table class="comparison-table diff-table">
+<tr><th style="width: 24%;" data-i18n="diff.th.q">Pregunta</th><th class="western-cell" data-i18n="diff.th.rsa">RSA</th><th class="western-cell" data-i18n="diff.th.dh">Diffie–Hellman</th></tr>
+<tr><td data-i18n="diff.r1.q">Para qué sirve</td><td class="western-cell" data-i18n="diff.r1.rsa">Para cerrar una carta para un solo destinatario o firmar la tuya</td><td class="western-cell" data-i18n="diff.r1.dh">Para que dos personas obtengan una clave común con la que luego cifrar sus mensajes</td></tr>
+<tr><td data-i18n="diff.r2.q">¿Tiene que estar conectado el otro?</td><td class="western-cell" data-i18n="diff.r2.rsa">No: Alicia ya tiene el candado de Bob</td><td class="western-cell" data-i18n="diff.r2.dh">Sí: cada uno debe aportar su número secreto</td></tr>
+<tr><td data-i18n="diff.r3.q">Qué se envía</td><td class="western-cell" data-i18n="diff.r3.rsa">La propia carta, cerrada con el candado</td><td class="western-cell" data-i18n="diff.r3.dh">Solo números públicos; ni la carta ni la clave pasan por el canal</td></tr>
+<tr><td data-i18n="diff.r4.q">Claves</td><td class="western-cell" data-i18n="diff.r4.rsa">El candado y la llave de Bob sirven durante años</td><td class="western-cell" data-i18n="diff.r4.dh">Los números secretos se eligen de nuevo para cada conversación</td></tr>
+<tr><td data-i18n="diff.r5.q">El problema difícil para Eva</td><td class="western-cell" data-i18n="diff.r5.rsa">Descomponer n en dos primos</td><td class="western-cell" data-i18n="diff.r5.dh">Hallar el número secreto a partir del público (logaritmo discreto)</td></tr>
+<tr><td data-i18n="diff.r6.q">Analogía</td><td class="western-cell" data-i18n="diff.r6.rsa">Un candado abierto</td><td class="western-cell" data-i18n="diff.r6.dh">Pinturas que mezclan dos personas</td></tr>
+</table>
+<div class="key-insight">
+<strong data-i18n="diff.insight.label">En una frase:</strong>
+<span data-i18n="diff.insight.text"><span class="highlight-gold">RSA cierra, Diffie–Hellman acuerda.</span> Por eso el HTTPS moderno los pone uno junto al otro, no uno en lugar del otro: Diffie–Hellman produce la clave de la conversación, y RSA confirma con una firma que esa clave vino del sitio. Así se cierra el agujero de «Eva en medio», que Diffie–Hellman no puede cerrar por sí solo.</span>
+</div>
+</section>
+
+<!-- Российский вариант -->
+<section class="content-block">
+<div class="russian-header">
+<div class="ru-badge">RU</div>
+<div>
+<h2 class="russian-title" data-i18n="ru.title">La variante rusa: aquí no hay RSA</h2>
+<div class="russian-subtitle" data-i18n="ru.subtitle">GOST R 34.10-2012 · la autoridad de certificación nacional</div>
+</div>
+</div>
+<p data-i18n="ru.p1">En los estándares rusos no hay RSA en absoluto. Las firmas se hacen según <span class="highlight-neon">GOST R 34.10-2012</span> sobre curvas elípticas, y la clave común se obtiene con VKO (véase el artículo sobre <a class="highlight" href="/es/theory/diffiehellman.html">Diffie–Hellman</a>). Aquí la clave pública es un punto de una curva, no un producto de dos primos, así que no hay nada que factorizar. La seguridad se apoya en otro problema difícil: el logaritmo discreto.</p>
+<p data-i18n="ru.p2">Cerrar una carta directamente con la clave pública tampoco es costumbre en GOST: la clave pública solo sirve para firmar y para obtener una clave común, y la carta se cifra luego con un cifrado simétrico. De hecho, en el mundo de RSA se hace casi lo mismo: con RSA no se suele cerrar la carta en sí, sino una clave aleatoria para AES.</p>
+<p data-i18n="ru.p3">Aun así, RSA aparece en Rusia cada día. Los navegadores normales no entienden GOST, así que incluso los certificados para sitios web que emite desde 2022 la autoridad de certificación nacional del Ministerio de Desarrollo Digital están firmados con RSA. Para las conexiones GOST esa autoridad tiene una cadena de certificados aparte, pero esos sitios solo se abren en navegadores compatibles con GOST, como Yandex Browser.</p>
+<div class="warning-box">
+<strong data-i18n="ru.why.label">¿Dónde es obligatorio GOST?</strong>
+<span data-i18n="ru.why.text">Allí donde la ley exige herramientas de protección criptográfica certificadas, sobre todo en los sistemas de información del Estado. Allí se firma y se cifra solo según GOST, y RSA queda para comunicarse con el mundo exterior.</span>
+</div>
+</section>
+
+<!-- Блок 4: практика -->
+<section class="content-block">
+<h2 data-i18n="block4.heading">Compruébalo tú mismo</h2>
+<p data-i18n="block4.intro">En el juego construirás la clave tú mismo, cerrarás y abrirás una carta, y luego intentarás romperla como Eva. Qué hacer:</p>
+<ul class="action-list">
+<li><span class="action-icon">🔒</span><div class="action-text" data-i18n="action1"><span><strong>Hacer el experimento de los candados.</strong> Bob reparte candados abiertos, Alicia cierra una caja, y Eva tiene en la mano el mismo candado y aun así no puede abrir la caja.</span></div></li>
+<li><span class="action-icon">🔢</span><div class="action-text" data-i18n="action2"><span><strong>Elegir tus propios p, q y e.</strong> La clave de práctica es 3 × 11 = 33, pero puedes tomar 5 × 11, 7 × 13 y otros pares. El juego ilumina solo los números que dan un candado de verdad y calcula d al momento.</span></div></li>
+<li><span class="action-icon">🎞️</span><div class="action-text" data-i18n="action3"><span><strong>Construir la cinta del candado.</strong> Pasa por el candado todos los números de 0 a n − 1 y mira adónde va cada uno. Ningún lugar se ocupa dos veces, por eso la llave puede devolverlo todo. Y fíjate en los números que el candado deja en su sitio.</span></div></li>
+<li><span class="action-icon">💡</span><div class="action-text" data-i18n="action4"><span><strong>Comparar dos formas de calcular.</strong> Tras descifrar, el juego muestra la potencia completa, 31<sup>7</sup> = 27 512 614 111, y el mismo resto 4 obtenido por etapas. Se ve que las etapas no cambian nada en el resultado, pero los números del tablero no crecen.</span></div></li>
+<li><span class="action-icon">🕵️</span><div class="action-text" data-i18n="action5"><span><strong>Jugar como Eva dos veces.</strong> Primero factoriza n probando divisores y calcula d. Después no factorices nada: cifra con la clave pública las conjeturas 2, 3, 4… hasta que una coincida con c.</span></div></li>
+<li><span class="action-icon">🖥️</span><div class="action-text" data-i18n="action6"><span><strong>Abrir «Cómo se ve en la realidad».</strong> Abajo, en la ventana del juego, hay una consola de router. Muestra cómo un dispositivo real crea una clave RSA de 2048 bits y reparte su parte pública.</span></div></li>
+</ul>
+<div class="key-insight">
+<strong data-i18n="insight2.label">Qué observar:</strong>
+<span data-i18n="insight2.text">El ataque por factorización depende del tamaño de n: con 33 es instantáneo, con 2048 bits, imposible. Al ataque por conjeturas el tamaño de n no le importa en absoluto. Lo único que lo detiene es el <span class="highlight-gold">azar</span> que se añade a cada carta.</span>
+</div>
+<div class="key-insight">
+<strong data-i18n="insight3.label">Una conclusión inesperada:</strong>
+<span data-i18n="insight3.text">La fortaleza de RSA suele explicarse por lo difícil que es factorizar, pero en el juego Eva leyó la carta sin factorizar nada. Así que RSA se apoya en dos cosas: en primos enormes y en el azar de cada carta. Sin lo segundo basta el ataque más sencillo. Y si se intercambian los papeles de las claves —cerrar con la privada y comprobar con la pública—, se obtiene la prueba de que «esto lo escribió Bob». Cómo funciona esa prueba y dónde se falsifica es el tema del juego «Firma digital».</span>
+</div>
+</section>
+
+<!-- Дополнительный материал -->
+<details class="advanced-section">
+<summary data-i18n="advanced.summary">Para los curiosos</summary>
+<div class="advanced-content">
+<h3 data-i18n="advanced.compare.heading">RSA y GOST R 34.10-2012 lado a lado</h3>
+<p data-i18n="advanced.compare.text">Los dos esquemas tienen un par de claves, pública y privada, pero los problemas difíciles en los que se basan son distintos, y también lo que saben hacer:</p>
+<table class="comparison-table">
+<tr><th style="width: 26%;" data-i18n="table.param">Parámetro</th><th class="western-cell">RSA</th><th class="russian-cell" data-i18n="table.head.ru">GOST R 34.10-2012</th></tr>
+<tr><td data-i18n="table.row1.label">De qué está hecha la clave</td><td class="western-cell" data-i18n="table.row1.rsa">Dos primos grandes y su producto</td><td class="russian-cell" data-i18n="table.row1.ru">Un número secreto y un punto de una curva elíptica</td></tr>
+<tr><td data-i18n="table.row2.label">Problema difícil</td><td class="western-cell" data-i18n="table.row2.rsa">Factorización</td><td class="russian-cell" data-i18n="table.row2.ru">Logaritmo discreto en una curva</td></tr>
+<tr><td data-i18n="table.row3.label">Tamaño de clave para ≈ 128 bits de seguridad</td><td class="western-cell" data-i18n="table.row3.rsa">3072 bits</td><td class="russian-cell" data-i18n="table.row3.ru">256 bits</td></tr>
+<tr><td data-i18n="table.row4.label">Qué sabe hacer</td><td class="western-cell" data-i18n="table.row4.rsa">Cifrado (con OAEP) y firma</td><td class="russian-cell" data-i18n="table.row4.ru">Firma; la clave común, con VKO</td></tr>
+<tr><td data-i18n="table.row5.label">Año</td><td class="western-cell">1977</td><td class="russian-cell" data-i18n="table.row5.ru">2012 (antes, GOST R 34.10-2001)</td></tr>
+<tr><td data-i18n="table.row6.label">Norma</td><td class="western-cell">PKCS #1 (RFC 8017)</td><td class="russian-cell" data-i18n="table.row6.ru">GOST R 34.10-2012 (RFC 7091), TC 26</td></tr>
+</table>
+<h3 data-i18n="advanced.size.heading">Récords de factorización</h3>
+<p data-i18n="advanced.size.p">Los números RSA se factorizan con la misma criba del cuerpo de números que amenaza a <a class="highlight" href="/es/theory/diffiehellman.html">Diffie–Hellman</a>, así que la seguridad también es la misma: 2048 bits equivalen aproximadamente a una clave simétrica de 112 bits, y para 128 bits hacen falta 3072. Cómo crecieron los récords: RSA-129 (426 bits) se factorizó en 1994, RSA-768 en 2009, RSA-250 (829 bits) en 2020. Los 2048 bits quedan aún muy lejos, pero las claves de menos de 2048 bits hoy se consideran inseguras.</p>
+<h3 data-i18n="advanced.e.heading">Por qué e = 65537</h3>
+<p data-i18n="advanced.e.p">El número 65537 = 2<sup>16</sup> + 1 es primo, y en binario solo tiene dos unos, así que una carta se puede cerrar con 17 multiplicaciones. Un e muy pequeño, como 3, es peligroso si no se añade azar: cuando m<sup>3</sup> es menor que n, la división no cambia nada, y Eva simplemente saca la raíz cúbica de c. En el juego se ve con m = 2 y 3: 2<sup>3</sup> = 8 es menor que 33, y c = 8.</p>
+<h3 data-i18n="advanced.shared.heading">Cuando dos claves comparten un primo</h3>
+<p data-i18n="advanced.shared.p">En 2012 dos grupos de investigadores reunieron millones de claves públicas RSA de internet y las compararon por pares. Decenas de miles de claves resultaron tener factores primos comunes, sobre todo en routers, cámaras de red y otros aparatos que creaban su clave justo tras el primer encendido, cuando todavía no tenían buen azar. Si dos n comparten un p, el algoritmo de Euclides lo encuentra en una fracción de segundo, y las dos claves quedan rotas. Los primos no solo deben ser enormes, sino realmente aleatorios.</p>
+<h3 data-i18n="advanced.quantum.heading">Qué vendrá después</h3>
+<p data-i18n="advanced.quantum.p">El algoritmo de Shor en un ordenador cuántico factorizaría n tan rápido como resolvería el problema de Diffie–Hellman. Para RSA lo más importante son las firmas, y su sustituto ya está preparado: los estándares de firma poscuántica <span class="highlight-gold">ML-DSA</span> (FIPS 204) y <span class="highlight-gold">SLH-DSA</span> (FIPS 205). El segundo es interesante porque se apoya solo en funciones hash, sin nada de teoría de números.</p>
+</div>
+</details>
+
+<!-- Кнопки действий -->
+<div class="article-actions" id="article-actions">
+<p style="color: #8ab0c5; margin-bottom: 20px; font-size: 1.1rem;" data-i18n="actions.intro">Ahora sabes cómo cerrar una carta con una clave que tienen todos, y por qué la dificultad de factorizar no basta por sí sola</p>
+<div class="action-buttons">
+<a href="/es/games/rsa/" class="btn-primary" data-i18n="actions.play">🚀 Iniciar la demostración interactiva</a>
+<a href="/es/#theory-section" class="btn-secondary" data-i18n="actions.back">← Volver a la lista de temas</a>
+</div>
+<p style="color: #557585; margin-top: 30px; font-size: 0.9rem;" data-i18n="actions.outro">En el juego elegirás tus propios primos, construirás la cinta del candado y verás a Eva leer la carta sin factorizar nada</p>
+</div>
+</div>
+
+<!-- Футер -->
+<footer class="theory-footer">
+<p data-i18n="footer.line1">© 2025 Ludus Lab · Cosas complejas a través de juegos simples</p>
+<p style="margin-top: 10px; font-size: 0.8rem;" data-i18n="footer.line2">Simplificaciones: en el juego n no pasa de 91 y la carta es un solo número. En las claves reales n tiene 2048 bits o más, y antes de cifrar se añade a la carta el relleno aleatorio OAEP.</p>
+</footer>
+
+<script>
+    const I18N = {
+      ru: {
+        'meta.title': 'RSA: замок, который защёлкнет каждый, а откроет один | Ludus Lab',
+        'meta.description': 'Как раздать всем ключ для шифрования и сохранить секрет? RSA на замках и маленьких числах: два простых числа, степени e и d, взлом разложением и угадыванием, и почему в ГОСТ нет RSA.',
+        'nav.home': 'Главная',
+        'nav.play': 'Играть',
+        'article.category': 'Асимметричная криптография',
+        'article.title': 'RSA: замок, который защёлкнет каждый, а откроет один',
+        'article.subtitle': 'Боб печатает ключ для писем к нему прямо в газете. Как сделать, чтобы этим ключом можно было запереть письмо, но нельзя открыть?',
+        'meta.readtime': '⏱️ 9 мин чтения',
+        'meta.level': '📊 Средний уровень',
+        'meta.security': '🔒 Им подписаны сертификаты большинства сайтов',
+        'block1.heading': 'Можно ли раздать ключ всем и сохранить секрет?',
+        'block1.p1': 'Боб хочет, чтобы ему могли писать тайно — кто угодно, даже люди, которых он никогда не видел. Он печатает в газете ключ: «шифруйте письма мне вот этим». Газету читает и Ева. Может ли быть так, что Ева держит в руках тот же ключ и всё равно не прочтёт ни одного письма Бобу?',
+        'block1.p2': 'Звучит как бессмыслица. В любом привычном шифре, от <a class="highlight" href="/es/theory/caesarcipher.html">Цезаря</a> до <a class="highlight" href="/es/theory/aes.html">AES</a>, один и тот же ключ и запирает, и отпирает. Кто знает, как зашифровать, знает и как расшифровать: достаточно проделать всё в обратном порядке. Опубликовать такой ключ — значит опубликовать сам секрет.',
+        'block1.p3': 'В 1976 году Диффи и Хеллман показали, как двоим <a class="highlight" href="/es/theory/diffiehellman.html">договориться об общем ключе при всех</a>. Но договариваться приходится с каждым собеседником заново, и оба должны быть на связи одновременно. В той же статье они описали мечту получше: шифр с двумя разными ключами — открытым, чтобы запирать, и закрытым, чтобы отпирать. Как такой шифр построить, они не знали.',
+        'insight1.label': 'Ключевая мысль:',
+        'insight1.text': 'Через год ответ нашли трое исследователей из MIT. Операция «в одну сторону» уже была у Диффи и Хеллмана, но её не может отменить никто. Для шифра нужна операция <span class="highlight-gold">с потайной дверцей</span>: в одну сторону её проделывает каждый, а обратно — только тот, кто знает подсказку. В RSA подсказка — два простых числа. Запереть письмо может каждый, кто знает их произведение, а открыть — только тот, кто знает сами числа.',
+        'block2.heading': 'Замок, ключ и два простых числа',
+        'block2.what': 'RSA — <span class="highlight-gold">шифр с открытым ключом</span>: ключей у Боба два, и они разные. Открытый ключ Боб раздаёт всем, закрытый не показывает никому. Тот же принцип есть в быту — навесной замок.',
+        'block2.lock': 'Боб раздаёт всем открытые навесные замки, а ключ от них держит у себя. Алиса кладёт письмо в ящик и защёлкивает на нём замок Боба: для этого ключ не нужен. Ящик едет к Бобу обычной почтой. У Евы тоже есть замок Боба, но замок умеет только защёлкиваться.',
+        'scheme1.title': 'Идея на замках',
+        'pt.t1.title': 'Защёлкнуть может каждый',
+        'pt.t1.text': 'Замки Боба есть у всех. Чтобы запереть ящик, ключ не нужен.',
+        'pt.t2.title': 'Открыть может только ключ',
+        'pt.t2.text': 'Ключ один, и он у Боба. Ева видит запертый ящик и держит такой же замок, но открыть ящик замком нельзя.',
+        'pt.t3.title': 'Ключ не выточить по замку',
+        'pt.t3.text': 'Ева может разглядывать замок сколько угодно, но не поймёт, каким должен быть ключ. На этом держится вся схема.',
+        'scheme1.note': 'Упрощение: настоящий замок можно вскрыть отмычкой. У числового замка RSA отмычка тоже есть — разложить n на множители, но на огромных числах она не срабатывает.',
+        'block2.numbers': 'Запирают в RSA той же операцией, что в <a class="highlight" href="/es/theory/diffiehellman.html">Диффи — Хеллмане</a>: возводят число в степень и берут остаток от деления. Новое в другом: модуль n Боб собирает сам из двух тайных простых чисел, и именно они позволяют ему вычислить ключ. Все примеры ниже — на числах игры, где n = 33.',
+        'step1.title': 'Два тайных простых числа p и q',
+        'step1.text': 'Боб выбирает два случайных <span class="highlight">простых числа</span> p и q — таких, что делятся только на 1 и на себя. В настоящих ключах каждое длиной 1024 бита и больше, это около 309 десятичных цифр. Их произведение <span class="highlight">n = p × q</span> Боб раздаёт, а сами p и q держит в тайне. Перемножить два числа легко. Найти по произведению, из каких простых оно сложено, трудно, если числа огромные.',
+        'step1.example': '<span class="highlight-gold">Пример:</span> p = 3, q = 11, n = 3 × 11 = 33.',
+        'step2.title': 'Степень замка e и степень ключа d',
+        'step2.text': 'Боб вычисляет <span class="highlight">φ = (p − 1)(q − 1)</span> и выбирает степень замка <span class="highlight">e</span> — число, у которого нет общих делителей с φ. В настоящих ключах почти всегда e = 65537. По e и φ Боб находит степень ключа <span class="highlight-symmetric">d</span>: такую, что e · d при делении на φ даёт остаток 1. Открытый ключ — пара <span class="highlight">(n, e)</span>, закрытый — <span class="highlight-symmetric">d</span>. Чтобы найти d, нужно знать φ, а чтобы найти φ, нужны p и q.',
+        'step2.example': '<span class="highlight-gold">Пример:</span> φ = 2 × 10 = 20, e = 3, d = 7, ведь 3 · 7 = 21 = 1 · 20 + <b>1</b>.',
+        'step3.title': 'Алиса запирает: c = m<sup>e</sup> mod n',
+        'step3.text': 'Письмо — это число m меньше n: текст сначала переводят в числа. Алиса берёт открытый ключ Боба и вычисляет <span class="highlight">c = m<sup>e</sup> mod n</span>. Это и есть «защёлкнуть замок». Степень считают по этапам: умножили — взяли остаток, умножили — взяли остаток. Ответ тот же, что если возвести в степень целиком, но числа не растут. Иначе со степенью 65537 и числами из сотен цифр не справился бы ни один компьютер. Число c отправляют открыто: без d оно бесполезно.',
+        'step3.example': '<span class="highlight-gold">Пример:</span> m = 4. 4 × 4 = 16; 16 × 4 = 64 = 1 · 33 + <b>31</b>. Значит, c = 31.',
+        'step4.title': 'Боб отпирает: m = c<sup>d</sup> mod n',
+        'step4.text': 'Боб возводит c в свою тайную степень d по тому же модулю и получает исходное m. Никакой новой операции нет: способ тот же, другая только степень.',
+        'step4.example': '<span class="highlight-gold">Пример:</span> 31<sup>7</sup> mod 33 по этапам: 31 · 31 = 961 → 4; 4 · 31 = 124 → 25; 25 · 31 = 775 → 16; 16 · 31 = 496 → 1; 1 · 31 = 31; 31 · 31 = 961 → <b>4</b>. Боб получил m = 4.',
+        'step5.title': 'Почему совпало',
+        'step5.text': 'Алиса возвела m в степень e, Боб возвёл результат в степень d. Вместе это m<sup>e·d</sup>. А e · d Боб подобрал так, чтобы оно было на 1 больше, чем φ, взятое сколько-то раз. У остатков по модулю n есть свойство (это теорема Эйлера): такая степень возвращает любое число на своё место. Поэтому <span class="highlight-gold">c<sup>d</sup> = m<sup>e·d</sup> = m mod n</span>. Можно представить это так: замок переставляет числа от 0 до n − 1, как карты в колоде, и у каждого числа своё место. Ключ ведёт по тем же линиям обратно.',
+        'step5.example': '<span class="highlight-gold">Пример:</span> 3 · 7 = 21 = 1 · 20 + 1, и 4<sup>21</sup> mod 33 = 4.',
+        'insightEve.label': 'А что может Ева?',
+        'insightEve.text': 'У Евы есть n, e и c. Чтобы открыть письмо, ей нужно d. Для d нужно φ, для φ — p и q, то есть Еве надо <span class="highlight">разложить n на множители</span>. 33 = 3 × 11 раскладывается в уме. А число из 617 цифр не разложил никто: самое длинное разложенное число такого вида, RSA-250 (2020 год), в два с половиной раза короче и потребовало около 2700 лет работы одного процессорного ядра.',
+        'warning1.label': 'Подвох: Еве не обязательно раскладывать',
+        'warning1.text': 'Замок у всех один и тот же, и в нём нет случайности: одно и то же m всегда даёт одно и то же c. Если письмо можно угадать — «да» или «нет», код от сейфа, сумма перевода, — Ева просто запирает замком Боба все варианты по очереди и сравнивает с перехваченным c. Совпало — письмо прочитано, а n так и не разложено. Поэтому RSA «из учебника», как в игре, нигде не применяют. Перед шифрованием к письму подмешивают случайные байты (схема <span class="highlight">OAEP</span>), и одно и то же письмо каждый раз превращается в новый шифротекст.',
+        'block3.heading': 'Год поисков и задача на 100 долларов',
+        'block3.p1': 'Рональд Ривест, Ади Шамир и Леонард Адлеман из MIT год искали функцию, о которой мечтали Диффи и Хеллман. Ривест и Шамир предлагали схемы, Адлеман их ломал. Рабочая схема на двух простых числах появилась в апреле 1977 года, буквы RSA — первые буквы их фамилий. В августе Мартин Гарднер рассказал о шифре в Scientific American и опубликовал задачу: число из 129 цифр и зашифрованную им фразу, приз — 100 долларов. Её решили только в 1994 году: около 600 добровольцев восемь месяцев раскладывали число по интернету. Фраза оказалась «The Magic Words are Squeamish Ossifrage».',
+        'block3.p2': 'Британская GCHQ опередила MIT и здесь. Молодой математик Клиффорд Кокс в 1973 году прочитал записку коллеги Джеймса Эллиса о «несекретном шифровании» и за один вечер нашёл ту же схему на двух простых числах — почти за четыре года до Ривеста, Шамира и Адлемана. Патент MIT на RSA действовал в США до сентября 2000 года, после этого алгоритм стал свободным.',
+        'block3.today': 'RSA и сегодня работает рядом с вами, хотя теперь он чаще подписывает, чем шифрует:',
+        'topic1.title': 'HTTPS',
+        'topic1.desc': 'Сертификаты большинства сайтов подписаны по RSA, и браузер этой подписью проверяет, что ключ принадлежит именно этому сайту. А передавать ключ соединения через RSA в TLS 1.3 запретили: теперь это работа <a class="highlight" href="/es/theory/diffiehellman.html">обмена Диффи — Хеллмана</a>.',
+        'topic2.title': 'SSH и маршрутизаторы',
+        'topic2.desc': 'При первом подключении сервер или маршрутизатор показывает отпечаток своего открытого ключа, и часто это ключ RSA. Им устройство доказывает, что вы говорите именно с ним, а не с подменой.',
+        'topic3.title': 'Подписи и карты',
+        'topic3.desc': 'Письма с PGP, подписи программ и обновлений, банковские карты с чипом — везде, где нужно проверить автора, ни разу с ним не встречаясь.',
+        'diff.heading': 'Чем RSA отличается от Диффи — Хеллмана',
+        'diff.intro': 'Оба алгоритма — из криптографии с открытым ключом, и оба считают степени по модулю, поэтому их часто путают. Разница в том, что они делают. В <a class="highlight" href="/es/theory/diffiehellman.html">обмене Диффи — Хеллмана</a> Алиса и Боб вдвоём обмениваются открытыми числами и каждый у себя вычисляет общий ключ. Там ничего не шифруется, и оба должны участвовать одновременно. В RSA у Боба уже есть замок, розданный всем заранее: Алиса берёт его и <span class="highlight-gold">запирает письмо сама</span>, даже если Боб сейчас не в сети.',
+        'diff.th.q': 'Вопрос',
+        'diff.th.rsa': 'RSA',
+        'diff.th.dh': 'Диффи — Хеллман',
+        'diff.r1.q': 'Зачем нужен',
+        'diff.r1.rsa': 'Запереть письмо для одного адресата или подписать своё',
+        'diff.r1.dh': 'Вдвоём получить общий ключ, которым потом шифруют переписку',
+        'diff.r2.q': 'Нужен ли собеседник в сети',
+        'diff.r2.rsa': 'Нет: замок Боба уже у Алисы',
+        'diff.r2.dh': 'Да: каждый должен внести своё тайное число',
+        'diff.r3.q': 'Что отправляют',
+        'diff.r3.rsa': 'Само письмо, запертое замком',
+        'diff.r3.dh': 'Только открытые числа; ни письма, ни ключа в канале нет',
+        'diff.r4.q': 'Ключи',
+        'diff.r4.rsa': 'Замок и ключ Боба служат годами',
+        'diff.r4.dh': 'Тайные числа выбирают заново для каждого разговора',
+        'diff.r5.q': 'Трудная задача для Евы',
+        'diff.r5.rsa': 'Разложить n на два простых числа',
+        'diff.r5.dh': 'Найти тайное число по открытому (дискретный логарифм)',
+        'diff.r6.q': 'Аналогия',
+        'diff.r6.rsa': 'Открытый навесной замок',
+        'diff.r6.dh': 'Краски, которые смешивают вдвоём',
+        'diff.insight.label': 'Одной фразой:',
+        'diff.insight.text': '<span class="highlight-gold">RSA запирает, Диффи — Хеллман договаривается.</span> Поэтому в современном HTTPS их ставят рядом, а не вместо друг друга: ключ разговора вырабатывает Диффи — Хеллман, а RSA подписью подтверждает, что этот ключ пришёл от сайта. Так закрывается дыра «Ева посередине», которую Диффи — Хеллман сам закрыть не может.',
+        'ru.title': 'Российский вариант: RSA здесь нет',
+        'ru.subtitle': 'ГОСТ Р 34.10-2012 · национальный удостоверяющий центр',
+        'ru.p1': 'В российских стандартах RSA нет совсем. Подпись делают по <span class="highlight-neon">ГОСТ Р 34.10-2012</span> на эллиптических кривых, а общий ключ вырабатывают по VKO (о нём — в статье про <a class="highlight" href="/es/theory/diffiehellman.html">Диффи — Хеллмана</a>). Открытый ключ здесь — точка на кривой, а не произведение двух простых чисел, поэтому раскладывать на множители нечего. Стойкость держится на другой трудной задаче — дискретном логарифме.',
+        'ru.p2': 'Запирать письмо прямо открытым ключом в ГОСТ не принято: открытым ключом только подписывают и вырабатывают общий ключ, а письмо шифруют уже симметричным шифром. Впрочем, и в мире RSA делают почти так же: им обычно запирают не само письмо, а случайный ключ для AES.',
+        'ru.p3': 'При этом RSA в России встречается каждый день. Обычные браузеры не понимают ГОСТ, поэтому даже сертификаты для сайтов, которые с 2022 года выпускает национальный удостоверяющий центр Минцифры, подписаны по RSA. Для ГОСТ-соединений у этого центра есть отдельная цепочка сертификатов, но такие сайты открываются только в браузерах с поддержкой ГОСТ, например в Яндекс Браузере.',
+        'ru.why.label': 'Где без ГОСТ нельзя?',
+        'ru.why.text': 'Там, где закон требует сертифицированных средств криптографической защиты, прежде всего в государственных информационных системах. Там подписывают и шифруют только по ГОСТ, а RSA остаётся для связи с внешним миром.',
+        'block4.heading': 'Проверьте сами',
+        'block4.intro': 'В игре вы сами соберёте ключ, запрёте и откроете письмо, а потом попробуете взломать его за Еву. Что стоит сделать:',
+        'action1': '<span><strong>Пройти опыт с замками.</strong> Боб раздаёт открытые замки, Алиса защёлкивает ящик, а Ева держит в руках такой же замок и всё равно не может ящик открыть.</span>',
+        'action2': '<span><strong>Выбрать свои p, q и e.</strong> Учебный ключ — 3 × 11 = 33, но можно взять 5 × 11, 7 × 13 и другие пары. Игра подсвечивает только те числа, из которых выходит настоящий замок, и сразу вычисляет d.</span>',
+        'action3': '<span><strong>Построить ленту замка.</strong> Пропустите через замок все числа от 0 до n − 1 и посмотрите, куда уходит каждое. Ни одно место не занято дважды, поэтому ключ может вернуть всё назад. И заметьте числа, которые замок оставляет на месте.</span>',
+        'action4': '<span><strong>Сравнить два пути счёта.</strong> После расшифровки игра покажет степень целиком, 31<sup>7</sup> = 27 512 614 111, и тот же остаток 4, полученный по этапам. Так видно, что этапы ничего не меняют в ответе, зато числа на табло не растут.</span>',
+        'action5': '<span><strong>Сыграть за Еву дважды.</strong> Сначала разложите n, перебирая делители, и вычислите d. Потом ничего не раскладывайте: шифруйте открытым ключом догадки 2, 3, 4… пока одна из них не совпадёт с c.</span>',
+        'action6': '<span><strong>Раскрыть «Как это выглядит вживую».</strong> Внизу окна игры спрятана консоль маршрутизатора. Там видно, как настоящее устройство создаёт ключ RSA на 2048 бит и раздаёт его открытую часть.</span>',
+        'insight2.label': 'Что заметить:',
+        'insight2.text': 'Взлом разложением зависит от размера n: на 33 он мгновенный, на 2048 битах безнадёжный. А угадыванию размер n не мешает вовсе. Ему мешает только <span class="highlight-gold">случайность</span>, которую добавляют к каждому письму.',
+        'insight3.label': 'Неожиданный вывод:',
+        'insight3.text': 'Стойкость RSA обычно объясняют трудностью разложения на множители, но в игре Ева прочитала письмо, ничего не раскладывая. Значит, RSA держится на двух вещах: на огромных простых числах и на случайности в каждом письме. Без второй хватает самой простой атаки. А если поменять ключи ролями — запереть закрытым, а проверить открытым, — получится доказательство «это написал именно Боб». Как такое доказательство устроено и где его подделывают, — в игре «Цифровая подпись».',
+        'advanced.summary': 'Для любознательных',
+        'advanced.compare.heading': 'RSA и ГОСТ Р 34.10-2012 рядом',
+        'advanced.compare.text': 'У обеих схем пара ключей — открытый и закрытый, но трудные задачи под ними разные, и умеют они разное:',
+        'table.param': 'Параметр',
+        'table.head.ru': 'ГОСТ Р 34.10-2012',
+        'table.row1.label': 'Из чего ключ',
+        'table.row1.rsa': 'Два больших простых числа и их произведение',
+        'table.row1.ru': 'Тайное число и точка на эллиптической кривой',
+        'table.row2.label': 'Трудная задача',
+        'table.row2.rsa': 'Разложение на множители',
+        'table.row2.ru': 'Дискретный логарифм на кривой',
+        'table.row3.label': 'Размер ключа для стойкости ≈ 128 бит',
+        'table.row3.rsa': '3072 бита',
+        'table.row3.ru': '256 бит',
+        'table.row4.label': 'Что умеет',
+        'table.row4.rsa': 'Шифрование (с OAEP) и подпись',
+        'table.row4.ru': 'Подпись; общий ключ — по VKO',
+        'table.row5.label': 'Год',
+        'table.row5.ru': '2012 (до него — ГОСТ Р 34.10-2001)',
+        'table.row6.label': 'Стандарт',
+        'table.row6.ru': 'ГОСТ Р 34.10-2012 (RFC 7091), ТК 26',
+        'advanced.size.heading': 'Рекорды разложения',
+        'advanced.size.p': 'Числа RSA раскладывают тем же решетом числового поля, которое грозит <a class="highlight" href="/es/theory/diffiehellman.html">Диффи — Хеллману</a>, поэтому и стойкость та же: 2048 бит примерно равны 112-битному симметричному ключу, а для 128 бит нужно 3072. Как росли рекорды: RSA-129 (426 бит) разложили в 1994 году, RSA-768 — в 2009-м, RSA-250 (829 бит) — в 2020-м. До 2048 бит ещё очень далеко, но ключи короче 2048 бит сегодня считаются небезопасными.',
+        'advanced.e.heading': 'Почему e = 65537',
+        'advanced.e.p': 'Число 65537 = 2<sup>16</sup> + 1 простое, а в двоичной записи у него всего две единицы, поэтому запереть письмо можно за 17 умножений. Брать совсем маленькое e, например 3, опасно, если не добавлять случайность: когда m<sup>3</sup> меньше n, деление ничего не меняет, и Ева просто извлекает кубический корень из c. В игре это видно на m = 2 и 3: 2<sup>3</sup> = 8 меньше 33, и c = 8.',
+        'advanced.shared.heading': 'Когда у двух ключей одно простое число',
+        'advanced.shared.p': 'В 2012 году две группы исследователей собрали миллионы открытых ключей RSA из интернета и сравнили их попарно. У десятков тысяч ключей нашлись общие простые множители, в основном у маршрутизаторов, сетевых камер и другой техники, которая создавала ключ сразу после первого включения, когда хорошей случайности в ней ещё не было. Если у двух n общее p, его находят за доли секунды алгоритмом Евклида, и оба ключа раскрыты. Простые числа должны быть не только огромными, но и по-настоящему случайными.',
+        'advanced.quantum.heading': 'Что придёт на смену',
+        'advanced.quantum.p': 'Алгоритм Шора на квантовом компьютере разложил бы n так же быстро, как решил бы задачу Диффи — Хеллмана. Для RSA важнее всего подписи, и им уже готовят замену: постквантовые стандарты подписи <span class="highlight-gold">ML-DSA</span> (FIPS 204) и <span class="highlight-gold">SLH-DSA</span> (FIPS 205). Второй интересен тем, что держится только на хэш-функциях, без всякой теории чисел.',
+        'actions.intro': 'Теперь вы знаете, как запереть письмо ключом, который есть у всех, и почему одной трудности разложения для этого мало',
+        'actions.play': '🚀 Запустить интерактивную демонстрацию',
+        'actions.back': '← Вернуться к списку тем',
+        'actions.outro': 'В игре вы выберете свои простые числа, построите ленту замка и увидите, как Ева читает письмо без всякого разложения',
+        'footer.line1': '© 2025 Ludus Lab · Сложные вещи простыми играми',
+        'footer.line2': 'Упрощения: в игре n не больше 91, а письмо — одно число. В настоящих ключах n длиной 2048 бит и больше, а к письму перед шифрованием добавляют случайное дополнение OAEP.',
+      },
+      en: {
+        'meta.title': 'RSA: a padlock anyone can snap shut but only one can open | Ludus Lab',
+        'meta.description': 'How can you give everyone the encryption key and still keep the secret? RSA on padlocks and small numbers: two primes, the powers e and d, breaking it by factoring and by guessing, and why GOST has no RSA.',
+        'nav.home': 'Home',
+        'nav.play': 'Play',
+        'article.category': 'Public-key cryptography',
+        'article.title': 'RSA: a padlock anyone can snap shut but only one can open',
+        'article.subtitle': 'Bob prints the key for letters to him right in the newspaper. How can that key lock a letter but not open it?',
+        'meta.readtime': '⏱️ 9 min read',
+        'meta.level': '📊 Intermediate level',
+        'meta.security': '🔒 It signs the certificates of most websites',
+        'block1.heading': 'Can you hand the key to everyone and keep the secret?',
+        'block1.p1': 'Bob wants anyone to be able to write to him in secret, even people he has never met. He prints a key in the newspaper: “encrypt your letters to me with this”. Eve reads the newspaper too. Can it be that Eve holds the very same key and still can’t read a single letter to Bob?',
+        'block1.p2': 'It sounds like nonsense. In every familiar cipher, from <a class="highlight" href="/es/theory/caesarcipher.html">Caesar</a> to <a class="highlight" href="/es/theory/aes.html">AES</a>, the same key both locks and unlocks. Whoever knows how to encrypt also knows how to decrypt: just do everything in reverse. Publishing such a key means publishing the secret itself.',
+        'block1.p3': 'In 1976 Diffie and Hellman showed how two people can <a class="highlight" href="/es/theory/diffiehellman.html">agree on a shared key in public</a>. But you have to agree anew with every correspondent, and both have to be online at the same time. In the same paper they described a better dream: a cipher with two different keys — a public one to lock and a private one to unlock. They did not know how to build it.',
+        'insight1.label': 'Key takeaway:',
+        'insight1.text': 'A year later three researchers at MIT found the answer. A “one-way” operation already existed in Diffie–Hellman, but nobody at all can undo it. A cipher needs an operation <span class="highlight-gold">with a trapdoor</span>: anyone can do it one way, but only someone who knows the hint can go back. In RSA the hint is two prime numbers. Anyone who knows their product can lock a letter, and only someone who knows the primes themselves can open it.',
+        'block2.heading': 'A padlock, a key and two primes',
+        'block2.what': 'RSA is a <span class="highlight-gold">public-key cipher</span>: Bob has two keys, and they are different. He hands the public key to everyone and shows the private one to nobody. Everyday life has the same idea — a padlock.',
+        'block2.lock': 'Bob hands out open padlocks to everyone and keeps their key. Alice puts a letter in a box and snaps Bob’s padlock shut on it: no key is needed for that. The box travels to Bob by ordinary post. Eve has Bob’s padlock too, but a padlock can only snap shut.',
+        'scheme1.title': 'The idea, on padlocks',
+        'pt.t1.title': 'Anyone can snap it shut',
+        'pt.t1.text': 'Everyone has Bob’s padlocks. Locking the box needs no key.',
+        'pt.t2.title': 'Only the key opens it',
+        'pt.t2.text': 'There is one key, and Bob has it. Eve sees the locked box and holds the same padlock, but a padlock can’t open the box.',
+        'pt.t3.title': 'The key can’t be cut from the padlock',
+        'pt.t3.text': 'Eve can study the padlock as long as she likes, but she won’t work out what the key looks like. The whole scheme rests on this.',
+        'scheme1.note': 'Simplification: a real padlock can be picked. RSA’s number padlock has a lock pick too — factoring n — but on huge numbers it doesn’t work.',
+        'block2.numbers': 'RSA locks with the same operation as <a class="highlight" href="/es/theory/diffiehellman.html">Diffie–Hellman</a>: raise a number to a power and take the remainder of a division. What is new is elsewhere: Bob builds the modulus n himself out of two secret primes, and those primes are what let him compute the key. All the examples below use the game’s numbers, where n = 33.',
+        'step1.title': 'Two secret primes p and q',
+        'step1.text': 'Bob picks two random <span class="highlight">prime numbers</span> p and q — numbers divisible only by 1 and themselves. In real keys each is 1024 bits long or more, about 309 decimal digits. He hands out their product <span class="highlight">n = p × q</span> and keeps p and q secret. Multiplying two numbers is easy. Finding which primes a product is made of is hard when the numbers are huge.',
+        'step1.example': '<span class="highlight-gold">Example:</span> p = 3, q = 11, n = 3 × 11 = 33.',
+        'step2.title': 'The padlock’s power e and the key’s power d',
+        'step2.text': 'Bob computes <span class="highlight">φ = (p − 1)(q − 1)</span> and picks the padlock’s power <span class="highlight">e</span> — a number with no common divisors with φ. In real keys it is almost always e = 65537. From e and φ he finds the key’s power <span class="highlight-symmetric">d</span>: one for which e · d leaves remainder 1 when divided by φ. The public key is the pair <span class="highlight">(n, e)</span>, the private key is <span class="highlight-symmetric">d</span>. Finding d takes φ, and finding φ takes p and q.',
+        'step2.example': '<span class="highlight-gold">Example:</span> φ = 2 × 10 = 20, e = 3, d = 7, because 3 · 7 = 21 = 1 · 20 + <b>1</b>.',
+        'step3.title': 'Alice locks: c = m<sup>e</sup> mod n',
+        'step3.text': 'The letter is a number m smaller than n: text is turned into numbers first. Alice takes Bob’s public key and computes <span class="highlight">c = m<sup>e</sup> mod n</span>. That is “snapping the padlock shut”. The power is worked out in stages: multiply, take the remainder, multiply, take the remainder. The answer is the same as raising to the whole power at once, but the numbers don’t grow. Otherwise no computer could cope with the power 65537 and numbers hundreds of digits long. The number c is sent in the open: without d it is useless.',
+        'step3.example': '<span class="highlight-gold">Example:</span> m = 4. 4 × 4 = 16; 16 × 4 = 64 = 1 · 33 + <b>31</b>. So c = 31.',
+        'step4.title': 'Bob unlocks: m = c<sup>d</sup> mod n',
+        'step4.text': 'Bob raises c to his secret power d with the same modulus and gets the original m. There is no new operation: the method is the same, only the power differs.',
+        'step4.example': '<span class="highlight-gold">Example:</span> 31<sup>7</sup> mod 33 in stages: 31 · 31 = 961 → 4; 4 · 31 = 124 → 25; 25 · 31 = 775 → 16; 16 · 31 = 496 → 1; 1 · 31 = 31; 31 · 31 = 961 → <b>4</b>. Bob got m = 4.',
+        'step5.title': 'Why it matches',
+        'step5.text': 'Alice raised m to the power e, Bob raised the result to the power d. Together that is m<sup>e·d</sup>. And Bob chose e · d to be 1 more than some multiple of φ. Remainders modulo n have a property (Euler’s theorem): such a power brings every number back to where it was. That is why <span class="highlight-gold">c<sup>d</sup> = m<sup>e·d</sup> = m mod n</span>. You can picture it like this: the padlock shuffles the numbers from 0 to n − 1 like cards in a deck, and every number has its own place. The key leads back along the same lines.',
+        'step5.example': '<span class="highlight-gold">Example:</span> 3 · 7 = 21 = 1 · 20 + 1, and 4<sup>21</sup> mod 33 = 4.',
+        'insightEve.label': 'So what can Eve do?',
+        'insightEve.text': 'Eve has n, e and c. To open the letter she needs d. For d she needs φ, for φ she needs p and q, which means Eve has to <span class="highlight">factor n</span>. 33 = 3 × 11 can be factored in your head. But nobody has factored a 617-digit number: the longest number of this kind ever factored, RSA-250 (2020), is two and a half times shorter and took about 2,700 years of work for a single processor core.',
+        'warning1.label': 'The catch: Eve doesn’t have to factor',
+        'warning1.text': 'Everyone has the same padlock, and there is no randomness in it: the same m always gives the same c. If the letter can be guessed — “yes” or “no”, a safe code, a transfer amount — Eve simply locks every option with Bob’s padlock one by one and compares them with the intercepted c. A match means the letter is read, and n was never factored. That is why “textbook” RSA, as in the game, is never used. Before encryption random bytes are mixed into the letter (the <span class="highlight">OAEP</span> scheme), and the same letter turns into a new ciphertext every time.',
+        'block3.heading': 'A year of searching and a $100 puzzle',
+        'block3.p1': 'Ronald Rivest, Adi Shamir and Leonard Adleman of MIT spent a year looking for the function Diffie and Hellman had dreamed of. Rivest and Shamir proposed schemes, Adleman broke them. A working scheme on two primes appeared in April 1977; the letters RSA are their initials. In August Martin Gardner wrote about the cipher in Scientific American and published a puzzle: a 129-digit number and a phrase encrypted with it, with a $100 prize. It was solved only in 1994: about 600 volunteers spent eight months factoring the number over the internet. The phrase turned out to be “The Magic Words are Squeamish Ossifrage”.',
+        'block3.p2': 'Britain’s GCHQ got there first here too. In 1973 the young mathematician Clifford Cocks read his colleague James Ellis’s note on “non-secret encryption” and in a single evening found the same two-prime scheme — almost four years before Rivest, Shamir and Adleman. MIT’s patent on RSA ran in the US until September 2000; after that the algorithm became free.',
+        'block3.today': 'RSA still works all around you, though these days it signs more often than it encrypts:',
+        'topic1.title': 'HTTPS',
+        'topic1.desc': 'Most websites’ certificates are signed with RSA, and the browser uses that signature to check that the key really belongs to this site. Sending the connection key with RSA, on the other hand, was banned in TLS 1.3: that is now the job of the <a class="highlight" href="/es/theory/diffiehellman.html">Diffie–Hellman exchange</a>.',
+        'topic2.title': 'SSH and routers',
+        'topic2.desc': 'On the first connection a server or router shows the fingerprint of its public key, and often it is an RSA key. With it the device proves that you are talking to it and not to an impostor.',
+        'topic3.title': 'Signatures and cards',
+        'topic3.desc': 'PGP email, signatures on programs and updates, chip bank cards — anywhere the author has to be checked without ever meeting them.',
+        'diff.heading': 'How RSA differs from Diffie–Hellman',
+        'diff.intro': 'Both algorithms belong to public-key cryptography, and both compute powers modulo a number, so they are often confused. The difference is in what they do. In the <a class="highlight" href="/es/theory/diffiehellman.html">Diffie–Hellman exchange</a> Alice and Bob swap public numbers and each computes the shared key on their own side. Nothing is encrypted there, and both have to take part at the same time. In RSA Bob already has a padlock handed out to everyone in advance: Alice takes it and <span class="highlight-gold">locks the letter on her own</span>, even if Bob is offline right now.',
+        'diff.th.q': 'Question',
+        'diff.th.rsa': 'RSA',
+        'diff.th.dh': 'Diffie–Hellman',
+        'diff.r1.q': 'What it is for',
+        'diff.r1.rsa': 'To lock a letter for one recipient or to sign your own',
+        'diff.r1.dh': 'For two people to get a shared key that later encrypts their messages',
+        'diff.r2.q': 'Must the other side be online',
+        'diff.r2.rsa': 'No: Alice already has Bob’s padlock',
+        'diff.r2.dh': 'Yes: each must contribute their own secret number',
+        'diff.r3.q': 'What is sent',
+        'diff.r3.rsa': 'The letter itself, locked with the padlock',
+        'diff.r3.dh': 'Only public numbers; neither the letter nor the key is in the channel',
+        'diff.r4.q': 'Keys',
+        'diff.r4.rsa': 'Bob’s padlock and key last for years',
+        'diff.r4.dh': 'The secret numbers are chosen anew for every conversation',
+        'diff.r5.q': 'Eve’s hard problem',
+        'diff.r5.rsa': 'Split n into two primes',
+        'diff.r5.dh': 'Find the secret number from the public one (discrete logarithm)',
+        'diff.r6.q': 'Analogy',
+        'diff.r6.rsa': 'An open padlock',
+        'diff.r6.dh': 'Paints mixed by two people',
+        'diff.insight.label': 'In one sentence:',
+        'diff.insight.text': '<span class="highlight-gold">RSA locks, Diffie–Hellman agrees.</span> That is why modern HTTPS puts them side by side rather than one instead of the other: Diffie–Hellman produces the conversation key, and RSA confirms with a signature that the key came from the site. This closes the “Eve in the middle” hole that Diffie–Hellman can’t close on its own.',
+        'ru.title': 'The Russian variant: no RSA here',
+        'ru.subtitle': 'GOST R 34.10-2012 · the national certification authority',
+        'ru.p1': 'Russian standards have no RSA at all. Signatures are made under <span class="highlight-neon">GOST R 34.10-2012</span> on elliptic curves, and the shared key is derived with VKO (see the article on <a class="highlight" href="/es/theory/diffiehellman.html">Diffie–Hellman</a>). The public key here is a point on a curve, not a product of two primes, so there is nothing to factor. Security rests on a different hard problem — the discrete logarithm.',
+        'ru.p2': 'Locking a letter directly with the public key is not the custom under GOST either: the public key is used only to sign and to derive a shared key, and the letter is then encrypted with a symmetric cipher. In fact, the RSA world does nearly the same: RSA usually locks not the letter itself but a random key for AES.',
+        'ru.p3': 'Yet RSA turns up in Russia every day. Ordinary browsers don’t understand GOST, so even the website certificates issued since 2022 by the national certification authority of the Ministry of Digital Development are signed with RSA. For GOST connections the authority has a separate certificate chain, but such sites open only in browsers that support GOST, such as Yandex Browser.',
+        'ru.why.label': 'Where is GOST mandatory?',
+        'ru.why.text': 'Wherever the law requires certified cryptographic protection tools, above all in government information systems. There everything is signed and encrypted only under GOST, and RSA remains for talking to the outside world.',
+        'block4.heading': 'Try it yourself',
+        'block4.intro': 'In the game you will build the key yourself, lock and open a letter, and then try to break it as Eve. What to do:',
+        'action1': '<span><strong>Go through the padlock experiment.</strong> Bob hands out open padlocks, Alice snaps a box shut, and Eve holds the same padlock and still can’t open the box.</span>',
+        'action2': '<span><strong>Choose your own p, q and e.</strong> The practice key is 3 × 11 = 33, but you can take 5 × 11, 7 × 13 and other pairs. The game lights up only the numbers that make a real padlock and computes d at once.</span>',
+        'action3': '<span><strong>Build the padlock’s tape.</strong> Run every number from 0 to n − 1 through the padlock and see where each one goes. No place is taken twice, so the key can bring everything back. And notice the numbers the padlock leaves where they are.</span>',
+        'action4': '<span><strong>Compare two ways of counting.</strong> After decryption the game shows the whole power, 31<sup>7</sup> = 27,512,614,111, and the same remainder 4 obtained in stages. You can see the stages change nothing in the answer, yet the numbers on the board don’t grow.</span>',
+        'action5': '<span><strong>Play as Eve twice.</strong> First factor n by trying divisors and compute d. Then factor nothing at all: encrypt the guesses 2, 3, 4… with the public key until one of them matches c.</span>',
+        'action6': '<span><strong>Open “How it looks for real”.</strong> A router console is tucked away at the bottom of the game window. It shows how a real device creates a 2048-bit RSA key and hands out its public part.</span>',
+        'insight2.label': 'What to notice:',
+        'insight2.text': 'Breaking by factoring depends on the size of n: on 33 it is instant, on 2048 bits hopeless. Guessing doesn’t care about the size of n at all. The only thing that stops it is the <span class="highlight-gold">randomness</span> added to every letter.',
+        'insight3.label': 'An unexpected conclusion:',
+        'insight3.text': 'RSA’s strength is usually explained by how hard factoring is, yet in the game Eve read the letter without factoring anything. So RSA rests on two things: huge primes and randomness in every letter. Without the second, the simplest attack is enough. And if you swap the keys’ roles — lock with the private key and check with the public one — you get proof that “Bob really wrote this”. How such proof works and where it gets forged is the subject of the “Digital signature” game.',
+        'advanced.summary': 'For the curious',
+        'advanced.compare.heading': 'RSA and GOST R 34.10-2012 side by side',
+        'advanced.compare.text': 'Both schemes have a key pair, public and private, but the hard problems underneath are different, and so is what they can do:',
+        'table.param': 'Parameter',
+        'table.head.ru': 'GOST R 34.10-2012',
+        'table.row1.label': 'What the key is made of',
+        'table.row1.rsa': 'Two large primes and their product',
+        'table.row1.ru': 'A secret number and a point on an elliptic curve',
+        'table.row2.label': 'Hard problem',
+        'table.row2.rsa': 'Factoring',
+        'table.row2.ru': 'Discrete logarithm on a curve',
+        'table.row3.label': 'Key size for ≈ 128-bit security',
+        'table.row3.rsa': '3072 bits',
+        'table.row3.ru': '256 bits',
+        'table.row4.label': 'What it can do',
+        'table.row4.rsa': 'Encryption (with OAEP) and signatures',
+        'table.row4.ru': 'Signatures; the shared key via VKO',
+        'table.row5.label': 'Year',
+        'table.row5.ru': '2012 (before it, GOST R 34.10-2001)',
+        'table.row6.label': 'Standard',
+        'table.row6.ru': 'GOST R 34.10-2012 (RFC 7091), TC 26',
+        'advanced.size.heading': 'Factoring records',
+        'advanced.size.p': 'RSA numbers are factored with the same number field sieve that threatens <a class="highlight" href="/es/theory/diffiehellman.html">Diffie–Hellman</a>, so the security is the same too: 2048 bits roughly equal a 112-bit symmetric key, and 128 bits take 3072. How the records grew: RSA-129 (426 bits) was factored in 1994, RSA-768 in 2009, RSA-250 (829 bits) in 2020. 2048 bits is still very far off, but keys shorter than 2048 bits are considered unsafe today.',
+        'advanced.e.heading': 'Why e = 65537',
+        'advanced.e.p': 'The number 65537 = 2<sup>16</sup> + 1 is prime, and in binary it has only two ones, so a letter can be locked in 17 multiplications. A very small e, such as 3, is dangerous without added randomness: when m<sup>3</sup> is smaller than n, the division changes nothing, and Eve simply takes the cube root of c. The game shows this for m = 2 and 3: 2<sup>3</sup> = 8 is smaller than 33, and c = 8.',
+        'advanced.shared.heading': 'When two keys share a prime',
+        'advanced.shared.p': 'In 2012 two research groups collected millions of RSA public keys from the internet and compared them in pairs. Tens of thousands of keys turned out to share prime factors, mostly on routers, network cameras and other devices that created their key right after first power-on, before they had any good randomness. If two n share a p, Euclid’s algorithm finds it in a fraction of a second, and both keys are broken. Primes must be not only huge but truly random.',
+        'advanced.quantum.heading': 'What comes next',
+        'advanced.quantum.p': 'Shor’s algorithm on a quantum computer would factor n as quickly as it would solve the Diffie–Hellman problem. For RSA the signatures matter most, and their replacement is already prepared: the post-quantum signature standards <span class="highlight-gold">ML-DSA</span> (FIPS 204) and <span class="highlight-gold">SLH-DSA</span> (FIPS 205). The second is interesting because it relies only on hash functions, with no number theory at all.',
+        'actions.intro': 'Now you know how to lock a letter with a key everyone has, and why the hardness of factoring alone is not enough',
+        'actions.play': '🚀 Launch the interactive demo',
+        'actions.back': '← Back to the list of topics',
+        'actions.outro': 'In the game you will choose your own primes, build the padlock’s tape and see Eve read the letter without any factoring',
+        'footer.line1': '© 2025 Ludus Lab · Complex things through simple games',
+        'footer.line2': 'Simplifications: in the game n is at most 91, and the letter is a single number. In real keys n is 2048 bits long or more, and random OAEP padding is added to the letter before encryption.',
+      },
+      es: {
+        'meta.title': 'RSA: un candado que cualquiera cierra y solo uno abre | Ludus Lab',
+        'meta.description': '¿Cómo dar a todos la clave de cifrado y conservar el secreto? RSA con candados y números pequeños: dos primos, las potencias e y d, el ataque por factorización y por conjeturas, y por qué GOST no tiene RSA.',
+        'nav.home': 'Inicio',
+        'nav.play': 'Jugar',
+        'article.category': 'Criptografía de clave pública',
+        'article.title': 'RSA: un candado que cualquiera cierra y solo uno abre',
+        'article.subtitle': 'Bob publica en el periódico la clave para escribirle. ¿Cómo lograr que esa clave cierre una carta pero no la abra?',
+        'meta.readtime': '⏱️ 9 min de lectura',
+        'meta.level': '📊 Nivel intermedio',
+        'meta.security': '🔒 Con él se firman los certificados de la mayoría de los sitios',
+        'block1.heading': '¿Se puede dar la clave a todos y guardar el secreto?',
+        'block1.p1': 'Bob quiere que cualquiera pueda escribirle en secreto, incluso gente a la que nunca ha visto. Publica una clave en el periódico: «cifrad con esto las cartas para mí». Eva también lee el periódico. ¿Puede ser que Eva tenga en sus manos la misma clave y aun así no lea ni una sola carta para Bob?',
+        'block1.p2': 'Suena absurdo. En cualquier cifrado conocido, desde el de <a class="highlight" href="/es/theory/caesarcipher.html">César</a> hasta <a class="highlight" href="/es/theory/aes.html">AES</a>, la misma clave cierra y abre. Quien sabe cifrar sabe descifrar: basta con hacerlo todo al revés. Publicar una clave así es publicar el propio secreto.',
+        'block1.p3': 'En 1976 Diffie y Hellman mostraron cómo dos personas pueden <a class="highlight" href="/es/theory/diffiehellman.html">acordar una clave común en público</a>. Pero hay que acordarla de nuevo con cada interlocutor, y los dos tienen que estar conectados a la vez. En el mismo artículo describieron un sueño mejor: un cifrado con dos claves distintas, una pública para cerrar y otra privada para abrir. No sabían cómo construirlo.',
+        'insight1.label': 'Idea clave:',
+        'insight1.text': 'Un año después, tres investigadores del MIT encontraron la respuesta. Una operación «de una sola dirección» ya existía en Diffie–Hellman, pero nadie puede deshacerla. Un cifrado necesita una operación <span class="highlight-gold">con puerta secreta</span>: cualquiera la hace en un sentido, pero de vuelta solo quien conoce la pista. En RSA la pista son dos números primos. Cerrar una carta puede cualquiera que conozca su producto, y abrirla solo quien conoce los propios primos.',
+        'block2.heading': 'Un candado, una llave y dos primos',
+        'block2.what': 'RSA es un <span class="highlight-gold">cifrado de clave pública</span>: Bob tiene dos claves, y son distintas. La pública la reparte a todos, la privada no se la enseña a nadie. La misma idea existe en la vida diaria: el candado.',
+        'block2.lock': 'Bob reparte a todos candados abiertos y guarda su llave. Alicia mete una carta en una caja y cierra en ella el candado de Bob: para eso no hace falta llave. La caja viaja hasta Bob por correo normal. Eva también tiene el candado de Bob, pero un candado solo sabe cerrarse.',
+        'scheme1.title': 'La idea, con candados',
+        'pt.t1.title': 'Cerrarlo puede cualquiera',
+        'pt.t1.text': 'Todos tienen los candados de Bob. Para cerrar la caja no hace falta llave.',
+        'pt.t2.title': 'Solo la llave lo abre',
+        'pt.t2.text': 'La llave es una y la tiene Bob. Eva ve la caja cerrada y tiene el mismo candado, pero con un candado no se abre la caja.',
+        'pt.t3.title': 'La llave no se saca del candado',
+        'pt.t3.text': 'Eva puede estudiar el candado todo lo que quiera, pero no averiguará cómo es la llave. En esto se apoya todo el esquema.',
+        'scheme1.note': 'Simplificación: un candado de verdad se puede forzar con una ganzúa. El candado numérico de RSA también tiene ganzúa —factorizar n—, pero con números enormes no funciona.',
+        'block2.numbers': 'RSA cierra con la misma operación que <a class="highlight" href="/es/theory/diffiehellman.html">Diffie–Hellman</a>: eleva un número a una potencia y toma el resto de una división. Lo nuevo está en otra parte: el módulo n lo construye el propio Bob a partir de dos primos secretos, y son ellos los que le permiten calcular la llave. Todos los ejemplos de abajo usan los números del juego, donde n = 33.',
+        'step1.title': 'Dos primos secretos p y q',
+        'step1.text': 'Bob elige dos <span class="highlight">números primos</span> aleatorios p y q, que solo son divisibles entre 1 y entre sí mismos. En las claves reales cada uno tiene 1024 bits o más, unas 309 cifras decimales. Su producto <span class="highlight">n = p × q</span> lo reparte, y p y q los guarda en secreto. Multiplicar dos números es fácil. Averiguar de qué primos está hecho un producto es difícil si los números son enormes.',
+        'step1.example': '<span class="highlight-gold">Ejemplo:</span> p = 3, q = 11, n = 3 × 11 = 33.',
+        'step2.title': 'La potencia del candado e y la de la llave d',
+        'step2.text': 'Bob calcula <span class="highlight">φ = (p − 1)(q − 1)</span> y elige la potencia del candado <span class="highlight">e</span>, un número sin divisores comunes con φ. En las claves reales casi siempre e = 65537. A partir de e y φ halla la potencia de la llave <span class="highlight-symmetric">d</span>: aquella con la que e · d deja resto 1 al dividir entre φ. La clave pública es el par <span class="highlight">(n, e)</span>, la privada es <span class="highlight-symmetric">d</span>. Para hallar d hace falta φ, y para hallar φ hacen falta p y q.',
+        'step2.example': '<span class="highlight-gold">Ejemplo:</span> φ = 2 × 10 = 20, e = 3, d = 7, porque 3 · 7 = 21 = 1 · 20 + <b>1</b>.',
+        'step3.title': 'Alicia cierra: c = m<sup>e</sup> mod n',
+        'step3.text': 'La carta es un número m menor que n: primero el texto se convierte en números. Alicia toma la clave pública de Bob y calcula <span class="highlight">c = m<sup>e</sup> mod n</span>. Eso es «cerrar el candado». La potencia se calcula por etapas: multiplicar, tomar el resto, multiplicar, tomar el resto. El resultado es el mismo que elevando a la potencia completa, pero los números no crecen. Si no, ningún ordenador podría con la potencia 65537 y números de cientos de cifras. El número c se envía a la vista: sin d no sirve de nada.',
+        'step3.example': '<span class="highlight-gold">Ejemplo:</span> m = 4. 4 × 4 = 16; 16 × 4 = 64 = 1 · 33 + <b>31</b>. Así que c = 31.',
+        'step4.title': 'Bob abre: m = c<sup>d</sup> mod n',
+        'step4.text': 'Bob eleva c a su potencia secreta d con el mismo módulo y obtiene el m original. No hay ninguna operación nueva: el método es el mismo, solo cambia la potencia.',
+        'step4.example': '<span class="highlight-gold">Ejemplo:</span> 31<sup>7</sup> mod 33 por etapas: 31 · 31 = 961 → 4; 4 · 31 = 124 → 25; 25 · 31 = 775 → 16; 16 · 31 = 496 → 1; 1 · 31 = 31; 31 · 31 = 961 → <b>4</b>. Bob obtiene m = 4.',
+        'step5.title': 'Por qué coincide',
+        'step5.text': 'Alicia elevó m a la potencia e, y Bob elevó el resultado a la potencia d. En total es m<sup>e·d</sup>. Y Bob eligió e · d de modo que fuera 1 más que un múltiplo de φ. Los restos módulo n tienen una propiedad (el teorema de Euler): una potencia así devuelve cualquier número a su sitio. Por eso <span class="highlight-gold">c<sup>d</sup> = m<sup>e·d</sup> = m mod n</span>. Puede imaginarse así: el candado baraja los números de 0 a n − 1 como cartas, y cada número tiene su propio lugar. La llave vuelve por las mismas líneas.',
+        'step5.example': '<span class="highlight-gold">Ejemplo:</span> 3 · 7 = 21 = 1 · 20 + 1, y 4<sup>21</sup> mod 33 = 4.',
+        'insightEve.label': '¿Y qué puede hacer Eva?',
+        'insightEve.text': 'Eva tiene n, e y c. Para abrir la carta necesita d. Para d necesita φ, para φ necesita p y q, es decir, Eva tiene que <span class="highlight">factorizar n</span>. 33 = 3 × 11 se factoriza de cabeza. Pero nadie ha factorizado un número de 617 cifras: el número de este tipo más largo factorizado, RSA-250 (2020), es dos veces y media más corto y costó unos 2700 años de trabajo de un solo núcleo de procesador.',
+        'warning1.label': 'La trampa: Eva no necesita factorizar',
+        'warning1.text': 'Todos tienen el mismo candado, y en él no hay azar: el mismo m siempre da el mismo c. Si la carta se puede adivinar —«sí» o «no», el código de una caja fuerte, el importe de una transferencia—, Eva simplemente cierra con el candado de Bob todas las opciones una a una y las compara con el c interceptado. Si coincide, la carta está leída y n sigue sin factorizar. Por eso el RSA «de manual», como en el juego, no se usa en ninguna parte. Antes de cifrar se mezclan bytes aleatorios en la carta (el esquema <span class="highlight">OAEP</span>), y la misma carta se convierte cada vez en un texto cifrado nuevo.',
+        'block3.heading': 'Un año de búsqueda y un reto de 100 dólares',
+        'block3.p1': 'Ronald Rivest, Adi Shamir y Leonard Adleman, del MIT, pasaron un año buscando la función con la que soñaban Diffie y Hellman. Rivest y Shamir proponían esquemas y Adleman los rompía. Un esquema que funcionaba, con dos primos, apareció en abril de 1977; las letras RSA son sus iniciales. En agosto Martin Gardner habló del cifrado en Scientific American y publicó un reto: un número de 129 cifras y una frase cifrada con él, con un premio de 100 dólares. Se resolvió solo en 1994: unos 600 voluntarios pasaron ocho meses factorizando el número por internet. La frase resultó ser «The Magic Words are Squeamish Ossifrage».',
+        'block3.p2': 'El GCHQ británico también se adelantó aquí. En 1973 el joven matemático Clifford Cocks leyó la nota de su colega James Ellis sobre el «cifrado no secreto» y en una sola tarde encontró el mismo esquema con dos primos, casi cuatro años antes que Rivest, Shamir y Adleman. La patente del MIT sobre RSA estuvo vigente en EE. UU. hasta septiembre de 2000; después el algoritmo quedó libre.',
+        'block3.today': 'RSA sigue funcionando a tu alrededor, aunque hoy firma más a menudo de lo que cifra:',
+        'topic1.title': 'HTTPS',
+        'topic1.desc': 'Los certificados de la mayoría de los sitios están firmados con RSA, y el navegador comprueba con esa firma que la clave pertenece justo a ese sitio. En cambio, enviar la clave de la conexión con RSA quedó prohibido en TLS 1.3: ahora eso es tarea del <a class="highlight" href="/es/theory/diffiehellman.html">intercambio Diffie–Hellman</a>.',
+        'topic2.title': 'SSH y routers',
+        'topic2.desc': 'En la primera conexión, un servidor o un router muestra la huella de su clave pública, y a menudo es una clave RSA. Con ella el dispositivo demuestra que hablas con él y no con un impostor.',
+        'topic3.title': 'Firmas y tarjetas',
+        'topic3.desc': 'El correo con PGP, las firmas de programas y actualizaciones, las tarjetas bancarias con chip: en cualquier lugar donde hay que comprobar al autor sin haberlo visto nunca.',
+        'diff.heading': 'En qué se diferencia RSA de Diffie–Hellman',
+        'diff.intro': 'Los dos algoritmos son de criptografía de clave pública y los dos calculan potencias módulo un número, así que se confunden a menudo. La diferencia está en lo que hacen. En el <a class="highlight" href="/es/theory/diffiehellman.html">intercambio Diffie–Hellman</a> Alicia y Bob se intercambian números públicos y cada uno calcula por su lado la clave común. Ahí no se cifra nada, y los dos tienen que participar a la vez. En RSA Bob ya tiene un candado repartido a todos de antemano: Alicia lo toma y <span class="highlight-gold">cierra la carta ella sola</span>, aunque Bob no esté conectado en ese momento.',
+        'diff.th.q': 'Pregunta',
+        'diff.th.rsa': 'RSA',
+        'diff.th.dh': 'Diffie–Hellman',
+        'diff.r1.q': 'Para qué sirve',
+        'diff.r1.rsa': 'Para cerrar una carta para un solo destinatario o firmar la tuya',
+        'diff.r1.dh': 'Para que dos personas obtengan una clave común con la que luego cifrar sus mensajes',
+        'diff.r2.q': '¿Tiene que estar conectado el otro?',
+        'diff.r2.rsa': 'No: Alicia ya tiene el candado de Bob',
+        'diff.r2.dh': 'Sí: cada uno debe aportar su número secreto',
+        'diff.r3.q': 'Qué se envía',
+        'diff.r3.rsa': 'La propia carta, cerrada con el candado',
+        'diff.r3.dh': 'Solo números públicos; ni la carta ni la clave pasan por el canal',
+        'diff.r4.q': 'Claves',
+        'diff.r4.rsa': 'El candado y la llave de Bob sirven durante años',
+        'diff.r4.dh': 'Los números secretos se eligen de nuevo para cada conversación',
+        'diff.r5.q': 'El problema difícil para Eva',
+        'diff.r5.rsa': 'Descomponer n en dos primos',
+        'diff.r5.dh': 'Hallar el número secreto a partir del público (logaritmo discreto)',
+        'diff.r6.q': 'Analogía',
+        'diff.r6.rsa': 'Un candado abierto',
+        'diff.r6.dh': 'Pinturas que mezclan dos personas',
+        'diff.insight.label': 'En una frase:',
+        'diff.insight.text': '<span class="highlight-gold">RSA cierra, Diffie–Hellman acuerda.</span> Por eso el HTTPS moderno los pone uno junto al otro, no uno en lugar del otro: Diffie–Hellman produce la clave de la conversación, y RSA confirma con una firma que esa clave vino del sitio. Así se cierra el agujero de «Eva en medio», que Diffie–Hellman no puede cerrar por sí solo.',
+        'ru.title': 'La variante rusa: aquí no hay RSA',
+        'ru.subtitle': 'GOST R 34.10-2012 · la autoridad de certificación nacional',
+        'ru.p1': 'En los estándares rusos no hay RSA en absoluto. Las firmas se hacen según <span class="highlight-neon">GOST R 34.10-2012</span> sobre curvas elípticas, y la clave común se obtiene con VKO (véase el artículo sobre <a class="highlight" href="/es/theory/diffiehellman.html">Diffie–Hellman</a>). Aquí la clave pública es un punto de una curva, no un producto de dos primos, así que no hay nada que factorizar. La seguridad se apoya en otro problema difícil: el logaritmo discreto.',
+        'ru.p2': 'Cerrar una carta directamente con la clave pública tampoco es costumbre en GOST: la clave pública solo sirve para firmar y para obtener una clave común, y la carta se cifra luego con un cifrado simétrico. De hecho, en el mundo de RSA se hace casi lo mismo: con RSA no se suele cerrar la carta en sí, sino una clave aleatoria para AES.',
+        'ru.p3': 'Aun así, RSA aparece en Rusia cada día. Los navegadores normales no entienden GOST, así que incluso los certificados para sitios web que emite desde 2022 la autoridad de certificación nacional del Ministerio de Desarrollo Digital están firmados con RSA. Para las conexiones GOST esa autoridad tiene una cadena de certificados aparte, pero esos sitios solo se abren en navegadores compatibles con GOST, como Yandex Browser.',
+        'ru.why.label': '¿Dónde es obligatorio GOST?',
+        'ru.why.text': 'Allí donde la ley exige herramientas de protección criptográfica certificadas, sobre todo en los sistemas de información del Estado. Allí se firma y se cifra solo según GOST, y RSA queda para comunicarse con el mundo exterior.',
+        'block4.heading': 'Compruébalo tú mismo',
+        'block4.intro': 'En el juego construirás la clave tú mismo, cerrarás y abrirás una carta, y luego intentarás romperla como Eva. Qué hacer:',
+        'action1': '<span><strong>Hacer el experimento de los candados.</strong> Bob reparte candados abiertos, Alicia cierra una caja, y Eva tiene en la mano el mismo candado y aun así no puede abrir la caja.</span>',
+        'action2': '<span><strong>Elegir tus propios p, q y e.</strong> La clave de práctica es 3 × 11 = 33, pero puedes tomar 5 × 11, 7 × 13 y otros pares. El juego ilumina solo los números que dan un candado de verdad y calcula d al momento.</span>',
+        'action3': '<span><strong>Construir la cinta del candado.</strong> Pasa por el candado todos los números de 0 a n − 1 y mira adónde va cada uno. Ningún lugar se ocupa dos veces, por eso la llave puede devolverlo todo. Y fíjate en los números que el candado deja en su sitio.</span>',
+        'action4': '<span><strong>Comparar dos formas de calcular.</strong> Tras descifrar, el juego muestra la potencia completa, 31<sup>7</sup> = 27 512 614 111, y el mismo resto 4 obtenido por etapas. Se ve que las etapas no cambian nada en el resultado, pero los números del tablero no crecen.</span>',
+        'action5': '<span><strong>Jugar como Eva dos veces.</strong> Primero factoriza n probando divisores y calcula d. Después no factorices nada: cifra con la clave pública las conjeturas 2, 3, 4… hasta que una coincida con c.</span>',
+        'action6': '<span><strong>Abrir «Cómo se ve en la realidad».</strong> Abajo, en la ventana del juego, hay una consola de router. Muestra cómo un dispositivo real crea una clave RSA de 2048 bits y reparte su parte pública.</span>',
+        'insight2.label': 'Qué observar:',
+        'insight2.text': 'El ataque por factorización depende del tamaño de n: con 33 es instantáneo, con 2048 bits, imposible. Al ataque por conjeturas el tamaño de n no le importa en absoluto. Lo único que lo detiene es el <span class="highlight-gold">azar</span> que se añade a cada carta.',
+        'insight3.label': 'Una conclusión inesperada:',
+        'insight3.text': 'La fortaleza de RSA suele explicarse por lo difícil que es factorizar, pero en el juego Eva leyó la carta sin factorizar nada. Así que RSA se apoya en dos cosas: en primos enormes y en el azar de cada carta. Sin lo segundo basta el ataque más sencillo. Y si se intercambian los papeles de las claves —cerrar con la privada y comprobar con la pública—, se obtiene la prueba de que «esto lo escribió Bob». Cómo funciona esa prueba y dónde se falsifica es el tema del juego «Firma digital».',
+        'advanced.summary': 'Para los curiosos',
+        'advanced.compare.heading': 'RSA y GOST R 34.10-2012 lado a lado',
+        'advanced.compare.text': 'Los dos esquemas tienen un par de claves, pública y privada, pero los problemas difíciles en los que se basan son distintos, y también lo que saben hacer:',
+        'table.param': 'Parámetro',
+        'table.head.ru': 'GOST R 34.10-2012',
+        'table.row1.label': 'De qué está hecha la clave',
+        'table.row1.rsa': 'Dos primos grandes y su producto',
+        'table.row1.ru': 'Un número secreto y un punto de una curva elíptica',
+        'table.row2.label': 'Problema difícil',
+        'table.row2.rsa': 'Factorización',
+        'table.row2.ru': 'Logaritmo discreto en una curva',
+        'table.row3.label': 'Tamaño de clave para ≈ 128 bits de seguridad',
+        'table.row3.rsa': '3072 bits',
+        'table.row3.ru': '256 bits',
+        'table.row4.label': 'Qué sabe hacer',
+        'table.row4.rsa': 'Cifrado (con OAEP) y firma',
+        'table.row4.ru': 'Firma; la clave común, con VKO',
+        'table.row5.label': 'Año',
+        'table.row5.ru': '2012 (antes, GOST R 34.10-2001)',
+        'table.row6.label': 'Norma',
+        'table.row6.ru': 'GOST R 34.10-2012 (RFC 7091), TC 26',
+        'advanced.size.heading': 'Récords de factorización',
+        'advanced.size.p': 'Los números RSA se factorizan con la misma criba del cuerpo de números que amenaza a <a class="highlight" href="/es/theory/diffiehellman.html">Diffie–Hellman</a>, así que la seguridad también es la misma: 2048 bits equivalen aproximadamente a una clave simétrica de 112 bits, y para 128 bits hacen falta 3072. Cómo crecieron los récords: RSA-129 (426 bits) se factorizó en 1994, RSA-768 en 2009, RSA-250 (829 bits) en 2020. Los 2048 bits quedan aún muy lejos, pero las claves de menos de 2048 bits hoy se consideran inseguras.',
+        'advanced.e.heading': 'Por qué e = 65537',
+        'advanced.e.p': 'El número 65537 = 2<sup>16</sup> + 1 es primo, y en binario solo tiene dos unos, así que una carta se puede cerrar con 17 multiplicaciones. Un e muy pequeño, como 3, es peligroso si no se añade azar: cuando m<sup>3</sup> es menor que n, la división no cambia nada, y Eva simplemente saca la raíz cúbica de c. En el juego se ve con m = 2 y 3: 2<sup>3</sup> = 8 es menor que 33, y c = 8.',
+        'advanced.shared.heading': 'Cuando dos claves comparten un primo',
+        'advanced.shared.p': 'En 2012 dos grupos de investigadores reunieron millones de claves públicas RSA de internet y las compararon por pares. Decenas de miles de claves resultaron tener factores primos comunes, sobre todo en routers, cámaras de red y otros aparatos que creaban su clave justo tras el primer encendido, cuando todavía no tenían buen azar. Si dos n comparten un p, el algoritmo de Euclides lo encuentra en una fracción de segundo, y las dos claves quedan rotas. Los primos no solo deben ser enormes, sino realmente aleatorios.',
+        'advanced.quantum.heading': 'Qué vendrá después',
+        'advanced.quantum.p': 'El algoritmo de Shor en un ordenador cuántico factorizaría n tan rápido como resolvería el problema de Diffie–Hellman. Para RSA lo más importante son las firmas, y su sustituto ya está preparado: los estándares de firma poscuántica <span class="highlight-gold">ML-DSA</span> (FIPS 204) y <span class="highlight-gold">SLH-DSA</span> (FIPS 205). El segundo es interesante porque se apoya solo en funciones hash, sin nada de teoría de números.',
+        'actions.intro': 'Ahora sabes cómo cerrar una carta con una clave que tienen todos, y por qué la dificultad de factorizar no basta por sí sola',
+        'actions.play': '🚀 Iniciar la demostración interactiva',
+        'actions.back': '← Volver a la lista de temas',
+        'actions.outro': 'En el juego elegirás tus propios primos, construirás la cinta del candado y verás a Eva leer la carta sin factorizar nada',
+        'footer.line1': '© 2025 Ludus Lab · Cosas complejas a través de juegos simples',
+        'footer.line2': 'Simplificaciones: en el juego n no pasa de 91 y la carta es un solo número. En las claves reales n tiene 2048 bits o más, y antes de cifrar se añade a la carta el relleno aleatorio OAEP.',
+      },
+      zh: {
+        'meta.title': 'RSA：一把人人都能锁上、只有一人能打开的锁 | Ludus Lab',
+        'meta.description': '怎样把加密用的密钥交给所有人，同时又守住秘密？用挂锁和小数字讲 RSA：两个素数、指数 e 和 d、分解攻击与猜测攻击，以及为什么 GOST 里没有 RSA。',
+        'nav.home': '首页',
+        'nav.play': '开始游戏',
+        'article.category': '公钥密码学',
+        'article.title': 'RSA：一把人人都能锁上、只有一人能打开的锁',
+        'article.subtitle': '鲍勃把给他写信用的密钥直接登在报纸上。怎样让这把密钥能锁上信，却打不开？',
+        'meta.readtime': '⏱️ 阅读约 9 分钟',
+        'meta.level': '📊 中级',
+        'meta.security': '🔒 大多数网站的证书都用它签名',
+        'block1.heading': '能把密钥交给所有人，同时守住秘密吗？',
+        'block1.p1': '鲍勃希望任何人都能给他写密信，哪怕是从没见过的人。他在报纸上登出一把密钥：“给我写信，请用它加密”。伊芙也看报纸。有没有可能，伊芙手里拿着同一把密钥，却仍然读不了任何一封寄给鲍勃的信？',
+        'block1.p2': '听起来像胡话。在所有熟悉的密码里，从<a class="highlight" href="/es/theory/caesarcipher.html">凯撒密码</a>到 <a class="highlight" href="/es/theory/aes.html">AES</a>，同一把密钥既能上锁也能开锁。知道怎么加密的人，也就知道怎么解密：把一切倒过来做就行。公开这样的密钥，就等于公开秘密本身。',
+        'block1.p3': '1976 年，迪菲和赫尔曼展示了两个人怎样<a class="highlight" href="/es/theory/diffiehellman.html">当众约定一个共同密钥</a>。但每换一个通信对象都得重新约定，而且双方必须同时在线。在同一篇论文里，他们还描述了一个更好的梦想：一种有两把不同密钥的密码——公开的用来上锁，私有的用来开锁。他们并不知道怎样造出它。',
+        'insight1.label': '核心思想：',
+        'insight1.text': '一年后，麻省理工学院的三位研究者找到了答案。“单向”运算在迪菲-赫尔曼里已经有了，可它谁也无法撤销。密码需要的是一种<span class="highlight-gold">带暗门的运算</span>：正着做谁都会，倒回去却只有知道提示的人才行。在 RSA 中，这个提示就是两个素数。知道它们乘积的人都能锁上信，而只有知道这两个素数本身的人才能打开。',
+        'block2.heading': '一把锁、一把钥匙和两个素数',
+        'block2.what': 'RSA 是一种<span class="highlight-gold">公钥密码</span>：鲍勃有两把密钥，而且它们不同。公钥他发给所有人，私钥不给任何人看。日常生活里也有同样的东西——挂锁。',
+        'block2.lock': '鲍勃把打开的挂锁发给所有人，钥匙留在自己手里。爱丽丝把信放进箱子，扣上鲍勃的锁：这一步不需要钥匙。箱子通过普通邮寄送到鲍勃那里。伊芙也有鲍勃的锁，但锁只能扣上。',
+        'scheme1.title': '用挂锁讲原理',
+        'pt.t1.title': '谁都能扣上',
+        'pt.t1.text': '鲍勃的锁人人都有。锁上箱子不需要钥匙。',
+        'pt.t2.title': '只有钥匙能打开',
+        'pt.t2.text': '钥匙只有一把，在鲍勃手里。伊芙看见锁着的箱子，手里也有同样的锁，但用锁打不开箱子。',
+        'pt.t3.title': '照着锁配不出钥匙',
+        'pt.t3.text': '伊芙可以随意研究这把锁，却想不出钥匙该是什么样。整个方案就建立在这一点上。',
+        'scheme1.note': '简化说明：真正的挂锁可以用开锁工具撬开。RSA 的数字锁也有“撬锁工具”——分解 n，但面对巨大的数字它就失灵了。',
+        'block2.numbers': 'RSA 上锁用的运算和<a class="highlight" href="/es/theory/diffiehellman.html">迪菲-赫尔曼</a>一样：把数字取若干次方，再取除法的余数。新东西在别处：模数 n 由鲍勃自己用两个秘密素数组成，正是它们让他能算出钥匙。下面的例子都用游戏里的数字，其中 n = 33。',
+        'step1.title': '两个秘密素数 p 和 q',
+        'step1.text': '鲍勃随机选两个<span class="highlight">素数</span> p 和 q——只能被 1 和自身整除的数。在真正的密钥中，每个都长达 1024 位甚至更长，约 309 位十进制数。它们的乘积 <span class="highlight">n = p × q</span> 他发给大家，p 和 q 本身则保密。两个数相乘很容易；从乘积反推出它由哪两个素数构成，在数字巨大时就很难。',
+        'step1.example': '<span class="highlight-gold">例子：</span>p = 3，q = 11，n = 3 × 11 = 33。',
+        'step2.title': '锁的次方 e 和钥匙的次方 d',
+        'step2.text': '鲍勃算出 <span class="highlight">φ = (p − 1)(q − 1)</span>，并选出锁的次方 <span class="highlight">e</span>——一个与 φ 没有公因数的数。在真正的密钥中几乎总是 e = 65537。他再由 e 和 φ 求出钥匙的次方 <span class="highlight-symmetric">d</span>：使 e · d 除以 φ 余 1 的那个数。公钥是数对 <span class="highlight">(n, e)</span>，私钥是 <span class="highlight-symmetric">d</span>。要求出 d 得知道 φ，要求出 φ 得知道 p 和 q。',
+        'step2.example': '<span class="highlight-gold">例子：</span>φ = 2 × 10 = 20，e = 3，d = 7，因为 3 · 7 = 21 = 1 · 20 + <b>1</b>。',
+        'step3.title': '爱丽丝上锁：c = m<sup>e</sup> mod n',
+        'step3.text': '信就是一个小于 n 的数 m：文字要先转换成数字。爱丽丝拿到鲍勃的公钥，算出 <span class="highlight">c = m<sup>e</sup> mod n</span>。这就是“扣上锁”。次方要分步算：乘一次，取余数；再乘一次，再取余数。结果和一次算完整个次方相同，但数字不会变大。否则，面对 65537 次方和几百位长的数字，任何计算机都吃不消。数 c 公开发送：没有 d 它毫无用处。',
+        'step3.example': '<span class="highlight-gold">例子：</span>m = 4。4 × 4 = 16；16 × 4 = 64 = 1 · 33 + <b>31</b>。所以 c = 31。',
+        'step4.title': '鲍勃开锁：m = c<sup>d</sup> mod n',
+        'step4.text': '鲍勃把 c 取自己秘密的 d 次方，用同一个模数，得到原来的 m。没有任何新的运算：方法相同，只是次方不同。',
+        'step4.example': '<span class="highlight-gold">例子：</span>分步计算 31<sup>7</sup> mod 33：31 · 31 = 961 → 4；4 · 31 = 124 → 25；25 · 31 = 775 → 16；16 · 31 = 496 → 1；1 · 31 = 31；31 · 31 = 961 → <b>4</b>。鲍勃得到 m = 4。',
+        'step5.title': '为什么能对上',
+        'step5.text': '爱丽丝把 m 取 e 次方，鲍勃再把结果取 d 次方。合起来就是 m<sup>e·d</sup>。而鲍勃选的 e · d 恰好比 φ 的某个倍数多 1。模 n 的余数有一个性质（欧拉定理）：这样的次方会让任何数回到原位。所以 <span class="highlight-gold">c<sup>d</sup> = m<sup>e·d</sup> = m mod n</span>。可以这样想象：锁把 0 到 n − 1 的数字像一副牌那样洗乱，每个数字都有自己的位置；钥匙沿着同样的线走回去。',
+        'step5.example': '<span class="highlight-gold">例子：</span>3 · 7 = 21 = 1 · 20 + 1，而 4<sup>21</sup> mod 33 = 4。',
+        'insightEve.label': '那伊芙能做什么？',
+        'insightEve.text': '伊芙有 n、e 和 c。要打开信，她需要 d。求 d 需要 φ，求 φ 需要 p 和 q，也就是说，伊芙必须<span class="highlight">把 n 分解成因数</span>。33 = 3 × 11 心算就能分解。但 617 位的数至今没人分解过：这类数中被分解过的最长的 RSA-250（2020 年）要短两倍半，而且耗费了大约相当于单个处理器核心 2700 年的工作量。',
+        'warning1.label': '陷阱：伊芙不一定要分解',
+        'warning1.text': '大家用的是同一把锁，而且锁里没有随机性：同一个 m 总是得到同一个 c。如果信的内容能猜到——“是”或“否”、保险箱密码、转账金额——伊芙只要用鲍勃的锁把所有可能逐个锁上，再和截获的 c 比较。一旦对上，信就被读出来了，而 n 根本没被分解。所以像游戏里那样的“教科书式”RSA 在任何地方都不用。加密前会往信里混入随机字节（<span class="highlight">OAEP</span> 方案），同一封信每次都会变成新的密文。',
+        'block3.heading': '一年的寻找和一道 100 美元的谜题',
+        'block3.p1': '麻省理工学院的罗纳德·里维斯特、阿迪·沙米尔和伦纳德·阿德曼花了一年时间，寻找迪菲和赫尔曼梦想中的那种函数。里维斯特和沙米尔提出方案，阿德曼负责把它们攻破。1977 年 4 月，一个基于两个素数的可行方案诞生了；RSA 就是三人姓氏的首字母。同年 8 月，马丁·加德纳在《科学美国人》上介绍了这种密码，并出了一道题：一个 129 位的数，以及用它加密的一句话，奖金 100 美元。直到 1994 年才被解开：约 600 名志愿者通过互联网花了八个月分解这个数。那句话原来是“The Magic Words are Squeamish Ossifrage”。',
+        'block3.p2': '在这件事上，英国的政府通信总部（GCHQ）同样抢先一步。1973 年，年轻的数学家克利福德·考克斯读了同事詹姆斯·埃利斯关于“非秘密加密”的笔记，一个晚上就找到了同样的双素数方案——比里维斯特、沙米尔和阿德曼早了将近四年。麻省理工学院的 RSA 专利在美国一直有效到 2000 年 9 月，此后这个算法就可以自由使用了。',
+        'block3.today': 'RSA 至今仍在你身边工作，只是如今它签名的时候比加密的时候多：',
+        'topic1.title': 'HTTPS',
+        'topic1.desc': '大多数网站的证书都用 RSA 签名，浏览器用这个签名来确认密钥确实属于这个网站。而用 RSA 传送连接密钥的做法在 TLS 1.3 中被禁止了：这如今是<a class="highlight" href="/es/theory/diffiehellman.html">迪菲-赫尔曼交换</a>的任务。',
+        'topic2.title': 'SSH 和路由器',
+        'topic2.desc': '第一次连接时，服务器或路由器会显示其公钥的指纹，这往往是一把 RSA 密钥。设备用它证明你正在和它本身通话，而不是和冒充者。',
+        'topic3.title': '签名和银行卡',
+        'topic3.desc': 'PGP 邮件、程序和更新的签名、带芯片的银行卡——凡是需要在从未见过作者的情况下确认作者的地方。',
+        'diff.heading': 'RSA 和迪菲-赫尔曼有什么不同',
+        'diff.intro': '两种算法都属于公钥密码学，也都在做模幂运算，所以常被混淆。区别在于它们做什么。在<a class="highlight" href="/es/theory/diffiehellman.html">迪菲-赫尔曼交换</a>中，爱丽丝和鲍勃互换公开数，各自在自己这边算出共同密钥。那里什么也不加密，而且双方必须同时参与。在 RSA 中，鲍勃早已把锁发给了所有人：爱丽丝拿起锁，<span class="highlight-gold">自己就能把信锁上</span>，哪怕鲍勃此刻不在线。',
+        'diff.th.q': '问题',
+        'diff.th.rsa': 'RSA',
+        'diff.th.dh': '迪菲-赫尔曼',
+        'diff.r1.q': '用来做什么',
+        'diff.r1.rsa': '为某一个收件人锁上信，或者给自己的信签名',
+        'diff.r1.dh': '让两个人得到一个共同密钥，之后用它加密通信',
+        'diff.r2.q': '对方必须在线吗',
+        'diff.r2.rsa': '不必：爱丽丝手里已经有鲍勃的锁',
+        'diff.r2.dh': '必须：每人都要加入自己的秘密数',
+        'diff.r3.q': '发送的是什么',
+        'diff.r3.rsa': '信本身，用锁锁好',
+        'diff.r3.dh': '只有公开数；信和密钥都不在信道里',
+        'diff.r4.q': '密钥',
+        'diff.r4.rsa': '鲍勃的锁和钥匙能用好几年',
+        'diff.r4.dh': '每次对话都重新选秘密数',
+        'diff.r5.q': '伊芙面对的难题',
+        'diff.r5.rsa': '把 n 分解成两个素数',
+        'diff.r5.dh': '由公开数求出秘密数（离散对数）',
+        'diff.r6.q': '比喻',
+        'diff.r6.rsa': '一把打开的挂锁',
+        'diff.r6.dh': '两个人一起调的颜料',
+        'diff.insight.label': '一句话：',
+        'diff.insight.text': '<span class="highlight-gold">RSA 负责上锁，迪菲-赫尔曼负责商定。</span>所以现代 HTTPS 把它们并排使用，而不是用一个替代另一个：迪菲-赫尔曼产生对话密钥，RSA 用签名确认这把密钥来自网站。这样就补上了迪菲-赫尔曼自己补不上的“伊芙在中间”的漏洞。',
+        'ru.title': '俄罗斯的做法：这里没有 RSA',
+        'ru.subtitle': 'GOST R 34.10-2012 · 国家认证中心',
+        'ru.p1': '俄罗斯标准里根本没有 RSA。签名按 <span class="highlight-neon">GOST R 34.10-2012</span> 在椭圆曲线上进行，共同密钥则用 VKO 生成（见关于<a class="highlight" href="/es/theory/diffiehellman.html">迪菲-赫尔曼</a>的文章）。这里的公钥是曲线上的一个点，而不是两个素数的乘积，所以没有什么可分解的。安全性依靠的是另一个难题——离散对数。',
+        'ru.p2': '在 GOST 中，也不习惯直接用公钥锁信：公钥只用来签名和生成共同密钥，信随后用对称密码加密。其实 RSA 的世界里做法几乎一样：RSA 通常锁的不是信本身，而是一把随机的 AES 密钥。',
+        'ru.p3': '不过，RSA 在俄罗斯每天都能见到。普通浏览器不懂 GOST，所以就连俄罗斯数字发展部的国家认证中心自 2022 年起为网站签发的证书，也是用 RSA 签名的。为了 GOST 连接，这个认证中心另有一条证书链，但这样的网站只能在支持 GOST 的浏览器里打开，例如 Yandex 浏览器。',
+        'ru.why.label': '哪里非用 GOST 不可？',
+        'ru.why.text': '凡是法律要求使用经认证的密码保护工具的地方，首先是国家信息系统。在那里只按 GOST 签名和加密，RSA 则留给与外部世界的通信。',
+        'block4.heading': '亲手试一试',
+        'block4.intro': '在游戏里，你会亲手组装密钥，锁上并打开一封信，然后扮演伊芙试着破解它。可以这样做：',
+        'action1': '<span><strong>做一遍挂锁实验。</strong>鲍勃发出打开的挂锁，爱丽丝扣上箱子，伊芙手里拿着同样的锁，却仍然打不开箱子。</span>',
+        'action2': '<span><strong>选自己的 p、q 和 e。</strong>教学密钥是 3 × 11 = 33，但也可以选 5 × 11、7 × 13 等组合。游戏只会点亮能组成真正的锁的数字，并立即算出 d。</span>',
+        'action3': '<span><strong>造出锁的纸带。</strong>把 0 到 n − 1 的所有数字都通过锁，看看每个数字去了哪里。没有哪个位置被占两次，所以钥匙能把一切送回原处。再留意那些被锁留在原地的数字。</span>',
+        'action4': '<span><strong>比较两种算法。</strong>解密后，游戏会显示完整的次方 31<sup>7</sup> = 27 512 614 111，以及分步得到的同一个余数 4。可以看到，分步对答案毫无影响，而灯板上的数字却不会变大。</span>',
+        'action5': '<span><strong>扮演伊芙两次。</strong>先通过试除分解 n 并算出 d。然后什么也不分解：用公钥加密猜测 2、3、4……直到有一个和 c 对上。</span>',
+        'action6': '<span><strong>打开“真实环境里是什么样”。</strong>游戏窗口底部藏着一个路由器控制台。它展示了真实设备怎样生成 2048 位的 RSA 密钥并分发其公开部分。</span>',
+        'insight2.label': '值得注意：',
+        'insight2.text': '分解攻击取决于 n 的大小：对 33 瞬间完成，对 2048 位则毫无希望。而猜测攻击根本不在乎 n 有多大。唯一能挡住它的，是加到每封信里的<span class="highlight-gold">随机性</span>。',
+        'insight3.label': '一个出人意料的结论：',
+        'insight3.text': '人们通常用分解的困难来解释 RSA 的强度，可在游戏里伊芙什么也没分解就读到了信。所以 RSA 依靠两样东西：巨大的素数和每封信里的随机性。少了后者，最简单的攻击就足够了。如果把两把密钥的角色互换——用私钥上锁、用公钥检查——就得到了“这确实是鲍勃写的”的证明。这种证明怎样运作、又在哪里被伪造，是“数字签名”游戏的主题。',
+        'advanced.summary': '给好奇的你',
+        'advanced.compare.heading': 'RSA 和 GOST R 34.10-2012 对比',
+        'advanced.compare.text': '两种方案都有一对密钥——公钥和私钥，但背后的难题不同，能做的事情也不同：',
+        'table.param': '参数',
+        'table.head.ru': 'GOST R 34.10-2012',
+        'table.row1.label': '密钥由什么组成',
+        'table.row1.rsa': '两个大素数及其乘积',
+        'table.row1.ru': '一个秘密数和椭圆曲线上的一个点',
+        'table.row2.label': '难题',
+        'table.row2.rsa': '因数分解',
+        'table.row2.ru': '曲线上的离散对数',
+        'table.row3.label': '约 128 位安全强度所需的密钥长度',
+        'table.row3.rsa': '3072 位',
+        'table.row3.ru': '256 位',
+        'table.row4.label': '能做什么',
+        'table.row4.rsa': '加密（配合 OAEP）和签名',
+        'table.row4.ru': '签名；共同密钥用 VKO',
+        'table.row5.label': '年份',
+        'table.row5.ru': '2012（之前是 GOST R 34.10-2001）',
+        'table.row6.label': '标准',
+        'table.row6.ru': 'GOST R 34.10-2012（RFC 7091），TC 26',
+        'advanced.size.heading': '分解纪录',
+        'advanced.size.p': 'RSA 的数字是用同样的数域筛法分解的，它也威胁着<a class="highlight" href="/es/theory/diffiehellman.html">迪菲-赫尔曼</a>，所以安全强度也一样：2048 位大约相当于 112 位的对称密钥，要达到 128 位则需要 3072 位。纪录是这样增长的：RSA-129（426 位）在 1994 年被分解，RSA-768 在 2009 年，RSA-250（829 位）在 2020 年。离 2048 位还差得很远，但如今短于 2048 位的密钥已被视为不安全。',
+        'advanced.e.heading': '为什么 e = 65537',
+        'advanced.e.p': '65537 = 2<sup>16</sup> + 1 是素数，而且它的二进制只有两个 1，所以锁上一封信只需 17 次乘法。如果不加随机性，用很小的 e（比如 3）是危险的：当 m<sup>3</sup> 小于 n 时，除法什么也没改变，伊芙只要对 c 开立方根就行。游戏里 m = 2 和 3 就能看到这一点：2<sup>3</sup> = 8 小于 33，于是 c = 8。',
+        'advanced.shared.heading': '当两把密钥共用一个素数',
+        'advanced.shared.p': '2012 年，两个研究小组从互联网上收集了数百万把 RSA 公钥，并两两比较。结果发现数万把密钥有共同的素因数，主要出现在路由器、网络摄像头等设备上：它们在第一次开机后立刻生成密钥，那时还没有足够好的随机性。如果两个 n 共用一个 p，用欧几里得算法一瞬间就能找到它，两把密钥都会被攻破。素数不仅要巨大，还必须真正随机。',
+        'advanced.quantum.heading': '接下来会是什么',
+        'advanced.quantum.p': '量子计算机上的肖尔算法分解 n 的速度，和它解决迪菲-赫尔曼问题一样快。对 RSA 来说，最重要的是签名，而替代方案已经准备好了：后量子签名标准 <span class="highlight-gold">ML-DSA</span>（FIPS 204）和 <span class="highlight-gold">SLH-DSA</span>（FIPS 205）。后者有趣之处在于，它只依靠哈希函数，完全不用数论。',
+        'actions.intro': '现在你知道了怎样用人人都有的密钥锁上一封信，也知道了为什么光靠分解的困难还不够',
+        'actions.play': '🚀 启动交互式演示',
+        'actions.back': '← 返回主题列表',
+        'actions.outro': '在游戏里，你会选择自己的素数，造出锁的纸带，并看到伊芙怎样不经任何分解就读到信',
+        'footer.line1': '© 2025 Ludus Lab · 用简单的游戏理解复杂的事物',
+        'footer.line2': '简化说明：游戏中 n 不超过 91，信只是一个数字。在真正的密钥中，n 长达 2048 位甚至更长，而且加密前会给信加上随机的 OAEP 填充。',
+      },
+    };
+
+    function applyLanguage(lang) {
+      if (!I18N[lang]) lang = 'ru';
+      const dict = I18N[lang];
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+      document.title = dict['meta.title'];
+      const descTag = document.getElementById('pageDescription');
+      if (descTag) descTag.setAttribute('content', dict['meta.description']);
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.langBtn === lang);
+      });
+      try { localStorage.setItem('ludusLang', lang); } catch (e) {}
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyLanguage(btn.dataset.langBtn));
+    });
+
+    (function initLanguage() {
+      let saved = null;
+      saved = 'es';
+      if (!saved) {
+        const browserLang = (navigator.language || 'ru').slice(0, 2);
+        saved = I18N[browserLang] ? browserLang : 'ru';
+      }
+      applyLanguage(saved);
+    })();
+  </script>
+  <script>
+// Плавная прокрутка для якорных ссылок
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+anchor.addEventListener('click', function(e) {
+e.preventDefault();
+const targetId = this.getAttribute('href');
+if (targetId === '#') return;
+const targetElement = document.querySelector(targetId);
+if (targetElement) {
+window.scrollTo({ top: targetElement.offsetTop - 20, behavior: 'smooth' });
+}
+});
+});
+// Исправление проблемы с кнопками при раскрытии details
+const detailsElement = document.querySelector('.advanced-section');
+const articleActions = document.getElementById('article-actions');
+if (detailsElement) {
+detailsElement.addEventListener('toggle', function() {
+setTimeout(() => { if (articleActions) { articleActions.style.marginTop = '40px'; } }, 10);
+});
+}
+// Анимация для визуализации шифрования
+document.addEventListener('DOMContentLoaded', function() {
+const schemeBoxes = document.querySelectorAll('.scheme-box');
+schemeBoxes.forEach((box, index) => {
+setTimeout(() => {
+box.style.opacity = '0.8'; box.style.transform = 'scale(0.95)';
+setTimeout(() => { box.style.opacity = '1'; box.style.transform = 'scale(1)'; }, 300);
+}, index * 200);
+});
+const arrows = document.querySelectorAll('.scheme-arrow');
+arrows.forEach((arrow, index) => {
+setTimeout(() => {
+arrow.style.opacity = '0.6'; arrow.style.transform = 'translateX(-3px)';
+setTimeout(() => { arrow.style.opacity = '1'; arrow.style.transform = 'translateX(0)'; }, 300);
+}, index * 200 + 100);
+});
+});
+</script>
+
+</body>
+</html>
